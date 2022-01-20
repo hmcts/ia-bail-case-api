@@ -187,7 +187,7 @@ dependencies {
 mainClassName = 'uk.gov.hmcts.reform.bailcaseapi.Application'
 
 bootJar {
-  archiveFileName = "ia-bail-case-api.jar"
+  archiveFileName = "spring-boot-template.jar"
 
   manifest {
     attributes('Implementation-Version': project.version.toString())
