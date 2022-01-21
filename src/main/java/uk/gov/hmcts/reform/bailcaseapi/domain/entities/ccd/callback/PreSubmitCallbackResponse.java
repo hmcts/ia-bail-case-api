@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 public class PreSubmitCallbackResponse<T extends CaseData> {
 
     private T data;
-    private Set<String> errors = new LinkedHashSet<>();
+    private final Set<String> errors = new LinkedHashSet<>();
     private State state;
 
     private PreSubmitCallbackResponse() {
@@ -35,7 +35,9 @@ public class PreSubmitCallbackResponse<T extends CaseData> {
         this.state = state;
     }
 
-    public T getData() { return data; }
+    public T getData() {
+        return data;
+    }
 
     public void setData(T data) {
         requireNonNull(data);

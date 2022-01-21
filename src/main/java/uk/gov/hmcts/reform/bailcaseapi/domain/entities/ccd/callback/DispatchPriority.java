@@ -9,9 +9,13 @@ public enum DispatchPriority {
 
     private final String id;
 
-    DispatchPriority(String id) { this.id = id; }
+    DispatchPriority(String id) {
+        this.id = id;
+    }
 
     @Override
-    public String toString() { return id; }
+    public String toString() {
+        return id;
+    }
 
 }

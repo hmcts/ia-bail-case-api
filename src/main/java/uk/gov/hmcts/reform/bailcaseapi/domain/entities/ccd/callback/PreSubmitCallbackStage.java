@@ -8,8 +8,12 @@ public enum PreSubmitCallbackStage {
 
     private final String id;
 
-    PreSubmitCallbackStage(String id) { this.id = id; }
+    PreSubmitCallbackStage(String id) {
+        this.id = id;
+    }
 
     @Override
-    public String toString() { return id; }
+    public String toString() {
+        return id;
+    }
 }

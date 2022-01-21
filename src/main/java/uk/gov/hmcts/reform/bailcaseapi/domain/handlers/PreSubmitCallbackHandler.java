@@ -13,7 +13,9 @@ public interface PreSubmitCallbackHandler<T extends CaseData> {
         Callback<T> callback
     );
 
-    default DispatchPriority getDispatchPriority() { return DispatchPriority.LATE; }
+    default DispatchPriority getDispatchPriority() {
+        return DispatchPriority.LATE;
+    }
 
     PreSubmitCallbackResponse<T> handle(
         PreSubmitCallbackStage callbackStage,
