@@ -17,25 +17,24 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackStateHandler;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.eventvalidation.EventValid;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.eventvalidation.EventValidCheckers;
-import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.CcdEventAuthorizor;
 
 @Component
 public class PreSubmitCallbackDispatcher<T extends CaseData> {
 
-    private final CcdEventAuthorizor ccdEventAuthorizor;
+    //private final CcdEventAuthorizor ccdEventAuthorizor;
     private final List<PreSubmitCallbackHandler<T>> sortedCallbackHandlers;
     private final List<PreSubmitCallbackStateHandler<T>> callbackStateHandlers;
     private final EventValidCheckers<T> eventValidChecker;
 
     public PreSubmitCallbackDispatcher(
-        CcdEventAuthorizor ccdEventAuthorizor,
+        //CcdEventAuthorizor ccdEventAuthorizor,
         List<PreSubmitCallbackHandler<T>> callbackHandlers,
         List<PreSubmitCallbackStateHandler<T>> callbackStateHandlers,
         EventValidCheckers<T> eventValidChecker
     ) {
-        requireNonNull(ccdEventAuthorizor, "ccdEventAuthorizor must not be null");
+        //requireNonNull(ccdEventAuthorizor, "ccdEventAuthorizor must not be null");
         requireNonNull(callbackHandlers, "callbackHandlers must not be null");
-        this.ccdEventAuthorizor = ccdEventAuthorizor;
+        //this.ccdEventAuthorizor = ccdEventAuthorizor;
         // sorting handlers by handler class name
         this.sortedCallbackHandlers = callbackHandlers.stream()
             .sorted(Comparator.comparing(x -> x.getClass().getSimpleName()))
@@ -54,7 +53,7 @@ public class PreSubmitCallbackDispatcher<T extends CaseData> {
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
 
-        ccdEventAuthorizor.throwIfNotAuthorized(callback.getEvent());
+        //ccdEventAuthorizor.throwIfNotAuthorized(callback.getEvent());
 
         T caseData = callback.getCaseDetails().getCaseData();
 
