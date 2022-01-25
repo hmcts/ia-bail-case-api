@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 public class DispatchPriorityTest {
 
