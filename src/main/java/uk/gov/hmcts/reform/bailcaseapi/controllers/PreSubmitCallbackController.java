@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.controllers;
 
+import static java.util.Objects.requireNonNull;
+
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -25,6 +27,7 @@ public class PreSubmitCallbackController {
     private final PreSubmitCallbackDispatcher<BailCase> callbackDispatcher;
 
     public PreSubmitCallbackController(PreSubmitCallbackDispatcher<BailCase> callbackDispatcher) {
+        requireNonNull(callbackDispatcher, "callbackDispatcher can not be null");
         this.callbackDispatcher = callbackDispatcher;
     }
 
