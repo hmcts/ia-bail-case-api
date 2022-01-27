@@ -23,4 +23,26 @@ public class BailCaseTest {
 
         assertThat(readApplicantName.get()).isEqualTo("John Smith");
     }
+
+    @Test
+    void writes_simple_type() {
+
+        BailCase bailCase = new BailCase();
+
+        bailCase.write(BailCaseFieldDefinition.APPELLANT_GIVEN_NAMES, "test-name");
+
+        assertThat(bailCase.read(BailCaseFieldDefinition.APPELLANT_GIVEN_NAMES, String.class).get())
+            .isEqualTo("test-name");
+    }
+
+    @Test
+    void clears_value() throws IOException {
+
+        String caseData = "{\"appellantGivenNames\":\"John Smith\"}";
+        BailCase bailCase = objectMapper.readValue(caseData, BailCase.class);
+
+        bailCase.clear(BailCaseFieldDefinition.APPELLANT_GIVEN_NAMES);
+
+        assertThat(bailCase.read(BailCaseFieldDefinition.APPELLANT_GIVEN_NAMES, String.class)).isEmpty();
+    }
 }
