@@ -29,8 +29,8 @@ public class PreSubmitCallbackDispatcher<T extends CaseData> {
     public PreSubmitCallbackDispatcher(
         //CcdEventAuthorizor ccdEventAuthorizor,
         List<PreSubmitCallbackHandler<T>> callbackHandlers,
-        List<PreSubmitCallbackStateHandler<T>> callbackStateHandlers,
-        EventValidCheckers<T> eventValidChecker
+        EventValidCheckers<T> eventValidChecker,
+        List<PreSubmitCallbackStateHandler<T>> callbackStateHandlers
     ) {
         //requireNonNull(ccdEventAuthorizor, "ccdEventAuthorizor must not be null");
         requireNonNull(callbackHandlers, "callbackHandlers must not be null");
@@ -55,7 +55,10 @@ public class PreSubmitCallbackDispatcher<T extends CaseData> {
 
         //ccdEventAuthorizor.throwIfNotAuthorized(callback.getEvent());
 
-        T caseData = callback.getCaseDetails().getCaseData();
+        T caseData =
+            callback
+                .getCaseDetails()
+                .getCaseData();
 
         PreSubmitCallbackResponse<T> callbackResponse =
             new PreSubmitCallbackResponse<>(caseData);
