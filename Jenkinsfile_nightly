@@ -2,13 +2,16 @@
 
 properties([
   // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
-  pipelineTriggers([cron('H 05 * * *')])
+  pipelineTriggers([cron('H 22 * * *')])
 ])
 
 @Library("Infrastructure")
 
 def type = "java"
-def product = "rpe"
-def component = "spring-boot-template"
+def product = "ia"
+def component = "bail-case-api"
 
-withNightlyPipeline(type, product, component) {}
+withNightlyPipeline(type, product, component) {
+  //TODO: add relevant scans and tests once project is developed further.
+  enableSlackNotifications('#ia-tech')
+}
