@@ -1,7 +1,4 @@
 buildscript {
-  repositories {
-    jcenter()
-  }
   dependencies {
     classpath("org.yaml:snakeyaml:1.23")
     classpath("net.serenity-bdd:serenity-gradle-plugin:2.0.11")
@@ -129,7 +126,7 @@ configurations {
 }
 
 
-checkstyle.toolVersion = '8.40'
+checkstyle.toolVersion = '9.2.1'
 checkstyle.configFile = new File(rootDir, "checkstyle.xml")
 checkstyle.maxWarnings(0)
 
@@ -146,7 +143,7 @@ tasks.withType(Checkstyle).each { checkstyleTask ->
 }
 
 pmd {
-  toolVersion = '6.12.0'
+  toolVersion = '6.41.0'
   ignoreFailures = true
   sourceSets = [sourceSets.main, sourceSets.test, sourceSets.integrationTest, sourceSets.functionalTest, sourceSets.smokeTest]
   reportsDir = file("$project.buildDir/reports/pmd")
@@ -228,15 +225,15 @@ project.tasks['sonarqube'].group = "Verification"
 
 repositories {
   mavenLocal()
-  jcenter()
   mavenCentral()
+  maven { url 'https://jitpack.io' }
 }
 
 dependencyManagement {
   dependencies {
     // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-    //CVE-2020-13934
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.54') {
+    //CVE-2020-13934, CVE-2022-23181
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.58') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-el'
       entry 'tomcat-embed-websocket'
@@ -256,7 +253,7 @@ dependencyManagement {
       entry 'logback-core'
     }
 
-//CVE-2021-22060
+  //CVE-2021-22060
     dependencySet(group: 'org.springframework', version: '5.2.19.RELEASE') {
       entry 'spring-aop'
       entry 'spring-beans'
@@ -399,7 +396,7 @@ bootJar {
 // this is required to force Java running on the Azure Windows Server OS into using
 // UTF-8 as the default character set instead of windows-1252 which causes issues.
 // this setting only applies when running via gradle bootRun -- see web.config for the
-// java flag that configures the deployed appllications
+// java flag that configures the deployed applications
 applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 
 wrapper {
