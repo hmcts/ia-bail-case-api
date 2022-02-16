@@ -31,7 +31,7 @@ def versions = [
   junit              : '5.6.2',
   junitPlatform      : '1.6.2',
   pitest             : '1.5.2',
-  reformLogging      : '5.1.5',
+  reformLogging      : '5.1.7',
   reformHealthStarter: '0.0.5',
   serenity           : '2.2.12',
   springBoot         : '2.3.9.RELEASE',
@@ -124,7 +124,6 @@ configurations {
   contractTestCompile.extendsFrom testCompile
   contractTestRuntime.extendsFrom testRuntime
 }
-
 
 checkstyle.toolVersion = '9.2.1'
 checkstyle.configFile = new File(rootDir, "checkstyle.xml")
@@ -225,27 +224,27 @@ project.tasks['sonarqube'].group = "Verification"
 
 repositories {
   mavenLocal()
+  jcenter()
   mavenCentral()
-  maven { url 'https://jitpack.io' }
 }
 
 dependencyManagement {
   dependencies {
     // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-    //CVE-2020-13934, CVE-2022-23181
+    //CVE-2020-13934
     dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.58') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-el'
       entry 'tomcat-embed-websocket'
     }
 
+    // CVE-2020-15522
+    dependency group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
+
     // CVE-2019-10086
     dependencySet(group: 'commons-beanutils', version: '1.9.4') {
       entry 'commons-beanutils'
     }
-
-    // CVE-2020-15522
-    dependency group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.66'
 
     //CVE-2021-42550
     dependencySet(group: 'ch.qos.logback', version: '1.2.10') {
@@ -317,19 +316,19 @@ dependencies {
   }
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
-  testCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.30') {
+  testCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
     force = true
   }
 
-  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.30') {
+  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
     force = true
   }
 
-  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.30') {
+  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
     force = true
   }
 
-  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.30') {
+  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
     force = true
   }
 
