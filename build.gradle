@@ -38,7 +38,7 @@ def versions = [
   reformHealthStarter: '0.0.5',
   serenity           : '2.2.12',
   springBoot         : '2.3.9.RELEASE',
-  springHystrix      : '2.1.1.RELEASE',
+  springHystrix      : '2.2.10.RELEASE',
   springfoxSwagger   : '2.9.2',
   pact_version       : '4.1.7'
 
@@ -246,6 +246,28 @@ dependencyManagement {
     dependencySet(group: 'commons-beanutils', version: '1.9.4') {
       entry 'commons-beanutils'
     }
+
+    // CVE-2020-15522
+    dependency group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.66'
+
+    //CVE-2021-42550
+    dependencySet(group: 'ch.qos.logback', version: '1.2.10') {
+      entry 'logback-classic'
+      entry 'logback-core'
+    }
+
+//CVE-2021-22060
+    dependencySet(group: 'org.springframework', version: '5.2.19.RELEASE') {
+      entry 'spring-aop'
+      entry 'spring-beans'
+      entry 'spring-context'
+      entry 'spring-context-support'
+      entry 'spring-core'
+      entry 'spring-expression'
+      entry 'spring-jcl'
+      entry 'spring-web'
+      entry 'spring-webmvc'
+    }
   }
 }
 
@@ -261,7 +283,7 @@ dependencies {
 //  compile group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server', version: versions.springBoot
 //  compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: versions.springBoot
 
-  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.2.RELEASE'
+  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '2.2.10.RELEASE'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: versions.springHystrix
   compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.1.RELEASE'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: versions.springBoot
