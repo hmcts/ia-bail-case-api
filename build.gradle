@@ -320,19 +320,19 @@ dependencies {
   }
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
-  testCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
+  testCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.30') {
     force = true
   }
 
-  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
+  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.30') {
     force = true
   }
 
-  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
+  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.30') {
     force = true
   }
 
-  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
+  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.30') {
     force = true
   }
 
