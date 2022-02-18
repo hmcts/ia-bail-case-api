@@ -39,24 +39,29 @@ class IdamUserDetailsHelperTest {
 
             switch (roleName) {
                 case "caseworker-ia-caseofficer":
-                    assertEquals("Tribunal Caseworker", idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
+                    assertEquals("Tribunal Caseworker",
+                        idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
                     break;
 
                 case "caseworker-ia-admofficer":
-                    assertEquals("Admin Officer", idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
+                    assertEquals("Admin Officer",
+                        idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
                     break;
 
                 case "caseworker-ia-iacjudge":
                 case "caseworker-ia-judiciary":
-                    assertEquals("Judge", idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
+                    assertEquals("Judge",
+                        idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
                     break;
 
                 case "caseworker-ia-legalrep-solicitor":
-                    assertEquals("Legal representative", idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
+                    assertEquals("Legal representative",
+                        idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
                     break;
 
                 default:
-                    assertEquals("System", idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
+                    assertEquals("System",
+                        idamUserDetailsHelper.getLoggedInUserRoleLabel(userDetails).toString());
             }
         });
     }
