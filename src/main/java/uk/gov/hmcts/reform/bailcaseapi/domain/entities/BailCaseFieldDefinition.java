@@ -5,7 +5,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 public enum BailCaseFieldDefinition {
     //Example
     APPELLANT_GIVEN_NAMES(
-        "appellantGivenNames", new TypeReference<String>() {})
+        "appellantGivenNames", new TypeReference<String>() {}),
+    IS_ADMIN(
+        "isAdmin", new TypeReference<String>() {})
     ;
 
 
