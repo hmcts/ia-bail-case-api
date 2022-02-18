@@ -29,6 +29,5 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withPipeline(type, product, component) {
   enableSlackNotifications('#ia-tech')
+  loadVaultSecrets(secrets)
 }
-loadVaultSecrets(secrets)
-
