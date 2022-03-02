@@ -10,6 +10,10 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 public enum BailCaseFieldDefinition {
     IS_ADMIN(
         "isAdmin", new TypeReference<String>() {}),
+    IS_LEGAL_REP(
+        "isLegalRep", new TypeReference<String>() {}),
+    IS_HOME_OFFICE(
+        "isHomeOffice", new TypeReference<String>() {}),
     HOME_OFFICE_REFERENCE_NUMBER(
         "homeOfficeReferenceNumber", new TypeReference<String>(){}),
     APPLICANT_DETENTION_LOCATION(
@@ -173,7 +177,11 @@ public enum BailCaseFieldDefinition {
     SUPPORTER_4_PASSPORT(
         "supporter4Passport", new TypeReference<String>(){}),
     FINANCIAL_AMOUNT_SUPPORTER_4_UNDERTAKES(
-        "financialAmountSupporter4Undertakes", new TypeReference<String>(){})
+        "financialAmountSupporter4Undertakes", new TypeReference<String>(){}),
+    LEGAL_REP_COMPANY(
+        "legalRepCompany", new TypeReference<String>(){}),
+    LEGAL_REP_EMAIL_ADDRESS(
+        "legalRepDetailsEmailAddress", new TypeReference<String>(){})
     ;
 
     private final String value;

@@ -23,12 +23,12 @@ class EventValidCheckersTest {
     private EventValidChecker<BailCase> eventValidChecker1;
     @Mock
     private EventValidChecker<BailCase> eventValidChecker2;
-    private EventValidCheckers<BailCase> asylumCaseEventValidChecker;
+    private EventValidCheckers<BailCase> bailCaseEventValidCheckers;
 
     @BeforeEach
     public void setUp() {
         List<EventValidChecker<BailCase>> checkers = asList(eventValidChecker1, eventValidChecker2);
-        asylumCaseEventValidChecker = new EventValidCheckers<BailCase>(checkers);
+        bailCaseEventValidCheckers = new EventValidCheckers<BailCase>(checkers);
     }
 
     @Test
@@ -36,7 +36,7 @@ class EventValidCheckersTest {
         Mockito.when(eventValidChecker1.check(callback)).thenReturn(VALID_EVENT);
         Mockito.when(eventValidChecker2.check(callback)).thenReturn(VALID_EVENT);
 
-        EventValid eventValid = asylumCaseEventValidChecker.check(callback);
+        EventValid eventValid = bailCaseEventValidCheckers.check(callback);
 
         assertThat(eventValid).isEqualTo(VALID_EVENT);
     }
@@ -47,7 +47,7 @@ class EventValidCheckersTest {
         EventValid invalidEvent = new EventValid("Some error");
         Mockito.when(eventValidChecker2.check(callback)).thenReturn(invalidEvent);
 
-        EventValid eventValid = asylumCaseEventValidChecker.check(callback);
+        EventValid eventValid = bailCaseEventValidCheckers.check(callback);
 
         assertThat(eventValid).isEqualTo(invalidEvent);
     }
