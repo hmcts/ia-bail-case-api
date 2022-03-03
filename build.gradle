@@ -367,7 +367,7 @@ runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 pact {
   broker {
-    pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:80'
+    pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
   }
   publish {
     pactDirectory = 'pacts'
