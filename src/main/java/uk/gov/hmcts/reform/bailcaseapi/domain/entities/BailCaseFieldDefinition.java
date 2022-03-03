@@ -8,8 +8,22 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 public enum BailCaseFieldDefinition {
+    APPLICATION_SENT_BY(
+        "sentByChecklist", new TypeReference<String>() {}),
     IS_ADMIN(
         "isAdmin", new TypeReference<String>() {}),
+    APPLICANT_GIVEN_NAMES(
+        "applicantGivenNames", new TypeReference<String>() {}),
+    APPLICANT_FAMILY_NAME(
+        "applicantFamilyName", new TypeReference<String>() {}),
+    APPLICANT_DOB(
+        "applicantDateOfBirth", new TypeReference<String>() {}),
+    APPLICANT_GENDER(
+        "applicantGender", new TypeReference<String>() {}),
+    APPLICANT_GENDER_OTHER(
+        "applicantGenderEnterDetails", new TypeReference<String>() {}),
+    APPLICANT_NATIONALITIES(
+        "applicantNationalities", new TypeReference<List<IdValue<NationalityFieldValue>>>(){}),
     HOME_OFFICE_REFERENCE_NUMBER(
         "homeOfficeReferenceNumber", new TypeReference<String>(){}),
     APPLICANT_DETENTION_LOCATION(
@@ -173,7 +187,17 @@ public enum BailCaseFieldDefinition {
     SUPPORTER_4_PASSPORT(
         "supporter4Passport", new TypeReference<String>(){}),
     FINANCIAL_AMOUNT_SUPPORTER_4_UNDERTAKES(
-        "financialAmountSupporter4Undertakes", new TypeReference<String>(){})
+        "financialAmountSupporter4Undertakes", new TypeReference<String>(){}),
+    GROUNDS_FOR_BAIL_REASONS(
+        "groundsForBailReasons", new TypeReference<String>(){}),
+    GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION(
+        "groundsForBailProvideEvidenceOption", new TypeReference<YesOrNo>(){}),
+    UPLOAD_BAIL_EVIDENCE_DOCUMENTS(
+        "uploadTheBailEvidenceDocs", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
+    TRANSFER_BAIL_MANAGEMENT_OPTION(
+        "transferBailManagementYesOrNo", new TypeReference<YesOrNo>(){}),
+    NO_TRANSFER_BAIL_MANAGEMENT_REASONS(
+        "noTransferBailManagementReasons", new TypeReference<String>(){})
     ;
 
     private final String value;
