@@ -22,6 +22,8 @@ public enum BailCaseFieldDefinition {
         "applicantGender", new TypeReference<String>() {}),
     APPLICANT_GENDER_OTHER(
         "applicantGenderEnterDetails", new TypeReference<String>() {}),
+    APPLICANT_NATIONALITY(
+        "applicantNationality", new TypeReference<String>() {}),
     APPLICANT_NATIONALITIES(
         "applicantNationalities", new TypeReference<List<IdValue<NationalityFieldValue>>>(){}),
     HOME_OFFICE_REFERENCE_NUMBER(
@@ -193,7 +195,7 @@ public enum BailCaseFieldDefinition {
     GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION(
         "groundsForBailProvideEvidenceOption", new TypeReference<YesOrNo>(){}),
     UPLOAD_BAIL_EVIDENCE_DOCUMENTS(
-        "uploadTheBailEvidenceDocs", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
+        "uploadTheBailEvidenceDocs", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     TRANSFER_BAIL_MANAGEMENT_OPTION(
         "transferBailManagementYesOrNo", new TypeReference<YesOrNo>(){}),
     NO_TRANSFER_BAIL_MANAGEMENT_REASONS(
