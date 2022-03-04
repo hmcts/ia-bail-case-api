@@ -35,8 +35,14 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withPipeline(type, product, component) {
+
   enableSlackNotifications('#ia-tech')
   loadVaultSecrets(secrets)
+
+  env.IA_IDAM_REDIRECT_URI = "https://ia-case-api-aat.service.core-compute-aat.internal/oauth2/callback"
+  env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
+  env.OPEN_ID_IDAM_URL = "https://idam-web-public.aat.platform.hmcts.net"
+  env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
   env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
 
   onMaster() {

@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class OrganisationEntityResponseTest {
+class OrganisationEntityResponseTest {
 
     private OrganisationEntityResponse testOrganisationEntityResponse;
 
@@ -40,16 +40,16 @@ public class OrganisationEntityResponseTest {
     void should_successfully_get_organisation_entity_response() {
         assertThat(testOrganisationEntityResponse.getOrganisationIdentifier()).isNotNull();
         OrganisationEntityResponse organisationEntityResponse = testOrganisationEntityResponse;
-        assertEquals(organisationEntityResponse.getOrganisationIdentifier(), "0UFUG4Z123");
-        assertEquals(organisationEntityResponse.getName(), "TestOrg1");
-        assertEquals(organisationEntityResponse.getStatus(), "ACTIVE");
+        assertEquals("0UFUG4Z123", organisationEntityResponse.getOrganisationIdentifier());
+        assertEquals("TestOrg1", organisationEntityResponse.getName());
+        assertEquals("ACTIVE", organisationEntityResponse.getStatus());
         assertThat(organisationEntityResponse.isSraRegulated()).isTrue();
         assertThat(organisationEntityResponse.getSuperUser()).isNotNull();
-        assertEquals(organisationEntityResponse.getSuperUser().getFirstName(), "John");
-        assertEquals(organisationEntityResponse.getSuperUser().getLastName(), "Doe");
-        assertEquals(organisationEntityResponse.getSuperUser().getEmail(), "john.doe@example.com");
-        assertEquals(organisationEntityResponse.getPaymentAccount().get(0), "NUM1");
-        assertEquals(organisationEntityResponse.getPaymentAccount().get(1), "NUM2");
+        assertEquals("John", organisationEntityResponse.getSuperUser().getFirstName());
+        assertEquals("Doe", organisationEntityResponse.getSuperUser().getLastName());
+        assertEquals("john.doe@example.com", organisationEntityResponse.getSuperUser().getEmail());
+        assertEquals("NUM1", organisationEntityResponse.getPaymentAccount().get(0));
+        assertEquals("NUM2", organisationEntityResponse.getPaymentAccount().get(1));
     }
 
 }
