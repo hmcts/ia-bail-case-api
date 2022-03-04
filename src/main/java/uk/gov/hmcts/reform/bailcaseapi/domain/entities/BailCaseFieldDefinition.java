@@ -197,7 +197,7 @@ public enum BailCaseFieldDefinition {
     LEGAL_REP_COMPANY(
         "legalRepCompany", new TypeReference<String>(){}),
     LEGAL_REP_EMAIL_ADDRESS(
-        "legalRepEmail", new TypeReference<String>(){})
+        "legalRepEmail", new TypeReference<String>(){}),
     GROUNDS_FOR_BAIL_REASONS(
         "groundsForBailReasons", new TypeReference<String>(){}),
     GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION(
