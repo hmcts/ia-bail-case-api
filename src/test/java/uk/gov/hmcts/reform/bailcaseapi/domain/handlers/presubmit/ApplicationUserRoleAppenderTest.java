@@ -6,13 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -63,7 +63,7 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData()).isEqualTo(bailCase);
         assertThat(response.getErrors()).isEmpty();
-        Mockito.verify(bailCase, times(1)).write(
+        verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_ADMIN, YesOrNo.YES);
     }
 
@@ -83,7 +83,7 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData()).isEqualTo(bailCase);
         assertThat(response.getErrors()).isEmpty();
-        Mockito.verify(bailCase, times(1)).write(
+        verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_ADMIN, YesOrNo.NO);
     }
 
@@ -103,7 +103,7 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData()).isEqualTo(bailCase);
         assertThat(response.getErrors()).isEmpty();
-        Mockito.verify(bailCase, times(1)).write(
+        verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.YES);
     }
 
@@ -123,7 +123,7 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData()).isEqualTo(bailCase);
         assertThat(response.getErrors()).isEmpty();
-        Mockito.verify(bailCase, times(1)).write(
+        verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.NO);
     }
 
@@ -143,7 +143,7 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData()).isEqualTo(bailCase);
         assertThat(response.getErrors()).isEmpty();
-        Mockito.verify(bailCase, times(1)).write(
+        verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.YES);
     }
 
@@ -163,7 +163,7 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData()).isEqualTo(bailCase);
         assertThat(response.getErrors()).isEmpty();
-        Mockito.verify(bailCase, times(1)).write(
+        verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.NO);
     }
 

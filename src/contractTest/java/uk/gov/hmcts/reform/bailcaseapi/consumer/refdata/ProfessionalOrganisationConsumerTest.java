@@ -60,7 +60,9 @@ public class ProfessionalOrganisationConsumerTest {
     @BeforeEach
     public void setUpTest() {
         professionalOrganisationRetriever =
-            new ProfessionalOrganisationRetriever(new RestTemplate(), serviceAuthTokenGenerator, userDetailsProvider, refDataApiUrl, refDataApiPath);
+            new ProfessionalOrganisationRetriever(new RestTemplate(), serviceAuthTokenGenerator,
+                                                  userDetailsProvider, refDataApiUrl,
+                                                  refDataApiPath);
         when(serviceAuthTokenGenerator.generate()).thenReturn(SERVICE_AUTH_TOKEN);
 
         when(userDetailsProvider.getUserDetails()).thenReturn(userDetails);

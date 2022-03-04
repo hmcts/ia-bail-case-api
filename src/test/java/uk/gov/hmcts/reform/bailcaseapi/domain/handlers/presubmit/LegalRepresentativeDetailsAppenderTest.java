@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -21,7 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_EMAIL_ADDRESS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 
@@ -47,7 +48,8 @@ class LegalRepresentativeDetailsAppenderTest {
 
     @BeforeEach
     public void setUp() {
-        legalRepresentativeDetailsAppender = new LegalRepresentativeDetailsAppender(userDetails, userDetailsHelper, companyNameProvider);
+        legalRepresentativeDetailsAppender =
+            new LegalRepresentativeDetailsAppender(userDetails, userDetailsHelper, companyNameProvider);
     }
 
     @Test
@@ -68,8 +70,8 @@ class LegalRepresentativeDetailsAppenderTest {
         assertThat(response.getData()).isEqualTo(bailCase);
         assertThat(response.getErrors()).isEmpty();
 
-        Mockito.verify(companyNameProvider, times(1)).prepareCompanyName(callback);
-        Mockito.verify(bailCase, times(1)).write(LEGAL_REP_EMAIL_ADDRESS, legalRepEmailAddress);
+        verify(companyNameProvider, times(1)).prepareCompanyName(callback);
+        verify(bailCase, times(1)).write(LEGAL_REP_EMAIL_ADDRESS, legalRepEmailAddress);
     }
 
     @Test
@@ -90,8 +92,8 @@ class LegalRepresentativeDetailsAppenderTest {
         assertThat(response.getData()).isEqualTo(bailCase);
         assertThat(response.getErrors()).isEmpty();
 
-        Mockito.verify(companyNameProvider, times(0)).prepareCompanyName(callback);
-        Mockito.verify(bailCase, times(0)).write(LEGAL_REP_EMAIL_ADDRESS, legalRepEmailAddress);
+        verify(companyNameProvider, times(0)).prepareCompanyName(callback);
+        verify(bailCase, times(0)).write(LEGAL_REP_EMAIL_ADDRESS, legalRepEmailAddress);
     }
 
     @Test
@@ -116,19 +118,23 @@ class LegalRepresentativeDetailsAppenderTest {
     @Test
     void should_not_allow_null_arguments() {
 
-        assertThatThrownBy(() -> legalRepresentativeDetailsAppender.canHandle(null, callback))
+        assertThatThrownBy(() -> legalRepresentativeDetailsAppender
+            .canHandle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> legalRepresentativeDetailsAppender.canHandle(PreSubmitCallbackStage.ABOUT_TO_START, null))
+        assertThatThrownBy(() -> legalRepresentativeDetailsAppender
+            .canHandle(PreSubmitCallbackStage.ABOUT_TO_START, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> legalRepresentativeDetailsAppender.handle(null, callback))
+        assertThatThrownBy(() -> legalRepresentativeDetailsAppender
+            .handle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> legalRepresentativeDetailsAppender.handle(PreSubmitCallbackStage.ABOUT_TO_START, null))
+        assertThatThrownBy(() -> legalRepresentativeDetailsAppender
+            .handle(PreSubmitCallbackStage.ABOUT_TO_START, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 

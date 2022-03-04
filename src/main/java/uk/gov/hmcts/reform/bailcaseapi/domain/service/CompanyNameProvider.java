@@ -30,7 +30,8 @@ public class CompanyNameProvider {
             professionalOrganisationRetriever.retrieve();
 
         if (organisationEntityResponse == null) {
-            log.warn("Data fetched from Professional Ref data is empty, case ID: {}", callback.getCaseDetails().getId());
+            log.warn("Data fetched from Professional Ref data is empty, case ID: {}",
+                callback.getCaseDetails().getId());
         }
 
         if (organisationEntityResponse != null

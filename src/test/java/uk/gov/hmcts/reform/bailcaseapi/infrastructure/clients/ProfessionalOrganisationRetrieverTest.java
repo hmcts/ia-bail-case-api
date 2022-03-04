@@ -18,7 +18,12 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ref.OrganisationEntityRes
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -26,8 +31,8 @@ public class ProfessionalOrganisationRetrieverTest {
 
     private ProfessionalOrganisationRetriever professionalOrganisationRetriever;
 
-    private String refdataUrl = "http:/some-url";
-    private String refdataPath = "/some-path";
+    private final String refdataUrl = "http:/some-url";
+    private final String refdataPath = "/some-path";
 
     @Mock private AuthTokenGenerator serviceAuthTokenGenerator;
     @Mock private UserDetailsProvider userDetailsProvider;

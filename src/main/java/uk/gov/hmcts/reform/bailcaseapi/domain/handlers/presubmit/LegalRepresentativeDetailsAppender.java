@@ -25,7 +25,8 @@ public class LegalRepresentativeDetailsAppender implements PreSubmitCallbackHand
 
     private final CompanyNameProvider companyNameProvider;
 
-    public LegalRepresentativeDetailsAppender(UserDetails userDetails, UserDetailsHelper userDetailsHelper, CompanyNameProvider companyNameProvider) {
+    public LegalRepresentativeDetailsAppender(UserDetails userDetails, UserDetailsHelper userDetailsHelper,
+                                              CompanyNameProvider companyNameProvider) {
         this.userDetails = userDetails;
         this.userDetailsHelper = userDetailsHelper;
         this.companyNameProvider = companyNameProvider;
@@ -41,7 +42,8 @@ public class LegalRepresentativeDetailsAppender implements PreSubmitCallbackHand
     }
 
     @Override
-    public PreSubmitCallbackResponse<BailCase> handle(PreSubmitCallbackStage callbackStage, Callback<BailCase> callback) {
+    public PreSubmitCallbackResponse<BailCase> handle(PreSubmitCallbackStage callbackStage,
+                                                      Callback<BailCase> callback) {
 
         if (!canHandle(callbackStage, callback)) {
             throw new IllegalStateException("Cannot handle callback");

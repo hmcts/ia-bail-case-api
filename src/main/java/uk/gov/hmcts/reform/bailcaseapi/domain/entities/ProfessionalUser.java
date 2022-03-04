@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -11,7 +10,8 @@ public class ProfessionalUser {
         //no op
     }
 
-    public ProfessionalUser(String userIdentifier, String firstName, String lastName, String email, List<String> roles, String idamStatus, String idamStatusCode, String idamMessage) {
+    public ProfessionalUser(String userIdentifier, String firstName, String lastName, String email,
+                            List<String> roles, String idamStatus, String idamStatusCode, String idamMessage) {
         this.userIdentifier = userIdentifier;
         this.firstName = firstName;
         this.lastName = lastName;

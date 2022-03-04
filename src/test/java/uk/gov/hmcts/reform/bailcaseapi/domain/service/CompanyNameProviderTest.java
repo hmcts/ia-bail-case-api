@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
@@ -13,8 +12,10 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ref.OrganisationEntityResponse;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.ProfessionalOrganisationRetriever;
 
-import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_COMPANY;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +55,7 @@ class CompanyNameProviderTest {
 
         companyNameProvider.prepareCompanyName(callback);
 
-        Mockito.verify(bailCase, times(1)).write(LEGAL_REP_COMPANY, organisationName);
+        verify(bailCase, times(1)).write(LEGAL_REP_COMPANY, organisationName);
     }
 
     @Test
@@ -64,6 +65,6 @@ class CompanyNameProviderTest {
 
         companyNameProvider.prepareCompanyName(callback);
 
-        Mockito.verify(bailCase, times(0)).write(LEGAL_REP_COMPANY, organisationName);
+        verify(bailCase, times(0)).write(LEGAL_REP_COMPANY, organisationName);
     }
 }
