@@ -15,11 +15,13 @@ def component = "bail-case-api"
 
 def secrets = [
   'ia-${env}': [
+
     secret('idam-client-id', 'IA_IDAM_CLIENT_ID'),
     secret('idam-secret', 'IA_IDAM_SECRET'),
     secret('s2s-secret', 'IA_S2S_SECRET'),
     secret('s2s-microservice', 'IA_S2S_MICROSERVICE'),
-    secret('prof-ref-data-url', 'PROF_REF_DATA_URL'),
+    secret('prof-ref-data-url', 'PROF_REF_DATA_URL')
+
   ]
 ]
 
