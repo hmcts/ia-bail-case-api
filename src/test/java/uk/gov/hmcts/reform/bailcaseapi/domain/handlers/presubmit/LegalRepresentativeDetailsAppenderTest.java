@@ -14,12 +14,14 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ref.OrganisationEntityResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.CompanyNameProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,9 +42,12 @@ class LegalRepresentativeDetailsAppenderTest {
     @Mock
     private UserDetailsHelper userDetailsHelper;
     @Mock
+    private OrganisationEntityResponse organisationResponse;
+    @Mock
     CompanyNameProvider companyNameProvider;
 
     private LegalRepresentativeDetailsAppender legalRepresentativeDetailsAppender;
+    private final String organisationName = "some company name";
     private final String legalRepEmailAddress = "john.doe@example.com";
 
 
@@ -60,6 +65,7 @@ class LegalRepresentativeDetailsAppenderTest {
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(userDetails.getId()).thenReturn(legalRepEmailAddress);
         when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
+        when(organisationResponse.getName()).thenReturn(organisationName);
 
 
         PreSubmitCallbackResponse<BailCase> response =
@@ -71,6 +77,7 @@ class LegalRepresentativeDetailsAppenderTest {
         assertThat(response.getErrors()).isEmpty();
 
         verify(companyNameProvider, times(1)).prepareCompanyName(callback);
+        assertEquals(organisationName, organisationResponse.getName());
         verify(bailCase, times(1)).write(LEGAL_REP_EMAIL_ADDRESS, legalRepEmailAddress);
     }
 

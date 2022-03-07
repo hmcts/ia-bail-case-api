@@ -44,7 +44,8 @@ class ApplicationUserRoleAppenderTest {
 
     @BeforeEach
     public void setUp() {
-        applicationUserRoleAppender = new ApplicationUserRoleAppender(userDetails, userDetailsHelper);
+        applicationUserRoleAppender =
+            new ApplicationUserRoleAppender(userDetails, userDetailsHelper);
     }
 
     @Test
@@ -65,6 +66,10 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getErrors()).isEmpty();
         verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_ADMIN, YesOrNo.YES);
+        verify(bailCase, times(1)).write(
+            BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.NO);
+        verify(bailCase, times(1)).write(
+            BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.NO);
     }
 
     @Test
@@ -105,6 +110,10 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getErrors()).isEmpty();
         verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.YES);
+        verify(bailCase, times(1)).write(
+            BailCaseFieldDefinition.IS_ADMIN, YesOrNo.NO);
+        verify(bailCase, times(1)).write(
+            BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.NO);
     }
 
     @Test
@@ -145,6 +154,10 @@ class ApplicationUserRoleAppenderTest {
         assertThat(response.getErrors()).isEmpty();
         verify(bailCase, times(1)).write(
             BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.YES);
+        verify(bailCase, times(1)).write(
+            BailCaseFieldDefinition.IS_ADMIN, YesOrNo.NO);
+        verify(bailCase, times(1)).write(
+            BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.NO);
     }
 
     @Test
