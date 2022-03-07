@@ -12,6 +12,10 @@ public enum BailCaseFieldDefinition {
         "sentByChecklist", new TypeReference<String>() {}),
     IS_ADMIN(
         "isAdmin", new TypeReference<String>() {}),
+    IS_LEGAL_REP(
+        "isLegalRep", new TypeReference<String>() {}),
+    IS_HOME_OFFICE(
+        "isHomeOffice", new TypeReference<String>() {}),
     APPLICANT_GIVEN_NAMES(
         "applicantGivenNames", new TypeReference<String>() {}),
     APPLICANT_FAMILY_NAME(
@@ -190,6 +194,10 @@ public enum BailCaseFieldDefinition {
         "supporter4Passport", new TypeReference<String>(){}),
     FINANCIAL_AMOUNT_SUPPORTER_4_UNDERTAKES(
         "financialAmountSupporter4Undertakes", new TypeReference<String>(){}),
+    LEGAL_REP_COMPANY(
+        "legalRepCompany", new TypeReference<String>(){}),
+    LEGAL_REP_EMAIL_ADDRESS(
+        "legalRepEmail", new TypeReference<String>(){}),
     GROUNDS_FOR_BAIL_REASONS(
         "groundsForBailReasons", new TypeReference<String>(){}),
     GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION(
