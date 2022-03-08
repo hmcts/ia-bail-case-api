@@ -54,7 +54,7 @@ public class StatelessHandlerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(BailCaseFieldDefinition.APPLICANT_NATIONALITY, String.class))
-            .thenReturn(Optional.of("Stateless"));
+            .thenReturn(Optional.of("STATELESS"));
 
         PreSubmitCallbackResponse<BailCase> response =
             statelessHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
