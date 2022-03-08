@@ -48,7 +48,7 @@ public class StatelessHandler implements PreSubmitCallbackHandler<BailCase> {
             bailCase.clear(APPLICANT_NATIONALITIES);
 
             List<IdValue<NationalityFieldValue>> list = new ArrayList<>();
-                list.add(new IdValue<>("1", new NationalityFieldValue("Stateless")));
+            list.add(new IdValue<>("1", new NationalityFieldValue("Stateless")));
             bailCase.write(APPLICANT_NATIONALITIES, list);
         }
 
