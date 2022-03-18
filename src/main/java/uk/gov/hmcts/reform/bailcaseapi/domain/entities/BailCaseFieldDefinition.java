@@ -207,7 +207,9 @@ public enum BailCaseFieldDefinition {
     TRANSFER_BAIL_MANAGEMENT_OPTION(
         "transferBailManagementYesOrNo", new TypeReference<YesOrNo>(){}),
     NO_TRANSFER_BAIL_MANAGEMENT_REASONS(
-        "noTransferBailManagementReasons", new TypeReference<String>(){})
+        "noTransferBailManagementReasons", new TypeReference<String>(){}),
+    APPLICATION_SUBMITTED_BY(
+        "applicationSubmittedBy", new TypeReference<String>(){})
     ;
 
     private final String value;
