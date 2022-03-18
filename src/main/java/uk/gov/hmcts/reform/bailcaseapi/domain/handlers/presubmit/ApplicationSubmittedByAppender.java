@@ -49,7 +49,7 @@ public class ApplicationSubmittedByAppender implements PreSubmitCallbackHandler<
         if (isAdmin) {
             applicationSubmittedBy = bailCase.read(
                 BailCaseFieldDefinition.APPLICATION_SENT_BY, String.class
-            ).orElse("");
+            ).orElseThrow(() -> new IllegalStateException("Missing the field for Admin - APPLICATION_SENT_BY"));
         } else if (isLegalRep) {
             applicationSubmittedBy = UserRoleLabel.LEGAL_REPRESENTATIVE.toString();
         } else if (isHomeOffice) {

@@ -102,6 +102,15 @@ public class ApplicationSubmittedByAppenderTest {
     }
 
     @Test
+    void should_throw_exception_if_admin_and_missing_field() {
+        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, String.class)).thenReturn(Optional.of("Yes"));
+        when(bailCase.read(BailCaseFieldDefinition.APPLICATION_SENT_BY, String.class)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> applicationSubmittedByAppender.handle(ABOUT_TO_SUBMIT, callback)).isExactlyInstanceOf(
+            IllegalStateException.class).hasMessage("Missing the field for Admin - APPLICATION_SENT_BY");
+    }
+
+    @Test
     void it_can_handle_callback() {
         for (Event event : Event.values()) {
             when(callback.getEvent()).thenReturn(event);
