@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Component
@@ -31,18 +32,18 @@ public class ApplicationSubmittedByAppender implements PreSubmitCallbackHandler<
 
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        boolean isLegalRep = bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, String.class).map(flag -> flag.equals(
-            "Yes")).orElse(false);
+        boolean isLegalRep = bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.class).map(flag -> flag.equals(
+            YesOrNo.YES)).orElse(false);
 
         boolean isAdmin = bailCase.read(
             BailCaseFieldDefinition.IS_ADMIN,
-            String.class
-        ).map(flag -> flag.equals("Yes")).orElse(false);
+            YesOrNo.class
+        ).map(flag -> flag.equals(YesOrNo.YES)).orElse(false);
 
         boolean isHomeOffice = bailCase.read(
             BailCaseFieldDefinition.IS_HOME_OFFICE,
-            String.class
-        ).map(flag -> flag.equals("Yes")).orElse(false);
+            YesOrNo.class
+        ).map(flag -> flag.equals(YesOrNo.YES)).orElse(false);
 
         String applicationSubmittedBy = null;
 
