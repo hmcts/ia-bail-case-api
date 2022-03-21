@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.infrastructure;
 
 import static java.util.Objects.requireNonNull;
 
+import java.text.ParseException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +50,7 @@ public class PreSubmitCallbackDispatcher<T extends CaseData> {
     public PreSubmitCallbackResponse<T> handle(
         PreSubmitCallbackStage callbackStage,
         Callback<T> callback
-    ) {
+    ) throws ParseException {
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
 
@@ -162,7 +163,7 @@ public class PreSubmitCallbackDispatcher<T extends CaseData> {
         List<PreSubmitCallbackHandler<T>> callbackHandlers,
         PreSubmitCallbackResponse<T> callbackResponse,
         DispatchPriority dispatchPriority
-    ) {
+    ) throws ParseException {
         for (PreSubmitCallbackHandler<T> callbackHandler : callbackHandlers) {
             if (callbackHandler.getDispatchPriority() == dispatchPriority) {
                 CaseDetails<T> caseDetails = callback.getCaseDetails();

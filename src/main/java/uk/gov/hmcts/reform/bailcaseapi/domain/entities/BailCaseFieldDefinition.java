@@ -11,11 +11,11 @@ public enum BailCaseFieldDefinition {
     APPLICATION_SENT_BY(
         "sentByChecklist", new TypeReference<String>() {}),
     IS_ADMIN(
-        "isAdmin", new TypeReference<String>() {}),
+        "isAdmin", new TypeReference<YesOrNo>() {}),
     IS_LEGAL_REP(
-        "isLegalRep", new TypeReference<String>() {}),
+        "isLegalRep", new TypeReference<YesOrNo>() {}),
     IS_HOME_OFFICE(
-        "isHomeOffice", new TypeReference<String>() {}),
+        "isHomeOffice", new TypeReference<YesOrNo>() {}),
     APPLICANT_GIVEN_NAMES(
         "applicantGivenNames", new TypeReference<String>() {}),
     APPLICANT_FAMILY_NAME(
@@ -209,7 +209,15 @@ public enum BailCaseFieldDefinition {
     NO_TRANSFER_BAIL_MANAGEMENT_REASONS(
         "noTransferBailManagementReasons", new TypeReference<String>(){}),
     APPLICATION_SUBMITTED_BY(
-        "applicationSubmittedBy", new TypeReference<String>(){})
+        "applicationSubmittedBy", new TypeReference<String>(){}),
+    BAIL_REFERENCE_NUMBER(
+        "bailReferenceNumber", new TypeReference<String>(){}),
+    APPLICANT_FULL_NAME(
+        "applicantFullName", new TypeReference<String>(){}),
+    IS_LEGALLY_REPRESENTED_FOR_FLAG(
+        "isLegallyRepresentedForFlag", new TypeReference<YesOrNo>() {}),
+    HAS_LEGAL_REP(
+        "hasLegalRep", new TypeReference<YesOrNo>(){}),
     ;
 
     private final String value;

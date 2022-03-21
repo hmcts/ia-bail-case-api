@@ -11,6 +11,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableSet;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -97,7 +98,7 @@ public class PreSubmitCallbackDispatcherTest {
     }
 
     @Test
-    void check_adds_errors_for_invalid_for_journey_type() {
+    void check_adds_errors_for_invalid_for_journey_type() throws ParseException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(caseData);
         when(eventValidChecker.check(any(Callback.class))).thenReturn(new EventValid("Invalid reason"));
@@ -109,7 +110,7 @@ public class PreSubmitCallbackDispatcherTest {
     }
 
     @Test
-    void check_callback_to_handlers_according_to_priority_with_errors() {
+    void check_callback_to_handlers_according_to_priority_with_errors() throws ParseException {
 
         Set<String> expectedErrors =
             ImmutableSet.of("error1", "error2", "error3", "error4");

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
 
+import java.text.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +48,7 @@ public class PreSubmitCallbackControllerTest {
     }
 
     @Test
-    void should_dispatch_about_to_start_callback_then_return_response() {
+    void should_dispatch_about_to_start_callback_then_return_response() throws ParseException {
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
 
@@ -67,7 +68,7 @@ public class PreSubmitCallbackControllerTest {
     }
 
     @Test
-    void should_dispatch_about_to_submit_callback_then_return_response() {
+    void should_dispatch_about_to_submit_callback_then_return_response() throws ParseException {
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
 
