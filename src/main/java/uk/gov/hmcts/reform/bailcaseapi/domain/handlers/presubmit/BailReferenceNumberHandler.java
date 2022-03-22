@@ -37,7 +37,7 @@ public class BailReferenceNumberHandler implements PreSubmitCallbackHandler<Bail
     public PreSubmitCallbackResponse<BailCase> handle(
         PreSubmitCallbackStage callbackStage,
         Callback<BailCase> callback
-    ) throws ParseException {
+    ) {
         if (!canHandle(callbackStage, callback)) {
             throw new IllegalStateException("Cannot handle callback");
         }
@@ -56,12 +56,21 @@ public class BailReferenceNumberHandler implements PreSubmitCallbackHandler<Bail
             String caseIdMask = "####-####-####-####";
             String caseIdString = String.valueOf(caseId);
 
-            MaskFormatter maskFormatter = new MaskFormatter(caseIdMask);
-            maskFormatter.setValueContainsLiteralCharacters(false);
+            MaskFormatter maskFormatter;
 
-            String caseIdStringFormatted = maskFormatter.valueToString(caseIdString);
+            try {
 
-            bailCase.write(BAIL_REFERENCE_NUMBER, caseIdStringFormatted);
+                maskFormatter = new MaskFormatter(caseIdMask);
+                maskFormatter.setValueContainsLiteralCharacters(false);
+
+                String caseIdStringFormatted = maskFormatter.valueToString(caseIdString);
+                bailCase.write(BAIL_REFERENCE_NUMBER, caseIdStringFormatted);
+
+            } catch (ParseException e) {
+
+                throw new RuntimeException("Error parsing bail reference number" + caseId);
+
+            }
 
         }
 

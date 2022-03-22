@@ -46,15 +46,7 @@ public class IsLegallyRepresentedForFlagHandler implements PreSubmitCallbackHand
         YesOrNo isLegalRepValue = bailCase.read(IS_LEGAL_REP, YesOrNo.class).orElse(NO);
         YesOrNo hasLegalRepValue = bailCase.read(HAS_LEGAL_REP, YesOrNo.class).orElse(NO);
 
-        if (isLegalRepValue == YES || hasLegalRepValue == YES) {
-
-            bailCase.write(IS_LEGALLY_REPRESENTED_FOR_FLAG, YES);
-
-        } else {
-
-            bailCase.write(IS_LEGALLY_REPRESENTED_FOR_FLAG, NO);
-
-        }
+        bailCase.write(IS_LEGALLY_REPRESENTED_FOR_FLAG, isLegalRepValue == YES || hasLegalRepValue == YES ? YES : NO);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

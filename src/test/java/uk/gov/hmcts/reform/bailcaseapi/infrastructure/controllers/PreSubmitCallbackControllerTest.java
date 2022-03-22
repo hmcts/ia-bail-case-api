@@ -2,13 +2,11 @@ package uk.gov.hmcts.reform.bailcaseapi.infrastructure.controllers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-
-import java.text.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +46,7 @@ public class PreSubmitCallbackControllerTest {
     }
 
     @Test
-    void should_dispatch_about_to_start_callback_then_return_response() throws ParseException {
+    void should_dispatch_about_to_start_callback_then_return_response() {
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
 
@@ -68,7 +66,7 @@ public class PreSubmitCallbackControllerTest {
     }
 
     @Test
-    void should_dispatch_about_to_submit_callback_then_return_response() throws ParseException {
+    void should_dispatch_about_to_submit_callback_then_return_response() {
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
 

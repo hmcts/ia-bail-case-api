@@ -34,10 +34,11 @@ def versions = [
   reformLogging      : '5.1.7',
   reformHealthStarter: '0.0.5',
   serenity           : '2.2.12',
-  springBoot         : '2.3.9.RELEASE',
+  springBoot         : '2.6.3',
   springHystrix      : '2.2.10.RELEASE',
   springfoxSwagger   : '2.9.2',
-  pact_version       : '4.1.7'
+  pact_version       : '4.1.7',
+  jackson            : '2.11.2'
 
 ]
 
@@ -292,6 +293,10 @@ dependencies {
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
   compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
+
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
+  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: versions.jackson
 
   compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
   compile group: 'commons-io', name: 'commons-io', version: '2.8.0'

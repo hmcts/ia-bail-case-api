@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 
-import java.text.ParseException;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -82,7 +81,7 @@ public class PreSubmitCallbackController {
     @PostMapping(path = "/ccdAboutToStart")
     public ResponseEntity<PreSubmitCallbackResponse<BailCase>> ccdAboutToStart(
         @ApiParam(value = "Bail case data", required = true) @NotNull @RequestBody Callback<BailCase> callback
-    ) throws ParseException {
+    ) {
         return performStageRequest(PreSubmitCallbackStage.ABOUT_TO_START, callback);
     }
 
@@ -121,7 +120,7 @@ public class PreSubmitCallbackController {
     @PostMapping(path = "/ccdAboutToSubmit")
     public ResponseEntity<PreSubmitCallbackResponse<BailCase>> ccdAboutToSubmit(
         @ApiParam(value = "Bail case data", required = true) @NotNull @RequestBody Callback<BailCase> callback
-    ) throws ParseException {
+    ) {
         return performStageRequest(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
     }
 
@@ -129,7 +128,7 @@ public class PreSubmitCallbackController {
     private ResponseEntity<PreSubmitCallbackResponse<BailCase>> performStageRequest(
         PreSubmitCallbackStage callbackStage,
         Callback<BailCase> callback
-    ) throws ParseException {
+    ) {
         log.info(
             "Bail Case CCD `{}` event `{}` received for Case ID `{}`",
             callbackStage,
