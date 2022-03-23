@@ -15,7 +15,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Dispa
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 
-import java.text.ParseException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +60,7 @@ public class BailReferenceNumberHandlerTest {
     }
 
     @Test
-    void set_formatted_bail_reference_number_if_empty() throws ParseException {
+    void set_formatted_bail_reference_number_if_empty() {
 
         when(bailCase.read(BAIL_REFERENCE_NUMBER, String.class)).thenReturn(Optional.of(""));
         when(callback.getCaseDetails().getId()).thenReturn(Long.valueOf("9001900290039004"));
@@ -78,7 +77,7 @@ public class BailReferenceNumberHandlerTest {
     }
 
     @Test
-    void set_formatted_bail_reference_number_if_Draft() throws ParseException {
+    void set_formatted_bail_reference_number_if_Draft() {
 
         when(bailCase.read(BAIL_REFERENCE_NUMBER)).thenReturn(Optional.of("DRAFT"));
         when(callback.getCaseDetails().getId()).thenReturn(Long.valueOf("9001900290039004"));
@@ -94,7 +93,7 @@ public class BailReferenceNumberHandlerTest {
     }
 
     @Test
-    void should_do_nothing_if_bail_reference_already_present() throws ParseException {
+    void should_do_nothing_if_bail_reference_already_present() {
 
         when(bailCase.read(BAIL_REFERENCE_NUMBER)).thenReturn(Optional.of("9001-9002-9003-9004"));
 
