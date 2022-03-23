@@ -38,7 +38,7 @@ def versions = [
   springHystrix      : '2.2.10.RELEASE',
   springfoxSwagger   : '2.9.2',
   pact_version       : '4.1.7',
-  jackson            : '2.13.1'
+  jackson            : '2.11.2'
 
 ]
 
