@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -46,9 +47,9 @@ public class ApplicationSubmittedByAppenderTest {
 
     @Test
     void should_return_correct_user_LR() {
-        when(bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, String.class)).thenReturn(Optional.of("Yes"));
-        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, String.class)).thenReturn(Optional.of("No"));
-        when(bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, String.class)).thenReturn(Optional.of("No"));
+        when(bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
 
         PreSubmitCallbackResponse<BailCase> response = applicationSubmittedByAppender.handle(ABOUT_TO_SUBMIT, callback);
 
@@ -61,9 +62,9 @@ public class ApplicationSubmittedByAppenderTest {
 
     @Test
     void should_return_correct_user_HO() {
-        when(bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, String.class)).thenReturn(Optional.of("No"));
-        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, String.class)).thenReturn(Optional.of("No"));
-        when(bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, String.class)).thenReturn(Optional.of("Yes"));
+        when(bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
         PreSubmitCallbackResponse<BailCase> response = applicationSubmittedByAppender.handle(ABOUT_TO_SUBMIT, callback);
 
@@ -76,11 +77,11 @@ public class ApplicationSubmittedByAppenderTest {
 
     @Test
     void should_return_correct_user_Applicant_via_Admin() {
-        when(bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, String.class)).thenReturn(Optional.of("No"));
-        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, String.class)).thenReturn(Optional.of("Yes"));
+        when(bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(BailCaseFieldDefinition.APPLICATION_SENT_BY, String.class)).thenReturn(Optional.of(
             "Applicant"));
-        when(bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, String.class)).thenReturn(Optional.of("No"));
+        when(bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
 
         PreSubmitCallbackResponse<BailCase> response = applicationSubmittedByAppender.handle(ABOUT_TO_SUBMIT, callback);
 
@@ -93,9 +94,9 @@ public class ApplicationSubmittedByAppenderTest {
 
     @Test
     void should_throw_exception_if_unknown_user() {
-        when(bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, String.class)).thenReturn(Optional.of("No"));
-        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, String.class)).thenReturn(Optional.of("No"));
-        when(bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, String.class)).thenReturn(Optional.of("No"));
+        when(bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
 
         assertThatThrownBy(() -> applicationSubmittedByAppender.handle(ABOUT_TO_SUBMIT, callback)).isExactlyInstanceOf(
             IllegalStateException.class).hasMessage("Unknown user");
@@ -103,7 +104,7 @@ public class ApplicationSubmittedByAppenderTest {
 
     @Test
     void should_throw_exception_if_admin_and_missing_field() {
-        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, String.class)).thenReturn(Optional.of("Yes"));
+        when(bailCase.read(BailCaseFieldDefinition.IS_ADMIN, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(BailCaseFieldDefinition.APPLICATION_SENT_BY, String.class)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> applicationSubmittedByAppender.handle(ABOUT_TO_SUBMIT, callback)).isExactlyInstanceOf(
