@@ -37,7 +37,8 @@ def versions = [
   springBoot         : '2.3.9.RELEASE',
   springHystrix      : '2.2.10.RELEASE',
   springfoxSwagger   : '2.9.2',
-  pact_version       : '4.1.7'
+  pact_version       : '4.1.7',
+  jackson            : '2.13.2'
 
 ]
 
@@ -268,6 +269,10 @@ dependencyManagement {
 }
 
 dependencies {
+
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jackson
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
 //  compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
 //  compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: versions.springBoot
