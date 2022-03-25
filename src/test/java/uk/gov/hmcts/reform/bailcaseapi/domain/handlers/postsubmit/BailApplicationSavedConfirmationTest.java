@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
@@ -18,8 +19,9 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCa
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class BailApplicationSavedConfirmationTest {
 
-    @Mock
-    private Callback<BailCase> callback;
+    @Mock private Callback<BailCase> callback;
+
+    @Mock private CaseDetails<BailCase> caseDetails;
     private BailApplicationSavedConfirmation bailApplicationSavedConfirmation;
 
     @BeforeEach
@@ -30,8 +32,10 @@ public class BailApplicationSavedConfirmationTest {
 
     @Test
     void should_set_header_body() {
-        PostSubmitCallbackResponse response =
-            bailApplicationSavedConfirmation.handle(callback);
+        long caseId = 1234L;
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(callback.getCaseDetails().getId()).thenReturn(caseId);
+        PostSubmitCallbackResponse response = bailApplicationSavedConfirmation.handle(callback);
 
         assertNotNull(response.getConfirmationBody(), "Confirmation Body is null");
         assertThat(response.getConfirmationBody().get()).contains("# Do this next");
@@ -50,7 +54,25 @@ public class BailApplicationSavedConfirmationTest {
     void should_not_handle_invalid_callback() {
         when(callback.getEvent()).thenReturn(Event.END_APPLICATION); //Invalid event for this handler
 
-        assertThatThrownBy(() -> bailApplicationSavedConfirmation.handle(callback))
-            .isExactlyInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> bailApplicationSavedConfirmation.handle(callback)).isExactlyInstanceOf(
+            IllegalStateException.class);
+    }
+
+    @Test
+    void should_return_confirmation_on_Bail_Save() {
+        long caseId = 1234L;
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(callback.getCaseDetails().getId()).thenReturn(caseId);
+
+        PostSubmitCallbackResponse response = bailApplicationSavedConfirmation.handle(callback);
+
+        assertNotNull(response);
+        assertThat(response.getConfirmationBody().isPresent());
+        assertThat(response.getConfirmationHeader().isPresent());
+
+        assertThat(response.getConfirmationBody().get()).contains(
+            "Review and edit the application if necessary. [Submit the application](/case/IA/Bail/"
+                + caseId
+                + "/trigger/submitApplication) when you’re ready.");
     }
 }

@@ -26,7 +26,9 @@ public class BailApplicationSavedConfirmation implements PostSubmitCallbackHandl
 
         postSubmitResponse.setConfirmationBody(
             "### Do this next\n\n"
-                + "Review and edit the application if necessary. Submit the application when you’re ready."
+                    + "Review and edit the application if necessary. [Submit the application](/case/IA/Bail/"
+                + callback.getCaseDetails().getId()
+                + "/trigger/submitApplication) when you’re ready."
         );
 
         postSubmitResponse.setConfirmationHeader("# You have saved this application");
