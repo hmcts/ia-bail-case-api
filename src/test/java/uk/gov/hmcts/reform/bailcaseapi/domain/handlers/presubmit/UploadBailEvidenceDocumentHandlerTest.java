@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentTag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithDescription;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -76,10 +77,13 @@ class UploadBailEvidenceDocumentHandlerTest {
                 documentReceiver,
                 documentsAppender
             );
+        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
     }
 
     @Test
-    void should_append_new_evidence_to_existing_respondent_documents_for_the_case() {
+    void should_append_new_evidence_to_existing_evidence_documents_for_the_case() {
 
         List<IdValue<DocumentWithDescription>> evidenceWithDescriptionList =
             Arrays.asList(
@@ -93,8 +97,6 @@ class UploadBailEvidenceDocumentHandlerTest {
                 groundsForBailEvidence2WithMetadata
             );
 
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(BAIL_EVIDENCE_WITH_METADATA)).thenReturn(Optional.of(existingEvidenceDocuments));
         when(bailCase.read(BAIL_EVIDENCE)).thenReturn(Optional.of(evidenceWithDescriptionList));
 
@@ -131,8 +133,6 @@ class UploadBailEvidenceDocumentHandlerTest {
             singletonList(new IdValue<>("1", groundsForBailEvidence1));
         List<DocumentWithMetadata> evidenceList = singletonList(groundsForBailEvidence1WithMetadata);
 
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(BAIL_EVIDENCE_WITH_METADATA)).thenReturn(Optional.empty());
         when(bailCase.read(BAIL_EVIDENCE)).thenReturn(Optional.of(evidenceWithDescriptionList));
 
@@ -168,9 +168,6 @@ class UploadBailEvidenceDocumentHandlerTest {
 
     @Test
     void should_throw_when_new_evidence_is_not_present() {
-
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
 
         when(bailCase.read(BAIL_EVIDENCE)).thenReturn(Optional.empty());
 
