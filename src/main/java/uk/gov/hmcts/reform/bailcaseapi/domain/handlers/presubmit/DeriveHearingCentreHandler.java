@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
 
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.HearingCentre;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -53,10 +54,17 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
 
         final String ircName = bailCase.read(IRC_NAME, String.class).orElse("");
 
-        String detentionFacilityName = !prisonName.isEmpty() ? prisonName : ircName;
+        if (prisonName.isEmpty() && ircName.isEmpty()) {
+            throw new RequiredFieldMissingException("Prison name and IRC name missing");
 
-        HearingCentre hearingCentre = hearingCentreFinder.find(detentionFacilityName);
-        bailCase.write(HEARING_CENTRE, hearingCentre);
+        } else {
+            String detentionFacilityName = !prisonName.isEmpty() ? prisonName : ircName;
+
+            HearingCentre hearingCentre = hearingCentreFinder.find(detentionFacilityName);
+            bailCase.write(HEARING_CENTRE, hearingCentre);
+        }
+
+
     }
 
 }

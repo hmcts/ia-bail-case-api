@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.HearingCentre;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
@@ -110,6 +111,19 @@ class DeriveHearingCentreHandlerTest {
         assertThat(callbackResponse.getData()).isNotEmpty();
         assertThat(callbackResponse.getData()).isEqualTo(bailCase);
         verify(bailCase, never()).write(any(), any());
+    }
+
+    @Test
+    void should_throw_for_empty_prison_and_irc() {
+
+        when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
+        when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.empty());
+
+        Assertions.assertThatThrownBy(
+            () -> deriveHearingCentreHandler.setHearingCentreFromDetentionFacilityName(bailCase))
+            .hasMessage("Prison name and IRC name missing")
+            .isExactlyInstanceOf(RequiredFieldMissingException.class);
+
     }
 
     @Test
