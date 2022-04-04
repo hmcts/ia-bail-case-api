@@ -142,12 +142,12 @@ class DocumentsAppenderTest {
         when(existingDocumentById2.getValue()).thenReturn(existingDocument2);
         when(existingDocumentById3.getValue()).thenReturn(existingDocument3);
 
-        when(existingDocument1.getTag()).thenReturn(DocumentTag.TEST_TAG);
+        when(existingDocument1.getTag()).thenReturn(DocumentTag.APPLICATION_SUBMISSION);
         when(existingDocument2.getTag()).thenReturn(DocumentTag.BAIL_EVIDENCE);
-        when(existingDocument3.getTag()).thenReturn(DocumentTag.TEST_TAG);
+        when(existingDocument3.getTag()).thenReturn(DocumentTag.APPLICATION_SUBMISSION);
 
         final List<IdValue<DocumentWithMetadata>> allDocuments =
-            documentsAppender.append(existingDocuments, newDocuments, DocumentTag.TEST_TAG);
+            documentsAppender.append(existingDocuments, newDocuments, DocumentTag.APPLICATION_SUBMISSION);
 
         verify(existingDocumentById1, never()).getId();
         verify(existingDocumentById2, never()).getId();

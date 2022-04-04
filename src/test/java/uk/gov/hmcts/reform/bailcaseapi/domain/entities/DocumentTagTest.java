@@ -10,7 +10,7 @@ public class DocumentTagTest {
     void has_correct_values() {
 
         assertEquals("uploadTheBailEvidenceDocs", DocumentTag.BAIL_EVIDENCE.toString());
-        assertEquals("testTag", DocumentTag.TEST_TAG.toString());
+        assertEquals("applicationSubmission", DocumentTag.APPLICATION_SUBMISSION.toString());
         assertEquals("", DocumentTag.NONE.toString());
 
     }

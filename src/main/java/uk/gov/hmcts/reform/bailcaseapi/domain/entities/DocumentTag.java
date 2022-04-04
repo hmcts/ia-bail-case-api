@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum DocumentTag {
 
     BAIL_EVIDENCE("uploadTheBailEvidenceDocs"),
-    TEST_TAG("testTag"),
+    APPLICATION_SUBMISSION("applicationSubmission"),
 
     @JsonEnumDefaultValue
     NONE("");
