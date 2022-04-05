@@ -123,7 +123,6 @@ class UploadBailEvidenceDocumentHandlerTest {
         verify(documentsAppender, times(1)).append(existingEvidenceDocuments, evidenceList);
 
         verify(bailCase, times(1)).write(BAIL_EVIDENCE_WITH_METADATA, allEvidenceDocuments);
-        verify(bailCase, times(1)).clear(BAIL_EVIDENCE);
     }
 
     @Test
@@ -163,7 +162,6 @@ class UploadBailEvidenceDocumentHandlerTest {
         assertEquals(0, actualexistingEvidenceDocuments.size());
 
         verify(bailCase, times(1)).write(BAIL_EVIDENCE_WITH_METADATA, allEvidenceDocuments);
-        verify(bailCase, times(1)).clear(BAIL_EVIDENCE);
     }
 
     @Test
