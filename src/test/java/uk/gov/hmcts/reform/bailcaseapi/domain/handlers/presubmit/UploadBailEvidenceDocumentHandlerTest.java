@@ -165,17 +165,6 @@ class UploadBailEvidenceDocumentHandlerTest {
     }
 
     @Test
-    void should_throw_when_new_evidence_is_not_present() {
-
-        when(bailCase.read(BAIL_EVIDENCE)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(
-            () -> uploadBailEvidenceDocumentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
-            .hasMessage("bailEvidence is not present")
-            .isExactlyInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
     void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(

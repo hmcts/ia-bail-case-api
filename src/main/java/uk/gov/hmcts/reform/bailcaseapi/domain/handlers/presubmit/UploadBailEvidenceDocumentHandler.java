@@ -62,7 +62,7 @@ public class UploadBailEvidenceDocumentHandler implements PreSubmitCallbackHandl
 
         Optional<List<IdValue<DocumentWithDescription>>> maybeBailEvidence = bailCase.read(BAIL_EVIDENCE);
 
-        if(maybeBailEvidence.isPresent()) {
+        if (maybeBailEvidence.isPresent()) {
             List<DocumentWithMetadata> bailEvidence =
                 maybeBailEvidence
                     .orElseThrow(() -> new IllegalStateException("bailEvidence is not present"))
