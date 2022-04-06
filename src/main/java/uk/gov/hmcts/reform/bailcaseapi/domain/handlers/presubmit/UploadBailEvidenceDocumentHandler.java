@@ -83,8 +83,6 @@ public class UploadBailEvidenceDocumentHandler implements PreSubmitCallbackHandl
 
         bailCase.write(BAIL_EVIDENCE_WITH_METADATA, allGroundsForBailDocuments);
 
-        bailCase.clear(BAIL_EVIDENCE);
-
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 }
