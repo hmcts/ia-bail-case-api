@@ -220,7 +220,8 @@ public enum BailCaseFieldDefinition {
         "isLegallyRepresentedForFlag", new TypeReference<YesOrNo>() {}),
     HAS_LEGAL_REP(
         "hasLegalRep", new TypeReference<YesOrNo>(){}),
-
+    HEARING_CENTRE(
+        "hearingCentre", new TypeReference<HearingCentre>(){}),
     ;
 
     private final String value;
