@@ -222,6 +222,8 @@ public enum BailCaseFieldDefinition {
         "hasLegalRep", new TypeReference<YesOrNo>(){}),
     HEARING_CENTRE(
         "hearingCentre", new TypeReference<HearingCentre>(){}),
+    DETENTION_FACILITY_NAME(
+        "detentionFacility", new TypeReference<String>(){}),
     ;
 
     private final String value;
