@@ -194,10 +194,28 @@ public enum BailCaseFieldDefinition {
         "supporter4Passport", new TypeReference<String>(){}),
     FINANCIAL_AMOUNT_SUPPORTER_4_UNDERTAKES(
         "financialAmountSupporter4Undertakes", new TypeReference<String>(){}),
+    INTERPRETER_YESNO(
+        "interpreterYesNo", new TypeReference<YesOrNo>(){}),
+    INTERPRETER_LANGUAGES(
+        "interpreterLanguages", new TypeReference<List<IdValue<InterpreterLanguage>>>(){}),
+    DISABILITY_YESNO(
+        "applicantDisability1", new TypeReference<YesOrNo>(){}),
+    APPLICANT_DISABILITY_DETAILS(
+        "applicantDisabilityDetails", new TypeReference<String>(){}),
+    VIDEO_HEARING_YESNO(
+        "videoHearing1", new TypeReference<YesOrNo>(){}),
+    VIDEO_HEARING_DETAILS(
+        "videoHearingDetails", new TypeReference<String>(){}),
     LEGAL_REP_COMPANY(
         "legalRepCompany", new TypeReference<String>(){}),
     LEGAL_REP_EMAIL_ADDRESS(
         "legalRepEmail", new TypeReference<String>(){}),
+    LEGAL_REP_NAME(
+        "legalRepName", new TypeReference<String>(){}),
+    LEGAL_REP_PHONE(
+        "legalRepPhone", new TypeReference<String>(){}),
+    LEGAL_REP_REFERENCE(
+        "legalRepReference", new TypeReference<String>(){}),
     GROUNDS_FOR_BAIL_REASONS(
         "groundsForBailReasons", new TypeReference<String>(){}),
     GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION(
@@ -220,7 +238,8 @@ public enum BailCaseFieldDefinition {
         "isLegallyRepresentedForFlag", new TypeReference<YesOrNo>() {}),
     HAS_LEGAL_REP(
         "hasLegalRep", new TypeReference<YesOrNo>(){}),
-
+    APPLICATION_SUBMISSION_DOCUMENT(
+        "applicationSubmissionDocument", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     ;
 
     private final String value;
