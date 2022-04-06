@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DETENTION_FACILITY_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DETENTION_FACILITY;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
@@ -33,7 +33,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
-class DetentionFacilityNameAppenderTest {
+class DetentionFacilityAppenderTest {
 
     @Mock
     private Callback<BailCase> callback;
@@ -44,11 +44,11 @@ class DetentionFacilityNameAppenderTest {
     @Mock
     private CaseDetails<BailCase> caseDetails;
 
-    private DetentionFacilityNameAppender detentionFacilityNameAppender;
+    private DetentionFacilityAppender detentionFacilityAppender;
 
     @BeforeEach
     public void setUp() {
-        detentionFacilityNameAppender = new DetentionFacilityNameAppender();
+        detentionFacilityAppender = new DetentionFacilityAppender();
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
@@ -60,14 +60,14 @@ class DetentionFacilityNameAppenderTest {
         when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.of("Blakenhurst"));
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of(""));
 
-        PreSubmitCallbackResponse<BailCase> response = detentionFacilityNameAppender
+        PreSubmitCallbackResponse<BailCase> response = detentionFacilityAppender
             .handle(ABOUT_TO_SUBMIT, callback);
 
         assertNotNull(response);
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData()).isEqualTo(bailCase);
         verify(bailCase, times(1))
-            .write(DETENTION_FACILITY_NAME, "Blakenhurst");
+            .write(DETENTION_FACILITY, "Blakenhurst");
 
     }
 
@@ -77,14 +77,14 @@ class DetentionFacilityNameAppenderTest {
         when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.of(""));
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Larne House"));
 
-        PreSubmitCallbackResponse<BailCase> response = detentionFacilityNameAppender
+        PreSubmitCallbackResponse<BailCase> response = detentionFacilityAppender
             .handle(ABOUT_TO_SUBMIT, callback);
 
         assertNotNull(response);
         assertThat(response.getData()).isNotEmpty();
         assertThat(response.getData()).isEqualTo(bailCase);
         verify(bailCase, times(1))
-            .write(DETENTION_FACILITY_NAME, "Larne House");
+            .write(DETENTION_FACILITY, "Larne House");
 
     }
 
@@ -95,7 +95,7 @@ class DetentionFacilityNameAppenderTest {
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.empty());
 
         assertThatThrownBy(
-            () -> detentionFacilityNameAppender.handle(ABOUT_TO_SUBMIT, callback))
+            () -> detentionFacilityAppender.handle(ABOUT_TO_SUBMIT, callback))
             .hasMessage("Prison name and IRC name missing")
             .isExactlyInstanceOf(RequiredFieldMissingException.class);
 
@@ -106,7 +106,7 @@ class DetentionFacilityNameAppenderTest {
         for (Event event : Event.values()) {
             when(callback.getEvent()).thenReturn(event);
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
-                boolean canHandle = detentionFacilityNameAppender.canHandle(callbackStage, callback);
+                boolean canHandle = detentionFacilityAppender.canHandle(callbackStage, callback);
                 if (callbackStage == ABOUT_TO_SUBMIT && (callback.getEvent() == Event.START_APPLICATION)) {
                     assertTrue(canHandle);
                 } else {
@@ -119,32 +119,32 @@ class DetentionFacilityNameAppenderTest {
     @Test
     void handler_throws_error_if_cannot_actually_handle() {
         //invalid stage
-        Assertions.assertThatThrownBy(() -> detentionFacilityNameAppender.handle(ABOUT_TO_START, callback)).hasMessage(
+        Assertions.assertThatThrownBy(() -> detentionFacilityAppender.handle(ABOUT_TO_START, callback)).hasMessage(
             "Cannot handle callback").isExactlyInstanceOf(IllegalStateException.class);
 
         //invalid event
         when(callback.getEvent()).thenReturn(Event.END_APPLICATION);
-        Assertions.assertThatThrownBy(() -> detentionFacilityNameAppender.handle(ABOUT_TO_SUBMIT, callback)).hasMessage(
+        Assertions.assertThatThrownBy(() -> detentionFacilityAppender.handle(ABOUT_TO_SUBMIT, callback)).hasMessage(
             "Cannot handle callback").isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void should_not_allow_null_args() {
-        assertThatThrownBy(() -> detentionFacilityNameAppender.canHandle(null, callback))
+        assertThatThrownBy(() -> detentionFacilityAppender.canHandle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> detentionFacilityNameAppender
+        assertThatThrownBy(() -> detentionFacilityAppender
             .canHandle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> detentionFacilityNameAppender
+        assertThatThrownBy(() -> detentionFacilityAppender
             .handle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> detentionFacilityNameAppender
+        assertThatThrownBy(() -> detentionFacilityAppender
             .handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);

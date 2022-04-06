@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DETENTION_FACILITY_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DETENTION_FACILITY;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
 
@@ -15,7 +15,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Component
-public class DetentionFacilityNameAppender implements PreSubmitCallbackHandler<BailCase> {
+public class DetentionFacilityAppender implements PreSubmitCallbackHandler<BailCase> {
 
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
@@ -45,10 +45,10 @@ public class DetentionFacilityNameAppender implements PreSubmitCallbackHandler<B
         String prisonValue = bailCase.read(PRISON_NAME, String.class).orElse("");
 
         if (!ircValue.isEmpty()) {
-            bailCase.write(DETENTION_FACILITY_NAME, ircValue);
+            bailCase.write(DETENTION_FACILITY, ircValue);
 
         } else if (!prisonValue.isEmpty()) {
-            bailCase.write(DETENTION_FACILITY_NAME, prisonValue);
+            bailCase.write(DETENTION_FACILITY, prisonValue);
 
         } else {
             throw new RequiredFieldMissingException("Prison name and IRC name missing");
