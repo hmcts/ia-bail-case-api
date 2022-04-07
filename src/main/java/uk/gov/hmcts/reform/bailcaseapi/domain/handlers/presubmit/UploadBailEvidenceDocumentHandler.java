@@ -62,27 +62,28 @@ public class UploadBailEvidenceDocumentHandler implements PreSubmitCallbackHandl
 
         Optional<List<IdValue<DocumentWithDescription>>> maybeBailEvidence = bailCase.read(BAIL_EVIDENCE);
 
-        List<DocumentWithMetadata> bailEvidence =
-            maybeBailEvidence
-                .orElseThrow(() -> new IllegalStateException("bailEvidence is not present"))
-                .stream()
-                .map(IdValue::getValue)
-                .map(document -> documentReceiver.tryReceive(document, DocumentTag.BAIL_EVIDENCE))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        if (maybeBailEvidence.isPresent()) {
+            List<DocumentWithMetadata> bailEvidence =
+                maybeBailEvidence
+                    .orElseThrow(() -> new IllegalStateException("bailEvidence is not present"))
+                    .stream()
+                    .map(IdValue::getValue)
+                    .map(document -> documentReceiver.tryReceive(document, DocumentTag.BAIL_EVIDENCE))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
 
-        Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingGroundsForBailDocuments =
-            bailCase.read(BAIL_EVIDENCE_WITH_METADATA);
+            Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingGroundsForBailDocuments =
+                bailCase.read(BAIL_EVIDENCE_WITH_METADATA);
 
-        final List<IdValue<DocumentWithMetadata>> existingExistingGroundsForBailDocuments =
-            maybeExistingGroundsForBailDocuments.orElse(Collections.emptyList());
+            final List<IdValue<DocumentWithMetadata>> existingExistingGroundsForBailDocuments =
+                maybeExistingGroundsForBailDocuments.orElse(Collections.emptyList());
 
-        List<IdValue<DocumentWithMetadata>> allGroundsForBailDocuments =
-            documentsAppender.append(existingExistingGroundsForBailDocuments, bailEvidence);
+            List<IdValue<DocumentWithMetadata>> allGroundsForBailDocuments =
+                documentsAppender.append(existingExistingGroundsForBailDocuments, bailEvidence);
 
-        bailCase.write(BAIL_EVIDENCE_WITH_METADATA, allGroundsForBailDocuments);
-
+            bailCase.write(BAIL_EVIDENCE_WITH_METADATA, allGroundsForBailDocuments);
+        }
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 }
