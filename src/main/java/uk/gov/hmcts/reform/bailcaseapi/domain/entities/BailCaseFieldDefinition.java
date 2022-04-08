@@ -240,6 +240,10 @@ public enum BailCaseFieldDefinition {
         "hasLegalRep", new TypeReference<YesOrNo>(){}),
     APPLICATION_SUBMISSION_DOCUMENT(
         "applicationSubmissionDocument", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    HEARING_CENTRE(
+        "hearingCentre", new TypeReference<HearingCentre>(){}),
+    DETENTION_FACILITY(
+        "detentionFacility", new TypeReference<String>(){}),
     ;
 
     private final String value;

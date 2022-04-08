@@ -2,8 +2,9 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
@@ -165,14 +166,17 @@ class UploadBailEvidenceDocumentHandlerTest {
     }
 
     @Test
-    void should_throw_when_new_evidence_is_not_present() {
+    void should_not_change_bail_evidence_new_evidence_is_not_present() {
 
         when(bailCase.read(BAIL_EVIDENCE)).thenReturn(Optional.empty());
+        when(callback.getCaseDetails().getCaseData()).thenReturn(bailCase);
 
-        assertThatThrownBy(
-            () -> uploadBailEvidenceDocumentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
-            .hasMessage("bailEvidence is not present")
-            .isExactlyInstanceOf(IllegalStateException.class);
+        assertDoesNotThrow(() -> uploadBailEvidenceDocumentHandler
+            .handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback));
+        PreSubmitCallbackResponse<BailCase> response = uploadBailEvidenceDocumentHandler
+            .handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertEquals(bailCase, response.getData());
     }
 
     @Test
