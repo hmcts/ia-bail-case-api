@@ -20,25 +20,23 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 class BailCaseNotificationApiSenderTest {
 
     private static final String ENDPOINT = "http://endpoint";
-    private static final String ABOUT_TO_SUBMIT_PATH = "/path";
-    private static final String ABOUT_TO_START_PATH = "/path";
+    private static final String CCD_SUBMITTED_PATH = "/path";
 
     @Mock
     private BailCaseCallbackApiDelegator bailCaseCallbackApiDelegator;
     @Mock
     private Callback<BailCase> callback;
 
-    private BailCaseDocumentApiGenerator bailCaseDocumentApiGenerator;
+    private BailCaseNotificationApiSender bailCaseNotificationApiSender;
 
     @BeforeEach
     public void setUp() {
 
-        bailCaseDocumentApiGenerator =
-            new BailCaseDocumentApiGenerator(
+        bailCaseNotificationApiSender =
+            new BailCaseNotificationApiSender(
                 bailCaseCallbackApiDelegator,
                 ENDPOINT,
-                ABOUT_TO_SUBMIT_PATH,
-                ABOUT_TO_START_PATH
+                CCD_SUBMITTED_PATH
             );
     }
 
@@ -47,29 +45,29 @@ class BailCaseNotificationApiSenderTest {
 
         final BailCase notifiedBailCase = mock(BailCase.class);
 
-        when(bailCaseCallbackApiDelegator.delegate(callback, ENDPOINT + ABOUT_TO_SUBMIT_PATH))
+        when(bailCaseCallbackApiDelegator.delegate(callback, ENDPOINT + CCD_SUBMITTED_PATH))
             .thenReturn(notifiedBailCase);
 
-        final BailCase actualBailCase = bailCaseDocumentApiGenerator.generate(callback);
+        final BailCase bailCaseResponse = bailCaseNotificationApiSender.send(callback);
 
         verify(bailCaseCallbackApiDelegator, times(1))
-            .delegate(callback, ENDPOINT + ABOUT_TO_SUBMIT_PATH);
+            .delegate(callback, ENDPOINT + CCD_SUBMITTED_PATH);
 
-        assertEquals(notifiedBailCase, actualBailCase);
+        assertEquals(notifiedBailCase, bailCaseResponse);
     }
 
     @Test
-    public void should_delegate_about_to_start_callback_to_downstream_api() {
+    void should_delegate_about_to_start_callback_to_downstream_api() {
 
         final BailCase notifiedBailCase = mock(BailCase.class);
 
-        when(bailCaseCallbackApiDelegator.delegate(callback, ENDPOINT + ABOUT_TO_START_PATH))
+        when(bailCaseCallbackApiDelegator.delegate(callback, ENDPOINT + CCD_SUBMITTED_PATH))
             .thenReturn(notifiedBailCase);
 
-        final BailCase actualBailCase = bailCaseDocumentApiGenerator.aboutToStart(callback);
+        final BailCase actualBailCase = bailCaseNotificationApiSender.send(callback);
 
         verify(bailCaseCallbackApiDelegator, times(1))
-            .delegate(callback, ENDPOINT + ABOUT_TO_START_PATH);
+            .delegate(callback, ENDPOINT + CCD_SUBMITTED_PATH);
 
         assertEquals(notifiedBailCase, actualBailCase);
     }
@@ -77,7 +75,7 @@ class BailCaseNotificationApiSenderTest {
     @Test
     void should_not_allow_null_arguments() {
 
-        assertThatThrownBy(() -> bailCaseDocumentApiGenerator.generate(null))
+        assertThatThrownBy(() -> bailCaseNotificationApiSender.send(null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
     }
