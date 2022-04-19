@@ -224,6 +224,8 @@ public enum BailCaseFieldDefinition {
         "hearingCentre", new TypeReference<HearingCentre>(){}),
     DETENTION_FACILITY(
         "detentionFacility", new TypeReference<String>(){}),
+    APPLICATION_SUBMISSION_DOCUMENT(
+        "applicationSubmissionDocument", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     BAIL_SUMMARY(
         "uploadBailSummaryDocs", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
     BAIL_SUMMARY_WITH_METADATA(
