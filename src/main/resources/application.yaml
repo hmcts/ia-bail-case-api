@@ -19,6 +19,12 @@ management:
     idam:
       uri: ${IDAM_URL:http://127.0.0.1:4501}/health
       response: '"status":"UP"'
+    documentsApi:
+       uri: ${IA_CASE_DOCUMENTS_API_URL:http://127.0.0.1:8092}/health
+       response: '"status":"UP"'
+    serviceAuth:
+      uri: ${S2S_URL:http://127.0.0.1:4502}/health
+      response: '"status":"UP"'
 
 feign:
   hystrix:
@@ -96,7 +102,10 @@ idam:
 azure:
   application-insights:
     instrumentation-key: ${rpe.AppInsightsInstrumentationKey:00000000-0000-0000-0000-000000000000}
-
+documentsApi:
+  endpoint: ${IA_CASE_DOCUMENTS_API_URL:http://127.0.0.1:8092}
+  aboutToSubmitPath: "/bail/ccdAboutToSubmit"
+  aboutToStartPath: "/bail/ccdAboutToStart"
 
 ### dependency configuration
 idam.s2s-auth.totp_secret: ${IA_S2S_SECRET:AAAAAAAAAAAAAAAC}
