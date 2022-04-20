@@ -11,6 +11,7 @@ public class EventTest {
         assertEquals("startApplication", Event.START_APPLICATION.toString());
         assertEquals("endApplication", Event.END_APPLICATION.toString());
         assertEquals("submitApplication", Event.SUBMIT_APPLICATION.toString());
+        assertEquals("uploadBailSummary", Event.UPLOAD_BAIL_SUMMARY.toString());
         assertEquals("recordTheDecision", Event.RECORD_THE_DECISION.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
     }
