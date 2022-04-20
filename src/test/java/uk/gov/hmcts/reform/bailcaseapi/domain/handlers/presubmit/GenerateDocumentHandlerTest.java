@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -43,6 +44,7 @@ public class GenerateDocumentHandlerTest {
         generateDocumentHandler = new GenerateDocumentHandler(
             documentGenerator
         );
+        ReflectionTestUtils.setField(generateDocumentHandler, "isDocumentGenerationEnambled", true);
     }
 
     @Test
