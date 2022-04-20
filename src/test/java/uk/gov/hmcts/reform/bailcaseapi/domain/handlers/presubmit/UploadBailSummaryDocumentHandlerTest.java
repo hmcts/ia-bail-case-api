@@ -10,8 +10,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_SUMMARY;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_SUMMARY_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_DOCS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_METADATA;
 
 import java.util.Arrays;
 import java.util.List;
@@ -98,8 +98,8 @@ public class UploadBailSummaryDocumentHandlerTest {
                 bailSummary2WithMetadata
             );
 
-        when(bailCase.read(BAIL_SUMMARY_WITH_METADATA)).thenReturn(Optional.of(existingBailSummaryDocuments));
-        when(bailCase.read(BAIL_SUMMARY)).thenReturn(Optional.of(summaryWithDescriptionList));
+        when(bailCase.read(UPLOAD_BAIL_SUMMARY_METADATA)).thenReturn(Optional.of(existingBailSummaryDocuments));
+        when(bailCase.read(UPLOAD_BAIL_SUMMARY_DOCS)).thenReturn(Optional.of(summaryWithDescriptionList));
 
         when(documentReceiver.tryReceive(bailSummary1, DocumentTag.BAIL_SUMMARY))
             .thenReturn(Optional.of(bailSummary1WithMetadata));
@@ -116,14 +116,14 @@ public class UploadBailSummaryDocumentHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(bailCase, callbackResponse.getData());
 
-        verify(bailCase, times(1)).read(BAIL_SUMMARY);
+        verify(bailCase, times(1)).read(UPLOAD_BAIL_SUMMARY_DOCS);
 
         verify(documentReceiver, times(1)).tryReceive(bailSummary1, DocumentTag.BAIL_SUMMARY);
         verify(documentReceiver, times(1)).tryReceive(bailSummary2, DocumentTag.BAIL_SUMMARY);
 
         verify(documentsAppender, times(1)).append(existingBailSummaryDocuments, summaryList);
 
-        verify(bailCase, times(1)).write(BAIL_SUMMARY_WITH_METADATA, allBailSummaryDocuments);
+        verify(bailCase, times(1)).write(UPLOAD_BAIL_SUMMARY_METADATA, allBailSummaryDocuments);
     }
 
     @Test
@@ -133,8 +133,8 @@ public class UploadBailSummaryDocumentHandlerTest {
             singletonList(new IdValue<>("1", bailSummary1));
         List<DocumentWithMetadata> summaryList = singletonList(bailSummary1WithMetadata);
 
-        when(bailCase.read(BAIL_SUMMARY_WITH_METADATA)).thenReturn(Optional.empty());
-        when(bailCase.read(BAIL_SUMMARY)).thenReturn(Optional.of(summaryWithDescriptionList));
+        when(bailCase.read(UPLOAD_BAIL_SUMMARY_METADATA)).thenReturn(Optional.empty());
+        when(bailCase.read(UPLOAD_BAIL_SUMMARY_DOCS)).thenReturn(Optional.of(summaryWithDescriptionList));
 
         when(documentReceiver.tryReceive(bailSummary1, DocumentTag.BAIL_SUMMARY))
             .thenReturn(Optional.of(bailSummary1WithMetadata));
@@ -148,7 +148,7 @@ public class UploadBailSummaryDocumentHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(bailCase, callbackResponse.getData());
 
-        verify(bailCase, times(1)).read(BAIL_SUMMARY);
+        verify(bailCase, times(1)).read(UPLOAD_BAIL_SUMMARY_DOCS);
 
         verify(documentReceiver, times(1)).tryReceive(bailSummary1, DocumentTag.BAIL_SUMMARY);
 
@@ -162,13 +162,13 @@ public class UploadBailSummaryDocumentHandlerTest {
 
         assertEquals(0, actualExistingSummaryDocuments.size());
 
-        verify(bailCase, times(1)).write(BAIL_SUMMARY_WITH_METADATA, allBailSummaryDocuments);
+        verify(bailCase, times(1)).write(UPLOAD_BAIL_SUMMARY_METADATA, allBailSummaryDocuments);
     }
 
     @Test
     void should_not_change_bail_summary_new_summary_is_not_present() {
 
-        when(bailCase.read(BAIL_SUMMARY)).thenReturn(Optional.empty());
+        when(bailCase.read(UPLOAD_BAIL_SUMMARY_DOCS)).thenReturn(Optional.empty());
         when(callback.getCaseDetails().getCaseData()).thenReturn(bailCase);
 
         assertDoesNotThrow(() -> uploadBailSummaryDocumentHandler

@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_SUMMARY;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_SUMMARY_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_DOCS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_METADATA;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +60,7 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
                 .getCaseDetails()
                 .getCaseData();
 
-        Optional<List<IdValue<DocumentWithDescription>>> maybeBailSummary = bailCase.read(BAIL_SUMMARY);
+        Optional<List<IdValue<DocumentWithDescription>>> maybeBailSummary = bailCase.read(UPLOAD_BAIL_SUMMARY_DOCS);
 
         if (maybeBailSummary.isPresent()) {
             List<DocumentWithMetadata> bailSummary =
@@ -74,7 +74,7 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
                     .collect(Collectors.toList());
 
             Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingBailSummaryDocuments =
-                bailCase.read(BAIL_SUMMARY_WITH_METADATA);
+                bailCase.read(UPLOAD_BAIL_SUMMARY_METADATA);
 
             final List<IdValue<DocumentWithMetadata>> existingExistingBailSummaryDocuments =
                 maybeExistingBailSummaryDocuments.orElse(Collections.emptyList());
@@ -82,7 +82,7 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
             List<IdValue<DocumentWithMetadata>> allBailSummaryDocuments =
                 documentsAppender.append(existingExistingBailSummaryDocuments, bailSummary);
 
-            bailCase.write(BAIL_SUMMARY_WITH_METADATA, allBailSummaryDocuments);
+            bailCase.write(UPLOAD_BAIL_SUMMARY_METADATA, allBailSummaryDocuments);
         }
         return new PreSubmitCallbackResponse<>(bailCase);
     }
