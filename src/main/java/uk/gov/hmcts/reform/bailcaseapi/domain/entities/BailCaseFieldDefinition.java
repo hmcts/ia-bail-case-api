@@ -253,7 +253,10 @@ public enum BailCaseFieldDefinition {
         "detentionFacility", new TypeReference<String>(){}),
     APPLICATION_SUBMISSION_DOCUMENT(
         "applicationSubmissionDocument", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
-    ;
+    UPLOAD_BAIL_SUMMARY_DOCS(
+        "uploadBailSummaryDocs", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
+    UPLOAD_BAIL_SUMMARY_METADATA(
+        "uploadBailSummaryMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){});
 
     private final String value;
     private final TypeReference typeReference;
