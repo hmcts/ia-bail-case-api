@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -25,7 +26,7 @@ public class SwaggerConfiguration {
             PathSelectors.any()).build().securitySchemes(apiKeyList());
     }
 
-    private List<ApiKey> apiKeyList() {
+    private List<SecurityScheme> apiKeyList() {
         return newArrayList(
             new ApiKey("Authorization", "Authorization", "header"),
             new ApiKey("ServiceAuthorization", "ServiceAuthorization", "header")
