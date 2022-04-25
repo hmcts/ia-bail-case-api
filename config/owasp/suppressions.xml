@@ -40,5 +40,6 @@
   <suppress until="2030-01-01">
     <cve>CVE-2013-7315</cve>
     <cve>CVE-2016-1000027</cve>
+    <cve>CVE-2022-22968</cve>
   </suppress>
 </suppressions>
