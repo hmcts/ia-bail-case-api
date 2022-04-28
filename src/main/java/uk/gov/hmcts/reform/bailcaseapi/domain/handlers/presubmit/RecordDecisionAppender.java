@@ -60,7 +60,7 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
             + " after [ ] days unless the Tribunal is notified prior to that date that accommodation has been"
             + " approved and bail commenced in which case the matter will be dealt with administratively."
             + "\n\n"
-            + "In the event that the applicant has not been released then at least  2 clear days before the bail "
+            + "In the event that the applicant has not been released then at least 2 clear days before the bail"
             + " review hearing, the Secretary of State is to update the Tribunal in writing as to the progress made"
             + " in relation to sourcing and/or approving accommodation for the applicant.";
         String conditionReporting = "The Applicant must report to an Immigration Officer at [ADDRESS, TIME, DATE"
