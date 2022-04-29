@@ -19,7 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_TRANSFER_DIRECTIONS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_ACTIVITIES;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_APPEARANCE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_ELECTRONIC_MONITORING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_REPORTING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_RESIDENCE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 
 @ExtendWith(MockitoExtension.class)
