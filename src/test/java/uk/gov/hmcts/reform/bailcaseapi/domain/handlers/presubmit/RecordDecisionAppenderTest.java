@@ -19,11 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_APPEARANCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_ACTIVITIES;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_RESIDENCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_REPORTING;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_ELECTRONIC_MONITORING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,6 +99,11 @@ class RecordDecisionAppenderTest {
             + " will commence and the applicant is to be released subject to the other conditions of this grant"
             + " of bail. In such an event the Secretary of State will make arrangements for the fitting of the"
             + " electronic monitoring device post release.";
+        String bailTransferDirections =
+            "The Tribunal directs that future management including any application for variation shall be exercised by"
+            + " the Secretary of State pursuant by paragraph 6(3) of Schedule 10 to the Immigration Act 2016.\n"
+            + "Please note: Where the Tribunal directs that bail management shall be transferred to the Secretary"
+            + " of State (including any hearing to determine liability for payment of a financial condition).";
 
         verify(bailCase, times(1)).write(CONDITION_APPEARANCE, conditionAppearance);
         verify(bailCase, times(1)).write(CONDITION_ACTIVITIES, conditionActivities);
@@ -110,6 +111,8 @@ class RecordDecisionAppenderTest {
         verify(bailCase, times(1)).write(CONDITION_REPORTING, conditionReporting);
         verify(bailCase, times(1)).write(CONDITION_ELECTRONIC_MONITORING,
                                          conditionElectronicMonitoring);
+        verify(bailCase, times(1)).write(BAIL_TRANSFER_DIRECTIONS, bailTransferDirections);
+
     }
 
     @Test
