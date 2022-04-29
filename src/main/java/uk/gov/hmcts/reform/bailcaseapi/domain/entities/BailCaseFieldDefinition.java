@@ -256,7 +256,9 @@ public enum BailCaseFieldDefinition {
     UPLOAD_BAIL_SUMMARY_DOCS(
         "uploadBailSummaryDocs", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
     UPLOAD_BAIL_SUMMARY_METADATA(
-        "uploadBailSummaryMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){});
+        "uploadBailSummaryMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    BAIL_TRANSFER_DIRECTIONS(
+        "bailTransferDirections", new TypeReference<String>(){});
 
     private final String value;
     private final TypeReference typeReference;
