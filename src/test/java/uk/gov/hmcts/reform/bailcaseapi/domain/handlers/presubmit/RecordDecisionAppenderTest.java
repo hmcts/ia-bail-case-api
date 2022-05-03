@@ -77,7 +77,7 @@ class RecordDecisionAppenderTest {
             + "\n\n"
             + "Where an Immigration Judge makes a conditional grant with deferred commencement:"
             + "\n\n"
-            + "The applicant will reside at an address approved by probation/offender manager."
+            + "The applicant will reside at an address approved by the probation/offender manager."
             + "\n\n"
             + "By virtue of para 3(8) of schedule 10 of The Immigration Act 2016 this grant of bail will not commence"
             + " until such address has been approved by probation."
@@ -106,11 +106,13 @@ class RecordDecisionAppenderTest {
             + " will commence and the applicant is to be released subject to the other conditions of this grant"
             + " of bail. In such an event the Secretary of State will make arrangements for the fitting of the"
             + " electronic monitoring device post release.";
-        String bailTransferDirections =
-            "The Tribunal directs that future management including any application for variation shall be exercised by"
-            + " the Secretary of State pursuant by paragraph 6(3) of Schedule 10 to the Immigration Act 2016.\n"
+        String bailTransferDirections = "The Tribunal directs that on commencement of bail future management including"
+            + " any application for variation shall be exercised by the Secretary of State pursuant by paragraph 6(3)"
+            + " of Schedule 10 to the Immigration Act 2016."
+            + "\n\n"
             + "Please note: Where the Tribunal directs that bail management shall be transferred to the Secretary"
-            + " of State (including any hearing to determine liability for payment of a financial condition).";
+            + " of State, all future proceedings will be conducted by the Secretary of State (including any hearing to"
+            + " determine liability for payment of a financial condition).";
 
         verify(bailCase, times(1)).write(CONDITION_APPEARANCE, conditionAppearance);
         verify(bailCase, times(1)).write(CONDITION_ACTIVITIES, conditionActivities);
