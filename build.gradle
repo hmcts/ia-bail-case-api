@@ -40,7 +40,6 @@ def versions = [
   springBoot         : '2.6.7',
   springDoc          : '1.6.8',
   springHystrix      : '2.2.10.RELEASE',
-//  springfoxSwagger   : '3.0.0',
   pact_version       : '4.1.7'
 
 ]
@@ -292,9 +291,6 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: versions.springBoot
 
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-
-//  compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
-//  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
 
   compile group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
 
