@@ -77,7 +77,7 @@ class RecordDecisionAppenderTest {
             + "\n\n"
             + "Where an Immigration Judge makes a conditional grant with deferred commencement:"
             + "\n\n"
-            + "The applicant will reside at an address approved by probation/offender manager."
+            + "The applicant will reside at an address approved by the probation/offender manager."
             + "\n\n"
             + "By virtue of para 3(8) of schedule 10 of The Immigration Act 2016 this grant of bail will not commence"
             + " until such address has been approved by probation."
