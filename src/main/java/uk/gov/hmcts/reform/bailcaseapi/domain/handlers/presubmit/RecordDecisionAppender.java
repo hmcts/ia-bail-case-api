@@ -89,6 +89,9 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
             + "Please note: Where the Tribunal directs that bail management shall be transferred to the Secretary"
             + " of State, all future proceedings will be conducted by the Secretary of State (including any hearing to"
             + " determine liability for payment of a financial condition).";
+        String secretaryOfStateRefusalReasons = "The Tribunal was minded to grant bail for the reasons given. The Home"
+            + " Office have refused to consent to the grant of bail so in accordance with paragraph 3(4) of Schedule 10"
+            + " Immigration Act 2016 bail is refused.";
 
         bailCase.write(BailCaseFieldDefinition.CONDITION_APPEARANCE, conditionAppearance);
         bailCase.write(BailCaseFieldDefinition.CONDITION_ACTIVITIES, conditionActivities);
@@ -96,6 +99,7 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
         bailCase.write(BailCaseFieldDefinition.CONDITION_REPORTING, conditionReporting);
         bailCase.write(BailCaseFieldDefinition.CONDITION_ELECTRONIC_MONITORING, conditionElectronicMonitoring);
         bailCase.write(BailCaseFieldDefinition.BAIL_TRANSFER_DIRECTIONS, bailTransferDirections);
+        bailCase.write(BailCaseFieldDefinition.SECRETARY_OF_STATE_REFUSAL_REASONS, secretaryOfStateRefusalReasons);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
