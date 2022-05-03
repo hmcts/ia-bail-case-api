@@ -41,7 +41,7 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
             + "\n\n"
             + "-OR-"
             + "\n\n"
-            + "The Applicant must appear before an Immigration Officer on a date and time and by such a means as may be"
+            + "The Applicant must appear before an Immigration Officer on a date and time and by such means as may be"
             + " notified to him by the Home Office in writing.";
         String conditionActivities = "The Applicant shall not undertake the activities listed below while on"
             + " immigration bail without further order:"
@@ -51,7 +51,9 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
             + "The Applicant is not allowed to study";
         String conditionResidence = "The applicant must reside at ADDRESS."
             + "\n\n"
-            + " Where an Immigration Judge makes a conditional grant with deferred commencement:"
+            + "Where an Immigration Judge makes a conditional grant with deferred commencement:"
+            + "\n\n"
+            + "The applicant will reside at an address approved by probation/offender manager."
             + "\n\n"
             + "By virtue of para 3(8) of schedule 10 of The Immigration Act 2016 this grant of bail will not commence"
             + " until such address has been approved by probation."
