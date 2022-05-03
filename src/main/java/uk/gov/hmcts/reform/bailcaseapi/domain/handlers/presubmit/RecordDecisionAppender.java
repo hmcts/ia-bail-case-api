@@ -80,12 +80,18 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
             + " will commence and the applicant is to be released subject to the other conditions of this grant"
             + " of bail. In such an event the Secretary of State will make arrangements for the fitting of the"
             + " electronic monitoring device post release.";
+        String bailTransferDirections =
+            "The Tribunal directs that future management including any application for variation shall be exercised by"
+            + " the Secretary of State pursuant by paragraph 6(3) of Schedule 10 to the Immigration Act 2016.\n"
+            + "Please note: Where the Tribunal directs that bail management shall be transferred to the Secretary"
+            + " of State (including any hearing to determine liability for payment of a financial condition).";
 
         bailCase.write(BailCaseFieldDefinition.CONDITION_APPEARANCE, conditionAppearance);
         bailCase.write(BailCaseFieldDefinition.CONDITION_ACTIVITIES, conditionActivities);
         bailCase.write(BailCaseFieldDefinition.CONDITION_RESIDENCE, conditionResidence);
         bailCase.write(BailCaseFieldDefinition.CONDITION_REPORTING, conditionReporting);
         bailCase.write(BailCaseFieldDefinition.CONDITION_ELECTRONIC_MONITORING, conditionElectronicMonitoring);
+        bailCase.write(BailCaseFieldDefinition.BAIL_TRANSFER_DIRECTIONS, bailTransferDirections);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

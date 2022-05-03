@@ -266,7 +266,9 @@ public enum BailCaseFieldDefinition {
     CONDITION_REPORTING(
         "conditionsForBailReporting", new TypeReference<String>(){}),
     CONDITION_ELECTRONIC_MONITORING(
-        "conditionsForBailElectronicMonitoring",  new TypeReference<String>(){});
+        "conditionsForBailElectronicMonitoring",  new TypeReference<String>(){}),
+    BAIL_TRANSFER_DIRECTIONS(
+        "bailTransferDirections", new TypeReference<String>(){});
 
     private final String value;
     private final TypeReference typeReference;
