@@ -76,7 +76,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
     }
 
     @Test
-    void should_add_new_document_to_the_case_when_no_documents_exist() {
+    void should_add_new_document_to_the_case() {
 
         when(bailCase.read(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class)).thenReturn(
             Optional.of(signedDecisionNotice1));
