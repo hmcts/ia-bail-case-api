@@ -5,6 +5,7 @@ import java.util.List;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
@@ -270,7 +271,11 @@ public enum BailCaseFieldDefinition {
     BAIL_TRANSFER_DIRECTIONS(
         "bailTransferDirections", new TypeReference<String>(){}),
     SECRETARY_OF_STATE_REFUSAL_REASONS(
-        "secretaryOfStateRefusalReasons", new TypeReference<String>(){});
+        "secretaryOfStateRefusalReasons", new TypeReference<String>(){}),
+    UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT(
+        "uploadSignedDecisionNoticeDocument", new TypeReference<Document>(){}),
+    SIGNED_DECISION_NOTICE_METADATA(
+        "signedDecisionNoticeMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){});
 
     private final String value;
     private final TypeReference typeReference;

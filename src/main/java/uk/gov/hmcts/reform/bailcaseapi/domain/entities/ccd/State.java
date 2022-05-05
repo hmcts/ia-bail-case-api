@@ -11,6 +11,7 @@ public enum State {
     APPLICATION_SUBMITTED("applicationSubmitted"),
     BAIL_SUMMARY_UPLOADED("bailSummaryUploaded"),
     RECORD_THE_DECISION("recordTheDecision"),
+    SIGNED_DECISION_NOTICE_UPLOADED("signedDecisionNoticeUploaded"),
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
 

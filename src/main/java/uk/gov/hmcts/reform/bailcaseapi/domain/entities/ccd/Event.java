@@ -10,6 +10,7 @@ public enum Event {
     END_APPLICATION("endApplication"),
     UPLOAD_BAIL_SUMMARY("uploadBailSummary"),
     RECORD_THE_DECISION("recordTheDecision"),
+    UPLOAD_SIGNED_DECISION_NOTICE("uploadSignedDecisionNotice"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
