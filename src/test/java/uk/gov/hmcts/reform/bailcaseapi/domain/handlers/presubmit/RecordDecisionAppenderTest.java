@@ -25,6 +25,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_ELECTRONIC_MONITORING;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_REPORTING;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CONDITION_RESIDENCE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SECRETARY_OF_STATE_REFUSAL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 
 @ExtendWith(MockitoExtension.class)
@@ -113,6 +114,9 @@ class RecordDecisionAppenderTest {
             + "Please note: Where the Tribunal directs that bail management shall be transferred to the Secretary"
             + " of State, all future proceedings will be conducted by the Secretary of State (including any hearing to"
             + " determine liability for payment of a financial condition).";
+        String secretaryOfStateRefusalReasons = "The Tribunal was minded to grant bail for the reasons given. The Home"
+            + " Office have refused to consent to the grant of bail so in accordance with paragraph 3(4) of Schedule 10"
+            + " Immigration Act 2016 bail is refused.";
 
         verify(bailCase, times(1)).write(CONDITION_APPEARANCE, conditionAppearance);
         verify(bailCase, times(1)).write(CONDITION_ACTIVITIES, conditionActivities);
@@ -121,7 +125,8 @@ class RecordDecisionAppenderTest {
         verify(bailCase, times(1)).write(CONDITION_ELECTRONIC_MONITORING,
                                          conditionElectronicMonitoring);
         verify(bailCase, times(1)).write(BAIL_TRANSFER_DIRECTIONS, bailTransferDirections);
-
+        verify(bailCase, times(1)).write(SECRETARY_OF_STATE_REFUSAL_REASONS,
+                                         secretaryOfStateRefusalReasons);
     }
 
     @Test
