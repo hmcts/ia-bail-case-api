@@ -275,7 +275,16 @@ public enum BailCaseFieldDefinition {
     UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT(
         "uploadSignedDecisionNoticeDocument", new TypeReference<Document>(){}),
     SIGNED_DECISION_NOTICE_METADATA(
-        "signedDecisionNoticeMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){});
+        "signedDecisionNoticeMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    ADD_CASE_NOTE_SUBJECT(
+        "addCaseNoteSubject", new TypeReference<String>(){}),
+    ADD_CASE_NOTE_DESCRIPTION(
+        "addCaseNoteDescription", new TypeReference<String>(){}),
+    ADD_CASE_NOTE_DOCUMENT(
+        "addCaseNoteDocument", new TypeReference<Document>(){}),
+    CASE_NOTES(
+        "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){})
+    ;
 
     private final String value;
     private final TypeReference typeReference;
