@@ -27,8 +27,11 @@ public class BailDecisionRecordedConfirmation implements PostSubmitCallbackHandl
         postSubmitResponse.setConfirmationBody(
             "### Do this next\n\n"
             + "This application has been decided. Download the decision notice from the "
-            + "documents tab and distribute to anyone who needs to sign it. Upload the "
-            + "signed decision notice when it is ready."
+            + "documents tab and distribute to anyone who needs to sign it. [Upload the "
+            + "signed decision notice](/cases/case-details/"
+            + callback.getCaseDetails().getId()
+            + "/trigger/uploadSignedDecisionNotice/uploadSignedDecisionNoticesignedDecisionNoticeUpload) "
+            + "when it is ready."
         );
 
         postSubmitResponse.setConfirmationHeader("# You have recorded the decision");
