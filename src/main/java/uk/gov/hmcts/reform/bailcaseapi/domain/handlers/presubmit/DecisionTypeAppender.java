@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.DecisionType;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -17,6 +18,12 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Component
 public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> {
+
+    private final DateProvider dateProvider;
+
+    public DecisionTypeAppender(DateProvider dateProvider) {
+        this.dateProvider = dateProvider;
+    }
 
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
@@ -48,6 +55,8 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
         YesOrNo ssConsentDecision = bailCase.read(SS_CONSENT_DECISION, YesOrNo.class).orElse(NO);
         YesOrNo secretaryOfStateConsentYesOrNo = bailCase.read(SECRETARY_OF_STATE_YES_OR_NO, YesOrNo.class).orElse(NO);
 
+        String decisionDate = dateProvider.now().toString();
+
         if (decisionGrantedOrRefused.equals("refused") || recordTheDecisionList.equals("refused") || (secretaryOfStateConsentYesOrNo.equals(YES) && ssConsentDecision == NO)) {
             bailCase.write(RECORD_DECISION_TYPE, DecisionType.REFUSED);
 
@@ -60,6 +69,8 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
         } else {
             throw new RuntimeException("Cannot assign a decision type");
         }
+
+        bailCase.write(DECISION_DETAILS_DATE, decisionDate);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

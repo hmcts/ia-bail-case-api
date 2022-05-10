@@ -288,6 +288,8 @@ public enum BailCaseFieldDefinition {
         "recordDecisionType", new TypeReference<String>(){}),
     SECRETARY_OF_STATE_YES_OR_NO(
         "secretaryOfStateConsentYesOrNo", new TypeReference<YesOrNo>(){}),
+    DECISION_DETAILS_DATE(
+        "decisionDetailsDate", new TypeReference<String>(){}),
     ;
 
     private final String value;
