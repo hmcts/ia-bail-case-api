@@ -286,6 +286,8 @@ public enum BailCaseFieldDefinition {
         "ssConsentDecision", new TypeReference<YesOrNo>(){}),
     RECORD_DECISION_TYPE(
         "recordDecisionType", new TypeReference<String>(){}),
+    SECRETARY_OF_STATE_YES_OR_NO(
+        "secretaryOfStateConsentYesOrNo", new TypeReference<YesOrNo>(){}),
     ;
 
     private final String value;

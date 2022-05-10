@@ -1,16 +1,13 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DECISION_GRANTED_OR_REFUSED;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RELEASE_STATUS_YES_OR_NO;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SS_CONSENT_DECISION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.DecisionType;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -49,15 +46,16 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
         String recordTheDecisionList = bailCase.read(RECORD_THE_DECISION_LIST, String.class).orElse("");
         YesOrNo releaseStatusYesOrNo = bailCase.read(RELEASE_STATUS_YES_OR_NO, YesOrNo.class).orElse(NO);
         YesOrNo ssConsentDecision = bailCase.read(SS_CONSENT_DECISION, YesOrNo.class).orElse(NO);
+        YesOrNo secretaryOfStateConsentYesOrNo = bailCase.read(SECRETARY_OF_STATE_YES_OR_NO, YesOrNo.class).orElse(NO);
 
-        if (decisionGrantedOrRefused.equals("refused") || (recordTheDecisionList.equals("refused")) || (ssConsentDecision == NO)) {
-            bailCase.write(RECORD_DECISION_TYPE, "Refused");
+        if (decisionGrantedOrRefused.equals("refused") || recordTheDecisionList.equals("refused") || (secretaryOfStateConsentYesOrNo.equals(YES) && ssConsentDecision == NO)) {
+            bailCase.write(RECORD_DECISION_TYPE, DecisionType.REFUSED);
 
         } else if ((decisionGrantedOrRefused.equals("granted") && releaseStatusYesOrNo == YES) || (ssConsentDecision == YES && releaseStatusYesOrNo == YES)) {
-            bailCase.write(RECORD_DECISION_TYPE, "Granted");
+            bailCase.write(RECORD_DECISION_TYPE, DecisionType.GRANTED);
 
         } else if ((decisionGrantedOrRefused.equals("granted") && releaseStatusYesOrNo == NO) || (ssConsentDecision == YES && releaseStatusYesOrNo == NO)) {
-            bailCase.write(RECORD_DECISION_TYPE, "Conditional grant");
+            bailCase.write(RECORD_DECISION_TYPE, DecisionType.CONDITIONAL_GRANT);
 
         } else {
             throw new RuntimeException("Cannot assign a decision type");
