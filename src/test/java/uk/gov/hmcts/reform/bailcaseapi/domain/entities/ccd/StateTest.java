@@ -22,7 +22,7 @@ public class StateTest {
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(11, State.values().length);
+        assertEquals(10, State.values().length);
     }
 
 }
