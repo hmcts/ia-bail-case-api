@@ -11,7 +11,7 @@ public enum Event {
     UPLOAD_BAIL_SUMMARY("uploadBailSummary"),
     RECORD_THE_DECISION("recordTheDecision"),
     UPLOAD_SIGNED_DECISION_NOTICE("uploadSignedDecisionNotice"),
-
+    ADD_CASE_NOTE("addCaseNote"),
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
 
