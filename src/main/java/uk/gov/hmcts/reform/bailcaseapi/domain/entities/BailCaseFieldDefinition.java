@@ -290,6 +290,14 @@ public enum BailCaseFieldDefinition {
         "secretaryOfStateConsentYesOrNo", new TypeReference<YesOrNo>(){}),
     DECISION_DETAILS_DATE(
         "decisionDetailsDate", new TypeReference<String>(){}),
+    ADD_CASE_NOTE_SUBJECT(
+        "addCaseNoteSubject", new TypeReference<String>(){}),
+    ADD_CASE_NOTE_DESCRIPTION(
+        "addCaseNoteDescription", new TypeReference<String>(){}),
+    ADD_CASE_NOTE_DOCUMENT(
+        "addCaseNoteDocument", new TypeReference<Document>(){}),
+    CASE_NOTES(
+        "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){}),
     ;
 
     private final String value;
