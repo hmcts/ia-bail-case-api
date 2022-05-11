@@ -276,6 +276,20 @@ public enum BailCaseFieldDefinition {
         "uploadSignedDecisionNoticeDocument", new TypeReference<Document>(){}),
     SIGNED_DECISION_NOTICE_METADATA(
         "signedDecisionNoticeMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    DECISION_GRANTED_OR_REFUSED(
+        "decisionGrantedOrRefused", new TypeReference<String>(){}),
+    RECORD_THE_DECISION_LIST(
+        "recordTheDecisionList", new TypeReference<String>(){}),
+    RELEASE_STATUS_YES_OR_NO(
+        "releaseStatusYesOrNo", new TypeReference<YesOrNo>(){}),
+    SS_CONSENT_DECISION(
+        "ssConsentDecision", new TypeReference<YesOrNo>(){}),
+    RECORD_DECISION_TYPE(
+        "recordDecisionType", new TypeReference<String>(){}),
+    SECRETARY_OF_STATE_YES_OR_NO(
+        "secretaryOfStateConsentYesOrNo", new TypeReference<YesOrNo>(){}),
+    DECISION_DETAILS_DATE(
+        "decisionDetailsDate", new TypeReference<String>(){}),
     ADD_CASE_NOTE_SUBJECT(
         "addCaseNoteSubject", new TypeReference<String>(){}),
     ADD_CASE_NOTE_DESCRIPTION(
@@ -283,7 +297,7 @@ public enum BailCaseFieldDefinition {
     ADD_CASE_NOTE_DOCUMENT(
         "addCaseNoteDocument", new TypeReference<Document>(){}),
     CASE_NOTES(
-        "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){})
+        "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){}),
     ;
 
     private final String value;
