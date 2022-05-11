@@ -14,7 +14,6 @@ public class StateTest {
         assertEquals("applicationEnded", State.APPLICATION_ENDED.toString());
         assertEquals("applicationSubmitted", State.APPLICATION_SUBMITTED.toString());
         assertEquals("bailSummaryUploaded", State.BAIL_SUMMARY_UPLOADED.toString());
-        assertEquals("recordTheDecision", State.RECORD_THE_DECISION.toString());
         assertEquals("signedDecisionNoticeUploaded", State.SIGNED_DECISION_NOTICE_UPLOADED.toString());
         assertEquals("decisionDecided", State.DECISION_DECIDED.toString());
         assertEquals("decisionConditionalBail", State.DECISION_CONDITIONAL_BAIL.toString());
