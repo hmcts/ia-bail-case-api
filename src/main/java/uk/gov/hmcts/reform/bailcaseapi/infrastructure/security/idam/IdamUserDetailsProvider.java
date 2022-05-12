@@ -45,7 +45,7 @@ public class IdamUserDetailsProvider implements UserDetailsProvider {
             accessToken, response.getUid(),
             response.getRoles(),
             response.getEmail(),
-            response.getName(),
+            response.getGivenName(),
             response.getFamilyName()
         );
     }
