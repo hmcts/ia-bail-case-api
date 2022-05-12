@@ -296,6 +296,32 @@ public enum BailCaseFieldDefinition {
         "addCaseNoteDocument", new TypeReference<Document>(){}),
     CASE_NOTES(
         "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){}),
+    REASON_FOR_REFUSAL_DETAILS(
+        "reasonForRefusalDetails", new TypeReference<String>(){}),
+    TRIBUNAL_REFUSAL_REASON(
+        "tribunalRefusalReason ", new TypeReference<String>(){}),
+    REASON_JUDGE_IS_MINDED_DETAILS(
+        "reasonsJudgeIsMindedDetails", new TypeReference<String>(){}),
+    JUDGE_DETAILS_NAME(
+        "judgeDetailsName", new TypeReference<String>(){}),
+    CONDITION_OTHER(
+        "conditionsForBailOther", new TypeReference<String>(){}),
+    BAIL_TRANSFER_YES_OR_NO(
+        "bailTransferYesOrNo", new TypeReference<YesOrNo>(){}),
+    JUDGE_HAS_AGREED_TO_SUPPORTER1(
+        "judgeHasAgreedToSupporter1", new TypeReference<YesOrNo>(){}),
+    JUDGE_HAS_AGREED_TO_SUPPORTER2(
+        "judgeHasAgreedToSupporter2", new TypeReference<YesOrNo>(){}),
+    JUDGE_HAS_AGREED_TO_SUPPORTER3(
+        "judgeHasAgreedToSupporter3", new TypeReference<YesOrNo>(){}),
+    JUDGE_HAS_AGREED_TO_SUPPORTER4(
+        "judgeHasAgreedToSupporter4", new TypeReference<YesOrNo>(){}),
+    RECORD_FINANCIAL_CONDITION_YES_OR_NO(
+        "recordFinancialConditionYesOrNo", new TypeReference<YesOrNo>(){}),
+    DECISION_UNSIGNED_DOCUMENT(
+        "decisionUnsignedDocument", new TypeReference<Document>(){}),
+    DECISION_UNSIGNED_DOC_METADATA(
+        "decisionUnsignedDocMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     ;
 
     private final String value;
