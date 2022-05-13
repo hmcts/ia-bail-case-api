@@ -295,8 +295,9 @@ public enum BailCaseFieldDefinition {
     ADD_CASE_NOTE_DOCUMENT(
         "addCaseNoteDocument", new TypeReference<Document>(){}),
     CASE_NOTES(
-        "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){}),
+        "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){})
     ;
+
 
     private final String value;
     private final TypeReference typeReference;
