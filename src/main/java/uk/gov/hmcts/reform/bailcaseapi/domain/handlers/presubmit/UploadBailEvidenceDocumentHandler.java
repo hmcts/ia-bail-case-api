@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_EVIDENCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_EVIDENCE_WITH_METADATA;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +74,7 @@ public class UploadBailEvidenceDocumentHandler implements PreSubmitCallbackHandl
                     .collect(Collectors.toList());
 
             Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingGroundsForBailDocuments =
-                bailCase.read(BAIL_EVIDENCE_WITH_METADATA);
+                bailCase.read(APPLICANT_DOCUMENTS_WITH_METADATA);
 
             final List<IdValue<DocumentWithMetadata>> existingExistingGroundsForBailDocuments =
                 maybeExistingGroundsForBailDocuments.orElse(Collections.emptyList());
@@ -82,7 +82,7 @@ public class UploadBailEvidenceDocumentHandler implements PreSubmitCallbackHandl
             List<IdValue<DocumentWithMetadata>> allGroundsForBailDocuments =
                 documentsAppender.append(existingExistingGroundsForBailDocuments, bailEvidence);
 
-            bailCase.write(BAIL_EVIDENCE_WITH_METADATA, allGroundsForBailDocuments);
+            bailCase.write(APPLICANT_DOCUMENTS_WITH_METADATA, allGroundsForBailDocuments);
         }
         return new PreSubmitCallbackResponse<>(bailCase);
     }

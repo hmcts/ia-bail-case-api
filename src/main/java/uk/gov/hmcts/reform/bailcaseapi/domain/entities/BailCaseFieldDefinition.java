@@ -232,8 +232,8 @@ public enum BailCaseFieldDefinition {
         "groundsForBailProvideEvidenceOption", new TypeReference<YesOrNo>(){}),
     BAIL_EVIDENCE(
         "uploadTheBailEvidenceDocs", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
-    BAIL_EVIDENCE_WITH_METADATA(
-        "uploadTheBailEvidenceMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    APPLICANT_DOCUMENTS_WITH_METADATA(
+        "applicantDocumentsWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     TRANSFER_BAIL_MANAGEMENT_OPTION(
         "transferBailManagementYesOrNo", new TypeReference<YesOrNo>(){}),
     NO_TRANSFER_BAIL_MANAGEMENT_REASONS(
@@ -252,8 +252,6 @@ public enum BailCaseFieldDefinition {
         "hearingCentre", new TypeReference<HearingCentre>(){}),
     DETENTION_FACILITY(
         "detentionFacility", new TypeReference<String>(){}),
-    APPLICATION_SUBMISSION_DOCUMENT(
-        "applicationSubmissionDocument", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     UPLOAD_BAIL_SUMMARY_DOCS(
         "uploadBailSummaryDocs", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
     UPLOAD_BAIL_SUMMARY_METADATA(
