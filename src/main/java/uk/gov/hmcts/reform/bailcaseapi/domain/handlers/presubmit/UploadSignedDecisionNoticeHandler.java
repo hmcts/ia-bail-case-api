@@ -72,26 +72,12 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
 
         List<IdValue<DocumentWithMetadata>> allTribunalDocuments = new ArrayList<>();
 
-
-        //documentReceiver.tryReceive(
-        //        new DocumentWithDescription(maybeSignedDecisionNotice, ""), DocumentTag.SIGNED_DECISION_NOTICE)
-        //    .ifPresent(signedDecisionNoticeDocumentWithMetadata -> allTribunalDocuments.addAll(documentsAppender.append(
-        //        existingTribunalDocuments,
-        //        List.of(signedDecisionNoticeDocumentWithMetadata)
-        //    )));
-
-        Optional<DocumentWithMetadata>  signedDecisionNotice = documentReceiver.tryReceive(
-                new DocumentWithDescription(maybeSignedDecisionNotice, ""), DocumentTag.SIGNED_DECISION_NOTICE);
-
-        if (signedDecisionNotice.isPresent()) {
-            DocumentWithMetadata signedDecisionNoticeDocumentWithMetadata = signedDecisionNotice.get();
-            List<IdValue<DocumentWithMetadata>> documents = documentsAppender.append(existingTribunalDocuments,
-                                                                                  List.of(
-                                                                                      signedDecisionNoticeDocumentWithMetadata)
-            );
-            allTribunalDocuments.addAll(documents);
-        }
-
+        documentReceiver.tryReceive(
+                new DocumentWithDescription(maybeSignedDecisionNotice, ""), DocumentTag.SIGNED_DECISION_NOTICE)
+            .ifPresent(signedDecisionNoticeDocumentWithMetadata ->
+                           allTribunalDocuments.addAll(documentsAppender.append(
+                               existingTribunalDocuments, List.of(signedDecisionNoticeDocumentWithMetadata)
+            )));
 
         bailCase.write(TRIBUNAL_DOCUMENTS_WITH_METADATA, allTribunalDocuments);
 
