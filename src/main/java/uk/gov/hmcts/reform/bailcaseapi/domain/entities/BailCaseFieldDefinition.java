@@ -26,6 +26,8 @@ public enum BailCaseFieldDefinition {
         "currentCaseStateVisibleToAdminOfficer", new TypeReference<State>(){}),
     CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE(
         "currentCaseStateVisibleToHomeOffice", new TypeReference<State>(){}),
+    CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS(
+        "currentCaseStateVisibleToAllUsers", new TypeReference<State>(){}),
     APPLICANT_GIVEN_NAMES(
         "applicantGivenNames", new TypeReference<String>() {}),
     APPLICANT_FAMILY_NAME(
