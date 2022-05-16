@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SIGNED_DECISION_NOTICE_METADATA;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentTag;
@@ -60,19 +62,38 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
                 .getCaseData();
 
         Document maybeSignedDecisionNotice = bailCase.read(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class)
-            .orElseThrow(() -> new IllegalStateException("signed decision notice is not present"));
+            .orElseThrow(() -> new IllegalStateException("signedDecisionNotice is not present"));
 
-        List<DocumentWithMetadata> signedDecisionNotice = new ArrayList<>();
-        documentReceiver.tryReceive(
-                new DocumentWithDescription(maybeSignedDecisionNotice, ""), DocumentTag.SIGNED_DECISION_NOTICE)
-            .ifPresent(signedDecisionNotice::add);
+        Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingTribunalDocuments =
+            bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA);
 
-        bailCase.clear(SIGNED_DECISION_NOTICE_METADATA);
+        final List<IdValue<DocumentWithMetadata>> existingTribunalDocuments =
+            maybeExistingTribunalDocuments.orElse(Collections.emptyList());
 
-        List<IdValue<DocumentWithMetadata>> newSignedDecisionNotice =
-            documentsAppender.append(new ArrayList<>(), signedDecisionNotice);
+        List<IdValue<DocumentWithMetadata>> allTribunalDocuments = new ArrayList<>();
 
-        bailCase.write(SIGNED_DECISION_NOTICE_METADATA, newSignedDecisionNotice);
+
+        //documentReceiver.tryReceive(
+        //        new DocumentWithDescription(maybeSignedDecisionNotice, ""), DocumentTag.SIGNED_DECISION_NOTICE)
+        //    .ifPresent(signedDecisionNoticeDocumentWithMetadata -> allTribunalDocuments.addAll(documentsAppender.append(
+        //        existingTribunalDocuments,
+        //        List.of(signedDecisionNoticeDocumentWithMetadata)
+        //    )));
+
+        Optional<DocumentWithMetadata>  signedDecisionNotice = documentReceiver.tryReceive(
+                new DocumentWithDescription(maybeSignedDecisionNotice, ""), DocumentTag.SIGNED_DECISION_NOTICE);
+
+        if (signedDecisionNotice.isPresent()) {
+            DocumentWithMetadata signedDecisionNoticeDocumentWithMetadata = signedDecisionNotice.get();
+            List<IdValue<DocumentWithMetadata>> documents = documentsAppender.append(existingTribunalDocuments,
+                                                                                  List.of(
+                                                                                      signedDecisionNoticeDocumentWithMetadata)
+            );
+            allTribunalDocuments.addAll(documents);
+        }
+
+
+        bailCase.write(TRIBUNAL_DOCUMENTS_WITH_METADATA, allTribunalDocuments);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

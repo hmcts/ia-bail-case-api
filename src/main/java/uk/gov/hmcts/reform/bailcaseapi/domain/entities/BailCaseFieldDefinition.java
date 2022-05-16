@@ -276,8 +276,6 @@ public enum BailCaseFieldDefinition {
         "secretaryOfStateRefusalReasons", new TypeReference<String>(){}),
     UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT(
         "uploadSignedDecisionNoticeDocument", new TypeReference<Document>(){}),
-    SIGNED_DECISION_NOTICE_METADATA(
-        "signedDecisionNoticeMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     DECISION_GRANTED_OR_REFUSED(
         "decisionGrantedOrRefused", new TypeReference<String>(){}),
     RECORD_THE_DECISION_LIST(
