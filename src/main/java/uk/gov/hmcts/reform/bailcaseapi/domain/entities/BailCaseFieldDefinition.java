@@ -26,6 +26,8 @@ public enum BailCaseFieldDefinition {
         "currentCaseStateVisibleToAdminOfficer", new TypeReference<State>(){}),
     CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE(
         "currentCaseStateVisibleToHomeOffice", new TypeReference<State>(){}),
+    CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS(
+        "currentCaseStateVisibleToAllUsers", new TypeReference<State>(){}),
     APPLICANT_GIVEN_NAMES(
         "applicantGivenNames", new TypeReference<String>() {}),
     APPLICANT_FAMILY_NAME(
@@ -274,8 +276,6 @@ public enum BailCaseFieldDefinition {
         "secretaryOfStateRefusalReasons", new TypeReference<String>(){}),
     UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT(
         "uploadSignedDecisionNoticeDocument", new TypeReference<Document>(){}),
-    SIGNED_DECISION_NOTICE_METADATA(
-        "signedDecisionNoticeMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     DECISION_GRANTED_OR_REFUSED(
         "decisionGrantedOrRefused", new TypeReference<String>(){}),
     RECORD_THE_DECISION_LIST(
