@@ -323,7 +323,9 @@ public enum BailCaseFieldDefinition {
     DECISION_UNSIGNED_DOCUMENT(
         "decisionUnsignedDocument", new TypeReference<Document>(){}),
     TRIBUNAL_DOCUMENTS_WITH_METADATA(
-        "tribunalDocumentsWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){})
+        "tribunalDocumentsWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    END_APPLICATION_DATE(
+        "endApplicationDate", new TypeReference<String>(){})
     ;
 
 
