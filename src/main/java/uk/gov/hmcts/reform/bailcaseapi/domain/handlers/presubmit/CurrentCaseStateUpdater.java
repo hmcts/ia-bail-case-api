@@ -12,7 +12,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State.DECISION
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.DecisionType;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.IntermediateState;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -39,7 +40,7 @@ public class CurrentCaseStateUpdater implements PreSubmitCallbackHandler<BailCas
             throw new IllegalStateException("Cannot handle callback");
         }
 
-        State currentCaseState = callback.getCaseDetails().getState();
+        String currentCaseState = callback.getCaseDetails().getState().toString();
 
         BailCase bailCase =
             callback
@@ -48,7 +49,11 @@ public class CurrentCaseStateUpdater implements PreSubmitCallbackHandler<BailCas
 
         if (bailCase.read(RECORD_DECISION_TYPE, String.class).orElse("")
                 .equals(DecisionType.CONDITIONAL_GRANT.toString())) {
-            currentCaseState = DECISION_CONDITIONAL_BAIL;
+            currentCaseState = DECISION_CONDITIONAL_BAIL.toString();
+        }
+        if (callback.getEvent().equals(Event.UPLOAD_SIGNED_DECISION_NOTICE)) {
+            //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
+            currentCaseState = IntermediateState.SIGNED_DECISION_NOTICE_UPLOADED.toString();
         }
 
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, currentCaseState);
@@ -56,7 +61,6 @@ public class CurrentCaseStateUpdater implements PreSubmitCallbackHandler<BailCas
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, currentCaseState);
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, currentCaseState);
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, currentCaseState);
-
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
