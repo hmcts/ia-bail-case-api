@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
@@ -19,15 +18,15 @@ public enum BailCaseFieldDefinition {
     IS_HOME_OFFICE(
         "isHomeOffice", new TypeReference<YesOrNo>() {}),
     CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE(
-        "currentCaseStateVisibleToLegalRepresentative", new TypeReference<State>(){}),
+        "currentCaseStateVisibleToLegalRepresentative", new TypeReference<String>(){}),
     CURRENT_CASE_STATE_VISIBLE_TO_JUDGE(
-        "currentCaseStateVisibleToJudge", new TypeReference<State>(){}),
+        "currentCaseStateVisibleToJudge", new TypeReference<String>(){}),
     CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER(
-        "currentCaseStateVisibleToAdminOfficer", new TypeReference<State>(){}),
+        "currentCaseStateVisibleToAdminOfficer", new TypeReference<String>(){}),
     CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE(
-        "currentCaseStateVisibleToHomeOffice", new TypeReference<State>(){}),
+        "currentCaseStateVisibleToHomeOffice", new TypeReference<String>(){}),
     CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS(
-        "currentCaseStateVisibleToAllUsers", new TypeReference<State>(){}),
+        "currentCaseStateVisibleToAllUsers", new TypeReference<String>(){}),
     APPLICANT_GIVEN_NAMES(
         "applicantGivenNames", new TypeReference<String>() {}),
     APPLICANT_FAMILY_NAME(
