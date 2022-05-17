@@ -48,7 +48,7 @@ public class CurrentCaseStateUpdater implements PreSubmitCallbackHandler<BailCas
                 .getCaseData();
 
         if (bailCase.read(RECORD_DECISION_TYPE, String.class).orElse("")
-                .equals(DecisionType.CONDITIONAL_GRANT.toString())) {
+            .equals(DecisionType.CONDITIONAL_GRANT.toString()) && (callback.getEvent() == Event.RECORD_THE_DECISION)) {
             currentCaseState = DECISION_CONDITIONAL_BAIL.toString();
         }
         if (callback.getEvent().equals(Event.UPLOAD_SIGNED_DECISION_NOTICE)) {
