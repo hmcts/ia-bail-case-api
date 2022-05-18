@@ -255,8 +255,8 @@ public enum BailCaseFieldDefinition {
         "detentionFacility", new TypeReference<String>(){}),
     UPLOAD_BAIL_SUMMARY_DOCS(
         "uploadBailSummaryDocs", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
-    UPLOAD_BAIL_SUMMARY_METADATA(
-        "uploadBailSummaryMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    HOME_OFFICE_DOCUMENTS_WITH_METADATA(
+        "homeOfficeDocumentsWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     CONDITION_FOR_BAIL(
         "conditionsForBail", new TypeReference<List<String>>(){}),
     CONDITION_APPEARANCE(
