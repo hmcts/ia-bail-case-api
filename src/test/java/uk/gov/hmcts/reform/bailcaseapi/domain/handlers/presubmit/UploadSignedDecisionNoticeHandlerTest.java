@@ -13,7 +13,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT;
 
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,8 +99,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
 
         when(documentsAppender.append(eq(new ArrayList<>()), eq(List.of(signedDecisionNoticeMetadata1))))
             .thenReturn(allTribunalDocs);
-
-
+        
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             uploadSignedDecisionNoticeHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
