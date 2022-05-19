@@ -43,7 +43,6 @@ services:
       IA_SYSTEM_PASSWORD:
       IA_EM_STITCHING_ENABLED:
       IA_DOCMOSIS_ENABLED:
-      IA_SUBMIT_HEARING_REQUIREMENTS_ENABLED:
     external_links:
       - idam-api
       - dm-store

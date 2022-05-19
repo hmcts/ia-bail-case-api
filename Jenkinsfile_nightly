@@ -57,7 +57,6 @@ def secrets = [
     secret('prof-ref-data-url', 'PROF_REF_DATA_URL'),
     secret('docmosis-enabled', 'IA_DOCMOSIS_ENABLED'),
     secret('em-stitching-enabled', 'IA_EM_STITCHING_ENABLED'),
-    secret('submit-hearing-requirements-enabled', 'IA_SUBMIT_HEARING_REQUIREMENTS_ENABLED'),
     secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
 
   ]
@@ -85,7 +84,6 @@ withNightlyPipeline(type, product, component) {
   env.IDAM_URL = "https://idam-api.aat.platform.hmcts.net"
   env.OPEN_ID_IDAM_URL = "https://idam-web-public.aat.platform.hmcts.net"
   env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-  env.IS_SAVE_AND_CONTINUE_ENABLED = "false"
 
   loadVaultSecrets(secrets)
 
