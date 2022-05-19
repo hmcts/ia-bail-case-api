@@ -69,6 +69,7 @@ class CurrentCaseStateUpdaterTest {
             verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, state.toString());
             verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, state.toString());
             verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, state.toString());
+            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, state.toString());
             reset(bailCase);
         }
     }

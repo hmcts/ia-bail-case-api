@@ -6,18 +6,14 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State.DECISION_CONDITIONAL_BAIL;
-
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_JUDGE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE;
-
 
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.DecisionType;
-
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.IntermediateState;
-
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -54,7 +50,7 @@ public class CurrentCaseStateUpdater implements PreSubmitCallbackHandler<BailCas
         if (bailCase.read(RECORD_DECISION_TYPE, String.class).orElse("")
             .equals(DecisionType.CONDITIONAL_GRANT.toString()) && (callback.getEvent() == Event.RECORD_THE_DECISION)) {
             currentCaseState = DECISION_CONDITIONAL_BAIL.toString();
-        } else {
+        } else if (callback.getEvent().equals(Event.RECORD_THE_DECISION)) {
             //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
             currentCaseState = IntermediateState.DECISION_RECORDED.toString();
         }
