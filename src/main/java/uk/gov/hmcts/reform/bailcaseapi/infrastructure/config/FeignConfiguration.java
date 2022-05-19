@@ -6,7 +6,9 @@ import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.form.spring.SpringFormEncoder;
 import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.cloud.openfeign.support.HttpMessageConverterCustomizer;
 import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
 import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
@@ -28,10 +30,11 @@ public class FeignConfiguration {
     }
 
     @Bean
-    public Decoder decoder() {
-        HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter(objectMapper());
-
-        return new ResponseEntityDecoder(new SpringDecoder(() -> new HttpMessageConverters(jacksonConverter)));
+    public Decoder decoder(
+        ObjectFactory<HttpMessageConverters> messageConverters,
+        ObjectProvider<HttpMessageConverterCustomizer> customizers
+    ) {
+        return new ResponseEntityDecoder(new SpringDecoder(messageConverters, customizers));
     }
 
     public ObjectMapper objectMapper() {
