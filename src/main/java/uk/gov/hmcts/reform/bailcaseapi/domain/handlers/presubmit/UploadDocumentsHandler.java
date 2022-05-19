@@ -1,0 +1,122 @@
+package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
+
+import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_ADMIN;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_HOME_OFFICE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_DOCS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_SUPPLIED_BY;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentTag;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithDescription;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
+import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.DocumentReceiver;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.DocumentsAppender;
+
+@Component
+public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase> {
+
+    private final DocumentReceiver documentReceiver;
+    private final DocumentsAppender documentsAppender;
+
+    public UploadDocumentsHandler(
+        DocumentReceiver documentReceiver,
+        DocumentsAppender documentsAppender
+    ) {
+        this.documentReceiver = documentReceiver;
+        this.documentsAppender = documentsAppender;
+    }
+
+    public boolean canHandle(
+        PreSubmitCallbackStage callbackStage,
+        Callback<BailCase> callback
+    ) {
+        requireNonNull(callbackStage, "callbackStage must not be null");
+        requireNonNull(callback, "callback must not be null");
+
+        return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
+               && callback.getEvent() == Event.UPLOAD_DOCUMENTS;
+    }
+
+    public PreSubmitCallbackResponse<BailCase> handle(
+        PreSubmitCallbackStage callbackStage,
+        Callback<BailCase> callback
+    ) {
+        if (!canHandle(callbackStage, callback)) {
+            throw new IllegalStateException("Cannot handle callback");
+        }
+
+        final BailCase bailCase = callback.getCaseDetails().getCaseData();
+
+        Optional<List<IdValue<DocumentWithDescription>>> maybeDocument = bailCase.read(UPLOAD_DOCUMENTS);
+        Optional<String> maybeSuppliedBy = bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY);
+
+        String suppliedBy = maybeSuppliedBy
+            .orElse(isLegalRep(bailCase)
+                        ? "Legal Representative"
+                        : isHomeOffice(bailCase)
+                ? "Home Office"
+                : "");
+
+        if (maybeDocument.isPresent()) {
+            List<DocumentWithMetadata> document =
+                maybeDocument
+                    .orElseThrow(() -> new IllegalStateException("document is not present"))
+                    .stream()
+                    .map(IdValue::getValue)
+                    .map(doc -> documentReceiver.tryReceive(doc, DocumentTag.UPLOAD_DOCUMENT, suppliedBy))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+
+            BailCaseFieldDefinition appropriateCollectionForUserRole = isHomeOffice(bailCase)
+                ? HOME_OFFICE_DOCUMENTS_WITH_METADATA
+                : isLegalRep(bailCase)
+                ? APPLICANT_DOCUMENTS_WITH_METADATA
+                : TRIBUNAL_DOCUMENTS_WITH_METADATA;
+
+            Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingDocuments =
+                bailCase.read(appropriateCollectionForUserRole);
+
+            final List<IdValue<DocumentWithMetadata>> existingHomeOfficeDocuments =
+                maybeExistingDocuments.orElse(Collections.emptyList());
+
+            List<IdValue<DocumentWithMetadata>> allDocuments =
+                documentsAppender.append(existingHomeOfficeDocuments, document);
+
+            bailCase.write(appropriateCollectionForUserRole, allDocuments);
+
+            bailCase.clear(UPLOAD_DOCUMENTS);
+            bailCase.clear(UPLOAD_DOCUMENTS_SUPPLIED_BY);
+        }
+        return new PreSubmitCallbackResponse<>(bailCase);
+    }
+
+    private boolean isLegalRep(BailCase bailCase) {
+        return bailCase.read(BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.class).map(flag -> flag.equals(
+            YesOrNo.YES)).orElse(false);
+    }
+
+    private boolean isHomeOffice(BailCase bailCase) {
+        return bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.class).map(flag -> flag.equals(
+            YesOrNo.YES)).orElse(false);
+    }
+
+}

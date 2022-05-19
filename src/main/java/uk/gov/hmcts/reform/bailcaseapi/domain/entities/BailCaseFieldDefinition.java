@@ -329,7 +329,10 @@ public enum BailCaseFieldDefinition {
         "endApplicationOutcome", new TypeReference<String>(){}),
     END_APPLICATION_REASONS(
         "endApplicationReasons", new TypeReference<String>(){}),
-    ;
+    UPLOAD_DOCUMENTS(
+        "uploadDocuments", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
+    UPLOAD_DOCUMENTS_SUPPLIED_BY(
+        "uploadDocumentsSuppliedBy", new TypeReference<String>(){});
 
 
     private final String value;
