@@ -35,6 +35,9 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
 
     private final DocumentReceiver documentReceiver;
     private final DocumentsAppender documentsAppender;
+    private final static String SUPPLIED_BY_APPLICANT = "Applicant";
+    private final static String SUPPLIED_BY_LEGAL_REPRESENTATIVE = "Legal Representative";
+    private final static String SUPPLIED_BY_HOME_OFFICE = "Home Office";
 
     public UploadDocumentsHandler(
         DocumentReceiver documentReceiver,
@@ -86,11 +89,8 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
                     .map(Optional::get)
                     .collect(Collectors.toList());
 
-            BailCaseFieldDefinition appropriateCollectionForUserRole = isHomeOffice(bailCase)
-                ? HOME_OFFICE_DOCUMENTS_WITH_METADATA
-                : isLegalRep(bailCase)
-                ? APPLICANT_DOCUMENTS_WITH_METADATA
-                : TRIBUNAL_DOCUMENTS_WITH_METADATA;
+            BailCaseFieldDefinition appropriateCollectionForUserRole =
+                selectAppropriateDocumentsCollection(bailCase, suppliedBy);
 
             Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingDocuments =
                 bailCase.read(appropriateCollectionForUserRole);
@@ -117,6 +117,28 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
     private boolean isHomeOffice(BailCase bailCase) {
         return bailCase.read(BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.class).map(flag -> flag.equals(
             YesOrNo.YES)).orElse(false);
+    }
+
+    private BailCaseFieldDefinition selectAppropriateDocumentsCollection(BailCase bailCase, String suppliedBy) {
+        BailCaseFieldDefinition appropriateDocumentsCollection;
+
+        if (isHomeOffice(bailCase)) {
+            appropriateDocumentsCollection = HOME_OFFICE_DOCUMENTS_WITH_METADATA;
+        } else if (isLegalRep(bailCase)) {
+            appropriateDocumentsCollection = APPLICANT_DOCUMENTS_WITH_METADATA;
+        } else {
+            appropriateDocumentsCollection = suppliedBy.equals(SUPPLIED_BY_APPLICANT) || suppliedBy.equals(SUPPLIED_BY_LEGAL_REPRESENTATIVE)
+                ? APPLICANT_DOCUMENTS_WITH_METADATA
+                : suppliedBy.equals(SUPPLIED_BY_HOME_OFFICE)
+                ? HOME_OFFICE_DOCUMENTS_WITH_METADATA
+                : null;
+        }
+
+        if (appropriateDocumentsCollection == null) {
+            throw new IllegalStateException("Impossible to determine which collection to append the document to");
+        }
+
+        return appropriateDocumentsCollection;
     }
 
 }
