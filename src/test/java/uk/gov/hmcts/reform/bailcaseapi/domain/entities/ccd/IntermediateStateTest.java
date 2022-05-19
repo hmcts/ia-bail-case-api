@@ -8,9 +8,9 @@ public class IntermediateStateTest {
 
     @Test
     void has_correct_values() {
-        assertEquals("decisionRecorded", IntermediateState.SIGNED_DECISION_NOTICE_UPLOADED.toString());
+        assertEquals("decisionRecorded", IntermediateState.DECISION_RECORDED.toString());
         assertEquals("signedDecisionNoticeUploaded", IntermediateState.SIGNED_DECISION_NOTICE_UPLOADED.toString());
-        assertEquals("movedToDecided", IntermediateState.SIGNED_DECISION_NOTICE_UPLOADED.toString());
+        assertEquals("movedToDecided", IntermediateState.MOVED_TO_DECIDED.toString());
         assertEquals("unknown", State.UNKNOWN.toString());
     }
 
