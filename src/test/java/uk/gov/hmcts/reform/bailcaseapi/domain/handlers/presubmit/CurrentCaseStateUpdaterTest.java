@@ -65,11 +65,16 @@ class CurrentCaseStateUpdaterTest {
             assertNotNull(callbackResponse);
             assertEquals(bailCase, callbackResponse.getData());
 
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, state.toString());
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, state.toString());
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, state.toString());
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, state.toString());
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, state.toString());
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, state.toString());
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, state.toString());
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, state.toString());
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, state.toString());
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, state.toString());
             reset(bailCase);
         }
     }
@@ -140,18 +145,22 @@ class CurrentCaseStateUpdaterTest {
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
 
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, state.toString());
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, state.toString());
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, state.toString());
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, state.toString());
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, state.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, state.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, state.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, state.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, state.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, state.toString());
         reset(bailCase);
     }
 
     @Test
     void should_update_state_to_decisionRecorded_based_on_decision_type() {
         State state = DECISION_DECIDED;
-        IntermediateState intermediateState = IntermediateState.DECISION_RECORDED;
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(caseDetails.getState()).thenReturn(state);
@@ -164,11 +173,18 @@ class CurrentCaseStateUpdaterTest {
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
 
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, intermediateState.toString());
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, intermediateState.toString());
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, intermediateState.toString());
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, intermediateState.toString());
-        verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, intermediateState.toString());
+        final IntermediateState intermediateState = IntermediateState.DECISION_RECORDED;
+
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, intermediateState.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, intermediateState.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, intermediateState.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, intermediateState.toString());
+        verify(bailCase, times(1))
+            .write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, intermediateState.toString());
         reset(bailCase);
     }
 }
