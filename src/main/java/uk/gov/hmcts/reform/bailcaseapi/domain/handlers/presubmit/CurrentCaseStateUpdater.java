@@ -54,14 +54,13 @@ public class CurrentCaseStateUpdater implements PreSubmitCallbackHandler<BailCas
         if (bailCase.read(RECORD_DECISION_TYPE, String.class).orElse("")
             .equals(DecisionType.CONDITIONAL_GRANT.toString()) && (callback.getEvent() == Event.RECORD_THE_DECISION)) {
             currentCaseState = DECISION_CONDITIONAL_BAIL.toString();
+        } else {
+            //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
+            currentCaseState = IntermediateState.DECISION_RECORDED.toString();
         }
         if (callback.getEvent().equals(Event.UPLOAD_SIGNED_DECISION_NOTICE)) {
             //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
             currentCaseState = IntermediateState.SIGNED_DECISION_NOTICE_UPLOADED.toString();
-        }
-        if (callback.getEvent().equals(Event.RECORD_THE_DECISION)) {
-            //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
-            currentCaseState = IntermediateState.DECISION_RECORDED.toString();
         }
         if (callback.getEvent().equals(Event.MOVE_APPLICATION_TO_DECIDED)) {
             //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
