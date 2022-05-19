@@ -12,6 +12,7 @@ public class IntermediateStateTest {
         assertEquals("signedDecisionNoticeUploaded", IntermediateState.SIGNED_DECISION_NOTICE_UPLOADED.toString());
         assertEquals("movedToDecided", IntermediateState.MOVED_TO_DECIDED.toString());
         assertEquals("unknown", State.UNKNOWN.toString());
+
     }
 
     @Test
