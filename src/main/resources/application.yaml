@@ -115,6 +115,10 @@ notificationsApi:
   aboutToSubmitPath: "/bail/ccdAboutToSubmit"
   ccdSubmittedPath: "/bail/ccdSubmitted"
 
+core-case-data:
+  api:
+    url: ${CCD_URL:http://127.0.0.1:4452}
+
 ### dependency configuration
 idam.s2s-auth.totp_secret: ${IA_S2S_SECRET:AAAAAAAAAAAAAAAC}
 idam.s2s-auth.microservice: ${IA_S2S_MICROSERVICE:ia}

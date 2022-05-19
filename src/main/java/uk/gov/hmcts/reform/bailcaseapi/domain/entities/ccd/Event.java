@@ -15,6 +15,7 @@ public enum Event {
     MOVE_APPLICATION_TO_DECIDED("moveApplicationToDecided"),
     MAKE_NEW_APPLICATION("makeNewApplication"),
 
+
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
 
