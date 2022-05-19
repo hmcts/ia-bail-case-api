@@ -6,6 +6,7 @@ home: https://github.com/hmcts/ia-bail-case-api
 version: 0.0.4
 maintainers:
   - name: Immigration & Asylum Team
+    email: ImmigrationandAsylum@HMCTS.NET
 dependencies:
   - name: java
     version: 3.7.2
