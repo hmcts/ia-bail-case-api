@@ -11,7 +11,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum IntermediateState {
 
+    DECISION_RECORDED("decisionRecorded"),
     SIGNED_DECISION_NOTICE_UPLOADED("signedDecisionNoticeUploaded"),
+    MOVED_TO_DECIDED("movedToDecided"),
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
 

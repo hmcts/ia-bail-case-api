@@ -59,6 +59,14 @@ public class CurrentCaseStateUpdater implements PreSubmitCallbackHandler<BailCas
             //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
             currentCaseState = IntermediateState.SIGNED_DECISION_NOTICE_UPLOADED.toString();
         }
+        if (callback.getEvent().equals(Event.RECORD_THE_DECISION)) {
+            //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
+            currentCaseState = IntermediateState.DECISION_RECORDED.toString();
+        }
+        if (callback.getEvent().equals(Event.MOVE_APPLICATION_TO_DECIDED)) {
+            //Setting the field to intermediate state in order to use it in the caseTypeTab FieldShowConditions
+            currentCaseState = IntermediateState.MOVED_TO_DECIDED.toString();
+        }
 
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, currentCaseState);
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, currentCaseState);
