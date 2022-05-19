@@ -118,10 +118,12 @@ public class UploadDocumentsHandlerTest {
         when(bailCase.read(HOME_OFFICE_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(existingHomeOfficeDocuments));
         when(bailCase.read(UPLOAD_DOCUMENTS)).thenReturn(Optional.of(homeOfficeDocumentsWithDescriptionList));
 
-        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT, "Home Office"))
+        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT,
+                                         "Home Office"))
             .thenReturn(Optional.of(homeOfficeDocumentBeingUploaded1WithMetadata));
 
-        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT, "Home Office"))
+        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT,
+                                         "Home Office"))
             .thenReturn(Optional.of(homeOfficeDocumentBeingUploaded2WithMetadata));
 
         when(documentsAppender.append(existingHomeOfficeDocuments, homeOfficeDocumentsWithMetadataList))
@@ -135,12 +137,16 @@ public class UploadDocumentsHandlerTest {
 
         verify(bailCase, times(1)).read(UPLOAD_DOCUMENTS);
 
-        verify(documentReceiver, times(1)).tryReceive(homeOfficeDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT, "Home Office");
-        verify(documentReceiver, times(1)).tryReceive(homeOfficeDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT, "Home Office");
+        verify(documentReceiver, times(1)).tryReceive(homeOfficeDocumentBeingUploaded1,
+                                                      DocumentTag.UPLOAD_DOCUMENT, "Home Office");
+        verify(documentReceiver, times(1)).tryReceive(homeOfficeDocumentBeingUploaded2,
+                                                      DocumentTag.UPLOAD_DOCUMENT, "Home Office");
 
-        verify(documentsAppender, times(1)).append(existingHomeOfficeDocuments, homeOfficeDocumentsWithMetadataList);
+        verify(documentsAppender, times(1)).append(existingHomeOfficeDocuments,
+                                                   homeOfficeDocumentsWithMetadataList);
 
-        verify(bailCase, times(1)).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allHomeOfficeDocuments);
+        verify(bailCase, times(1)).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA,
+                                         allHomeOfficeDocuments);
 
         verify(bailCase, times(1)).clear(UPLOAD_DOCUMENTS);
         verify(bailCase, times(1)).clear(UPLOAD_DOCUMENTS_SUPPLIED_BY);
@@ -166,10 +172,12 @@ public class UploadDocumentsHandlerTest {
         when(bailCase.read(APPLICANT_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(existingApplicantDocuments));
         when(bailCase.read(UPLOAD_DOCUMENTS)).thenReturn(Optional.of(applicantDocumentsWithDescriptionList));
 
-        when(documentReceiver.tryReceive(applicantDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT, "Legal Representative"))
+        when(documentReceiver.tryReceive(applicantDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT,
+                                         "Legal Representative"))
             .thenReturn(Optional.of(applicantDocumentBeingUploaded1WithMetadata));
 
-        when(documentReceiver.tryReceive(applicantDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT, "Legal Representative"))
+        when(documentReceiver.tryReceive(applicantDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT,
+                                         "Legal Representative"))
             .thenReturn(Optional.of(applicantDocumentBeingUploaded2WithMetadata));
 
         when(documentsAppender.append(existingApplicantDocuments, applicantDocumentsWithMetadataList))
@@ -183,10 +191,13 @@ public class UploadDocumentsHandlerTest {
 
         verify(bailCase, times(1)).read(UPLOAD_DOCUMENTS);
 
-        verify(documentReceiver, times(1)).tryReceive(applicantDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT, "Legal Representative");
-        verify(documentReceiver, times(1)).tryReceive(applicantDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT, "Legal Representative");
+        verify(documentReceiver, times(1)).tryReceive(applicantDocumentBeingUploaded1,
+                                                      DocumentTag.UPLOAD_DOCUMENT, "Legal Representative");
+        verify(documentReceiver, times(1)).tryReceive(applicantDocumentBeingUploaded2,
+                                                      DocumentTag.UPLOAD_DOCUMENT, "Legal Representative");
 
-        verify(documentsAppender, times(1)).append(existingApplicantDocuments, applicantDocumentsWithMetadataList);
+        verify(documentsAppender, times(1)).append(existingApplicantDocuments,
+                                                   applicantDocumentsWithMetadataList);
 
         verify(bailCase, times(1)).write(APPLICANT_DOCUMENTS_WITH_METADATA, allApplicantDocuments);
 
@@ -232,10 +243,13 @@ public class UploadDocumentsHandlerTest {
 
         verify(bailCase, times(1)).read(UPLOAD_DOCUMENTS);
 
-        verify(documentReceiver, times(1)).tryReceive(applicantDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT, suppliedBy);
-        verify(documentReceiver, times(1)).tryReceive(applicantDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT, suppliedBy);
+        verify(documentReceiver, times(1)).tryReceive(applicantDocumentBeingUploaded1,
+                                                      DocumentTag.UPLOAD_DOCUMENT, suppliedBy);
+        verify(documentReceiver, times(1)).tryReceive(applicantDocumentBeingUploaded2,
+                                                      DocumentTag.UPLOAD_DOCUMENT, suppliedBy);
 
-        verify(documentsAppender, times(1)).append(existingApplicantDocuments, applicantDocumentsWithMetadataList);
+        verify(documentsAppender, times(1)).append(existingApplicantDocuments,
+                                                   applicantDocumentsWithMetadataList);
 
         verify(bailCase, times(1)).write(APPLICANT_DOCUMENTS_WITH_METADATA, allApplicantDocuments);
 
@@ -266,10 +280,12 @@ public class UploadDocumentsHandlerTest {
         when(bailCase.read(HOME_OFFICE_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(existingHomeOfficeDocuments));
         when(bailCase.read(UPLOAD_DOCUMENTS)).thenReturn(Optional.of(homeOfficeDocumentsWithDescriptionList));
 
-        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT, suppliedByHomeOffice))
+        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT,
+                                         suppliedByHomeOffice))
             .thenReturn(Optional.of(homeOfficeDocumentBeingUploaded1WithMetadata));
 
-        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT, suppliedByHomeOffice))
+        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT,
+                                         suppliedByHomeOffice))
             .thenReturn(Optional.of(homeOfficeDocumentBeingUploaded2WithMetadata));
 
         when(documentsAppender.append(existingHomeOfficeDocuments, homeOfficeDocumentsWithMetadataList))
@@ -283,12 +299,16 @@ public class UploadDocumentsHandlerTest {
 
         verify(bailCase, times(1)).read(UPLOAD_DOCUMENTS);
 
-        verify(documentReceiver, times(1)).tryReceive(homeOfficeDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT, suppliedByHomeOffice);
-        verify(documentReceiver, times(1)).tryReceive(homeOfficeDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT, suppliedByHomeOffice);
+        verify(documentReceiver, times(1)).tryReceive(homeOfficeDocumentBeingUploaded1,
+                                                      DocumentTag.UPLOAD_DOCUMENT, suppliedByHomeOffice);
+        verify(documentReceiver, times(1)).tryReceive(homeOfficeDocumentBeingUploaded2,
+                                                      DocumentTag.UPLOAD_DOCUMENT, suppliedByHomeOffice);
 
-        verify(documentsAppender, times(1)).append(existingHomeOfficeDocuments, homeOfficeDocumentsWithMetadataList);
+        verify(documentsAppender, times(1)).append(existingHomeOfficeDocuments,
+                                                   homeOfficeDocumentsWithMetadataList);
 
-        verify(bailCase, times(1)).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allHomeOfficeDocuments);
+        verify(bailCase, times(1)).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA,
+                                         allHomeOfficeDocuments);
 
         verify(bailCase, times(1)).clear(UPLOAD_DOCUMENTS);
         verify(bailCase, times(1)).clear(UPLOAD_DOCUMENTS_SUPPLIED_BY);

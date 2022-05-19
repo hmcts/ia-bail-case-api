@@ -31,9 +31,9 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
 
     private final DocumentReceiver documentReceiver;
     private final DocumentsAppender documentsAppender;
-    private final static String SUPPLIED_BY_APPLICANT = "Applicant";
-    private final static String SUPPLIED_BY_LEGAL_REPRESENTATIVE = "Legal Representative";
-    private final static String SUPPLIED_BY_HOME_OFFICE = "Home Office";
+    private static final String SUPPLIED_BY_APPLICANT = "Applicant";
+    private static final String SUPPLIED_BY_LEGAL_REPRESENTATIVE = "Legal Representative";
+    private static final String SUPPLIED_BY_HOME_OFFICE = "Home Office";
 
     public UploadDocumentsHandler(
         DocumentReceiver documentReceiver,
@@ -123,7 +123,8 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
         } else if (isLegalRep(bailCase)) {
             appropriateDocumentsCollection = APPLICANT_DOCUMENTS_WITH_METADATA;
         } else {
-            appropriateDocumentsCollection = suppliedBy.equals(SUPPLIED_BY_APPLICANT) || suppliedBy.equals(SUPPLIED_BY_LEGAL_REPRESENTATIVE)
+            appropriateDocumentsCollection = suppliedBy.equals(SUPPLIED_BY_APPLICANT)
+                                             || suppliedBy.equals(SUPPLIED_BY_LEGAL_REPRESENTATIVE)
                 ? APPLICANT_DOCUMENTS_WITH_METADATA
                 : suppliedBy.equals(SUPPLIED_BY_HOME_OFFICE)
                 ? HOME_OFFICE_DOCUMENTS_WITH_METADATA
