@@ -12,8 +12,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_ADMIN;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_HOME_OFFICE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_LEGAL_REP;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_CURRENT_USER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_SUPPLIED_BY;
 
 import java.util.Arrays;
@@ -34,6 +34,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentTag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithDescription;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserRoleLabel;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -115,7 +116,8 @@ public class UploadDocumentsHandlerTest {
                 homeOfficeDocumentBeingUploaded2WithMetadata
             );
 
-        when(bailCase.read(IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+            .thenReturn(Optional.of(UserRoleLabel.HOME_OFFICE_GENERIC.toString()));
 
         when(bailCase.read(HOME_OFFICE_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(existingHomeOfficeDocuments));
         when(bailCase.read(UPLOAD_DOCUMENTS)).thenReturn(Optional.of(homeOfficeDocumentsWithDescriptionList));
@@ -169,7 +171,8 @@ public class UploadDocumentsHandlerTest {
                 applicantDocumentBeingUploaded2WithMetadata
             );
 
-        when(bailCase.read(IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+            .thenReturn(Optional.of(UserRoleLabel.LEGAL_REPRESENTATIVE.toString()));
 
         when(bailCase.read(APPLICANT_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(existingApplicantDocuments));
         when(bailCase.read(UPLOAD_DOCUMENTS)).thenReturn(Optional.of(applicantDocumentsWithDescriptionList));
@@ -208,9 +211,11 @@ public class UploadDocumentsHandlerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"Legal Representative", "Applicant"})
+    @ValueSource(strings = {"legalRepresentative", "applicant"})
     void should_allow_admin_or_judge_to_append_applicant_docs_to_existing_ones(String suppliedBy) {
 
+        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+            .thenReturn(Optional.of(UserRoleLabel.ADMIN_OFFICER.toString()));
         when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(suppliedBy));
 
         List<IdValue<DocumentWithDescription>> applicantDocumentsWithDescriptionList =
@@ -262,7 +267,9 @@ public class UploadDocumentsHandlerTest {
     @Test
     void should_allow_admin_or_judge_to_append_home_office_docs_to_existing_ones() {
 
-        String suppliedByHomeOffice = "Home Office";
+        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+            .thenReturn(Optional.of(UserRoleLabel.ADMIN_OFFICER.toString()));
+        String suppliedByHomeOffice = "homeOffice";
         when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(suppliedByHomeOffice));
 
         List<IdValue<DocumentWithDescription>> homeOfficeDocumentsWithDescriptionList =
@@ -361,10 +368,12 @@ public class UploadDocumentsHandlerTest {
     }
 
     @Test
-    void should_throw_exception_if_unable_to_determine_supplier_of_documents() {
+    void should_throw_exception_if_supplier_is_invalid_value() {
 
-        String wrongSupplier = "wrong value";
+        String wrongSupplier = "wrong value"; //valid values are: legalRepresentative, homeOffice, Applicant
         when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(wrongSupplier));
+        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+            .thenReturn(Optional.of(UserRoleLabel.ADMIN_OFFICER.toString()));
 
         List<IdValue<DocumentWithDescription>> homeOfficeDocumentsWithDescriptionList =
             Arrays.asList(
@@ -397,6 +406,49 @@ public class UploadDocumentsHandlerTest {
 
         verify(documentsAppender, never()).append(existingHomeOfficeDocuments,
                                                    homeOfficeDocumentsWithMetadataList);
+
+        verify(bailCase, never()).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allHomeOfficeDocuments);
+    }
+
+    @Test
+    void should_throw_exception_if_current_user_cannot_be_determined() {
+
+        String suppliedBy = "applicant"; //valid value
+        when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(suppliedBy));
+        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+            .thenReturn(Optional.empty()); //should always be populated
+
+        List<IdValue<DocumentWithDescription>> homeOfficeDocumentsWithDescriptionList =
+            Arrays.asList(
+                new IdValue<>("1", homeOfficeDocumentBeingUploaded1),
+                new IdValue<>("2", homeOfficeDocumentBeingUploaded2)
+            );
+
+        List<DocumentWithMetadata> homeOfficeDocumentsWithMetadataList =
+            Arrays.asList(
+                homeOfficeDocumentBeingUploaded1WithMetadata,
+                homeOfficeDocumentBeingUploaded2WithMetadata
+            );
+
+        when(bailCase.read(IS_ADMIN, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+
+        when(bailCase.read(UPLOAD_DOCUMENTS)).thenReturn(Optional.of(homeOfficeDocumentsWithDescriptionList));
+
+        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT,
+                                         suppliedBy))
+            .thenReturn(Optional.of(homeOfficeDocumentBeingUploaded1WithMetadata));
+
+        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT,
+                                         suppliedBy))
+            .thenReturn(Optional.of(homeOfficeDocumentBeingUploaded2WithMetadata));
+
+        assertThatThrownBy(() -> uploadDocumentsDocumentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
+                                                                       callback))
+            .hasMessage("Unable to determine the supplier of the document")
+            .isExactlyInstanceOf(IllegalStateException.class);
+
+        verify(documentsAppender, never()).append(existingHomeOfficeDocuments,
+                                                  homeOfficeDocumentsWithMetadataList);
 
         verify(bailCase, never()).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allHomeOfficeDocuments);
     }

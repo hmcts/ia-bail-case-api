@@ -191,8 +191,7 @@ class ApplicationUserRoleAppenderTest {
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
                 boolean canHandle = applicationUserRoleAppender.canHandle(callbackStage, callback);
                 if (callbackStage == ABOUT_TO_START
-                    && (callback.getEvent() == Event.START_APPLICATION
-                    || callback.getEvent() == Event.UPLOAD_DOCUMENTS)) {
+                    && (callback.getEvent() == Event.START_APPLICATION)) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
