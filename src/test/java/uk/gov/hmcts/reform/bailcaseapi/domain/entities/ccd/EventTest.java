@@ -16,6 +16,7 @@ public class EventTest {
         assertEquals("uploadSignedDecisionNotice", Event.UPLOAD_SIGNED_DECISION_NOTICE.toString());
         assertEquals("addCaseNote", Event.ADD_CASE_NOTE.toString());
         assertEquals("moveApplicationToDecided", Event.MOVE_APPLICATION_TO_DECIDED.toString());
+        assertEquals("editDocuments", Event.EDIT_DOCUMENTS.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
     }
 
