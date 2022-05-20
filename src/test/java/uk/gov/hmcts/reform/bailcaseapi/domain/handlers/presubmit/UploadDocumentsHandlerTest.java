@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_ADMIN;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_HOME_OFFICE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_LEGAL_REP;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS;
@@ -356,5 +358,46 @@ public class UploadDocumentsHandlerTest {
         assertThatThrownBy(() -> uploadDocumentsDocumentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void should_throw_exception_if_unable_to_determine_supplier_of_documents() {
+
+        String wrongSupplier = "wrong value";
+        when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(wrongSupplier));
+
+        List<IdValue<DocumentWithDescription>> homeOfficeDocumentsWithDescriptionList =
+            Arrays.asList(
+                new IdValue<>("1", homeOfficeDocumentBeingUploaded1),
+                new IdValue<>("2", homeOfficeDocumentBeingUploaded2)
+            );
+
+        List<DocumentWithMetadata> homeOfficeDocumentsWithMetadataList =
+            Arrays.asList(
+                homeOfficeDocumentBeingUploaded1WithMetadata,
+                homeOfficeDocumentBeingUploaded2WithMetadata
+            );
+
+        when(bailCase.read(IS_ADMIN, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+
+        when(bailCase.read(UPLOAD_DOCUMENTS)).thenReturn(Optional.of(homeOfficeDocumentsWithDescriptionList));
+
+        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded1, DocumentTag.UPLOAD_DOCUMENT,
+                                         wrongSupplier))
+            .thenReturn(Optional.of(homeOfficeDocumentBeingUploaded1WithMetadata));
+
+        when(documentReceiver.tryReceive(homeOfficeDocumentBeingUploaded2, DocumentTag.UPLOAD_DOCUMENT,
+                                         wrongSupplier))
+            .thenReturn(Optional.of(homeOfficeDocumentBeingUploaded2WithMetadata));
+
+        assertThatThrownBy(() -> uploadDocumentsDocumentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
+                                                                       callback))
+            .hasMessage("Unable to determine the supplier of the document")
+            .isExactlyInstanceOf(IllegalStateException.class);
+
+        verify(documentsAppender, never()).append(existingHomeOfficeDocuments,
+                                                   homeOfficeDocumentsWithMetadataList);
+
+        verify(bailCase, never()).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allHomeOfficeDocuments);
     }
 }

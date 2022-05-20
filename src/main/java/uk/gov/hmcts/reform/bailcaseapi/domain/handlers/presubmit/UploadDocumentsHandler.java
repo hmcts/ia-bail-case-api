@@ -88,14 +88,14 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
             BailCaseFieldDefinition appropriateCollectionForUserRole =
                 selectAppropriateDocumentsCollection(bailCase, suppliedBy);
 
-            Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingDocuments =
+            Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingDocumentsCollection =
                 bailCase.read(appropriateCollectionForUserRole);
 
-            final List<IdValue<DocumentWithMetadata>> existingHomeOfficeDocuments =
-                maybeExistingDocuments.orElse(Collections.emptyList());
+            final List<IdValue<DocumentWithMetadata>> existingDocuments =
+                maybeExistingDocumentsCollection.orElse(Collections.emptyList());
 
             List<IdValue<DocumentWithMetadata>> allDocuments =
-                documentsAppender.append(existingHomeOfficeDocuments, document);
+                documentsAppender.append(existingDocuments, document);
 
             bailCase.write(appropriateCollectionForUserRole, allDocuments);
 
@@ -132,7 +132,7 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
         }
 
         if (appropriateDocumentsCollection == null) {
-            throw new IllegalStateException("Impossible to determine which collection to append the document to");
+            throw new IllegalStateException("Unable to determine the supplier of the document");
         }
 
         return appropriateDocumentsCollection;
