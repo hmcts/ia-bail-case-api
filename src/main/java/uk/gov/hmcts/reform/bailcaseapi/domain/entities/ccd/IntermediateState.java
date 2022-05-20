@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum IntermediateState {
 
-    SIGNED_DECISION_NOTICE_UPLOADED("signedDecisionNoticeUploaded"),
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
 
