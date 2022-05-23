@@ -13,7 +13,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_ADMIN;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_HOME_OFFICE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_CURRENT_USER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_USER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_SUPPLIED_BY;
 
 import java.util.Arrays;
@@ -116,7 +116,7 @@ public class UploadDocumentsHandlerTest {
                 homeOfficeDocumentBeingUploaded2WithMetadata
             );
 
-        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+        when(bailCase.read(CURRENT_USER, String.class))
             .thenReturn(Optional.of(UserRoleLabel.HOME_OFFICE_GENERIC.toString()));
 
         when(bailCase.read(HOME_OFFICE_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(existingHomeOfficeDocuments));
@@ -171,7 +171,7 @@ public class UploadDocumentsHandlerTest {
                 applicantDocumentBeingUploaded2WithMetadata
             );
 
-        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+        when(bailCase.read(CURRENT_USER, String.class))
             .thenReturn(Optional.of(UserRoleLabel.LEGAL_REPRESENTATIVE.toString()));
 
         when(bailCase.read(APPLICANT_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(existingApplicantDocuments));
@@ -214,7 +214,7 @@ public class UploadDocumentsHandlerTest {
     @ValueSource(strings = {"legalRepresentative", "applicant"})
     void should_allow_admin_or_judge_to_append_applicant_docs_to_existing_ones(String suppliedBy) {
 
-        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+        when(bailCase.read(CURRENT_USER, String.class))
             .thenReturn(Optional.of(UserRoleLabel.ADMIN_OFFICER.toString()));
         when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(suppliedBy));
 
@@ -267,7 +267,7 @@ public class UploadDocumentsHandlerTest {
     @Test
     void should_allow_admin_or_judge_to_append_home_office_docs_to_existing_ones() {
 
-        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+        when(bailCase.read(CURRENT_USER, String.class))
             .thenReturn(Optional.of(UserRoleLabel.ADMIN_OFFICER.toString()));
         String suppliedByHomeOffice = "homeOffice";
         when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(suppliedByHomeOffice));
@@ -372,7 +372,7 @@ public class UploadDocumentsHandlerTest {
 
         String wrongSupplier = "wrong value"; //valid values are: legalRepresentative, homeOffice, Applicant
         when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(wrongSupplier));
-        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+        when(bailCase.read(CURRENT_USER, String.class))
             .thenReturn(Optional.of(UserRoleLabel.ADMIN_OFFICER.toString()));
 
         List<IdValue<DocumentWithDescription>> homeOfficeDocumentsWithDescriptionList =
@@ -415,7 +415,7 @@ public class UploadDocumentsHandlerTest {
 
         String suppliedBy = "applicant"; //valid value
         when(bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY)).thenReturn(Optional.of(suppliedBy));
-        when(bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class))
+        when(bailCase.read(CURRENT_USER, String.class))
             .thenReturn(Optional.empty()); //should always be populated
 
         List<IdValue<DocumentWithDescription>> homeOfficeDocumentsWithDescriptionList =

@@ -48,19 +48,19 @@ public class CurrentUserRoleAppender implements PreSubmitCallbackHandler<BailCas
 
         UserRoleLabel userRoleLabel = userDetailsHelper.getLoggedInUserRoleLabel(userDetails);
         if (userRoleLabel.equals(UserRoleLabel.ADMIN_OFFICER)) {
-            bailCase.write(BailCaseFieldDefinition.UPLOAD_DOCUMENTS_CURRENT_USER,
+            bailCase.write(BailCaseFieldDefinition.CURRENT_USER,
                            UserRoleLabel.ADMIN_OFFICER.toString());
         }
         if (userRoleLabel.equals(UserRoleLabel.LEGAL_REPRESENTATIVE)) {
-            bailCase.write(BailCaseFieldDefinition.UPLOAD_DOCUMENTS_CURRENT_USER,
+            bailCase.write(BailCaseFieldDefinition.CURRENT_USER,
                            UserRoleLabel.LEGAL_REPRESENTATIVE.toString());
         }
         if (userRoleLabel.equals(UserRoleLabel.HOME_OFFICE_GENERIC)) {
-            bailCase.write(BailCaseFieldDefinition.UPLOAD_DOCUMENTS_CURRENT_USER,
+            bailCase.write(BailCaseFieldDefinition.CURRENT_USER,
                            UserRoleLabel.HOME_OFFICE_GENERIC.toString());
         }
         if (userRoleLabel.equals(UserRoleLabel.JUDGE)) {
-            bailCase.write(BailCaseFieldDefinition.UPLOAD_DOCUMENTS_CURRENT_USER,
+            bailCase.write(BailCaseFieldDefinition.CURRENT_USER,
                            UserRoleLabel.JUDGE.toString());
         }
 

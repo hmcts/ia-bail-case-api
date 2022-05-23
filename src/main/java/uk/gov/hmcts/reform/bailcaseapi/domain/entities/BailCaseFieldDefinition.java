@@ -333,8 +333,8 @@ public enum BailCaseFieldDefinition {
         "uploadDocuments", new TypeReference<List<IdValue<DocumentWithDescription>>>(){}),
     UPLOAD_DOCUMENTS_SUPPLIED_BY(
         "uploadDocumentsSuppliedBy", new TypeReference<String>(){}),
-    UPLOAD_DOCUMENTS_CURRENT_USER(
-        "uploadDocumentsCurrentUser", new TypeReference<String>(){});
+    CURRENT_USER(
+        "currentUser", new TypeReference<String>(){});
 
 
     private final String value;

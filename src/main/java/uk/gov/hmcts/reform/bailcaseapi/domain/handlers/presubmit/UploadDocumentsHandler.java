@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_CURRENT_USER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_USER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_SUPPLIED_BY;
 
 import java.util.Collections;
@@ -63,7 +63,7 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
         }
 
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
-        String userRole = bailCase.read(UPLOAD_DOCUMENTS_CURRENT_USER, String.class).orElse("");
+        String userRole = bailCase.read(CURRENT_USER, String.class).orElse("");
 
         Optional<List<IdValue<DocumentWithDescription>>> maybeDocument = bailCase.read(UPLOAD_DOCUMENTS);
         Optional<String> maybeSuppliedBy = bailCase.read(UPLOAD_DOCUMENTS_SUPPLIED_BY);
@@ -102,7 +102,7 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
 
             bailCase.clear(UPLOAD_DOCUMENTS);
             bailCase.clear(UPLOAD_DOCUMENTS_SUPPLIED_BY);
-            bailCase.clear(UPLOAD_DOCUMENTS_CURRENT_USER);
+            bailCase.clear(CURRENT_USER);
         }
         return new PreSubmitCallbackResponse<>(bailCase);
     }
