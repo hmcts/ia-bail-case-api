@@ -11,6 +11,7 @@ public enum DocumentTag {
     SIGNED_DECISION_NOTICE("signedDecisionNotice"),
     BAIL_DECISION_UNSIGNED("bailDecisionUnsigned"),
     UPLOAD_DOCUMENT("uploadDocument"),
+    BAIL_SUBMISSION("bailSubmission"),
 
     @JsonEnumDefaultValue
     NONE("");
