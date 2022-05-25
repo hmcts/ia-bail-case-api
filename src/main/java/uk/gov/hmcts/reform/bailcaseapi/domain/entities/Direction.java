@@ -2,6 +2,13 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+<<<<<<< HEAD
+=======
+import org.w3c.dom.stylesheets.LinkStyle;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
+
+import java.util.List;
+>>>>>>> 1c61fd5 (Backend for directions screen)
 
 import static java.util.Objects.requireNonNull;
 

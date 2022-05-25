@@ -5,8 +5,13 @@ import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
+<<<<<<< HEAD
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SEND_BAIL_DIRECTION;
+=======
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SEND_DIRECTION;
+>>>>>>> 1c61fd5 (Backend for directions screen)
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 
 import java.util.List;
@@ -88,6 +93,7 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         List<IdValue<Direction>> allDirections =
             directionAppender.append(newDirection, maybeExistingDirections.orElse(emptyList()));
         bailCase.write(DIRECTIONS, allDirections);
+
 
         bailCase.clear(SEND_DIRECTION_DESCRIPTION);
         bailCase.clear(SEND_DIRECTION_LIST);
