@@ -16,6 +16,7 @@ public class SendDirectionConfirmation implements PostSubmitCallbackHandler<Bail
     public boolean canHandle(Callback<BailCase> callback) {
         requireNonNull(callback, "callback must not be null");
         return (callback.getEvent() == Event.SEND_BAIL_DIRECTION);
+
     }
 
     @Override

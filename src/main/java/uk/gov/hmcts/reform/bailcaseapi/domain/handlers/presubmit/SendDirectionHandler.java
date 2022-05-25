@@ -29,12 +29,14 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
     private final Appender<Direction> directionAppender;
     private final DateProvider dateProvider;
 
+
     public SendDirectionHandler(
         Appender<Direction> directionAppender,
         DateProvider dateProvider
     ) {
         this.directionAppender = directionAppender;
         this.dateProvider = dateProvider;
+
     }
 
     public boolean canHandle(
@@ -45,6 +47,7 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage.equals(ABOUT_TO_SUBMIT) && callback.getEvent().equals(SEND_BAIL_DIRECTION);
+
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
@@ -65,6 +68,7 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
                 .orElseThrow(() -> new IllegalStateException("sendDirectionDescription is not present"));
 
         String sendDirectionList = bailCase
+
                 .read(SEND_DIRECTION_LIST, String.class)
                 .orElseThrow(() -> new IllegalStateException("sendDirectionList is not present"));
 
@@ -77,11 +81,11 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
             bailCase.read(DIRECTIONS);
 
 
-
         final Direction newDirection = new Direction(
             sendDirectionDescription,
             sendDirectionList,
             dateOfCompliance,
+
             dateProvider.now().toString()
         );
 
@@ -91,10 +95,12 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
 
         bailCase.write(DIRECTIONS, allDirections);
 
+
         bailCase.clear(SEND_DIRECTION_DESCRIPTION);
         bailCase.clear(SEND_DIRECTION_LIST);
         bailCase.clear(DATE_OF_COMPLIANCE);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
+
 }
