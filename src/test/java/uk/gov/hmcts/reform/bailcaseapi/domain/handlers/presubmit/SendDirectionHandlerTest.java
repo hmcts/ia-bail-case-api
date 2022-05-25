@@ -111,10 +111,7 @@ public class SendDirectionHandlerTest {
     }
 
     @Test
-<<<<<<< HEAD
 
-=======
->>>>>>> 5230312 (RIA-5556 Revert clearing of fields back into the pre-submit handler)
     void should_clear_fields_for_direction_being_sent() {
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
@@ -126,10 +123,7 @@ public class SendDirectionHandlerTest {
     }
 
     @Test
-<<<<<<< HEAD
 
-=======
->>>>>>> 5230312 (RIA-5556 Revert clearing of fields back into the pre-submit handler)
     void should_throw_when_direction_description_is_not_present() {
 
         when(bailCase.read(SEND_DIRECTION_DESCRIPTION, String.class)).thenReturn(Optional.empty());
