@@ -13,6 +13,7 @@ public class Direction {
     private String sendDirectionList;
     private String dateOfCompliance;
     private String dateSent;
+
     private Direction() {
     }
 
@@ -43,7 +44,6 @@ public class Direction {
 
     public String getDateSent() {
         return requireNonNull(dateSent);
-
     }
 
 
