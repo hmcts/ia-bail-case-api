@@ -46,7 +46,6 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage.equals(ABOUT_TO_SUBMIT) && callback.getEvent().equals(SEND_BAIL_DIRECTION);
-
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
@@ -93,9 +92,6 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         bailCase.write(DIRECTIONS, allDirections);
 
 
-        bailCase.clear(SEND_DIRECTION_DESCRIPTION);
-        bailCase.clear(SEND_DIRECTION_LIST);
-        bailCase.clear(DATE_OF_COMPLIANCE);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
