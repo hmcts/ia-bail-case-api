@@ -8,6 +8,9 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCa
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PostSubmitCallbackHandler;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
 
 @Component
 public class SendDirectionConfirmation implements PostSubmitCallbackHandler<BailCase> {
@@ -15,7 +18,7 @@ public class SendDirectionConfirmation implements PostSubmitCallbackHandler<Bail
     @Override
     public boolean canHandle(Callback<BailCase> callback) {
         requireNonNull(callback, "callback must not be null");
-        return (callback.getEvent() == Event.SEND_DIRECTION);
+        return (callback.getEvent() == Event.SEND_BAIL_DIRECTION);
     }
 
     @Override
@@ -35,6 +38,15 @@ public class SendDirectionConfirmation implements PostSubmitCallbackHandler<Bail
         );
 
         postSubmitResponse.setConfirmationHeader("# You have sent a direction");
+
+        BailCase bailCase =
+            callback
+                .getCaseDetails()
+                .getCaseData();
+
+        bailCase.clear(SEND_DIRECTION_DESCRIPTION);
+        bailCase.clear(SEND_DIRECTION_LIST);
+        bailCase.clear(DATE_OF_COMPLIANCE);
 
         return postSubmitResponse;
     }
