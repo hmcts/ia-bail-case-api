@@ -89,7 +89,6 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         bailCase.write(DIRECTIONS, allDirections);
 
 
-
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 
