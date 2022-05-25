@@ -297,6 +297,14 @@ public enum BailCaseFieldDefinition {
         "addCaseNoteDocument", new TypeReference<Document>(){}),
     CASE_NOTES(
         "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){}),
+    SEND_DIRECTION_DESCRIPTION(
+        "sendDirectionDescription", new TypeReference<String>(){}),
+    SEND_DIRECTION_LIST(
+        "sendDirectionList", new TypeReference<String>(){}),
+    DATE_OF_COMPLIANCE(
+        "dateOfCompliance", new TypeReference<String>(){}),
+    DIRECTION(
+        "directions", new TypeReference<List<IdValue<Direction>>>(){}),
     REASON_FOR_REFUSAL_DETAILS(
         "reasonForRefusalDetails", new TypeReference<String>(){}),
     TRIBUNAL_REFUSAL_REASON(
