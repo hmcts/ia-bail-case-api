@@ -95,5 +95,5 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
-
+    
 }
