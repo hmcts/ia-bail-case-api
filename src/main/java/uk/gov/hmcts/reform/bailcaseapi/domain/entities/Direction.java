@@ -2,10 +2,6 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.w3c.dom.stylesheets.LinkStyle;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
-
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -13,49 +9,42 @@ import static java.util.Objects.requireNonNull;
 @ToString
 public class Direction {
 
-    private String directionDescription;
-    private String directionList;
+    private String sendDirectionDescription;
+    private String sendDirectionList;
     private String dateOfCompliance;
-    private String user;
-    private String dateAdded;
+    private String dateSent;
 
 
     private Direction() {
     }
 
     public Direction(
-        String directionDescription,
-        String directionList,
+        String sendDirectionDescription,
+        String sendDirectionList,
         String dateOfCompliance,
-        String user,
-        String dateAdded
+        String dateSent
     ) {
-        this.directionDescription = requireNonNull(directionDescription);
-        this.directionList = requireNonNull(directionList);
+        this.sendDirectionDescription = requireNonNull(sendDirectionDescription);
+        this.sendDirectionList = requireNonNull(sendDirectionList);
         this.dateOfCompliance = requireNonNull(dateOfCompliance);
-        this.user = requireNonNull(user);
-        this.dateAdded = requireNonNull(dateAdded);
+        this.dateSent = requireNonNull(dateSent);
     }
 
 
-    public String getDirectionDescription() {
-        return requireNonNull(directionDescription);
+    public String getSendDirectionDescription() {
+        return requireNonNull(sendDirectionDescription);
     }
 
-    public String getDirectionList() {
-        return requireNonNull(directionList);
+    public String getSendDirectionList() {
+        return requireNonNull(sendDirectionList);
     }
 
     public String getDateOfCompliance() {
         return requireNonNull(dateOfCompliance);
     }
 
-    public String getUser() {
-        return requireNonNull(user);
-    }
-
-    public String getDateAdded() {
-        return requireNonNull(dateAdded);
+    public String getDateSent() {
+        return requireNonNull(dateSent);
     }
 
 
