@@ -3,8 +3,6 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-
-
 import static java.util.Objects.requireNonNull;
 
 @EqualsAndHashCode

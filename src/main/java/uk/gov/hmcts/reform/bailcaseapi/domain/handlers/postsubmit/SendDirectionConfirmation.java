@@ -9,7 +9,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PostSubmitCallbackHandler
 
 import static java.util.Objects.requireNonNull;
 
-
 @Component
 public class SendDirectionConfirmation implements PostSubmitCallbackHandler<BailCase> {
 
