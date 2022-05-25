@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
