@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SEND_BAIL_DIRECTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 
@@ -29,16 +29,13 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
 
     private final Appender<Direction> directionAppender;
     private final DateProvider dateProvider;
-    private final UserDetails userDetails;
 
     public SendDirectionHandler(
         Appender<Direction> directionAppender,
-        DateProvider dateProvider,
-        UserDetails userDetails
+        DateProvider dateProvider
     ) {
         this.directionAppender = directionAppender;
         this.dateProvider = dateProvider;
-        this.userDetails = userDetails;
     }
 
     public boolean canHandle(
@@ -78,7 +75,7 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
 
 
         Optional<List<IdValue<Direction>>> maybeExistingDirections =
-            bailCase.read(DIRECTION);
+            bailCase.read(DIRECTIONS);
 
 
 
@@ -93,7 +90,7 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         List<IdValue<Direction>> allDirections =
             directionAppender.append(newDirection, maybeExistingDirections.orElse(emptyList()));
 
-        bailCase.write(DIRECTION, allDirections);
+        bailCase.write(DIRECTIONS, allDirections);
 
 
         return new PreSubmitCallbackResponse<>(bailCase);

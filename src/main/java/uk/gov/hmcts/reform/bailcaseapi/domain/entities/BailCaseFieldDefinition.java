@@ -305,7 +305,7 @@ public enum BailCaseFieldDefinition {
         "sendDirectionList", new TypeReference<String>(){}),
     DATE_OF_COMPLIANCE(
         "dateOfCompliance", new TypeReference<String>(){}),
-    DIRECTION(
+    DIRECTIONS(
         "directions", new TypeReference<List<IdValue<Direction>>>(){}),
     REASON_FOR_REFUSAL_DETAILS(
         "reasonForRefusalDetails", new TypeReference<String>(){}),
