@@ -13,7 +13,6 @@ public class Direction {
     private String sendDirectionList;
     private String dateOfCompliance;
     private String dateSent;
-
     private Direction() {
     }
 

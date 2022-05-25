@@ -36,7 +36,6 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
     ) {
         this.directionAppender = directionAppender;
         this.dateProvider = dateProvider;
-
     }
 
     public boolean canHandle(
@@ -68,7 +67,6 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
                 .orElseThrow(() -> new IllegalStateException("sendDirectionDescription is not present"));
 
         String sendDirectionList = bailCase
-
                 .read(SEND_DIRECTION_LIST, String.class)
                 .orElseThrow(() -> new IllegalStateException("sendDirectionList is not present"));
 
@@ -78,6 +76,7 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
 
 
         Optional<List<IdValue<Direction>>> maybeExistingDirections =
+
             bailCase.read(DIRECTIONS);
 
 
@@ -85,14 +84,12 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
             sendDirectionDescription,
             sendDirectionList,
             dateOfCompliance,
-
             dateProvider.now().toString()
         );
 
 
         List<IdValue<Direction>> allDirections =
             directionAppender.append(newDirection, maybeExistingDirections.orElse(emptyList()));
-
         bailCase.write(DIRECTIONS, allDirections);
 
 
