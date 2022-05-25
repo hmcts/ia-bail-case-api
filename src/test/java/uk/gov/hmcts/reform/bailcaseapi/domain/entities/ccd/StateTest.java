@@ -14,14 +14,15 @@ public class StateTest {
         assertEquals("applicationEnded", State.APPLICATION_ENDED.toString());
         assertEquals("applicationSubmitted", State.APPLICATION_SUBMITTED.toString());
         assertEquals("bailSummaryUploaded", State.BAIL_SUMMARY_UPLOADED.toString());
-        assertEquals("uploadBailSummary", Event.UPLOAD_BAIL_SUMMARY.toString());
-        assertEquals("recordTheDecision", Event.RECORD_THE_DECISION.toString());
+        assertEquals("decisionRecorded", State.DECISION_RECORDED.toString());
+        assertEquals("decisionDecided", State.DECISION_DECIDED.toString());
+        assertEquals("decisionConditionalBail", State.DECISION_CONDITIONAL_BAIL.toString());
         assertEquals("unknown", State.UNKNOWN.toString());
     }
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(8, State.values().length);
+        assertEquals(10, State.values().length);
     }
 
 }

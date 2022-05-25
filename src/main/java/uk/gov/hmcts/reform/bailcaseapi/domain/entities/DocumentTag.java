@@ -8,6 +8,10 @@ public enum DocumentTag {
     BAIL_EVIDENCE("uploadTheBailEvidenceDocs"),
     APPLICATION_SUBMISSION("applicationSubmission"),
     BAIL_SUMMARY("uploadBailSummary"),
+    SIGNED_DECISION_NOTICE("signedDecisionNotice"),
+    BAIL_DECISION_UNSIGNED("bailDecisionUnsigned"),
+    UPLOAD_DOCUMENT("uploadDocument"),
+    BAIL_SUBMISSION("bailSubmission"),
 
     @JsonEnumDefaultValue
     NONE("");

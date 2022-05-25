@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_JUDGE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE;
@@ -26,7 +27,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 
-
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
 class CurrentCaseStateUpdaterTest {
@@ -38,11 +38,10 @@ class CurrentCaseStateUpdaterTest {
     @Mock
     private BailCase bailCase;
 
-    private CurrentCaseStateUpdater currentCaseStateUpdater =
-        new CurrentCaseStateUpdater();
+    private CurrentCaseStateUpdater currentCaseStateUpdater = new CurrentCaseStateUpdater();
 
     @Test
-    void should_set_case_building_ready_for_submission_flag_to_yes() {
+    void should_set_variables_to_appropriate_states() {
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
@@ -58,10 +57,16 @@ class CurrentCaseStateUpdaterTest {
             assertNotNull(callbackResponse);
             assertEquals(bailCase, callbackResponse.getData());
 
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, state);
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, state);
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, state);
-            verify(bailCase, times(1)).write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, state);
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE, state);
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, state);
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, state);
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, state);
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, state);
             reset(bailCase);
         }
     }
