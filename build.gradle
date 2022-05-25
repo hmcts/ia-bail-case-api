@@ -276,6 +276,7 @@ dependencyManagement {
 }
 
 dependencies {
+  compile files('libs/core-case-data-store-client-DEV-SNAPSHOT.jar')
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
 //  compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
 //  compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: versions.springBoot

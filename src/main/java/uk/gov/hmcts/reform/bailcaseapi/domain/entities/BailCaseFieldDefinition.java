@@ -7,6 +7,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
+import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
 
 public enum BailCaseFieldDefinition {
     APPLICATION_SENT_BY(
@@ -336,7 +337,11 @@ public enum BailCaseFieldDefinition {
     UPLOAD_DOCUMENTS_SUPPLIED_BY(
         "uploadDocumentsSuppliedBy", new TypeReference<String>(){}),
     CURRENT_USER(
-        "currentUser", new TypeReference<String>(){});
+        "currentUser", new TypeReference<String>(){}),
+    EVENT_TO_CALL(
+        "evenToCall", new TypeReference<String>(){}),
+    TOKEN_TO_USE(
+        "tokenToUse", new TypeReference<String>(){});
 
 
     private final String value;

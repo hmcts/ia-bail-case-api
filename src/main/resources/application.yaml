@@ -120,3 +120,7 @@ launchDarkly:
   sdkKey: ${LAUNCH_DARKLY_SDK_KEY:sdk-key}
   connectionTimeout: 5000
   socketTimeout: 5000
+
+core_case_data:
+  api:
+    url: 'http://localhost:4452'
