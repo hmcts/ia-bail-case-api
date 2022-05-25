@@ -66,11 +66,11 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
                 .getCaseDetails()
                 .getCaseData();
 
-        String directionDescription = bailCase
+        String sendDirectionDescription = bailCase
                 .read(SEND_DIRECTION_DESCRIPTION, String.class)
                 .orElseThrow(() -> new IllegalStateException("sendDirectionDescription is not present"));
 
-        String directionList = bailCase
+        String sendDirectionList = bailCase
                 .read(SEND_DIRECTION_LIST, String.class)
                 .orElseThrow(() -> new IllegalStateException("sendDirectionList is not present"));
 
@@ -85,10 +85,9 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
 
 
         final Direction newDirection = new Direction(
-            directionDescription,
-            directionList,
+            sendDirectionDescription,
+            sendDirectionList,
             dateOfCompliance,
-            buildFullName(),
             dateProvider.now().toString()
         );
 
@@ -103,11 +102,5 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         bailCase.clear(DATE_OF_COMPLIANCE);
 
         return new PreSubmitCallbackResponse<>(bailCase);
-    }
-
-    private String buildFullName() {
-        return userDetails.getForename()
-            + " "
-            + userDetails.getSurname();
     }
 }
