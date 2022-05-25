@@ -29,7 +29,6 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
     private final Appender<Direction> directionAppender;
     private final DateProvider dateProvider;
 
-
     public SendDirectionHandler(
         Appender<Direction> directionAppender,
         DateProvider dateProvider
@@ -75,7 +74,6 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
 
 
         Optional<List<IdValue<Direction>>> maybeExistingDirections =
-
             bailCase.read(DIRECTIONS);
 
 
@@ -90,7 +88,6 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         List<IdValue<Direction>> allDirections =
             directionAppender.append(newDirection, maybeExistingDirections.orElse(emptyList()));
         bailCase.write(DIRECTIONS, allDirections);
-
 
 
         return new PreSubmitCallbackResponse<>(bailCase);
