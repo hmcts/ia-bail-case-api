@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -54,6 +56,22 @@ public class SendDirectionConfirmationTest {
             callbackResponse.getConfirmationBody().get())
             .contains("You can see the status of the direction in the [directions tab]");
 
+    }
+
+    @Test
+    void should_set_header_body() {
+        when(callback.getEvent()).thenReturn(Event.SEND_BAIL_DIRECTION);
+
+        long caseId = 1234L;
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(callback.getCaseDetails().getId()).thenReturn(caseId);
+        PostSubmitCallbackResponse response = sendDirectionConfirmation.handle(callback);
+
+        Assertions.assertNotNull(response.getConfirmationBody(), "Confirmation Body is null");
+        AssertionsForClassTypes.assertThat(response.getConfirmationBody().get()).contains("### What happens next");
+
+        Assertions.assertNotNull(response.getConfirmationHeader(), "Confirmation Header is null");
+        AssertionsForClassTypes.assertThat(response.getConfirmationHeader().get()).isEqualTo("# You have sent a direction");
     }
 
     @Test
