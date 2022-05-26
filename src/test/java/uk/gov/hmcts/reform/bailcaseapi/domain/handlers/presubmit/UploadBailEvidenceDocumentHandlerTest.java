@@ -84,7 +84,7 @@ class UploadBailEvidenceDocumentHandlerTest {
     }
 
     @Test
-    void should_append_new_evidence_to_existing_evidence_documents_for_the_case() {
+    void should_append_new_evidence_to_existing_applicant_documents_for_the_case() {
 
         List<IdValue<DocumentWithDescription>> evidenceWithDescriptionList =
             Arrays.asList(
@@ -127,7 +127,7 @@ class UploadBailEvidenceDocumentHandlerTest {
     }
 
     @Test
-    void should_add_new_evidence_to_the_case_when_no_evidence_documents_exist() {
+    void should_add_new_evidence_to_the_case_when_no_applicant_documents_exist() {
 
         List<IdValue<DocumentWithDescription>> evidenceWithDescriptionList =
             singletonList(new IdValue<>("1", groundsForBailEvidence1));
@@ -166,7 +166,7 @@ class UploadBailEvidenceDocumentHandlerTest {
     }
 
     @Test
-    void should_not_change_bail_evidence_new_evidence_is_not_present() {
+    void should_not_change_applicant_documents_new_evidence_is_not_present() {
 
         when(bailCase.read(BAIL_EVIDENCE)).thenReturn(Optional.empty());
         when(callback.getCaseDetails().getCaseData()).thenReturn(bailCase);
