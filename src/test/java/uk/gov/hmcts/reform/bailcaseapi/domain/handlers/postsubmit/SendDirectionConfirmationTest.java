@@ -58,6 +58,7 @@ public class SendDirectionConfirmationTest {
     }
 
     @Test
+<<<<<<< HEAD
     void should_set_header_body() {
         when(callback.getEvent()).thenReturn(Event.SEND_BAIL_DIRECTION);
 

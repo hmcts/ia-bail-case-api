@@ -39,15 +39,6 @@ public class SendDirectionConfirmation implements PostSubmitCallbackHandler<Bail
 
         postSubmitResponse.setConfirmationHeader("# You have sent a direction");
 
-        BailCase bailCase =
-            callback
-                .getCaseDetails()
-                .getCaseData();
-
-        bailCase.clear(SEND_DIRECTION_DESCRIPTION);
-        bailCase.clear(SEND_DIRECTION_LIST);
-        bailCase.clear(DATE_OF_COMPLIANCE);
-
         return postSubmitResponse;
     }
 }

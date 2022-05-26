@@ -88,6 +88,9 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
             directionAppender.append(newDirection, maybeExistingDirections.orElse(emptyList()));
         bailCase.write(DIRECTIONS, allDirections);
 
+        bailCase.clear(SEND_DIRECTION_DESCRIPTION);
+        bailCase.clear(SEND_DIRECTION_LIST);
+        bailCase.clear(DATE_OF_COMPLIANCE);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
