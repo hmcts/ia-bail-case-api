@@ -71,7 +71,9 @@ public class SendDirectionConfirmationTest {
         AssertionsForClassTypes.assertThat(response.getConfirmationBody().get()).contains("### What happens next");
 
         Assertions.assertNotNull(response.getConfirmationHeader(), "Confirmation Header is null");
-        AssertionsForClassTypes.assertThat(response.getConfirmationHeader().get()).isEqualTo("# You have sent a direction");
+        AssertionsForClassTypes.assertThat(
+            response.getConfirmationHeader().get()).isEqualTo("# You have sent a direction");
+
     }
 
     @Test
