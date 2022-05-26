@@ -338,10 +338,8 @@ public enum BailCaseFieldDefinition {
         "uploadDocumentsSuppliedBy", new TypeReference<String>(){}),
     CURRENT_USER(
         "currentUser", new TypeReference<String>(){}),
-    EVENT_TO_CALL(
-        "evenToCall", new TypeReference<String>(){}),
-    TOKEN_TO_USE(
-        "tokenToUse", new TypeReference<String>(){});
+    NEW_REF_ID(
+        "newRefId", new TypeReference<String>(){});
 
 
     private final String value;

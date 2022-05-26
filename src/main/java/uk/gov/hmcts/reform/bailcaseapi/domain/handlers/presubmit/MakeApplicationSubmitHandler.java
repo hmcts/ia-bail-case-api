@@ -89,76 +89,22 @@ public class MakeApplicationSubmitHandler implements PreSubmitCallbackHandler<Ba
 
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        var previousCaseDetails = callback.getCaseDetailsBefore();
+        var previousCaseDetails = callback.getCaseDetailsBefore().get().getCaseData();
 
-        var userAccessToken = userDetails.getAccessToken();
-        var accessTokenFromProvider = accessTokenProvider.getAccessToken();
-        String s2sToken = serviceAuthTokenGenerator.generate();
+        CaseDetails newCase = createCaseForCaseworker(userDetails, callback.getCaseDetails(), callback);
 
+        previousCaseDetails.write(BailCaseFieldDefinition.NEW_REF_ID, newCase.getId().toString());
 
-//        CaseDetails sss = createCaseForCaseworker(userDetails, callback.getCaseDetails(), callback);
-
-        return new PreSubmitCallbackResponse<>(previousCaseDetails.get().getCaseData());
-    }
-
-    private CaseDetails createCaseCall(final Callback<BailCase> callback, CaseDataContent cdc, String userId) {
-        requireNonNull(callback, "callback must not be null");
-
-        final long caseId = callback.getCaseDetails().getId();
-        final String serviceAuthorizationToken = serviceAuthTokenGenerator.generate();
-        final String accessToken = userDetails.getAccessToken();
-        final String idamUserId = userDetails.getId();
-
-
-        HttpEntity<CaseDataContent> requestEntity =
-            new HttpEntity<>(
-                cdc,
-                setHeaders(serviceAuthorizationToken, accessToken)
-            );
-
-        ResponseEntity<Object> response = null;
-        try {
-            response = restTemplate
-                .exchange(
-                    ccdUrl + "/caseworkers/"+userId+"/jurisdictions/IA/case-types/Bail/cases?ignore-warning=true",
-                    HttpMethod.POST,
-                    requestEntity,
-                    Object.class
-                );
-
-        } catch (RestClientResponseException e) {
-            e.getMessage();
-            e.getStatusText();
-        }
-
-        ResponseEntity<Object> ss = response;
-        ArrayList ssd1 = (ArrayList) response.getBody();
-
-        LinkedHashMap result = (LinkedHashMap) ssd1.get(0);
-
-        ObjectMapper mapper = new ObjectMapper();
-//        CaseDetails ssd = null;
-//        try {
-//            ssd = mapper.readValue((JsonParser) ssd1.get(0), CaseDetails.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        return null;
-
+        return new PreSubmitCallbackResponse<>(previousCaseDetails);
     }
 
     private CaseDetails createCaseForCaseworker(UserDetails caseworker,
                                                 uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails<BailCase> caseDetails,
                                                 Callback<BailCase> callback) {
 
-        var oldCaseId = caseDetails.getId();
-        var oldCaseJur = caseDetails.getJurisdiction();
         var oldCaseData = caseDetails.getCaseData();
-        var userAccessToken = caseworker.getAccessToken();
         var accessTokenFromProvider = accessTokenProvider.getAccessToken();
         String s2sToken = serviceAuthTokenGenerator.generate();
-        var userid = caseworker.getId();
 
         StartEventResponse startEventResponse = coreCaseDataApi.startForCaseworker(
             accessTokenFromProvider,
@@ -169,13 +115,6 @@ public class MakeApplicationSubmitHandler implements PreSubmitCallbackHandler<Ba
             "startApplication"
         );
 
-
-//        var fn = oldCaseData.read(BailCaseFieldDefinition.APPLICANT_GIVEN_NAMES);
-//        var sn = oldCaseData.read(BailCaseFieldDefinition.APPLICANT_FAMILY_NAME);
-//
-//        oldCaseData.clear();
-//        oldCaseData.write(BailCaseFieldDefinition.APPLICANT_GIVEN_NAMES, fn);
-//        oldCaseData.write(BailCaseFieldDefinition.APPLICANT_FAMILY_NAME, sn);
 
         oldCaseData.remove("decisionUnsignedDocument");
         oldCaseData.remove("applicationSubmissionDocument");
@@ -190,10 +129,6 @@ public class MakeApplicationSubmitHandler implements PreSubmitCallbackHandler<Ba
             .event(uk.gov.hmcts.reform.ccd.client.model.Event.builder().id(startEventResponse.getEventId()).build())
             .data(oldCaseData)
             .build();
-
-
-//        oldCaseData.write(BailCaseFieldDefinition.EVENT_TO_CALL, startEventResponse.getEventId());
-//        oldCaseData.write(BailCaseFieldDefinition.TOKEN_TO_USE, startEventResponse.getToken());
 
         return coreCaseDataApi.submitForCaseworker(
             accessTokenFromProvider,
