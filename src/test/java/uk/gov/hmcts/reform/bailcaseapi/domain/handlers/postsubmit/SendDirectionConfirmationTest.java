@@ -58,6 +58,7 @@ public class SendDirectionConfirmationTest {
     }
 
     @Test
+
     void should_set_header_body() {
         when(callback.getEvent()).thenReturn(Event.SEND_BAIL_DIRECTION);
 
@@ -76,6 +77,7 @@ public class SendDirectionConfirmationTest {
     }
 
     @Test
+
     void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(() -> sendDirectionConfirmation.handle(callback))
