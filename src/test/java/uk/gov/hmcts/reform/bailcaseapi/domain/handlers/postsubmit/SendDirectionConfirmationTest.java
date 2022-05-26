@@ -6,12 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +38,6 @@ public class SendDirectionConfirmationTest {
         when(callback.getEvent()).thenReturn(Event.SEND_BAIL_DIRECTION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getId()).thenReturn(111L);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
 
         PostSubmitCallbackResponse callbackResponse =
             sendDirectionConfirmation.handle(callback);
@@ -60,20 +54,6 @@ public class SendDirectionConfirmationTest {
             callbackResponse.getConfirmationBody().get())
             .contains("You can see the status of the direction in the [directions tab]");
 
-    }
-
-    @Test
-    void should_clear_fields() {
-        when(callback.getEvent()).thenReturn(Event.SEND_BAIL_DIRECTION);
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getId()).thenReturn(111L);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
-
-        sendDirectionConfirmation.handle(callback);
-
-        verify(bailCase, times(1)).clear(SEND_DIRECTION_DESCRIPTION);
-        verify(bailCase, times(1)).clear(SEND_DIRECTION_LIST);
-        verify(bailCase, times(1)).clear(DATE_OF_COMPLIANCE);
     }
 
     @Test

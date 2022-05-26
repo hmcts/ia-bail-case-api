@@ -111,6 +111,17 @@ public class SendDirectionHandlerTest {
     }
 
     @Test
+    void should_clear_fields_for_direction_being_sent() {
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            sendDirectionHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        verify(bailCase, times(1)).clear(SEND_DIRECTION_DESCRIPTION);
+        verify(bailCase, times(1)).clear(SEND_DIRECTION_LIST);
+        verify(bailCase, times(1)).clear(DATE_OF_COMPLIANCE);
+    }
+
+    @Test
     void should_throw_when_direction_description_is_not_present() {
 
         when(bailCase.read(SEND_DIRECTION_DESCRIPTION, String.class)).thenReturn(Optional.empty());
