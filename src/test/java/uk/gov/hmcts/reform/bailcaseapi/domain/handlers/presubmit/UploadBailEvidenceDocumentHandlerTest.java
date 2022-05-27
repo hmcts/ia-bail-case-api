@@ -78,7 +78,7 @@ class UploadBailEvidenceDocumentHandlerTest {
                 documentReceiver,
                 documentsAppender
             );
-        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(callback.getEvent()).thenReturn(Event.SUBMIT_APPLICATION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
     }
