@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,6 +18,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,10 +58,13 @@ public class SendDirectionHandlerTest {
 
     private final List<Direction> existingDirections = singletonList(existingDirection);
     private final LocalDate now = LocalDate.now();
-    private final String newDirectionDateOfCompliance = "2022-05-26";
+    private final String newDirectionDateOfCompliance = LocalDate.now().plusDays(1).toString();
     private final String newDirectionDescription = "some-description";
     private final String newDirectionRecipient = "some-recipient";
     private SendDirectionHandler sendDirectionHandler;
+
+    private String callbackErrorMessage =
+        "The date they must comply by must be a future date.";
 
     @BeforeEach
     public void setUp() {
@@ -108,6 +113,21 @@ public class SendDirectionHandlerTest {
         verify(bailCase, times(1)).write(DIRECTIONS, allAppendedDirections);
 
         assertThat(callbackResponse.getData()).isEqualTo(callbackResponse.getData());
+    }
+
+    @Test
+    void should_write_error_and_not_append_directions_if_date_not_future() {
+        String yesterday = LocalDate.now().minusDays(1).toString();
+        when(bailCase.read(DATE_OF_COMPLIANCE, String.class)).thenReturn(Optional.of(yesterday));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            sendDirectionHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+
+        verify(bailCase, never()).write(DIRECTIONS, allAppendedDirections);
+
+        final Set<String> errors = callbackResponse.getErrors();
+        assertThat(errors).hasSize(1).containsOnly(callbackErrorMessage);
     }
 
     @Test
