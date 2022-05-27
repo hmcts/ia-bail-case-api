@@ -339,7 +339,9 @@ public enum BailCaseFieldDefinition {
     CURRENT_USER(
         "currentUser", new TypeReference<String>(){}),
     NEW_REF_ID(
-        "newRefId", new TypeReference<String>(){});
+        "newRefId", new TypeReference<String>(){}),
+    PREVIOUS_BAIL_APPLICATION_NUMBER(
+        "previousBailApplicationNumber", new TypeReference<String>(){});
 
 
     private final String value;

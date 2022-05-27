@@ -1,14 +1,12 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserRoleLabel;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -18,20 +16,17 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.CompanyNameProvider;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.AccessTokenProvider;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static com.google.common.base.CaseFormat.LOWER_CAMEL;
-import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Component
-public class MakeApplicationHandler implements PreSubmitCallbackHandler<BailCase> {
+public class MakeApplicationMidEventHandler implements PreSubmitCallbackHandler<BailCase> {
 
     private final UserDetails userDetails;
     private final UserDetailsHelper userDetailsHelper;
@@ -52,11 +47,11 @@ public class MakeApplicationHandler implements PreSubmitCallbackHandler<BailCase
         }
     };
 
-    public MakeApplicationHandler(UserDetails userDetails, UserDetailsHelper userDetailsHelper,
-                                  CompanyNameProvider companyNameProvider,
-                                  AuthTokenGenerator serviceAuthTokenGenerator,
-                                  CoreCaseDataApi coreCaseDataApi,
-                                  AccessTokenProvider accessTokenProvider) {
+    public MakeApplicationMidEventHandler(UserDetails userDetails, UserDetailsHelper userDetailsHelper,
+                                          CompanyNameProvider companyNameProvider,
+                                          AuthTokenGenerator serviceAuthTokenGenerator,
+                                          CoreCaseDataApi coreCaseDataApi,
+                                          AccessTokenProvider accessTokenProvider) {
         this.userDetails = userDetails;
         this.userDetailsHelper = userDetailsHelper;
         this.companyNameProvider = companyNameProvider;
@@ -70,8 +65,8 @@ public class MakeApplicationHandler implements PreSubmitCallbackHandler<BailCase
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
 
-        return callbackStage == PreSubmitCallbackStage.ABOUT_TO_START
-            && callback.getEvent() == Event.UNKNOWN;
+        return callbackStage == PreSubmitCallbackStage.MID_EVENT
+            && callback.getEvent() == Event.MAKE_NEW_APPLICATION;
     }
 
     @Override
@@ -84,9 +79,21 @@ public class MakeApplicationHandler implements PreSubmitCallbackHandler<BailCase
 
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        var previousBailApplicationNumber = callback.getCaseDetails().getId();
+        var previousCaseDetails = callback.getCaseDetailsBefore().get().getCaseData();
+        var previousCaseDetails1 = previousCaseDetails.size();
 
-        BailCase newBailCase = SerializationUtils.clone(bailCase);
+//        bailCase.write(BailCaseFieldDefinition.IS_LEGAL_REP, YesOrNo.NO);
+//        bailCase.write(BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.NO);
+//
+//        bailCase.remove("decisionUnsignedDocument");
+//        bailCase.remove("applicationSubmissionDocument");
+//        bailCase.remove("uploadBailSummaryDocs");
+//        bailCase.remove("decisionUnsignedDocMetadata");
+//        bailCase.remove("uploadBailSummaryMetadata");
+//
+//        bailCase.entrySet().removeIf(entry -> !validFields.contains(entry.getKey()));
+
+//        BailCase newBailCase = SerializationUtils.clone(bailCase);
 
 //        newBailCase.remove("decisionUnsignedDocument");
 //        newBailCase.remove("applicationSubmissionDocument");
@@ -114,7 +121,7 @@ public class MakeApplicationHandler implements PreSubmitCallbackHandler<BailCase
 //            newBailCase.write(BailCaseFieldDefinition.IS_HOME_OFFICE, YesOrNo.NO);
 //        }
 
-        return new PreSubmitCallbackResponse<>(newBailCase);
+        return new PreSubmitCallbackResponse<>(bailCase);
     }
 
 

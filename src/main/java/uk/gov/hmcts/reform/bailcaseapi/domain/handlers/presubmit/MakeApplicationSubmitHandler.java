@@ -1,11 +1,9 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
@@ -78,7 +76,7 @@ public class MakeApplicationSubmitHandler implements PreSubmitCallbackHandler<Ba
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-            && callback.getEvent() == Event.MAKE_APPLICATION;
+            && callback.getEvent() == Event.MAKE_NEW_APPLICATION;
     }
 
     @Override
@@ -123,6 +121,9 @@ public class MakeApplicationSubmitHandler implements PreSubmitCallbackHandler<Ba
         oldCaseData.remove("uploadBailSummaryMetadata");
 
         oldCaseData.entrySet().removeIf(entry -> !validFields.contains(entry.getKey()));
+
+        var previousBailApplicationNumber = callback.getCaseDetails().getId();
+        oldCaseData.write(BailCaseFieldDefinition.PREVIOUS_BAIL_APPLICATION_NUMBER, previousBailApplicationNumber);
 
         CaseDataContent caseDataContent = CaseDataContent.builder()
             .eventToken(startEventResponse.getToken())

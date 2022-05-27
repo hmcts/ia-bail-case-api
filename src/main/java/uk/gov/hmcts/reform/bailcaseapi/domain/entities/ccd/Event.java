@@ -15,7 +15,7 @@ public enum Event {
     MOVE_APPLICATION_TO_DECIDED("moveApplicationToDecided"),
     UPLOAD_DOCUMENTS("uploadDocuments"),
     EDIT_DOCUMENTS("editDocuments"),
-    MAKE_APPLICATION("makeApplication"),
+    MAKE_NEW_APPLICATION("makeNewApplication"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");

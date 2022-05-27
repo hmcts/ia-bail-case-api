@@ -15,13 +15,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PostSubmitCallbackHandler
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.CompanyNameProvider;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.AccessTokenProvider;
 import uk.gov.hmcts.reform.ccd.client.CoreCaseDataApi;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDataContent;
-import uk.gov.hmcts.reform.ccd.client.model.CaseDetails;
-import uk.gov.hmcts.reform.ccd.client.model.StartEventResponse;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -62,7 +55,7 @@ public class MakeApplicationPostSubmit implements PostSubmitCallbackHandler<Bail
     @Override
     public boolean canHandle(Callback<BailCase> callback) {
         requireNonNull(callback, "callback must not be null");
-        return callback.getEvent() == Event.MAKE_APPLICATION;
+        return callback.getEvent() == Event.MAKE_NEW_APPLICATION;
     }
 
     @Override
