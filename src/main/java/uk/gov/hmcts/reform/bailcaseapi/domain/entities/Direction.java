@@ -22,11 +22,13 @@ public class Direction {
         String sendDirectionList,
         String dateOfCompliance,
         String dateSent
+
     ) {
         this.sendDirectionDescription = requireNonNull(sendDirectionDescription);
         this.sendDirectionList = requireNonNull(sendDirectionList);
         this.dateOfCompliance = requireNonNull(dateOfCompliance);
         this.dateSent = requireNonNull(dateSent);
+
     }
 
 

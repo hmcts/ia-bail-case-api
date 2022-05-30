@@ -29,7 +29,7 @@ public class ChangeBailDirectionDueDateConfirmation implements PostSubmitCallbac
 
         postSubmitResponse.setConfirmationBody(
             "### What happens next\n\n"
-                    + "All parties will be notified that the direction due date has changed. " +
+                    + "All sendDirectionList will be notified that the direction due date has changed. " +
                 "You can see the status od the direction in the [direction tab](/case/IA/Bail/"
                 + callback.getCaseDetails().getId()
                 + "#Direction)."
