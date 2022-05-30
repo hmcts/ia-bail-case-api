@@ -8,6 +8,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SEND_BAIL_DIRECTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
@@ -75,24 +77,34 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         Optional<List<IdValue<Direction>>> maybeExistingDirections =
             bailCase.read(DIRECTIONS);
 
+        LocalDate now = dateProvider.now();
 
         final Direction newDirection = new Direction(
             sendDirectionDescription,
             sendDirectionList,
             dateOfCompliance,
-            dateProvider.now().toString()
+            now.toString()
         );
 
 
         List<IdValue<Direction>> allDirections =
             directionAppender.append(newDirection, maybeExistingDirections.orElse(emptyList()));
-        bailCase.write(DIRECTIONS, allDirections);
+
+        PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
+
+        LocalDate dateSelected = LocalDate.parse(dateOfCompliance);
+
+        if (!dateSelected.isAfter(now)) {
+            response.addError("The date they must comply by must be a future date.");
+        } else {
+            bailCase.write(DIRECTIONS, allDirections);
+        }
 
         bailCase.clear(SEND_DIRECTION_DESCRIPTION);
         bailCase.clear(SEND_DIRECTION_LIST);
         bailCase.clear(DATE_OF_COMPLIANCE);
 
-        return new PreSubmitCallbackResponse<>(bailCase);
+        return response;
     }
 
 }
