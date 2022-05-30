@@ -16,6 +16,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -73,6 +74,7 @@ public class SendDirectionHandlerTest {
         when(caseDetails.getCaseData()).thenReturn(bailCase);
 
         when(dateProvider.now()).thenReturn(now);
+        when(dateProvider.nowWithTime()).thenReturn(LocalDateTime.now());
 
         when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
         when(bailCase.read(SEND_DIRECTION_DESCRIPTION, String.class)).thenReturn(Optional.of(newDirectionDescription));
