@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs;
+package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.EDIT_DOCUMENTS_REASON;
@@ -15,12 +15,17 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
+import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs.AuditDetails;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.idam.IdamUserDetailsHelper;
 
 @Component
 public class EditDocsAuditLogService {
 
     @Autowired
     private UserDetails userDetails;
+
+    @Autowired
+    private IdamUserDetailsHelper idamUserDetailsHelper;
 
     @Autowired
     private EditDocsAuditService editDocsAuditService;
@@ -31,7 +36,7 @@ public class EditDocsAuditLogService {
             .documentIds(getUpdatedAndDeletedAndAddedDocIds(bailCase, bailCaseBefore))
             .documentNames(getUpdatedAndDeletedAndAddedDocumentNames(bailCase, bailCaseBefore))
             .idamUserId(userDetails.getId())
-            .user(getIdamUserName(userDetails))
+            .user(idamUserDetailsHelper.getIdamUserName(userDetails))
             .reason(bailCase.read(EDIT_DOCUMENTS_REASON, String.class).orElse(null))
             .dateTime(LocalDateTime.now())
             .build();
@@ -51,10 +56,6 @@ public class EditDocsAuditLogService {
         });
 
         return docNames;
-    }
-
-    private String getIdamUserName(UserDetails userDetails) {
-        return userDetails.getForename() + " " + userDetails.getSurname();
     }
 
     private List<String> getUpdatedAndDeletedAndAddedDocIds(BailCase bailCase, BailCase bailCaseBefore) {

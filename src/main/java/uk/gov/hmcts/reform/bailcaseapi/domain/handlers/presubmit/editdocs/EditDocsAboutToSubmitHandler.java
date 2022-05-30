@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.EditDocsCaseNoteService;
 
 @Component
 public class EditDocsAboutToSubmitHandler implements PreSubmitCallbackHandler<BailCase> {

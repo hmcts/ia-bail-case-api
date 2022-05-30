@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs;
+package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import java.util.ArrayList;
 import java.util.Collections;

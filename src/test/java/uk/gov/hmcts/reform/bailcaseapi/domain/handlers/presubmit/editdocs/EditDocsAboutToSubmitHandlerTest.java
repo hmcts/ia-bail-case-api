@@ -35,6 +35,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.EditDocsCaseNoteService;
 
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 @ExtendWith(MockitoExtension.class)
@@ -136,13 +137,13 @@ class EditDocsAboutToSubmitHandlerTest {
             BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA
         );
 
-        BailCase bailCaseCaseWithHomeOfficeDoc = buildBailCaseGivenParams(
+        BailCase bailCaseWithHomeOfficeDoc = buildBailCaseGivenParams(
             expectedSuppliedBy,
             DocumentTag.NONE,
             HOME_OFFICE_DOCUMENTS_WITH_METADATA
         );
 
-        BailCase bailCaseCaseWithApplicantDoc = buildBailCaseGivenParams(
+        BailCase bailCaseWithApplicantDoc = buildBailCaseGivenParams(
             expectedSuppliedBy,
             DocumentTag.NONE,
             BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA
@@ -153,9 +154,9 @@ class EditDocsAboutToSubmitHandlerTest {
         return new Object[] {
             new Object[] {bailCaseWithTribunalDoc, bailCaseBefore,
                 BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA, expectedSuppliedBy, DocumentTag.NONE},
-            new Object[] {bailCaseCaseWithHomeOfficeDoc, bailCaseBefore, HOME_OFFICE_DOCUMENTS_WITH_METADATA,
+            new Object[] {bailCaseWithHomeOfficeDoc, bailCaseBefore, HOME_OFFICE_DOCUMENTS_WITH_METADATA,
                 expectedSuppliedBy, DocumentTag.NONE},
-            new Object[] {bailCaseCaseWithApplicantDoc, bailCaseBefore,
+            new Object[] {bailCaseWithApplicantDoc, bailCaseBefore,
                 BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA, expectedSuppliedBy, DocumentTag.NONE}
         };
     }

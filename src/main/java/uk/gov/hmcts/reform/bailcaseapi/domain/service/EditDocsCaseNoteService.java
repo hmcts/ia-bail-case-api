@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.editdocs;
+package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_NOTES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.EDIT_DOCUMENTS_REASON;
@@ -13,8 +13,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseNote;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs.AuditDetails;
-import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs.EditDocsAuditLogService;
-import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 
 @Service
 public class EditDocsCaseNoteService {

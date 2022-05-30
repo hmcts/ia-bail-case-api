@@ -20,6 +20,9 @@ import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.EditDocsAuditLogService;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.EditDocsAuditService;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.idam.IdamUserDetailsHelper;
 
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +34,8 @@ class EditDocsAuditLogServiceTest {
     private UserDetails userDetails;
     @Mock
     private BailCase bailCase;
+    @Mock
+    private IdamUserDetailsHelper idamUserDetailsHelper;
 
     @InjectMocks
     private EditDocsAuditLogService editDocsAuditLogService;
@@ -45,7 +50,7 @@ class EditDocsAuditLogServiceTest {
         AuditDetails actualAuditDetails = editDocsAuditLogService.buildAuditDetails(1L, bailCase, bailCase);
 
         assertEquals("user-id-124", actualAuditDetails.getIdamUserId());
-        assertEquals("some forename some surname", actualAuditDetails.getUser());
+        assertEquals("some forename some surname", idamUserDetailsHelper.getIdamUserName(userDetails));
         assertEquals(
             Arrays.asList("id1", "id4", "id2", "id5", "id3", "id6"),
             actualAuditDetails.getDocumentIds());
@@ -60,8 +65,7 @@ class EditDocsAuditLogServiceTest {
 
     private void mockUserDetailsProvider() {
         when(userDetails.getId()).thenReturn("user-id-124");
-        when(userDetails.getForename()).thenReturn("some forename");
-        when(userDetails.getSurname()).thenReturn("some surname");
+        when(idamUserDetailsHelper.getIdamUserName(userDetails)).thenReturn("some forename some surname");
     }
 
     private void mockEditDocsAuditService() {
