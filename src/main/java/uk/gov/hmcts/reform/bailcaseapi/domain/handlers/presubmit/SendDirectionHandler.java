@@ -104,7 +104,7 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         bailCase.clear(SEND_DIRECTION_LIST);
         bailCase.clear(DATE_OF_COMPLIANCE);
 
-        return new PreSubmitCallbackResponse<>(bailCase);
+        return response;
     }
 
 }
