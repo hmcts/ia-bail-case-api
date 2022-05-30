@@ -347,8 +347,6 @@ public enum BailCaseFieldDefinition {
         "currentUser", new TypeReference<String>(){}),
     EDIT_DOCUMENTS_REASON(
         "editDocumentsReason", new TypeReference<String>(){}),
-    CASE_NOTES(
-        "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){}),
     ;
 
 

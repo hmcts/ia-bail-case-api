@@ -41,6 +41,8 @@ public class EditDocsAuditLogService {
         List<String> docNames = new ArrayList<>();
         getListOfDocumentFields().forEach(field -> docNames.addAll(
             editDocsAuditService.getUpdatedAndDeletedDocNamesForGivenField(bailCase, bailCaseBefore, field)));
+        getListOfDocumentFields().forEach(field -> docNames.addAll(
+            editDocsAuditService.getAddedDocNamesForGivenField(bailCase, bailCaseBefore, field)));
         return docNames;
     }
 
@@ -55,6 +57,8 @@ public class EditDocsAuditLogService {
         List<String> docIds = new ArrayList<>();
         getListOfDocumentFields().forEach(field -> docIds.addAll(
             editDocsAuditService.getUpdatedAndDeletedDocIdsForGivenField(bailCase, bailCaseBefore, field)));
+        getListOfDocumentFields().forEach(field -> docIds.addAll(
+            editDocsAuditService.getAddedDocIdsForGivenField(bailCase, bailCaseBefore, field)));
         return docIds;
     }
 

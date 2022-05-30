@@ -22,7 +22,7 @@ public class EditDocsAuditLogHandler implements PostSubmitCallbackHandler<BailCa
     @Override
     public boolean canHandle(Callback<BailCase> callback) {
         requireNonNull(callback, "callback must not be null");
-        return callback.getEvent() == Event.EDIT_DOCUMENTS;
+        return callback.getEvent() == Event.EDIT_BAIL_DOCUMENTS;
     }
 
     @Override

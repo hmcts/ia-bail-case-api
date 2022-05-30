@@ -33,6 +33,26 @@ public class EditDocsAuditService {
         return docNames;
     }
 
+    public List<String> getAddedDocIdsForGivenField(BailCase bailCase, BailCase bailCaseBefore,
+                                                                BailCaseFieldDefinition field) {
+        List<IdValue<HasDocument>> doc = getDocField(bailCase, field);
+        List<IdValue<HasDocument>> docBefore = getDocField(bailCaseBefore, field);
+        doc.removeAll(docBefore);
+        List<String> docIds = new ArrayList<>();
+        docBefore.forEach(d -> docIds.add(getIdFromDocUrl(d.getValue().getDocument().getDocumentUrl())));
+        return docIds;
+    }
+
+    public List<String> getAddedDocNamesForGivenField(BailCase bailCase, BailCase bailCaseBefore,
+                                                                  BailCaseFieldDefinition field) {
+        List<IdValue<HasDocument>> doc = getDocField(bailCase, field);
+        List<IdValue<HasDocument>> docBefore = getDocField(bailCaseBefore, field);
+        doc.removeAll(docBefore);
+        List<String> docNames = new ArrayList<>();
+        doc.forEach(d -> docNames.add(d.getValue().getDocument().getDocumentFilename()));
+        return docNames;
+    }
+
     public static String getIdFromDocUrl(String documentUrl) {
         String regexToGetStringFromTheLastForwardSlash = "([^/]+$)";
         Pattern pattern = Pattern.compile(regexToGetStringFromTheLastForwardSlash);

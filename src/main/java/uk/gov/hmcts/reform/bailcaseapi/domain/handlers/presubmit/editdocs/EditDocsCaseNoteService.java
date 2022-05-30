@@ -43,7 +43,7 @@ public class EditDocsCaseNoteService {
     }
 
     private String getAuditDetailsFormatted(AuditDetails auditDetails) {
-        return String.format("Document names: %s" + System.lineSeparator() + "reason: %s",
+        return String.format("Document names: %s" + System.lineSeparator() + "Reason: %s",
                              auditDetails.getDocumentNames(),
                              auditDetails.getReason()
         );

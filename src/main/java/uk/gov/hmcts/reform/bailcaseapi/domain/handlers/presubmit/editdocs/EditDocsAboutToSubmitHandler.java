@@ -29,7 +29,7 @@ public class EditDocsAboutToSubmitHandler implements PreSubmitCallbackHandler<Ba
     public boolean canHandle(PreSubmitCallbackStage callbackStage, Callback<BailCase> callback) {
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
-        return callback.getEvent() == Event.EDIT_DOCUMENTS && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
+        return callback.getEvent() == Event.EDIT_BAIL_DOCUMENTS && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
     }
 
     @Override
