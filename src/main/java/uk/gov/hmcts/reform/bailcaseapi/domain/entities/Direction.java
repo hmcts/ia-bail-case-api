@@ -26,6 +26,7 @@ public class Direction {
         String dateSent,
         String dateTimeDirectionCreated,
         String dateTimeDirectionModified
+
     ) {
         this.sendDirectionDescription = requireNonNull(sendDirectionDescription);
         this.sendDirectionList = requireNonNull(sendDirectionList);

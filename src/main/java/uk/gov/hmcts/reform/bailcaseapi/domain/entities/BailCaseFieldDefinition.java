@@ -317,18 +317,16 @@ public enum BailCaseFieldDefinition {
         "dateOfCompliance", new TypeReference<String>(){}),
     DIRECTIONS(
         "directions", new TypeReference<List<IdValue<Direction>>>(){}),
-    CHANGE_BAIL_DIRECTION_LIST(
-        "changeBailDirectionList", new TypeReference<String>(){}),
-    CHANGE_BAIL_DIRECTION_DUE_DATE_EXPLANATION(
-        "changeBailDirectionDueDateExplanation", new TypeReference<String>(){}),
-    CHANGE_BAIL_DIRECTION_DUE_DATE_PARTIES(
-        "changeBailDirectionDueDateParties", new TypeReference<String>(){}),
-    CHANGE_BAIL_DIRECTION_DUE_DATE_DATE_SENT(
-        "changeBailDirectionDueDateDateSent", new TypeReference<String>(){}),
-    NEW_BAIL_DIRECTION_DUE_DATE(
-        "newBailDirectionDueDate", new TypeReference<String>(){}),
-    NEW_DIRECTIONS(
-        "newDirections", new TypeReference<List<IdValue<NewDirection>>>(){}),
+    BAIL_DIRECTION_LIST(
+        "bailDirectionList", new TypeReference<String>(){}),
+    BAIL_DIRECTION_EDIT_EXPLANATION(
+        "bailDirectionEditExplanation", new TypeReference<String>(){}),
+    BAIL_DIRECTION_EDIT_PARTIES(
+        "bailDirectionEditParties", new TypeReference<String>(){}),
+    BAIL_DIRECTION_EDIT_DATE_SENT(
+        "bailDirectionEditDateSent", new TypeReference<String>(){}),
+    BAIL_DIRECTION_EDIT_DATE_DUE(
+        "bailDirectionEditDateDue", new TypeReference<String>(){}),
     REASON_FOR_REFUSAL_DETAILS(
         "reasonForRefusalDetails", new TypeReference<String>(){}),
     TRIBUNAL_REFUSAL_REASON(

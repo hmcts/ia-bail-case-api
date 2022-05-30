@@ -34,7 +34,7 @@ public class EndApplicationConfirmation implements PostSubmitCallbackHandler<Bai
         postSubmitResponse.setConfirmationHeader("# You have ended the application");
         postSubmitResponse.setConfirmationBody(
             "#### What happens next\n\n"
-                + "A notification has been sent to all parties. "
+                + "A notification has been sent to all sendDirectionList. "
                 + "No further action is required.<br>"
         );
         return postSubmitResponse;
