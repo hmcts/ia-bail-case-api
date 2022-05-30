@@ -103,6 +103,12 @@ public class PreSubmitCallbackController {
         return performStageRequest(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
     }
 
+    @PostMapping(path = "/ccdMidEvent")
+    public ResponseEntity<PreSubmitCallbackResponse<BailCase>> ccdMidEvent(
+        @Parameter(name = "Bail case data", required = true) @NotNull @RequestBody Callback<BailCase> callback
+    ) {
+        return performStageRequest(PreSubmitCallbackStage.MID_EVENT, callback);
+    }
 
     private ResponseEntity<PreSubmitCallbackResponse<BailCase>> performStageRequest(
         PreSubmitCallbackStage callbackStage,
@@ -138,6 +144,5 @@ public class PreSubmitCallbackController {
 
         return ok(callbackResponse);
     }
-
 
 }

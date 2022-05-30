@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -46,10 +47,10 @@ class EditDocsAuditLogServiceTest {
         assertEquals("user-id-124", actualAuditDetails.getIdamUserId());
         assertEquals("some forename some surname", actualAuditDetails.getUser());
         assertEquals(
-            Arrays.asList("id1", "id2", "id3", "id4", "id5", "id6"),
+            Arrays.asList("id1", "id4", "id2", "id5", "id3", "id6"),
             actualAuditDetails.getDocumentIds());
         assertEquals(Arrays.asList(
-                         "docName1", "docName2", "docName3", "docName4", "docName5", "docName6"),
+                         "docName1", "docName4", "docName2", "docName5", "docName3", "docName6"),
                      actualAuditDetails.getDocumentNames()
         );
         assertEquals(1L, actualAuditDetails.getCaseId());

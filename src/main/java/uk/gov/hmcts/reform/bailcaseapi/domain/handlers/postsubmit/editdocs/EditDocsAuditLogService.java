@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs;
 
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.EDIT_DOCUMENTS_REASON;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,8 +28,8 @@ public class EditDocsAuditLogService {
     public AuditDetails buildAuditDetails(long caseId, BailCase bailCase, BailCase bailCaseBefore) {
         return AuditDetails.builder()
             .caseId(caseId)
-            .documentIds(getDeletedDocIds(bailCase, bailCaseBefore))
-            .documentNames(getDeletedDocumentNames(bailCase, bailCaseBefore))
+            .documentIds(getUpdatedAndDeletedAndAddedDocIds(bailCase, bailCaseBefore))
+            .documentNames(getUpdatedAndDeletedAndAddedDocumentNames(bailCase, bailCaseBefore))
             .idamUserId(userDetails.getId())
             .user(getIdamUserName(userDetails))
             .reason(bailCase.read(EDIT_DOCUMENTS_REASON, String.class).orElse(null))
@@ -34,15 +37,19 @@ public class EditDocsAuditLogService {
             .build();
     }
 
-    private List<String> getDeletedDocumentNames(BailCase bailCase, BailCase bailCaseBefore) {
+    private List<String> getUpdatedAndDeletedAndAddedDocumentNames(BailCase bailCase, BailCase bailCaseBefore) {
         if (bailCaseBefore == null) {
             return Collections.emptyList();
         }
+
         List<String> docNames = new ArrayList<>();
-        getListOfDocumentFields().forEach(field -> docNames.addAll(
-            editDocsAuditService.getUpdatedAndDeletedDocNamesForGivenField(bailCase, bailCaseBefore, field)));
-        getListOfDocumentFields().forEach(field -> docNames.addAll(
-            editDocsAuditService.getAddedDocNamesForGivenField(bailCase, bailCaseBefore, field)));
+        getListOfDocumentFields().forEach(field -> {
+            docNames.addAll(
+                editDocsAuditService.getUpdatedAndDeletedDocNamesForGivenField(bailCase, bailCaseBefore, field));
+            docNames.addAll(
+                editDocsAuditService.getAddedDocNamesForGivenField(bailCase, bailCaseBefore, field));
+        });
+
         return docNames;
     }
 
@@ -50,15 +57,17 @@ public class EditDocsAuditLogService {
         return userDetails.getForename() + " " + userDetails.getSurname();
     }
 
-    private List<String> getDeletedDocIds(BailCase bailCase, BailCase bailCaseBefore) {
+    private List<String> getUpdatedAndDeletedAndAddedDocIds(BailCase bailCase, BailCase bailCaseBefore) {
         if (bailCaseBefore == null) {
             return Collections.emptyList();
         }
         List<String> docIds = new ArrayList<>();
-        getListOfDocumentFields().forEach(field -> docIds.addAll(
-            editDocsAuditService.getUpdatedAndDeletedDocIdsForGivenField(bailCase, bailCaseBefore, field)));
-        getListOfDocumentFields().forEach(field -> docIds.addAll(
-            editDocsAuditService.getAddedDocIdsForGivenField(bailCase, bailCaseBefore, field)));
+        getListOfDocumentFields().forEach(field -> {
+            docIds.addAll(
+                editDocsAuditService.getUpdatedAndDeletedDocIdsForGivenField(bailCase, bailCaseBefore, field));
+            docIds.addAll(
+                editDocsAuditService.getAddedDocIdsForGivenField(bailCase, bailCaseBefore, field));
+        });
         return docIds;
     }
 

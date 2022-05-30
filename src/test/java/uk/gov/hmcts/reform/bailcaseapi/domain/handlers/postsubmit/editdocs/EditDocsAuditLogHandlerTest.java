@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -48,7 +49,7 @@ class EditDocsAuditLogHandlerTest {
 
     @ParameterizedTest
     @CsvSource({
-        "EDIT_DOCUMENTS, true"
+        "EDIT_BAIL_DOCUMENTS, true"
     })
     void canHandle(Event event, boolean expectedResult) {
         when(callback.getEvent()).thenReturn(event);
@@ -81,7 +82,8 @@ class EditDocsAuditLogHandlerTest {
         List<ILoggingEvent> logsList = listAppender.list;
         assertEquals("INFO", logsList.get(0).getLevel().toString());
         assertEquals("Edit Document audit logs: AuditDetails(idamUserId=null, user=null, documentIds=null, "
-                     + "documentNames=null, caseId=0, reason=null, dateTime=null)", logsList.get(0).getFormattedMessage());
+                     + "documentNames=null, caseId=0, reason=null, dateTime=null)",
+                     logsList.get(0).getFormattedMessage());
     }
 
     private void mockServiceDependency() {

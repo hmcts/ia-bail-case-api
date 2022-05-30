@@ -1,9 +1,15 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.editdocs;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -29,18 +35,21 @@ public class EditDocsAboutToSubmitHandler implements PreSubmitCallbackHandler<Ba
     public boolean canHandle(PreSubmitCallbackStage callbackStage, Callback<BailCase> callback) {
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
-        return callback.getEvent() == Event.EDIT_BAIL_DOCUMENTS && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
+        return callback.getEvent() == Event.EDIT_BAIL_DOCUMENTS
+               && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
     }
 
     @Override
     public PreSubmitCallbackResponse<BailCase> handle(PreSubmitCallbackStage callbackStage,
                                                       Callback<BailCase> callback) {
+
         CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
         BailCase bailCase = callback.getCaseDetails().getCaseData();
         BailCase bailCaseBefore = caseDetailsBefore == null ? null : caseDetailsBefore.getCaseData();
         long caseId = callback.getCaseDetails().getId();
         restoreDocumentTagForDocs(bailCase, bailCaseBefore);
         editDocsCaseNoteService.writeAuditCaseNoteForGivenCaseId(caseId, bailCase, bailCaseBefore);
+
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 
@@ -89,7 +98,8 @@ public class EditDocsAboutToSubmitHandler implements PreSubmitCallbackHandler<Ba
         DocumentWithMetadata value = idValue.getValue();
         DocumentTag beforeTagForGivenIdValue = getBeforeTagForGivenIdValue(idValue.getId(), idValuesBefore);
         return new DocumentWithMetadata(value.getDocument(),
-                                        value.getDescription() == null ? "" : value.getDescription(), value.getDateUploaded(),
+                                        value.getDescription() == null ? "" : value.getDescription(),
+                                                                                value.getDateUploaded(),
                                         beforeTagForGivenIdValue, value.getSuppliedBy());
     }
 

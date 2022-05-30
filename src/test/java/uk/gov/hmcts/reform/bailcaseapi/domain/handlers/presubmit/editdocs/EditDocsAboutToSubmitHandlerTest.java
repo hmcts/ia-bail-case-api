@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.editdocs;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -53,9 +54,9 @@ class EditDocsAboutToSubmitHandlerTest {
 
     @ParameterizedTest
     @CsvSource({
-        "EDIT_DOCUMENTS, ABOUT_TO_SUBMIT, true",
+        "EDIT_BAIL_DOCUMENTS, ABOUT_TO_SUBMIT, true",
         "START_APPLICATION, ABOUT_TO_SUBMIT, false",
-        "EDIT_DOCUMENTS, ABOUT_TO_START, false"
+        "EDIT_BAIL_DOCUMENTS, ABOUT_TO_START, false"
     })
     void canHandleHappyPathScenarios(Event event, PreSubmitCallbackStage callbackStage, boolean expectedResult) {
         given(callback.getEvent()).willReturn(event);
@@ -150,13 +151,12 @@ class EditDocsAboutToSubmitHandlerTest {
         BailCase bailCaseBefore = new BailCase();
 
         return new Object[] {
-            new Object[] {bailCaseWithTribunalDoc, bailCaseBefore, BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA,
+            new Object[] {bailCaseWithTribunalDoc, bailCaseBefore,
+                BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA, expectedSuppliedBy, DocumentTag.NONE},
+            new Object[] {bailCaseCaseWithHomeOfficeDoc, bailCaseBefore, HOME_OFFICE_DOCUMENTS_WITH_METADATA,
                 expectedSuppliedBy, DocumentTag.NONE},
-            new Object[] {bailCaseCaseWithHomeOfficeDoc, bailCaseBefore, HOME_OFFICE_DOCUMENTS_WITH_METADATA, expectedSuppliedBy,
-                DocumentTag.NONE},
-            new Object[] {bailCaseCaseWithApplicantDoc, bailCaseBefore, BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA,
-                expectedSuppliedBy,
-                DocumentTag.NONE}
+            new Object[] {bailCaseCaseWithApplicantDoc, bailCaseBefore,
+                BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA, expectedSuppliedBy, DocumentTag.NONE}
         };
     }
 

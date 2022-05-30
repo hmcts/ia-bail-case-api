@@ -1,7 +1,9 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit.editdocs;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +32,7 @@ class EditDocsAuditServiceTest {
     private static List<IdValue<HasDocument>> idValuesBefore;
 
     @ParameterizedTest
-    @MethodSource({"generateNewFileAddedForNameScenarios", "generateFileUpdatedForNameScenarios", "generateDeleteFileForNameScenarios"})
+    @MethodSource({"generateFileUpdatedForNameScenarios", "generateDeleteFileForNameScenarios"})
     void getUpdatedAndDeletedDocNamesForGivenField(List<IdValue<DocumentWithMetadata>> idValues,
                                                    List<IdValue<DocumentWithMetadata>> idValuesBefore,
                                                    BailCaseFieldDefinition caseFieldDefinition,
@@ -50,7 +52,7 @@ class EditDocsAuditServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource({"generateNewFileAddedForNameScenarios", "generateFileUpdatedForNameScenarios", "generateDeleteFileForNameScenarios"})
+    @MethodSource({"generateNewFileAddedForNameScenarios"})
     void getAddedDocNamesForGivenField(List<IdValue<DocumentWithMetadata>> idValues,
                                                    List<IdValue<DocumentWithMetadata>> idValuesBefore,
                                                    BailCaseFieldDefinition caseFieldDefinition,
@@ -64,7 +66,7 @@ class EditDocsAuditServiceTest {
         bailCaseBefore.write(caseFieldDefinition, idValuesBefore);
 
         List<String> docNames = service.getAddedDocNamesForGivenField(
-            bailCaseBefore, bailCase, caseFieldDefinition);
+            bailCase, bailCaseBefore, caseFieldDefinition);
 
         assertEquals(docNames, expectedNames);
     }
@@ -76,8 +78,10 @@ class EditDocsAuditServiceTest {
         idValuesBefore = Collections.singletonList(idValue1);
 
         return new Object[] {
-            new Object[] {idValuesAfter, null, TRIBUNAL_DOCUMENTS_WITH_METADATA, Collections.emptyList()},
-            new Object[] {idValuesAfter, idValuesBefore, HOME_OFFICE_DOCUMENTS_WITH_METADATA, Collections.emptyList()}
+            new Object[] {idValuesAfter, null, TRIBUNAL_DOCUMENTS_WITH_METADATA,
+                List.of("someDocName1","someDocName2")},
+            new Object[] {idValuesAfter, idValuesBefore, HOME_OFFICE_DOCUMENTS_WITH_METADATA,
+                Collections.singletonList("someDocName2")}
         };
     }
 
@@ -92,7 +96,8 @@ class EditDocsAuditServiceTest {
         return new Object[] {
             new Object[] {idValuesAfter, idValuesBefore, TRIBUNAL_DOCUMENTS_WITH_METADATA,
                 Collections.singletonList("someDocName2")},
-            new Object[] {idValuesAfter, idValuesBefore, APPLICANT_DOCUMENTS_WITH_METADATA, Collections.singletonList("someDocName2")}
+            new Object[] {idValuesAfter, idValuesBefore, APPLICANT_DOCUMENTS_WITH_METADATA,
+                Collections.singletonList("someDocName2")}
         };
     }
 
@@ -111,7 +116,7 @@ class EditDocsAuditServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource({"generateNewFileAddedScenarios", "generateFileUpdatedScenarios", "generateDeleteFileScenarios"})
+    @MethodSource({"generateFileUpdatedScenarios", "generateDeleteFileScenarios"})
     void getUpdatedAndDeletedDocIdsForGivenField(List<IdValue<DocumentWithMetadata>> idValues,
                                                  List<IdValue<DocumentWithMetadata>> idValuesBefore,
                                                  BailCaseFieldDefinition caseFieldDefinition,
@@ -130,25 +135,25 @@ class EditDocsAuditServiceTest {
         assertEquals(ids, expectedIds);
     }
 
-    //@ParameterizedTest
-    //@MethodSource({"generateNewFileAddedScenarios", "generateFileUpdatedScenarios", "generateDeleteFileScenarios"})
-    //void getAddedDocIdsForGivenField(List<IdValue<DocumentWithMetadata>> idValues,
-    //                                             List<IdValue<DocumentWithMetadata>> idValuesBefore,
-    //                                             BailCaseFieldDefinition caseFieldDefinition,
-    //                                             List<String> expectedIds) {
-    //    EditDocsAuditService service = new EditDocsAuditService();
-    //
-    //    BailCase bailCase = new BailCase();
-    //    bailCase.write(caseFieldDefinition, idValues);
-    //
-    //    BailCase bailCaseCaseBefore = new BailCase();
-    //    bailCaseCaseBefore.write(caseFieldDefinition, idValuesBefore);
-    //
-    //    List<String> ids = service.getAddedDocIdsForGivenField(
-    //        bailCaseCaseBefore, bailCase, caseFieldDefinition);
-    //
-    //    assertEquals(ids, expectedIds);
-    //}
+    @ParameterizedTest
+    @MethodSource({"generateNewFileAddedScenarios"})
+    void getAddedDocIdsForGivenField(List<IdValue<DocumentWithMetadata>> idValues,
+                                                 List<IdValue<DocumentWithMetadata>> idValuesBefore,
+                                                 BailCaseFieldDefinition caseFieldDefinition,
+                                                 List<String> expectedIds) {
+        EditDocsAuditService service = new EditDocsAuditService();
+
+        BailCase bailCase = new BailCase();
+        bailCase.write(caseFieldDefinition, idValues);
+
+        BailCase bailCaseBefore = new BailCase();
+        bailCaseBefore.write(caseFieldDefinition, idValuesBefore);
+
+        List<String> ids = service.getAddedDocIdsForGivenField(
+            bailCase, bailCaseBefore, caseFieldDefinition);
+
+        assertEquals(ids, expectedIds);
+    }
 
     private static Object[] generateNewFileAddedScenarios() {
         idValue1 = buildIdValue("1", "1111-2222", "desc1", "someDocName").get(0);
@@ -157,8 +162,9 @@ class EditDocsAuditServiceTest {
         idValuesBefore = Collections.singletonList(idValue1);
 
         return new Object[] {
-            new Object[] {idValuesAfter, null, TRIBUNAL_DOCUMENTS_WITH_METADATA, Collections.emptyList()},
-            new Object[] {idValuesAfter, idValuesBefore, APPLICANT_DOCUMENTS_WITH_METADATA, Collections.emptyList()},
+            new Object[] {idValuesAfter, null, TRIBUNAL_DOCUMENTS_WITH_METADATA, List.of("1111-2222","2222-3333")},
+            new Object[] {idValuesAfter, idValuesBefore, APPLICANT_DOCUMENTS_WITH_METADATA,
+                Collections.singletonList("2222-3333")},
         };
     }
 
@@ -173,7 +179,8 @@ class EditDocsAuditServiceTest {
         return new Object[] {
             new Object[] {idValuesAfter, idValuesBefore, TRIBUNAL_DOCUMENTS_WITH_METADATA,
                 Collections.singletonList("2222-3333")},
-            new Object[] {idValuesAfter, idValuesBefore, APPLICANT_DOCUMENTS_WITH_METADATA, Collections.singletonList("2222-3333")},
+            new Object[] {idValuesAfter, idValuesBefore, APPLICANT_DOCUMENTS_WITH_METADATA,
+                Collections.singletonList("2222-3333")},
         };
     }
 
@@ -184,7 +191,8 @@ class EditDocsAuditServiceTest {
         idValuesBefore = Arrays.asList(idValue1, idValue2);
 
         return new Object[] {
-            new Object[] {idValuesAfter, idValuesBefore, TRIBUNAL_DOCUMENTS_WITH_METADATA, Collections.singletonList("1111-2222")},
+            new Object[] {idValuesAfter, idValuesBefore, TRIBUNAL_DOCUMENTS_WITH_METADATA,
+                Collections.singletonList("1111-2222")},
             new Object[] {idValuesAfter, idValuesBefore, HOME_OFFICE_DOCUMENTS_WITH_METADATA,
                 Collections.singletonList("1111-2222")},
         };
@@ -202,7 +210,7 @@ class EditDocsAuditServiceTest {
     }
 
     private static HasDocument buildValue(Document doc, String desc) {
-            return new DocumentWithMetadata(doc, desc, "1-1-2022", DocumentTag.BAIL_SUMMARY, null);
+        return new DocumentWithMetadata(doc, desc, "1-1-2022", DocumentTag.BAIL_SUMMARY, null);
     }
 
 }
