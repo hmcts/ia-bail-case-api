@@ -13,6 +13,8 @@ public class Direction {
     private String sendDirectionList;
     private String dateOfCompliance;
     private String dateSent;
+    private String dateTimeDirectionCreated;
+    private String dateTimeDirectionModified;
 
     private Direction() {
     }
@@ -21,12 +23,16 @@ public class Direction {
         String sendDirectionDescription,
         String sendDirectionList,
         String dateOfCompliance,
-        String dateSent
+        String dateSent,
+        String dateTimeDirectionCreated,
+        String dateTimeDirectionModified
     ) {
         this.sendDirectionDescription = requireNonNull(sendDirectionDescription);
         this.sendDirectionList = requireNonNull(sendDirectionList);
         this.dateOfCompliance = requireNonNull(dateOfCompliance);
         this.dateSent = requireNonNull(dateSent);
+        this.dateTimeDirectionCreated = requireNonNull(dateTimeDirectionCreated);
+        this.dateTimeDirectionModified = dateTimeDirectionModified;
     }
 
 
@@ -46,5 +52,11 @@ public class Direction {
         return requireNonNull(dateSent);
     }
 
+    public String getDateTimeDirectionCreated() {
+        return dateTimeDirectionCreated;
+    }
 
+    public String getDateTimeDirectionModified() {
+        return dateTimeDirectionModified;
+    }
 }
