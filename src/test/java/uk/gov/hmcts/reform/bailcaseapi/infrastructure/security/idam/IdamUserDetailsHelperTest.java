@@ -100,6 +100,6 @@ class IdamUserDetailsHelperTest {
         when(userDetails.getForename()).thenReturn("First name");
         when(userDetails.getSurname()).thenReturn("Surname");
 
-        assertEquals("First name" + " " +"Surname", idamUserDetailsHelper.getIdamUserName(userDetails));
+        assertEquals("First name" + " " + "Surname", idamUserDetailsHelper.getIdamUserName(userDetails));
     }
 }
