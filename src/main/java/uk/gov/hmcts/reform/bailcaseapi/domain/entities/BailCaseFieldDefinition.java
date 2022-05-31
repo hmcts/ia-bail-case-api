@@ -318,7 +318,7 @@ public enum BailCaseFieldDefinition {
     DIRECTIONS(
         "directions", new TypeReference<List<IdValue<Direction>>>(){}),
     BAIL_DIRECTION_LIST(
-        "bailDirectionList", new TypeReference<String>(){}),
+        "bailDirectionList", new TypeReference<DynamicList>(){}),
     BAIL_DIRECTION_EDIT_EXPLANATION(
         "bailDirectionEditExplanation", new TypeReference<String>(){}),
     BAIL_DIRECTION_EDIT_PARTIES(
@@ -327,6 +327,8 @@ public enum BailCaseFieldDefinition {
         "bailDirectionEditDateSent", new TypeReference<String>(){}),
     BAIL_DIRECTION_EDIT_DATE_DUE(
         "bailDirectionEditDateDue", new TypeReference<String>(){}),
+    EDITABLE_DIRECTIONS(
+        "editableDirections", new TypeReference<List<IdValue<EditableDirection>>>(){}),
     REASON_FOR_REFUSAL_DETAILS(
         "reasonForRefusalDetails", new TypeReference<String>(){}),
     TRIBUNAL_REFUSAL_REASON(
