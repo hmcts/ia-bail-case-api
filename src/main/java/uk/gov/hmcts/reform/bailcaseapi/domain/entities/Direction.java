@@ -81,7 +81,7 @@ public class Direction {
     public List<IdValue<PreviousDates>> getPreviousDates() {
         return requireNonNull(previousDates);
     }
-    
+
     public String getDateTimeDirectionModified() {
         return dateTimeDirectionModified;
     }

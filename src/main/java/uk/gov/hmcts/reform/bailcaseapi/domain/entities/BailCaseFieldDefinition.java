@@ -283,6 +283,8 @@ public enum BailCaseFieldDefinition {
         "conditionsForBailElectronicMonitoring",  new TypeReference<String>(){}),
     BAIL_TRANSFER_DIRECTIONS(
         "bailTransferDirections", new TypeReference<DynamicList>(){}),
+    LAST_MODIFIED_DIRECTION(
+        "lastModifiedDirection", new TypeReference<Direction>(){}),
     SECRETARY_OF_STATE_REFUSAL_REASONS(
         "secretaryOfStateRefusalReasons", new TypeReference<String>(){}),
     UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT(
