@@ -59,7 +59,7 @@ public class ChangeDirectionDueMidEvent implements PreSubmitCallbackHandler<Bail
 
                 bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_EXPLANATION, idValue.getValue().getSendDirectionDescription());
                 bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES, idValue.getValue().getSendDirectionList());
-                //bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE, idValue.getValue().getDateOfCompliance());
+                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE, idValue.getValue().getDateOfCompliance());
                 bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_SENT, idValue.getValue().getDateSent());
             });
 
