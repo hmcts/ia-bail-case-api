@@ -2,8 +2,6 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -11,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 
-import com.google.common.collect.Lists;
 import java.time.LocalDate;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +27,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.EditableDirection;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Parties;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.PreviousDates;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -122,7 +118,7 @@ class ChangeDirectionDueDateHandlerTest {
         assertEquals(bailCase, callbackResponse.getData());
 
         //problem is here
-        verify(bailCase, times(3)).write(bailExtractorCaptor.capture(), bailValueCaptor.capture());
+        verify(bailCase, times(2)).write(bailExtractorCaptor.capture(), bailValueCaptor.capture());
 
         verify(bailCase).clear(BAIL_DIRECTION_LIST);
         verify(bailCase).write(eq(BAIL_DIRECTION_EDIT_PARTIES), directionEditPartiesCaptor.capture());
@@ -284,13 +280,12 @@ class ChangeDirectionDueDateHandlerTest {
 
         assertEquals("1", actualDirections.get(0).getId());
         assertEquals("explanation-1", actualDirections.get(0).getValue().getSendDirectionDescription());
-        //problem is here
         assertEquals("Applicant", actualDirections.get(0).getValue().getSendDirectionList());
         assertEquals("2222-12-01", actualDirections.get(0).getValue().getDateOfCompliance());
         assertEquals("2019-12-01", actualDirections.get(0).getValue().getDateSent());
 
         assertEquals("2", actualDirections.get(1).getId());
-        assertEquals("explanation-2", actualDirections.get(1).getValue().getSendDirectionDescription());
+        assertEquals("explanation-2", actualDirections.get(1).getValue().getSendDirectionList());
         assertEquals("Home Office", actualDirections.get(1).getValue().getSendDirectionList());
         assertEquals("3333-11-01", actualDirections.get(1).getValue().getDateOfCompliance());
         assertEquals("2019-11-01", actualDirections.get(1).getValue().getDateSent());

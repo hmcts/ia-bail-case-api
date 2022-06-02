@@ -55,7 +55,8 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
 
         final Optional<List<IdValue<Direction>>> maybeDirections = bailCase.read(DIRECTIONS);
 
-        Optional<DynamicList> dynamicList = bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_LIST, DynamicList.class);
+        Optional<DynamicList> dynamicList =
+            bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_LIST,DynamicList.class);
 
         // new path when dynamic list is present
         if (dynamicList.isPresent()) {
@@ -65,21 +66,27 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
                     .stream()
                     .map(idValue -> {
 
-                        if (dynamicList.get().getValue().getCode().contains("Direction " + (maybeDirections.orElse(emptyList()).size() - (Integer.parseInt(idValue.getId())) + 1))) {
+                        if (dynamicList.get().getValue().getCode().contains(
+                            "Direction " + (maybeDirections.orElse(emptyList()).size()
+                                - (Integer.parseInt(idValue.getId())) + 1))) {
 
                             // MidEvent does not pass temp fields
-                            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES, idValue.getValue().getSendDirectionList());
+                            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES,
+                                           idValue.getValue().getSendDirectionList());
 
                             return new IdValue<>(
                                 idValue.getId(),
                                 new Direction(
                                     idValue.getValue().getSendDirectionDescription(),
                                     idValue.getValue().getSendDirectionList(),
-                                    bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE, String.class).orElse(""),
+                                    bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE,
+                                                  String.class).orElse(""),
                                     dateProvider.now().toString(),
                                     idValue.getValue().getDateTimeDirectionCreated(),
                                     idValue.getValue().getDateTimeDirectionModified(),
-                                    appendPreviousDates(idValue.getValue().getPreviousDates(), idValue.getValue().getDateOfCompliance(), idValue.getValue().getDateSent())
+                                    appendPreviousDates(idValue.getValue().getPreviousDates(),
+                                                        idValue.getValue().getDateOfCompliance(),
+                                                        idValue.getValue().getDateSent())
                                 )
                             );
                         } else {
@@ -124,7 +131,8 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
                             new Direction(
                                 existingDirection.getSendDirectionDescription(),
                                 existingDirection.getSendDirectionList(),
-                                bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE, String.class).orElse(""),
+                                bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE,
+                                              String.class).orElse(""),
                                 existingDirection.getDateSent(),
                                 existingDirection.getDateTimeDirectionCreated(),
                                 existingDirection.getDateTimeDirectionModified(),
@@ -143,7 +151,8 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 
-    private List<IdValue<PreviousDates>> appendPreviousDates(List<IdValue<PreviousDates>> previousDates, String dateDue, String dateSent) {
+    private List<IdValue<PreviousDates>> appendPreviousDates(List<IdValue<PreviousDates>> previousDates,
+                                                             String dateDue, String dateSent) {
 
         if (CollectionUtils.isEmpty(previousDates)) {
 

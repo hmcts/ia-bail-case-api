@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -69,10 +68,10 @@ class DirectionTest {
         assertThatThrownBy(() -> new Direction("", "", "", "", null, "", previousDates))
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> new Direction("", "", "", "", "", null, previousDates))
-            .isExactlyInstanceOf(NullPointerException.class);
+        assertDoesNotThrow(() -> new Direction("", "", "", "", "", null, previousDates));
 
-        assertDoesNotThrow(() -> new Direction("", "", "", "", "", "", null));
+        assertThatThrownBy(() -> new Direction("", "", "", "", "", "", null))
+            .isExactlyInstanceOf(NullPointerException.class);
     }
 
 }

@@ -33,11 +33,12 @@ public class ChangeBailDirectionDueDateConfirmationTest {
     @Mock
     private BailCase bailCase;
 
-    private ChangeBailDirectionDueDateConfirmation changeBailDirectionDueDateConfirmation = new ChangeBailDirectionDueDateConfirmation();
+    private ChangeBailDirectionDueDateConfirmation changeBailDirectionDueDateConfirmation = new
+        ChangeBailDirectionDueDateConfirmation();
 
     @Test
     void should_return_confirmation() {
-        when(callback.getEvent()).thenReturn(Event.SEND_BAIL_DIRECTION);
+        when(callback.getEvent()).thenReturn(Event.CHANGE_BAIL_DIRECTION_DUE_DATE);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getId()).thenReturn(111L);
 
@@ -54,7 +55,7 @@ public class ChangeBailDirectionDueDateConfirmationTest {
 
         assertThat(
             callbackResponse.getConfirmationBody().get())
-            .contains("### What happens next");
+            .contains("What happens next");
 
     }
 

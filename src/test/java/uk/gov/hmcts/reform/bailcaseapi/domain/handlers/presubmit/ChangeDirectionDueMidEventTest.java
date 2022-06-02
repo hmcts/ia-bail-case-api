@@ -27,7 +27,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Parties;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -91,7 +90,7 @@ class ChangeDirectionDueMidEventTest {
         when(callback.getEvent()).thenReturn(Event.CHANGE_BAIL_DIRECTION_DUE_DATE);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
-        when(bailCase.read(BAIL_DIRECTION_LIST, DynamicList.class)).thenReturn(Optional.of(new DynamicList(direction1)));
+        when(bailCase.read(BAIL_DIRECTION_LIST,DynamicList.class)).thenReturn(Optional.of(new DynamicList(direction1)));
 
         changeDirectionDueMidEvent.handle(PreSubmitCallbackStage.MID_EVENT, callback);
 

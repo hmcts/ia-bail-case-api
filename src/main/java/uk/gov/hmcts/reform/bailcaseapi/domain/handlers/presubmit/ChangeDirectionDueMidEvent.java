@@ -54,12 +54,16 @@ public class ChangeDirectionDueMidEvent implements PreSubmitCallbackHandler<Bail
         maybeDirections
             .orElse(emptyList())
             .stream()
-            .filter(idValue -> bailDirectionList.getValue().getCode().contains(direction + (maybeDirections.orElse(emptyList()).size() - (Integer.parseInt(idValue.getId())) + 1)))
+            .filter(idValue -> bailDirectionList.getValue().getCode().contains(
+                direction + (maybeDirections.orElse(emptyList()).size() - (Integer.parseInt(idValue.getId())) + 1)))
             .forEach(idValue -> {
 
-                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_EXPLANATION, idValue.getValue().getSendDirectionDescription());
-                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES, idValue.getValue().getSendDirectionList());
-                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE, idValue.getValue().getDateOfCompliance());
+                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_EXPLANATION,
+                               idValue.getValue().getSendDirectionDescription());
+                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES,
+                               idValue.getValue().getSendDirectionList());
+                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE,
+                               idValue.getValue().getDateOfCompliance());
                 bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_SENT, idValue.getValue().getDateSent());
             });
 
@@ -70,7 +74,9 @@ public class ChangeDirectionDueMidEvent implements PreSubmitCallbackHandler<Bail
             .collect(Collectors.toList());
 
         Collections.reverse(directionListElements);
-        DynamicList newDirectionList = new DynamicList(new Value(bailDirectionList.getValue().getCode(), bailDirectionList.getValue().getCode()), directionListElements);
+        DynamicList newDirectionList = new DynamicList(new Value(bailDirectionList.getValue().getCode(),
+                                                                 bailDirectionList.getValue().getCode()),
+                                                       directionListElements);
         bailCase.write(BAIL_DIRECTION_LIST, newDirectionList);
 
         return new PreSubmitCallbackResponse<>(bailCase);

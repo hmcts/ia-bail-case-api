@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_LIST;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.EDITABLE_DIRECTIONS;
 
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +26,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.EditableDirection;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Parties;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -45,7 +43,7 @@ class ChangeDirectionDueDatePreparerTest {
     @Mock
     private CaseDetails<BailCase> caseDetails;
     @Mock
-    private BailCase BailCase;
+    private BailCase bailCase;
 
     @Captor
     private ArgumentCaptor<Object> editableDirectionsCaptor;
@@ -90,16 +88,16 @@ class ChangeDirectionDueDatePreparerTest {
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.CHANGE_BAIL_DIRECTION_DUE_DATE);
-        when(caseDetails.getCaseData()).thenReturn(BailCase);
-        when(BailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             changeDirectionDueDatePreparer.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback);
 
         assertNotNull(callbackResponse);
-        assertEquals(BailCase, callbackResponse.getData());
+        assertEquals(bailCase, callbackResponse.getData());
 
-        verify(BailCase, times(2)).write(bailExtractorCaptor.capture(), editableDirectionsCaptor.capture());
+        verify(bailCase, times(2)).write(bailExtractorCaptor.capture(), editableDirectionsCaptor.capture());
 
         DynamicList dynamicList = (DynamicList) editableDirectionsCaptor.getAllValues().get(0);
 
@@ -150,14 +148,14 @@ class ChangeDirectionDueDatePreparerTest {
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.CHANGE_BAIL_DIRECTION_DUE_DATE);
-        when(caseDetails.getCaseData()).thenReturn(BailCase);
-        when(BailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             changeDirectionDueDatePreparer.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback);
 
         assertNotNull(callbackResponse);
-        assertEquals(BailCase, callbackResponse.getData());
+        assertEquals(bailCase, callbackResponse.getData());
         assertEquals(1, callbackResponse.getErrors().size());
         assertTrue(callbackResponse.getErrors().contains("There is no direction to edit"));
     }
