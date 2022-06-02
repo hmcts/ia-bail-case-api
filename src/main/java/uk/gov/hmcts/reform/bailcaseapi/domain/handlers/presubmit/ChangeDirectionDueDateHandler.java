@@ -77,6 +77,8 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
                                     idValue.getValue().getSendDirectionList(),
                                     bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE, String.class).orElse(""),
                                     dateProvider.now().toString(),
+                                    idValue.getValue().getDateTimeDirectionCreated(),
+                                    idValue.getValue().getDateTimeDirectionModified(),
                                     appendPreviousDates(idValue.getValue().getPreviousDates(), idValue.getValue().getDateOfCompliance(), idValue.getValue().getDateSent())
                                 )
                             );
@@ -124,6 +126,8 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
                                 existingDirection.getSendDirectionList(),
                                 bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE, String.class).orElse(""),
                                 existingDirection.getDateSent(),
+                                existingDirection.getDateTimeDirectionCreated(),
+                                existingDirection.getDateTimeDirectionModified(),
                                 existingDirection.getPreviousDates()
                             )
                         );

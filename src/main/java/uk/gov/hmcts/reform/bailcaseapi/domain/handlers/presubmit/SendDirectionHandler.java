@@ -84,9 +84,10 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
             sendDirectionList,
             dateOfCompliance,
             now.toString(),
+            dateProvider.nowWithTime().toString(),
+            null,
             Collections.emptyList()
             );
-
 
         List<IdValue<Direction>> allDirections =
             directionAppender.append(newDirection, maybeExistingDirections.orElse(emptyList()));
