@@ -3,7 +3,12 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.PreviousDates;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.EditableDirection;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -11,14 +16,19 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Map;
+import java.util.ArrayList;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.EDITABLE_DIRECTIONS;
 
 @Component
 public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<BailCase> {

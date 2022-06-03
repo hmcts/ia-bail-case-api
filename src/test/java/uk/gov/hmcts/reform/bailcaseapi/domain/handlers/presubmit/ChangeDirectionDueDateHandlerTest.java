@@ -1,16 +1,26 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.EDITABLE_DIRECTIONS;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -108,7 +118,7 @@ class ChangeDirectionDueDateHandlerTest {
         when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
 
         // "Direction 1" in UI is equivalent of Direction with IdValue "2" in backend
-        when(bailCase.read(BAIL_DIRECTION_LIST, DynamicList.class)).thenReturn(Optional.of(new DynamicList(direction1)));
+        when(bailCase.read(BAIL_DIRECTION_LIST,DynamicList.class)).thenReturn(Optional.of(new DynamicList(direction1)));
         when(bailCase.read(BAIL_DIRECTION_EDIT_DATE_DUE, String.class)).thenReturn(Optional.of("2222-12-01"));
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
