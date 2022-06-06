@@ -64,7 +64,8 @@ public class CaseInferenceByBailNumberHandler implements PreSubmitCallbackHandle
                 bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_ARIA, YesOrNo.YES);
             } else {
                 response.addError("Invalid bail number provided. The bail number must be either 16 digits long (e.g. "
-                                  + "1111222233334444) or 8 characters long and following the ARIA format (e.g. Hw/12345)");
+                                  + "1111222233334444) or 8 characters long and following the ARIA format (e.g. "
+                                  + "Hw/12345)");
             }
         }
 
