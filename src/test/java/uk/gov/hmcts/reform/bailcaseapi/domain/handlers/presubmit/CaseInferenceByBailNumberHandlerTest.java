@@ -128,6 +128,19 @@ public class CaseInferenceByBailNumberHandlerTest {
     }
 
     @Test
+    void should_set_case_not_done_via_ccd_or_aria_if_applicant_has_no_previous_case() {
+
+        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+
+        caseInferenceByBailNumberHandler.handle(PreSubmitCallbackStage.MID_EVENT, callback);
+
+        verify(bailCase, times(1)).write(PREVIOUS_APPLICATION_DONE_VIA_CCD, YesOrNo.NO);
+        verify(bailCase,  times(1)).write(PREVIOUS_APPLICATION_DONE_VIA_ARIA, YesOrNo.NO);
+    }
+
+    @Test
     void it_can_handle_callback_for_all_events() {
 
         for (Event event : Event.values()) {
