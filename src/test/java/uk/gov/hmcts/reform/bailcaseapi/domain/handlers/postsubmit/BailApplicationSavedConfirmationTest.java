@@ -71,8 +71,10 @@ public class BailApplicationSavedConfirmationTest {
         assertThat(response.getConfirmationHeader().isPresent());
 
         assertThat(response.getConfirmationBody().get()).contains(
-            "Review and edit the application if necessary. [Submit the application](/case/IA/Bail/"
-                + caseId
-                + "/trigger/submitApplication) when you’re ready.");
+            "Review and [edit the application](/case/IA/Bail/"
+            + caseId
+            + "/trigger/editBailApplication) if necessary. [Submit the application](/case/IA/Bail/"
+            + caseId
+            + "/trigger/submitApplication) when you’re ready.");
     }
 }

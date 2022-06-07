@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -71,7 +71,7 @@ class EditBailApplicationConfirmationTest {
         assertThat(response.getConfirmationHeader().isPresent());
 
         assertThat(response.getConfirmationBody().get()).contains(
-            "You still need to [Submit the application](/case/IA/Bail/"
+            "You still need to [submit the application](/case/IA/Bail/"
             + caseId
             + "/trigger/submitApplication). If you need to make further changes you can [edit the application]"
             + "(/case/IA/Bail/"
