@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentTag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithDescription;
@@ -59,6 +60,8 @@ public class UploadSignedDecisionNoticeHandlerTest {
     private DocumentWithMetadata signedDecisionNoticeMetadata1;
     @Mock
     private List<IdValue<DocumentWithMetadata>> newSignedDecisionNotice;
+    @Mock
+    private DateProvider dateProvider;
 
     private List<IdValue<DocumentWithMetadata>> existingTribunalDocumentsWithMetadata = new ArrayList<>();
 
@@ -72,7 +75,8 @@ public class UploadSignedDecisionNoticeHandlerTest {
         uploadSignedDecisionNoticeHandler =
             new UploadSignedDecisionNoticeHandler(
                 documentReceiver,
-                documentsAppender
+                documentsAppender,
+                dateProvider
             );
         when(callback.getEvent()).thenReturn(Event.UPLOAD_SIGNED_DECISION_NOTICE);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
@@ -99,7 +103,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
 
         when(documentsAppender.append(eq(new ArrayList<>()), eq(List.of(signedDecisionNoticeMetadata1))))
             .thenReturn(allTribunalDocs);
-        
+
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             uploadSignedDecisionNoticeHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 

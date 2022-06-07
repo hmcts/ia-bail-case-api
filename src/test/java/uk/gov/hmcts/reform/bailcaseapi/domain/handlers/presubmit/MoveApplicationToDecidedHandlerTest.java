@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
@@ -36,6 +37,7 @@ class MoveApplicationToDecidedHandlerTest {
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
     @Mock private Document exampleDocument;
+    @Mock private DateProvider dateProvider;
 
     private MoveApplicationToDecidedHandler moveApplicationToDecidedHandler;
 
@@ -45,7 +47,7 @@ class MoveApplicationToDecidedHandlerTest {
 
     @BeforeEach
     public void setUp() {
-        this.moveApplicationToDecidedHandler = new MoveApplicationToDecidedHandler();
+        this.moveApplicationToDecidedHandler = new MoveApplicationToDecidedHandler(dateProvider);
     }
 
     @Test

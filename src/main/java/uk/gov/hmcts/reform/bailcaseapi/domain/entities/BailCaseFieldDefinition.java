@@ -371,6 +371,12 @@ public enum BailCaseFieldDefinition {
         "currentUser", new TypeReference<String>(){}),
     EDIT_DOCUMENTS_REASON(
         "editDocumentsReason", new TypeReference<String>(){}),
+    OUTCOME_STATE(
+        "outcomeState", new TypeReference<String>(){}),
+    OUTCOME_DATE(
+        "outcomeDate", new TypeReference<String>(){}),
+    PRIOR_APPLICATIONS(
+        "priorApplications", new TypeReference<List<IdValue<PriorApplication>>>(){}),
     ;
 
 

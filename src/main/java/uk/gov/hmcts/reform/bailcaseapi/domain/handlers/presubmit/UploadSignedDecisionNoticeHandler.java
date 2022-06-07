@@ -1,9 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
-
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OUTCOME_STATE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,11 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentTag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithDescription;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -30,13 +31,16 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
 
     private final DocumentReceiver documentReceiver;
     private final DocumentsAppender documentsAppender;
+    private final DateProvider dateProvider;
 
     public UploadSignedDecisionNoticeHandler(
         DocumentReceiver documentReceiver,
-        DocumentsAppender documentsAppender
+        DocumentsAppender documentsAppender,
+        DateProvider dateProvider
     ) {
         this.documentReceiver = documentReceiver;
         this.documentsAppender = documentsAppender;
+        this.dateProvider = dateProvider;
     }
 
     public boolean canHandle(
@@ -82,6 +86,8 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
             )));
 
         bailCase.write(TRIBUNAL_DOCUMENTS_WITH_METADATA, allTribunalDocuments);
+        bailCase.write(OUTCOME_DATE, dateProvider.nowWithTime().toString());
+        bailCase.write(OUTCOME_STATE, State.DECISION_DECIDED);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

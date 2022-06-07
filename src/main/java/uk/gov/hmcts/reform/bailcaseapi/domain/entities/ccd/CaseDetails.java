@@ -19,6 +19,7 @@ public class CaseDetails<T extends CaseData> {
     private LocalDateTime createdDate;
     private String securityClassification;
 
+
     private CaseDetails() {
 
     }
