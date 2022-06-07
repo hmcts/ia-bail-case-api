@@ -56,7 +56,7 @@ public class CaseInferenceByBailNumberHandlerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(HAS_PREVIOUS_BAIL_APPLICATION, String.class))
-            .thenReturn(Optional.of("Yes"));
+            .thenReturn(Optional.of("yes"));
         when(bailCase.read(PREVIOUS_BAIL_APPLICATION_NUMBER, String.class))
             .thenReturn(Optional.of(bailCaseReferenceNumber));
 
@@ -78,7 +78,7 @@ public class CaseInferenceByBailNumberHandlerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(HAS_PREVIOUS_BAIL_APPLICATION, String.class))
-            .thenReturn(Optional.of("Yes"));
+            .thenReturn(Optional.of("yes"));
         when(bailCase.read(PREVIOUS_BAIL_APPLICATION_NUMBER, String.class))
             .thenReturn(Optional.of(ariaCaseReferenceNumber));
 
@@ -100,7 +100,7 @@ public class CaseInferenceByBailNumberHandlerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(HAS_PREVIOUS_BAIL_APPLICATION, String.class))
-            .thenReturn(Optional.of("Yes"));
+            .thenReturn(Optional.of("yes"));
         when(bailCase.read(PREVIOUS_BAIL_APPLICATION_NUMBER, String.class))
             .thenReturn(Optional.of(wrongCaseReferenceNumber));
 
