@@ -111,8 +111,8 @@ public class CaseInferenceByBailNumberHandlerTest {
         verify(bailCase, never()).write(PREVIOUS_APPLICATION_DONE_VIA_CCD, YesOrNo.NO);
         verify(bailCase,  never()).write(PREVIOUS_APPLICATION_DONE_VIA_ARIA, YesOrNo.YES);
 
-        String expectedError = "Invalid bail number provided. The bail number must be either 16 digits long (e.g. "
-                               + "1111222233334444) or 8 characters long and following the ARIA format (e.g. Hw/12345)";
+        String expectedError = "Invalid bail number provided. The bail number must be either 16 digits long "
+                               + "(e.g. 1111222233334444) or 8 characters long (e.g. HW/12345)";
 
         final Set<String> errors = callbackResponse.getErrors();
         assertThat(errors).hasSize(1);
