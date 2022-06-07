@@ -151,17 +151,12 @@ class ChangeDirectionDueDateHandlerTest {
         assertEquals("2222-12-01", actualDirections.get(1).getValue().getDateOfCompliance());
         assertEquals(dateSent.toString(), actualDirections.get(1).getValue().getDateSent());
 
-        assertEquals(2, actualDirections.get(1).getValue().getPreviousDates().size());
-        assertEquals("2", actualDirections.get(1).getValue().getPreviousDates().get(0).getId());
+        assertEquals(1, actualDirections.get(1).getValue().getPreviousDates().size());
+        assertEquals("1", actualDirections.get(1).getValue().getPreviousDates().get(0).getId());
         assertEquals("2020-11-01",
             actualDirections.get(1).getValue().getPreviousDates().get(0).getValue().getDateDue());
         assertEquals("2019-11-01",
             actualDirections.get(1).getValue().getPreviousDates().get(0).getValue().getDateSent());
-        assertEquals("1", actualDirections.get(1).getValue().getPreviousDates().get(1).getId());
-        assertEquals("2018-05-01",
-            actualDirections.get(1).getValue().getPreviousDates().get(1).getValue().getDateDue());
-        assertEquals("2018-03-01",
-            actualDirections.get(1).getValue().getPreviousDates().get(1).getValue().getDateSent());
     }
 
     @Test
@@ -235,15 +230,6 @@ class ChangeDirectionDueDateHandlerTest {
                     "",
                     "",
                     Collections.emptyList()
-                )),
-                new IdValue<>("2", new Direction(
-                    "explanation-2",
-                    "Home Office",
-                    "2020-11-01",
-                    "2019-11-01",
-                    "",
-                    "",
-                    Collections.emptyList()
                 ))
             );
 
@@ -253,11 +239,6 @@ class ChangeDirectionDueDateHandlerTest {
                     "some-other-explanation-1-that-should-be-ignored",
                     "Legal representative",
                     "2222-12-01"
-                )),
-                new IdValue<>("2", new EditableDirection(
-                    "some-other-explanation-1-that-should-be-ignored",
-                    "Legal representative",
-                    "3333-11-01"
                 ))
             );
 
@@ -266,6 +247,8 @@ class ChangeDirectionDueDateHandlerTest {
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
         when(bailCase.read(EDITABLE_DIRECTIONS)).thenReturn(Optional.of(editableDirections));
+        when(bailCase.read(BAIL_DIRECTION_EDIT_DATE_DUE, String.class)).thenReturn(Optional.of("2222-12-01"));
+
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             changeDirectionDueDateHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
@@ -294,10 +277,5 @@ class ChangeDirectionDueDateHandlerTest {
         assertEquals("2222-12-01", actualDirections.get(0).getValue().getDateOfCompliance());
         assertEquals("2019-12-01", actualDirections.get(0).getValue().getDateSent());
 
-        assertEquals("2", actualDirections.get(1).getId());
-        assertEquals("explanation-2", actualDirections.get(1).getValue().getSendDirectionList());
-        assertEquals("Home Office", actualDirections.get(1).getValue().getSendDirectionList());
-        assertEquals("3333-11-01", actualDirections.get(1).getValue().getDateOfCompliance());
-        assertEquals("2019-11-01", actualDirections.get(1).getValue().getDateSent());
     }
 }
