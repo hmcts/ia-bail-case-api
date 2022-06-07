@@ -9,6 +9,16 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 public enum BailCaseFieldDefinition {
+    HAS_PREVIOUS_BAIL_APPLICATION(
+        "hasPreviousBailApplication", new TypeReference<String>() {}),
+    PREVIOUS_BAIL_APPLICATION_NUMBER(
+        "previousBailApplicationNumber", new TypeReference<String>() {}),
+    PREVIOUS_APPLICATION_DONE_VIA_ARIA(
+        "previousApplicationDoneViaAria", new TypeReference<YesOrNo>() {}),
+    PREVIOUS_APPLICATION_DONE_VIA_CCD(
+        "previousApplicationDoneViaCcd", new TypeReference<YesOrNo>() {}),
+    PREVIOUS_APPLICATION_SCAN_CASE_REFERENCE(
+        "previousApplicationScanCaseReference", new TypeReference<String>() {}),
     APPLICATION_SENT_BY(
         "sentByChecklist", new TypeReference<String>() {}),
     IS_ADMIN(
