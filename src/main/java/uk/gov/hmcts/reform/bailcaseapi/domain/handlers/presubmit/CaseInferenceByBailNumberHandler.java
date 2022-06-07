@@ -67,6 +67,9 @@ public class CaseInferenceByBailNumberHandler implements PreSubmitCallbackHandle
                                   + "1111222233334444) or 8 characters long and following the ARIA format (e.g. "
                                   + "Hw/12345)");
             }
+        } else {
+            bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_CCD, YesOrNo.NO);
+            bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_ARIA, YesOrNo.NO);
         }
 
         return response;
