@@ -28,7 +28,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.EditableDirection;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -49,7 +49,7 @@ class ChangeDirectionDueDatePreparerTest {
     private BailCase bailCase;
 
     @Captor
-    private ArgumentCaptor<Object> editableDirectionsCaptor;
+    private ArgumentCaptor<Object> directionsCaptor;
     @Captor
     private ArgumentCaptor<BailCaseFieldDefinition> bailExtractorCaptor;
 
@@ -65,8 +65,7 @@ class ChangeDirectionDueDatePreparerTest {
     }
 
     @Test
-    void should_prepare_editable_direction_fields() {
-
+    void should_create_dynamic_list() {
         final List<IdValue<Direction>> existingDirections =
             Arrays.asList(
                 new IdValue<>("1", new Direction(
@@ -100,49 +99,20 @@ class ChangeDirectionDueDatePreparerTest {
         assertNotNull(callbackResponse);
         assertEquals(bailCase, callbackResponse.getData());
 
-        verify(bailCase, times(2)).write(bailExtractorCaptor.capture(), editableDirectionsCaptor.capture());
-
-        DynamicList dynamicList = (DynamicList) editableDirectionsCaptor.getAllValues().get(0);
+        verify(bailCase, times(1)).write(bailExtractorCaptor.capture(), directionsCaptor.capture());
 
         assertEquals(
             BAIL_DIRECTION_LIST,
             bailExtractorCaptor.getAllValues().get(0)
         );
 
-        assertEquals(direction2, dynamicList.getValue().getCode());
-        assertEquals(direction2, dynamicList.getValue().getLabel());
+        DynamicList expectedDynamicList = new DynamicList(new Value("Direction 2", "Direction 2"),
+                                                          List.of(
+                                                              new Value("Direction 2", "Direction 2"),
+                                                              new Value("Direction 1", "Direction 1")));
 
-        assertEquals(2, dynamicList.getListItems().size());
-        assertEquals(direction2, dynamicList.getListItems().get(0).getCode());
-        assertEquals(direction2, dynamicList.getListItems().get(0).getLabel());
-        assertEquals(direction1, dynamicList.getListItems().get(1).getCode());
-        assertEquals(direction1, dynamicList.getListItems().get(1).getLabel());
-
-        List<IdValue<EditableDirection>> actualEditableDirections =
-            (List<IdValue<EditableDirection>>) editableDirectionsCaptor.getAllValues().get(1);
-
-        assertEquals(
-            existingDirections.size(),
-            actualEditableDirections.size()
-        );
-
-        assertEquals(existingDirections.get(0).getId(), actualEditableDirections.get(0).getId());
-        assertEquals(existingDirections.get(0).getValue().getSendDirectionDescription(),
-            actualEditableDirections.get(0).getValue().getSendDirectionDescription());
-        assertEquals(existingDirections.get(0).getValue().getSendDirectionList(),
-            actualEditableDirections.get(0).getValue().getSendDirectionList());
-        assertEquals(existingDirections.get(0).getValue().getDateOfCompliance(),
-            actualEditableDirections.get(0).getValue().getDateOfCompliance());
-
-        assertEquals(existingDirections.get(1).getId(), actualEditableDirections.get(1).getId());
-        assertEquals(existingDirections.get(1).getValue().getSendDirectionDescription(),
-            actualEditableDirections.get(1).getValue().getSendDirectionDescription());
-        assertEquals(existingDirections.get(1).getValue().getSendDirectionList(),
-            actualEditableDirections.get(1).getValue().getSendDirectionList());
-        assertEquals(existingDirections.get(1).getValue().getDateOfCompliance(),
-            actualEditableDirections.get(1).getValue().getDateOfCompliance());
+        assertEquals(expectedDynamicList, directionsCaptor.getValue());
     }
-
 
     @Test
     void handling_should_return_error_when_direction_is_empty_list() {

@@ -13,8 +13,6 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.EDITABLE_DIRECTIONS;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,8 +33,8 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.EditableDirection;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Parties;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.PreviousDates;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -62,19 +60,7 @@ class ChangeDirectionDueDateHandlerTest {
     private ArgumentCaptor<List<IdValue<Direction>>> bailValueCaptor;
     @Captor
     private ArgumentCaptor<BailCaseFieldDefinition> bailExtractorCaptor;
-    @Captor
-    private ArgumentCaptor<List<IdValue<Parties>>> directionEditPartiesCaptor;
 
-    private String applicationSupplier = "Legal representative";
-    private String applicationReason = "applicationReason";
-    private String applicationDate = "09/01/2020";
-    private String applicationDecision = "Granted";
-    private String applicationDecisionReason = "Granted";
-    private String applicationDateOfDecision = "10/01/2020";
-    private String applicationStatus = "In progress";
-
-
-    private String direction1 = "Direction 1";
     private LocalDate dateSent = LocalDate.now();
 
     private ChangeDirectionDueDateHandler changeDirectionDueDateHandler;
@@ -88,7 +74,7 @@ class ChangeDirectionDueDateHandlerTest {
     }
 
     @Test
-    void should_copy_due_date_back_into_main_direction_fields_ignoring_other_changes() {
+    void should_add_previous_dates_to_changed_direction() {
 
         List<IdValue<Direction>> existingDirections =
             Arrays.asList(
@@ -117,9 +103,16 @@ class ChangeDirectionDueDateHandlerTest {
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
 
+        // Direction 2 is selected to be changed (first field of DynamicList)
+        DynamicList dynamicList = new DynamicList(new Value("Direction 2", "Direction 2"),
+                                                  List.of(
+                                                      new Value("Direction 2", "Direction 2"),
+                                                      new Value("Direction 1", "Direction 1")));
+
+
         // "Direction 1" in UI is equivalent of Direction with IdValue "2" in backend
-        when(bailCase.read(BAIL_DIRECTION_LIST,DynamicList.class)).thenReturn(Optional.of(new DynamicList(direction1)));
-        when(bailCase.read(BAIL_DIRECTION_EDIT_DATE_DUE, String.class)).thenReturn(Optional.of("2222-12-01"));
+        when(bailCase.read(BAIL_DIRECTION_LIST, DynamicList.class)).thenReturn(Optional.of(dynamicList));
+        when(bailCase.read(BAIL_DIRECTION_EDIT_DATE_DUE, String.class)).thenReturn(Optional.of("2022-12-01"));
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             changeDirectionDueDateHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
@@ -127,36 +120,105 @@ class ChangeDirectionDueDateHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(bailCase, callbackResponse.getData());
 
-        //problem is here
-        verify(bailCase, times(2)).write(bailExtractorCaptor.capture(), bailValueCaptor.capture());
-
         verify(bailCase).clear(BAIL_DIRECTION_LIST);
-        verify(bailCase).write(eq(BAIL_DIRECTION_EDIT_PARTIES), directionEditPartiesCaptor.capture());
+        verify(bailCase, times(1)).write(eq(DIRECTIONS), bailValueCaptor.capture());
 
-        List<List<IdValue<Direction>>> bailCaseValues = bailValueCaptor.getAllValues();
-        List<BailCaseFieldDefinition> bailCaseFieldDefinitions = bailExtractorCaptor.getAllValues();
-        List<IdValue<Direction>> actualDirections = bailCaseValues.get(bailCaseFieldDefinitions.indexOf(DIRECTIONS));
-        assertEquals(existingDirections.size(), actualDirections.size());
+        List<IdValue<Direction>> editedDirectionsCollection = bailValueCaptor.getAllValues().get(0);
+        assertEquals(existingDirections.size(), editedDirectionsCollection.size());
 
-        assertEquals("1", actualDirections.get(0).getId());
-        assertEquals("explanation-1", actualDirections.get(0).getValue().getSendDirectionDescription());
-        assertEquals("Applicant", actualDirections.get(0).getValue().getSendDirectionList());
-        assertEquals("2020-12-01", actualDirections.get(0).getValue().getDateOfCompliance());
-        assertEquals("2019-12-01", actualDirections.get(0).getValue().getDateSent());
+        // "Direction 2" in UI is equivalent of Direction with IdValue "1" in backend
+        // This direction's date has NOT been edited
+        assertEquals("1", editedDirectionsCollection.get(0).getId());
+        assertEquals("explanation-1", editedDirectionsCollection.get(0).getValue().getSendDirectionDescription());
+        assertEquals("Applicant", editedDirectionsCollection.get(0).getValue().getSendDirectionList());
+        assertEquals("2020-12-01", editedDirectionsCollection.get(0).getValue().getDateOfCompliance());
+        assertEquals("2019-12-01", editedDirectionsCollection.get(0).getValue().getDateSent());
+        assertEquals(0, editedDirectionsCollection.get(0).getValue().getPreviousDates().size());
 
         // "Direction 1" in UI is equivalent of Direction with IdValue "2" in backend
-        assertEquals("2", actualDirections.get(1).getId());
-        assertEquals("explanation-2", actualDirections.get(1).getValue().getSendDirectionDescription());
-        assertEquals("Home Office", actualDirections.get(1).getValue().getSendDirectionList());
-        assertEquals("2222-12-01", actualDirections.get(1).getValue().getDateOfCompliance());
-        assertEquals(dateSent.toString(), actualDirections.get(1).getValue().getDateSent());
+        // This direction's date has been edited
+        assertEquals("2", editedDirectionsCollection.get(1).getId());
+        assertEquals("explanation-2", editedDirectionsCollection.get(1).getValue().getSendDirectionDescription());
+        assertEquals("Home Office", editedDirectionsCollection.get(1).getValue().getSendDirectionList());
+        assertEquals("2022-12-01", editedDirectionsCollection.get(1).getValue().getDateOfCompliance()); // edited
+        assertEquals(dateSent.toString(), editedDirectionsCollection.get(1).getValue().getDateSent());
+        assertEquals(1, editedDirectionsCollection.get(1).getValue().getPreviousDates().size());
+        assertEquals("2020-11-01", editedDirectionsCollection.get(1).getValue().getPreviousDates().get(0)
+            .getValue().getDateDue());
+    }
 
-        assertEquals(1, actualDirections.get(1).getValue().getPreviousDates().size());
-        assertEquals("1", actualDirections.get(1).getValue().getPreviousDates().get(0).getId());
-        assertEquals("2020-11-01",
-            actualDirections.get(1).getValue().getPreviousDates().get(0).getValue().getDateDue());
-        assertEquals("2019-11-01",
-            actualDirections.get(1).getValue().getPreviousDates().get(0).getValue().getDateSent());
+    @Test
+    void should_add_to_previous_dates_if_direction_already_been_edited() {
+
+        List<IdValue<Direction>> existingDirections =
+            Arrays.asList(
+                new IdValue<>("1", new Direction(
+                    "explanation-1",
+                    "Applicant",
+                    "2020-12-01",
+                    "2019-12-01",
+                    "",
+                    "",
+                    Collections.emptyList()
+                )),
+                new IdValue<>("2", new Direction(
+                    "explanation-2",
+                    "Home Office",
+                    "2022-11-01",
+                    "2019-11-01",
+                    "",
+                    "",
+                    List.of(new IdValue("1", new PreviousDates("2020-11-01", "2019-11-01")))
+                ))
+            );
+
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(callback.getEvent()).thenReturn(Event.CHANGE_BAIL_DIRECTION_DUE_DATE);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
+
+        // Direction 2 is selected to be changed (first field of DynamicList)
+        DynamicList dynamicList = new DynamicList(new Value("Direction 2", "Direction 2"),
+                                                  List.of(
+                                                      new Value("Direction 2", "Direction 2"),
+                                                      new Value("Direction 1", "Direction 1")));
+
+
+        // "Direction 1" in UI is equivalent of Direction with IdValue "2" in backend
+        when(bailCase.read(BAIL_DIRECTION_LIST, DynamicList.class)).thenReturn(Optional.of(dynamicList));
+        when(bailCase.read(BAIL_DIRECTION_EDIT_DATE_DUE, String.class)).thenReturn(Optional.of("2023-12-01"));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            changeDirectionDueDateHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertEquals(bailCase, callbackResponse.getData());
+
+        verify(bailCase).clear(BAIL_DIRECTION_LIST);
+        verify(bailCase, times(1)).write(eq(DIRECTIONS), bailValueCaptor.capture());
+
+        List<IdValue<Direction>> editedDirectionsCollection = bailValueCaptor.getAllValues().get(0);
+        assertEquals(existingDirections.size(), editedDirectionsCollection.size());
+
+        // "Direction 2" in UI is equivalent of Direction with IdValue "1" in backend
+        // This direction's date has NOT been edited
+        assertEquals("1", editedDirectionsCollection.get(0).getId());
+        assertEquals("explanation-1", editedDirectionsCollection.get(0).getValue().getSendDirectionDescription());
+        assertEquals("Applicant", editedDirectionsCollection.get(0).getValue().getSendDirectionList());
+        assertEquals("2020-12-01", editedDirectionsCollection.get(0).getValue().getDateOfCompliance());
+        assertEquals("2019-12-01", editedDirectionsCollection.get(0).getValue().getDateSent());
+        assertEquals(0, editedDirectionsCollection.get(0).getValue().getPreviousDates().size());
+
+        // "Direction 1" in UI is equivalent of Direction with IdValue "2" in backend
+        // This direction's date has been edited
+        assertEquals("2", editedDirectionsCollection.get(1).getId());
+        assertEquals("explanation-2", editedDirectionsCollection.get(1).getValue().getSendDirectionDescription());
+        assertEquals("Home Office", editedDirectionsCollection.get(1).getValue().getSendDirectionList());
+        assertEquals("2023-12-01", editedDirectionsCollection.get(1).getValue().getDateOfCompliance()); // edited
+        assertEquals(dateSent.toString(), editedDirectionsCollection.get(1).getValue().getDateSent());
+        assertEquals(2, editedDirectionsCollection.get(1).getValue().getPreviousDates().size());
+        assertEquals("2022-11-01", editedDirectionsCollection.get(1).getValue().getPreviousDates().get(0)
+            .getValue().getDateDue());
     }
 
     @Test
@@ -214,68 +276,5 @@ class ChangeDirectionDueDateHandlerTest {
         assertThatThrownBy(() -> changeDirectionDueDateHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
-    }
-
-    // remove when new CCD definitions are in Prod
-    @Test
-    void should_copy_due_date_back_into_main_direction_fields_ignoring_other_changes_deprecated_path() {
-
-        final List<IdValue<Direction>> existingDirections =
-            Arrays.asList(
-                new IdValue<>("1", new Direction(
-                    "explanation-1",
-                    "Applicant",
-                    "2020-12-01",
-                    "2019-12-01",
-                    "",
-                    "",
-                    Collections.emptyList()
-                ))
-            );
-
-        final List<IdValue<EditableDirection>> editableDirections =
-            Arrays.asList(
-                new IdValue<>("1", new EditableDirection(
-                    "some-other-explanation-1-that-should-be-ignored",
-                    "Legal representative",
-                    "2222-12-01"
-                ))
-            );
-
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(callback.getEvent()).thenReturn(Event.CHANGE_BAIL_DIRECTION_DUE_DATE);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
-        when(bailCase.read(EDITABLE_DIRECTIONS)).thenReturn(Optional.of(editableDirections));
-        when(bailCase.read(BAIL_DIRECTION_EDIT_DATE_DUE, String.class)).thenReturn(Optional.of("2222-12-01"));
-
-
-        PreSubmitCallbackResponse<BailCase> callbackResponse =
-            changeDirectionDueDateHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-
-        assertNotNull(callbackResponse);
-        assertEquals(bailCase, callbackResponse.getData());
-
-        verify(bailCase, times(1)).write(
-            bailExtractorCaptor.capture(),
-            bailValueCaptor.capture());
-
-        List<BailCaseFieldDefinition> bailCaseFieldDefinitions = bailExtractorCaptor.getAllValues();
-        List<List<IdValue<Direction>>> bailCaseValues = bailValueCaptor.getAllValues();
-
-        List<IdValue<Direction>> actualDirections =
-            bailCaseValues.get(bailCaseFieldDefinitions.indexOf(DIRECTIONS));
-
-        assertEquals(
-            existingDirections.size(),
-            actualDirections.size()
-        );
-
-        assertEquals("1", actualDirections.get(0).getId());
-        assertEquals("explanation-1", actualDirections.get(0).getValue().getSendDirectionDescription());
-        assertEquals("Applicant", actualDirections.get(0).getValue().getSendDirectionList());
-        assertEquals("2222-12-01", actualDirections.get(0).getValue().getDateOfCompliance());
-        assertEquals("2019-12-01", actualDirections.get(0).getValue().getDateSent());
-
     }
 }

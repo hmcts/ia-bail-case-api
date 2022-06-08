@@ -85,9 +85,6 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
 
                         if (idValue.equals(directionBeingChanged)) {
 
-                            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES,
-                                           idValue.getValue().getSendDirectionList());
-
                             return new IdValue<>(
                                 idValue.getId(),
                                 new Direction(
