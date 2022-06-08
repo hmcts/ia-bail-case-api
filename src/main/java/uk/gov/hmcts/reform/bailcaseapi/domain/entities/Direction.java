@@ -30,23 +30,6 @@ public class Direction {
         String dateOfCompliance,
         String dateSent,
         String dateTimeDirectionCreated,
-        String dateTimeDirectionModified
-
-    ) {
-        this.sendDirectionDescription = requireNonNull(sendDirectionDescription);
-        this.sendDirectionList = requireNonNull(sendDirectionList);
-        this.dateOfCompliance = requireNonNull(dateOfCompliance);
-        this.dateSent = requireNonNull(dateSent);
-        this.dateTimeDirectionCreated = requireNonNull(dateTimeDirectionCreated);
-        this.dateTimeDirectionModified = dateTimeDirectionModified;
-    }
-
-    public Direction(
-        String sendDirectionDescription,
-        String sendDirectionList,
-        String dateOfCompliance,
-        String dateSent,
-        String dateTimeDirectionCreated,
         String dateTimeDirectionModified,
         List<IdValue<PreviousDates>> previousDates
 
