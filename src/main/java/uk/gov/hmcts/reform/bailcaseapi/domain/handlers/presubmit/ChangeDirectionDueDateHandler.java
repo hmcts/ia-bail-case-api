@@ -8,7 +8,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.PreviousDates;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.EditableDirection;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -18,21 +18,19 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Map;
 import java.util.ArrayList;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.EDITABLE_DIRECTIONS;
 
 @Component
 public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<BailCase> {
 
+    private static final String DIRECTION = "Direction ";
     private final DateProvider dateProvider;
 
     public ChangeDirectionDueDateHandler(DateProvider dateProvider) {
@@ -68,19 +66,25 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
         Optional<DynamicList> dynamicList =
             bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_LIST,DynamicList.class);
 
-        // new path when dynamic list is present
+        DynamicList bailDirectionList = bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_LIST, DynamicList.class)
+            .orElseThrow(() -> new IllegalStateException("bailDirectionList is missing"));
+
+        // find selected direction's id
+        Value selectedDirection = bailDirectionList.getValue();
+        int selectedDirectionId = Integer.parseInt(selectedDirection.getCode().substring(DIRECTION.length()));
+
+        List<IdValue<Direction>> directions = maybeDirections.orElse(emptyList());
+        IdValue<Direction> directionBeingChanged = directions.get(selectedDirectionId - 1);
+
         if (dynamicList.isPresent()) {
 
             List<IdValue<Direction>> changedDirections =
-                maybeDirections.orElse(emptyList())
+                directions
                     .stream()
                     .map(idValue -> {
 
-                        if (dynamicList.get().getValue().getCode().contains(
-                            "Direction " + (maybeDirections.orElse(emptyList()).size()
-                                - (Integer.parseInt(idValue.getId())) + 1))) {
+                        if (idValue.equals(directionBeingChanged)) {
 
-                            // MidEvent does not pass temp fields
                             bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES,
                                            idValue.getValue().getSendDirectionList());
 
@@ -106,54 +110,6 @@ public class ChangeDirectionDueDateHandler implements PreSubmitCallbackHandler<B
                     .collect(toList());
 
             bailCase.clear(BAIL_DIRECTION_LIST);
-            bailCase.write(DIRECTIONS, changedDirections);
-
-        } /* compatibility with old CCD definitions (remove on next release) */ else {
-
-            Map<String, Direction> existingDirectionsById =
-                maybeDirections
-                    .orElseThrow(() -> new IllegalStateException("directions is not present"))
-                    .stream()
-                    .collect(toMap(
-                        IdValue::getId,
-                        IdValue::getValue
-                    ));
-
-            Optional<List<IdValue<EditableDirection>>> maybeEditableDirections =
-                bailCase.read(EDITABLE_DIRECTIONS);
-
-            List<IdValue<Direction>> changedDirections =
-                maybeEditableDirections
-                    .orElse(emptyList())
-                    .stream()
-                    .map(idValue -> {
-
-                        Direction existingDirection =
-                            existingDirectionsById
-                                .get(idValue.getId());
-
-                        if (existingDirection == null) {
-                            throw new IllegalStateException("Cannot find original direction to update");
-                        }
-
-                        return new IdValue<>(
-                            idValue.getId(),
-                            new Direction(
-                                existingDirection.getSendDirectionDescription(),
-                                existingDirection.getSendDirectionList(),
-                                bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE,
-                                              String.class).orElse(""),
-                                existingDirection.getDateSent(),
-                                existingDirection.getDateTimeDirectionCreated(),
-                                existingDirection.getDateTimeDirectionModified(),
-                                existingDirection.getPreviousDates()
-                            )
-                        );
-
-                    })
-                    .collect(toList());
-
-            bailCase.clear(EDITABLE_DIRECTIONS);
             bailCase.write(DIRECTIONS, changedDirections);
 
         }

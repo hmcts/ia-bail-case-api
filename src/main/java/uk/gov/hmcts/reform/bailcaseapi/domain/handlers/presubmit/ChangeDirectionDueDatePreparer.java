@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.EditableDirection;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -65,23 +64,6 @@ public class ChangeDirectionDueDatePreparer implements PreSubmitCallbackHandler<
         Collections.reverse(directionListElements);
         DynamicList bailDirectionList = new DynamicList(directionListElements.get(0), directionListElements);
         bailCase.write(BAIL_DIRECTION_LIST, bailDirectionList);
-
-        List<IdValue<EditableDirection>> editableDirections =
-            maybeDirections
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(idValue ->
-                    new IdValue<>(
-                        idValue.getId(),
-                        new EditableDirection(
-                            idValue.getValue().getSendDirectionDescription(),
-                            idValue.getValue().getSendDirectionList(),
-                            idValue.getValue().getDateOfCompliance()
-                        )
-                    )
-                )
-                .collect(Collectors.toList());
-        bailCase.write(DIRECTIONS, editableDirections);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

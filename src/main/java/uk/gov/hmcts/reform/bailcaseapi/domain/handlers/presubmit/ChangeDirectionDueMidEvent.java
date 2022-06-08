@@ -3,12 +3,9 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_DIRECTION_LIST;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
@@ -25,7 +22,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 @Component
 public class ChangeDirectionDueMidEvent implements PreSubmitCallbackHandler<BailCase> {
 
-    private static final String direction = "Direction ";
+    private static final String DIRECTION = "Direction ";
 
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
@@ -56,33 +53,31 @@ public class ChangeDirectionDueMidEvent implements PreSubmitCallbackHandler<Bail
         DynamicList bailDirectionList = bailCase.read(BailCaseFieldDefinition.BAIL_DIRECTION_LIST, DynamicList.class)
             .orElseThrow(() -> new IllegalStateException("bailDirectionList is missing"));
 
-        maybeDirections
-            .orElse(emptyList())
-            .stream()
-            .filter(idValue -> bailDirectionList.getValue().getCode().contains(
-                direction + (maybeDirections.orElse(emptyList()).size() - (Integer.parseInt(idValue.getId())) + 1)))
-            .forEach(idValue -> {
+        // find selected direction's id
+        Value selectedDirection = bailDirectionList.getValue();
+        int selectedDirectionId = Integer.parseInt(selectedDirection.getCode().substring(DIRECTION.length()));
 
-                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_EXPLANATION,
-                               idValue.getValue().getSendDirectionDescription());
-                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES,
-                               idValue.getValue().getSendDirectionList());
-                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE,
-                               idValue.getValue().getDateOfCompliance());
-                bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_SENT, idValue.getValue().getDateSent());
-            });
+        List<IdValue<Direction>> directions = maybeDirections.orElse(emptyList());
+        if (!directions.isEmpty()) {
+            // find direction to be changed
+            // e.g. what is Direction 4 on UI has index 3 in the collection
+            IdValue<Direction> directionToChange = directions.get(selectedDirectionId - 1);
 
-        List<Value> directionListElements = maybeDirections
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(idValue -> new Value(direction + idValue.getId(), direction + idValue.getId()))
-            .collect(Collectors.toList());
-
-        Collections.reverse(directionListElements);
-        DynamicList newDirectionList = new DynamicList(new Value(bailDirectionList.getValue().getCode(),
-                                                                 bailDirectionList.getValue().getCode()),
-                                                       directionListElements);
-        bailCase.write(BAIL_DIRECTION_LIST, newDirectionList);
+            // write fields of the direction that's being changed into the bailcase object if present
+            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_EXPLANATION,
+                           directionToChange.getValue().getSendDirectionDescription());
+            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES,
+                           directionToChange.getValue().getSendDirectionList());
+            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE,
+                           directionToChange.getValue().getDateOfCompliance());
+            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_SENT,
+                           directionToChange.getValue().getDateSent());
+        } else {
+            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_EXPLANATION, "");
+            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_PARTIES, "");
+            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_DUE, "");
+            bailCase.write(BailCaseFieldDefinition.BAIL_DIRECTION_EDIT_DATE_SENT, "");
+        }
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
