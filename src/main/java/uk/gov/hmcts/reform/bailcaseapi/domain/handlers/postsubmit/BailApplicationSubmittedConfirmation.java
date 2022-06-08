@@ -26,7 +26,7 @@ public class BailApplicationSubmittedConfirmation implements PostSubmitCallbackH
 
         postSubmitResponse.setConfirmationBody(
             "### What happens next\n\n"
-            + "All sendDirectionList will be notified that the application has been submitted."
+            + "All parties will be notified that the application has been submitted."
         );
 
         postSubmitResponse.setConfirmationHeader("# You have submitted this application");

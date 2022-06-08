@@ -62,7 +62,7 @@ public class EndApplicationConfirmationTest {
         assertEquals("# You have ended the application", response.getConfirmationHeader().get());
         assertThat(response.getConfirmationBody().get()).contains("#### What happens next\n\n");
         assertThat(response.getConfirmationBody().get())
-            .contains("A notification has been sent to all sendDirectionList. No further action is required.");
+            .contains("A notification has been sent to all parties. No further action is required.");
     }
 
 }
