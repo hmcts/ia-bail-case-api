@@ -282,7 +282,9 @@ public enum BailCaseFieldDefinition {
     CONDITION_ELECTRONIC_MONITORING(
         "conditionsForBailElectronicMonitoring",  new TypeReference<String>(){}),
     BAIL_TRANSFER_DIRECTIONS(
-        "bailTransferDirections", new TypeReference<String>(){}),
+        "bailTransferDirections", new TypeReference<DynamicList>(){}),
+    LAST_MODIFIED_DIRECTION(
+        "lastModifiedDirection", new TypeReference<Direction>(){}),
     SECRETARY_OF_STATE_REFUSAL_REASONS(
         "secretaryOfStateRefusalReasons", new TypeReference<String>(){}),
     UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT(
@@ -317,6 +319,18 @@ public enum BailCaseFieldDefinition {
         "dateOfCompliance", new TypeReference<String>(){}),
     DIRECTIONS(
         "directions", new TypeReference<List<IdValue<Direction>>>(){}),
+    BAIL_DIRECTION_LIST(
+        "bailDirectionList", new TypeReference<DynamicList>(){}),
+    BAIL_DIRECTION_EDIT_EXPLANATION(
+        "bailDirectionEditExplanation", new TypeReference<String>(){}),
+    BAIL_DIRECTION_EDIT_PARTIES(
+        "bailDirectionEditParties", new TypeReference<String>(){}),
+    BAIL_DIRECTION_EDIT_DATE_SENT(
+        "bailDirectionEditDateSent", new TypeReference<String>(){}),
+    BAIL_DIRECTION_EDIT_DATE_DUE(
+        "bailDirectionEditDateDue", new TypeReference<String>(){}),
+    EDITABLE_DIRECTIONS(
+        "editableDirections", new TypeReference<List<IdValue<EditableDirection>>>(){}),
     REASON_FOR_REFUSAL_DETAILS(
         "reasonForRefusalDetails", new TypeReference<String>(){}),
     TRIBUNAL_REFUSAL_REASON(
