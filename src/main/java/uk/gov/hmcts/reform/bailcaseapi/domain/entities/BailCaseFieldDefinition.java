@@ -376,7 +376,7 @@ public enum BailCaseFieldDefinition {
     OUTCOME_DATE(
         "outcomeDate", new TypeReference<String>(){}),
     PRIOR_APPLICATIONS(
-        "priorApplications", new TypeReference<List<IdValue<PriorApplication>>>(){}),
+        "priorApplications1", new TypeReference<List<IdValue<PriorApplication>>>(){}),
     ;
 
 

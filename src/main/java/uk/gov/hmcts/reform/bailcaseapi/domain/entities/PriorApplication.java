@@ -1,20 +1,29 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
-public class PriorApplication{
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-    private final String applicationId;
-    private final BailCase caseData;
+@EqualsAndHashCode
+@ToString
+public class PriorApplication {
 
-    public PriorApplication(String applicationId, BailCase caseData) {
+    private String applicationId;
+    private String caseDataJson;
+
+    private PriorApplication() {
+        // noop -- for deserializer
+    }
+
+    public PriorApplication(String applicationId, String caseDataJson) {
         this.applicationId = applicationId;
-        this.caseData = caseData;
+        this.caseDataJson = caseDataJson;
     }
 
     public String getApplicationId() {
         return applicationId;
     }
 
-    public BailCase getCaseData() {
-        return caseData;
+    public String getCaseDataJson() {
+        return caseDataJson;
     }
 }

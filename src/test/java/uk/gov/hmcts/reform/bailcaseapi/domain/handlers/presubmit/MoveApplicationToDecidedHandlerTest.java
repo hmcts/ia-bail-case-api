@@ -12,11 +12,13 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 
@@ -44,10 +48,12 @@ class MoveApplicationToDecidedHandlerTest {
     private String callbackErrorMessage =
         "You must upload a signed decision notice before moving the application to decided.";
 
+    private final LocalDateTime nowWithTime = LocalDateTime.now();
 
     @BeforeEach
     public void setUp() {
         this.moveApplicationToDecidedHandler = new MoveApplicationToDecidedHandler(dateProvider);
+        when(dateProvider.nowWithTime()).thenReturn(nowWithTime);
     }
 
     @Test
@@ -83,6 +89,9 @@ class MoveApplicationToDecidedHandlerTest {
         assertEquals(bailCase, callbackResponse.getData());
         final Set<String> errors = callbackResponse.getErrors();
         assertThat(errors).hasSize(0);
+        verify(bailCase).write(BailCaseFieldDefinition.OUTCOME_DATE, nowWithTime.toString());
+        verify(bailCase, times(1)).write(BailCaseFieldDefinition.OUTCOME_STATE, State.DECISION_DECIDED);
+
     }
 
 
