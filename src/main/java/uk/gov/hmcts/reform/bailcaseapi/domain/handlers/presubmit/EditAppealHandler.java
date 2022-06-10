@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -54,11 +55,29 @@ public class EditAppealHandler implements PreSubmitCallbackHandler<BailCase> {
         Optional<String> optionalDetentionLocation = bailCase.read(APPLICANT_DETENTION_LOCATION, String.class);
         Optional<String> optionalGender = bailCase.read(APPLICANT_GENDER, String.class);
         Optional<YesOrNo> optionalApplicantMobileNumber = bailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class);
+        Optional<YesOrNo> optionalDisability = bailCase.read(DISABILITY_YESNO, YesOrNo.class);
+        Optional<YesOrNo> optionalVideoHearing = bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class);
 
         YesOrNo hasFinancialConditionSupporter1 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter2 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter3 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter4 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(NO);
+
+        if (optionalVideoHearing.isPresent()) {
+            YesOrNo videoHearingValue = optionalVideoHearing.get();
+
+            if (videoHearingValue.equals(YES)){
+                bailCase.remove(VIDEO_HEARING_DETAILS);
+            }
+        }
+
+        if (optionalDisability.isPresent()) {
+            YesOrNo hasDisability = optionalDisability.get();
+
+            if (hasDisability.equals(NO)){
+                bailCase.remove(APPLICANT_DISABILITY_DETAILS);
+            }
+        }
 
         if (optionalApplicantMobileNumber.isPresent()) {
             YesOrNo applicantMobilePhoneValue = optionalApplicantMobileNumber.get();
