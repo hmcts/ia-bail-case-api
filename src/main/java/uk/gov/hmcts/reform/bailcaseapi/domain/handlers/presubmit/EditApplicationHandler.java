@@ -60,11 +60,20 @@ public class EditApplicationHandler implements PreSubmitCallbackHandler<BailCase
         Optional<String> optionalAppealHearing = bailCase.read(HAS_APPEAL_HEARING_PENDING, String.class);
         Optional<YesOrNo> optionalApplicantAddress = bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class);
         Optional<YesOrNo> optionalFinancialConditionAmount = bailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class);
+        Optional<YesOrNo> optionalTransferBailManagement = bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class);
 
         YesOrNo hasFinancialConditionSupporter1 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter2 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter3 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter4 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(NO);
+
+        if (optionalTransferBailManagement.isPresent()) {
+            YesOrNo transferBailManagementValue = optionalTransferBailManagement.get();
+
+            if (transferBailManagementValue.equals(YES)) {
+                bailCase.remove(NO_TRANSFER_BAIL_MANAGEMENT_REASONS);
+            }
+        }
 
         if (optionalFinancialConditionAmount.isPresent()) {
             YesOrNo agreesToFinancialConditionAmount = optionalFinancialConditionAmount.get();
