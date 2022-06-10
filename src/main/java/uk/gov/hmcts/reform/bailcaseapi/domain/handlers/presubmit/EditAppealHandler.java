@@ -57,11 +57,38 @@ public class EditAppealHandler implements PreSubmitCallbackHandler<BailCase> {
         Optional<YesOrNo> optionalApplicantMobileNumber = bailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class);
         Optional<YesOrNo> optionalDisability = bailCase.read(DISABILITY_YESNO, YesOrNo.class);
         Optional<YesOrNo> optionalVideoHearing = bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class);
+        Optional<String> optionalAppealHearing = bailCase.read(HAS_APPEAL_HEARING_PENDING, String.class);
+        Optional<YesOrNo> optionalApplicantAddress = bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class);
+        Optional<YesOrNo> optionalFinancialConditionAmount = bailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class);
 
         YesOrNo hasFinancialConditionSupporter1 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter2 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter3 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class).orElse(NO);
         YesOrNo hasFinancialConditionSupporter4 = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(NO);
+
+        if (optionalFinancialConditionAmount.isPresent()) {
+            YesOrNo agreesToFinancialConditionAmount = optionalFinancialConditionAmount.get();
+
+            if (agreesToFinancialConditionAmount.equals(NO)) {
+                bailCase.remove(FINANCIAL_COND_AMOUNT);
+            }
+        }
+
+        if (optionalApplicantAddress.isPresent()) {
+            YesOrNo applicantHasAddress = optionalApplicantAddress.get();
+
+            if (applicantHasAddress.equals(NO)) {
+                bailCase.remove(APPLICANT_ADDRESS);
+            }
+        }
+
+        if (optionalAppealHearing.isPresent()) {
+            String hasAppealHearing = optionalAppealHearing.get();
+
+            if (hasAppealHearing.equals("YesWithoutAppealNumber") || hasAppealHearing.equals("No") || hasAppealHearing.equals("DontKnow")){
+                bailCase.remove(APPEAL_REFERENCE_NUMBER);
+            }
+        }
 
         if (optionalVideoHearing.isPresent()) {
             YesOrNo videoHearingValue = optionalVideoHearing.get();
