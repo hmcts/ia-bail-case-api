@@ -116,7 +116,7 @@ class MakeNewApplicationServiceTest {
         Mockito.when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(userRoleLabel);
 
         makeNewApplicationService.clearUnrelatedFields(bailCase);
-        Mockito.verify(bailCase, Mockito.times(1)).clear(UPLOAD_B1_FORM_DOCS);
+        Mockito.verify(bailCase, Mockito.times(1)).remove(UPLOAD_B1_FORM_DOCS);
     }
 
     @Test

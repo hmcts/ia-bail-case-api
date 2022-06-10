@@ -82,10 +82,10 @@ public class MakeNewApplicationService {
         UserRoleLabel userRoleLabel = userDetailsHelper.getLoggedInUserRoleLabel(userDetails);
 
         if (userRoleLabel.equals(UserRoleLabel.LEGAL_REPRESENTATIVE)) {
-            bailCase.clear(BailCaseFieldDefinition.UPLOAD_B1_FORM_DOCS);
+            bailCase.remove(BailCaseFieldDefinition.UPLOAD_B1_FORM_DOCS);
         }
         if (userRoleLabel.equals(UserRoleLabel.HOME_OFFICE_GENERIC)) {
-            bailCase.clear(BailCaseFieldDefinition.UPLOAD_B1_FORM_DOCS);
+            bailCase.remove(BailCaseFieldDefinition.UPLOAD_B1_FORM_DOCS);
         }
     }
 
