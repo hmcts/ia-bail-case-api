@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
@@ -62,8 +64,17 @@ public class MakeNewApplicationService {
     }
 
     public void clearUnrelatedFields(BailCase bailCase) {
-        bailCase.entrySet().removeIf(entry -> !validFields.contains(entry.getKey()));
+        List<BailCaseFieldDefinition> fieldDefinitionsToBeRemoved = bailCase.keySet()
+            .stream()
+            .filter(o -> !VALID_MAKE_NEW_APPLICATION_FIELDS.contains(o))
+            .map(BailCaseFieldDefinition::getEnumFromString)
+            .collect(Collectors.toList());
+
+        fieldDefinitionsToBeRemoved.forEach(bailCase::remove);
+
+        //To be removed after merging clear fields handler
         bailCase.entrySet().removeIf(entry -> entry.getValue() == null);
+
         clearRoleDependentFields(bailCase);
     }
 
@@ -85,7 +96,7 @@ public class MakeNewApplicationService {
         );
     }
 
-    private final List<String> validFields = List.of(
+    public static final List<String> VALID_MAKE_NEW_APPLICATION_FIELDS = List.of(
         BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER.value(),
         BailCaseFieldDefinition.PRIOR_APPLICATIONS.value(),
         BailCaseFieldDefinition.IS_ADMIN.value(),
