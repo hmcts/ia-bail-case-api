@@ -18,7 +18,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Slf4j
 @Component
-public class EditAppealHandler implements PreSubmitCallbackHandler<BailCase> {
+public class EditApplicationHandler implements PreSubmitCallbackHandler<BailCase> {
 
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
