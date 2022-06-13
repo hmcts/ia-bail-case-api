@@ -88,7 +88,7 @@ public enum BailCaseFieldDefinition {
     FINANCIAL_COND_AMOUNT(
         "financialCondAmount", new TypeReference<String>(){}),
     HAS_FINANCIAL_COND_SUPPORTER(
-        "hasFinancialCondSupporter", new TypeReference<String>(){}),
+        "hasFinancialCondSupporter", new TypeReference<YesOrNo>(){}),
     SUPPORTER_GIVEN_NAMES(
         "supporterGivenNames", new TypeReference<String>(){}),
     SUPPORTER_FAMILY_NAMES(
@@ -120,7 +120,7 @@ public enum BailCaseFieldDefinition {
     FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES(
         "financialAmountSupporterUndertakes", new TypeReference<String>(){}),
     HAS_FINANCIAL_COND_SUPPORTER_2(
-        "hasFinancialCondSupporter2", new TypeReference<String>(){}),
+        "hasFinancialCondSupporter2", new TypeReference<YesOrNo>(){}),
     SUPPORTER_2_GIVEN_NAMES(
         "supporter2GivenNames", new TypeReference<String>(){}),
     SUPPORTER_2_FAMILY_NAMES(
@@ -152,7 +152,7 @@ public enum BailCaseFieldDefinition {
     FINANCIAL_AMOUNT_SUPPORTER_2_UNDERTAKES(
         "financialAmountSupporter2Undertakes", new TypeReference<String>(){}),
     HAS_FINANCIAL_COND_SUPPORTER_3(
-        "hasFinancialCondSupporter3", new TypeReference<String>(){}),
+        "hasFinancialCondSupporter3", new TypeReference<YesOrNo>(){}),
     SUPPORTER_3_GIVEN_NAMES(
         "supporter3GivenNames", new TypeReference<String>(){}),
     SUPPORTER_3_FAMILY_NAMES(
@@ -162,7 +162,7 @@ public enum BailCaseFieldDefinition {
     SUPPORTER_3_CONTACT_DETAILS(
         "supporter3ContactDetails", new TypeReference<String>(){}),
     SUPPORTER_3_TELEPHONE_NUMBER(
-        "supporter2TelephoneNumber", new TypeReference<String>(){}),
+        "supporter3TelephoneNumber", new TypeReference<String>(){}),
     SUPPORTER_3_MOBILE_NUMBER(
         "supporter3MobileNumber", new TypeReference<String>(){}),
     SUPPORTER_3_EMAIL_ADDRESS(
@@ -184,7 +184,7 @@ public enum BailCaseFieldDefinition {
     FINANCIAL_AMOUNT_SUPPORTER_3_UNDERTAKES(
         "financialAmountSupporter3Undertakes", new TypeReference<String>(){}),
     HAS_FINANCIAL_COND_SUPPORTER_4(
-        "hasFinancialCondSupporter4", new TypeReference<String>(){}),
+        "hasFinancialCondSupporter4", new TypeReference<YesOrNo>(){}),
     SUPPORTER_4_GIVEN_NAMES(
         "supporter4GivenNames", new TypeReference<String>(){}),
     SUPPORTER_4_FAMILY_NAMES(
