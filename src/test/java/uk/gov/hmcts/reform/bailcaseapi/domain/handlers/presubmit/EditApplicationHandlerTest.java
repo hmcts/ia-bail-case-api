@@ -159,8 +159,9 @@ public class EditApplicationHandlerTest {
                 boolean canHandle = editApplicationHandler.canHandle(callbackStage, callback);
                 assertThat(canHandle).isEqualTo(
                     callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-                        && event.equals(Event.EDIT_BAIL_APPLICATION)
-                );
+                        && (event.equals(Event.EDIT_BAIL_APPLICATION)
+                            || event.equals(Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT)
+                ));
             }
             reset(callback);
         }
