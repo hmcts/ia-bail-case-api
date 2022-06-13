@@ -25,7 +25,8 @@ public class StatelessHandler implements PreSubmitCallbackHandler<BailCase> {
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-            && callback.getEvent() == Event.START_APPLICATION;
+               && (callback.getEvent() == Event.START_APPLICATION
+                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION);
     }
 
     @Override

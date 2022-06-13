@@ -117,7 +117,8 @@ public class IsLegallyRepresentedForFlagHandlerTest {
             when(callback.getEvent()).thenReturn(event);
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
                 boolean canHandle = isLegallyRepresentedForFlagHandler.canHandle(callbackStage, callback);
-                if (callbackStage == ABOUT_TO_SUBMIT && (callback.getEvent() == Event.START_APPLICATION)) {
+                if (callbackStage == ABOUT_TO_SUBMIT && (callback.getEvent() == Event.START_APPLICATION
+                                                         || callback.getEvent() == Event.EDIT_BAIL_APPLICATION)) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
