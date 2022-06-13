@@ -43,4 +43,8 @@ public class BailCase extends HashMap<String, Object> implements CaseData {
     public void remove(BailCaseFieldDefinition field) {
         this.remove(field.value());
     }
+
+    public void removeByString(String field) {
+        this.remove(field);
+    }
 }
