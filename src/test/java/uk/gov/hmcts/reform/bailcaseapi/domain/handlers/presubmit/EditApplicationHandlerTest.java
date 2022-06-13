@@ -188,7 +188,7 @@ public class EditApplicationHandlerTest {
 
     @Test
     void should_remove_supporters_if_no_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         assertFinancialConditionSupporter1Removed();
         assertFinancialConditionSupporter2Removed();
@@ -198,7 +198,7 @@ public class EditApplicationHandlerTest {
 
     @Test
     void should_remove_supporter_other_values_if_supporter1_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
@@ -208,96 +208,138 @@ public class EditApplicationHandlerTest {
     }
 
     @Test
+    void should_remove_supporter_other_values_if_supporter2_present() {
+        setUpValuesIfValuesAreRemoved();
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
+        assertFinancialConditionSupporter3Removed();
+        assertFinancialConditionSupporter4Removed();
+    }
+
+    @Test
+    void should_remove_supporter_other_values_if_supporter3_present() {
+        setUpValuesIfValuesAreRemoved();
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_3_GIVEN_NAMES);
+        assertFinancialConditionSupporter4Removed();
+    }
+
+    @Test
+    void should_remove_supporter_other_values_if_supporter4_present() {
+        setUpValuesIfValuesAreRemoved();
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_3_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_4_GIVEN_NAMES);
+    }
+
+    @Test
     void should_remove_transfer_management_reason_if_agreed() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(NO_TRANSFER_BAIL_MANAGEMENT_REASONS);
     }
 
     @Test
     void should_remove_financial_condition_amt_if_none_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(FINANCIAL_COND_AMOUNT);
     }
 
     @Test
     void should_remove_appeal_reference_number_if_none_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPEAL_REFERENCE_NUMBER);
     }
 
     @Test
     void should_remove_video_hearing_details_if_none_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(VIDEO_HEARING_DETAILS);
     }
 
     @Test
     void should_remove_applicant_address_if_none_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_ADDRESS);
     }
 
     @Test
     void should_remove_disability_details_if_none_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_DISABILITY_DETAILS);
     }
 
     @Test
     void should_remove_mobile_details_if_none_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_MOBILE_NUMBER);
     }
 
     @Test
     void should_remove_gender_other_details_if_male_female() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_GENDER_OTHER);
     }
 
     @Test
     void should_remove_prison_details_if_irc() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         //For IRC
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(PRISON_NAME);
         verify(bailCase, times(1)).remove(APPLICANT_PRISON_DETAILS);
+        verify(bailCase, never()).remove(IRC_NAME);
     }
 
     @Test
     void should_remove_prison_details_if_prison() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         //For Prison
         when(bailCase.read(APPLICANT_DETENTION_LOCATION, String.class)).thenReturn(Optional.of("prison"));
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(IRC_NAME);
+        verify(bailCase, never()).remove(PRISON_NAME);
+
     }
 
     @Test
     void should_remove_bail_evidence_if_not_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(BAIL_EVIDENCE);
     }
 
     @Test
     void should_remove_interpreter_language_if_not_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(INTERPRETER_LANGUAGES);
     }
 
     @Test
     void should_remove_LR_details_if_not_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(LEGAL_REP_COMPANY);
         verify(bailCase, times(1)).remove(LEGAL_REP_EMAIL_ADDRESS);
@@ -309,12 +351,32 @@ public class EditApplicationHandlerTest {
 
     @Test
     void should_remove_nationalities_if_not_present() {
-        setUpValues();
+        setUpValuesIfValuesAreRemoved();
         editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_NATIONALITIES);
     }
 
-    private void setUpValues() {
+    @Test
+    void should_not_remove_if_values_present() {
+        setUpValuesIfValuesArePresent();
+        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, never()).remove(NO_TRANSFER_BAIL_MANAGEMENT_REASONS);
+        verify(bailCase, never()).remove(FINANCIAL_COND_AMOUNT);
+        verify(bailCase, never()).remove(APPLICANT_ADDRESS);
+        verify(bailCase, never()).remove(APPEAL_REFERENCE_NUMBER);
+        verify(bailCase, never()).remove(VIDEO_HEARING_DETAILS);
+        verify(bailCase, never()).remove(APPLICANT_DISABILITY_DETAILS);
+        verify(bailCase, never()).remove(APPLICANT_MOBILE_NUMBER);
+        verify(bailCase, never()).remove(APPLICANT_GENDER_OTHER);
+        verify(bailCase, never()).remove(BAIL_EVIDENCE);
+        verify(bailCase, never()).remove(APPLICANT_NATIONALITIES);
+        verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_3_GIVEN_NAMES);
+        verify(bailCase, never()).remove(SUPPORTER_4_GIVEN_NAMES);
+    }
+
+    private void setUpValuesIfValuesAreRemoved() {
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
@@ -337,6 +399,31 @@ public class EditApplicationHandlerTest {
             "immigrationRemovalCentre"));
         when(bailCase.read(APPLICANT_GENDER, String.class)).thenReturn(Optional.of("male"));
         when(bailCase.read(HAS_APPEAL_HEARING_PENDING, String.class)).thenReturn(Optional.of("No"));
+    }
+
+    private void setUpValuesIfValuesArePresent() {
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(
+            GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION,
+            YesOrNo.class
+        )).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(DISABILITY_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(APPLICANT_NATIONALITY, String.class)).thenReturn(Optional.empty());
+        when(bailCase.read(APPLICANT_DETENTION_LOCATION, String.class)).thenReturn(Optional.of(
+            "immigrationRemovalCentre"));
+        when(bailCase.read(APPLICANT_GENDER, String.class)).thenReturn(Optional.of("other"));
+        when(bailCase.read(HAS_APPEAL_HEARING_PENDING, String.class)).thenReturn(Optional.of("Yes"));
     }
 
     private void assertFinancialConditionSupporter1Removed() {
