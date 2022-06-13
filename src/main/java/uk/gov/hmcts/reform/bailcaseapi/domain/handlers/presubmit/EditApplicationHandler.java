@@ -120,7 +120,8 @@ public class EditApplicationHandler implements PreSubmitCallbackHandler<BailCase
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-            && (callback.getEvent() == Event.EDIT_BAIL_APPLICATION);
+            && ((callback.getEvent() == Event.EDIT_BAIL_APPLICATION)
+                || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT);
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
@@ -157,7 +158,6 @@ public class EditApplicationHandler implements PreSubmitCallbackHandler<BailCase
             AGREES_TO_BOUND_BY_FINANCIAL_COND,YesOrNo.class);
         final Optional<YesOrNo> optionalTransferBailManagement = bailCase.read(
             TRANSFER_BAIL_MANAGEMENT_OPTION,YesOrNo.class);
-
 
         final YesOrNo hasFinancialConditionSupporter1 = bailCase.read(
             HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(NO);
