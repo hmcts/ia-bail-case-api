@@ -100,6 +100,24 @@ class DeriveHearingCentreHandlerTest {
     }
 
     @Test
+    void should_set_hearing_centre_if_already_assigned_value() {
+        final HearingCentre existingHearingCentre = HearingCentre.TAYLOR_HOUSE;
+
+        when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
+        when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
+        when(bailCase.read(HEARING_CENTRE)).thenReturn(Optional.of(existingHearingCentre));
+        when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.HATTON_CROSS);
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertThat(callbackResponse.getData()).isNotEmpty();
+        assertThat(callbackResponse.getData()).isEqualTo(bailCase);
+        verify(bailCase, times(1)).write(HEARING_CENTRE, HearingCentre.HATTON_CROSS);
+    }
+
+    @Test
     void should_throw_for_empty_prison_and_irc() {
 
         when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
