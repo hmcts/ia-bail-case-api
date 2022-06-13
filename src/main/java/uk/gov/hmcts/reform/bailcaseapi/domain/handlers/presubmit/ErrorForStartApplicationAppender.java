@@ -1,10 +1,11 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREVIOUS_BAIL_APPLICATION_NUMBER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_PREVIOUS_BAIL_APPLICATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREVIOUS_APPLICATION_DONE_VIA_ARIA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREVIOUS_APPLICATION_DONE_VIA_CCD;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_PREVIOUS_BAIL_APPLICATION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREVIOUS_BAIL_APPLICATION_NUMBER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REDIRECT_TO_PREVIOUS_APPLICATION_OR_NOC;
 
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -13,11 +14,10 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.DispatchPriority;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Component
-public class CaseInferenceByBailNumberHandler implements PreSubmitCallbackHandler<BailCase> {
+public class ErrorForStartApplicationAppender implements PreSubmitCallbackHandler<BailCase> {
 
     @Override
     public DispatchPriority getDispatchPriority() {
@@ -33,7 +33,7 @@ public class CaseInferenceByBailNumberHandler implements PreSubmitCallbackHandle
 
         return callbackStage == PreSubmitCallbackStage.MID_EVENT
                && callback.getEvent() == Event.START_APPLICATION
-               && callback.getPageId().equals(HAS_PREVIOUS_BAIL_APPLICATION.value());
+               && callback.getPageId().equals(REDIRECT_TO_PREVIOUS_APPLICATION_OR_NOC.value());
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
@@ -51,24 +51,11 @@ public class CaseInferenceByBailNumberHandler implements PreSubmitCallbackHandle
 
         PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
 
-        String bailReferenceNumber = bailCase.read(PREVIOUS_BAIL_APPLICATION_NUMBER, String.class).orElse("");
-        String hasPreviousBailApplication = bailCase.read(HAS_PREVIOUS_BAIL_APPLICATION, String.class).orElse("");
-
-        if (hasPreviousBailApplication.equals("yes")) {
-            if (bailReferenceNumber.matches("[0-9]{16}")) {
-                bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_CCD, YesOrNo.YES);
-                bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_ARIA, YesOrNo.NO);
-            } else if (bailReferenceNumber.matches("[a-zA-Z]{2}\\/[0-9]{5}")) {
-                bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_CCD, YesOrNo.NO);
-                bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_ARIA, YesOrNo.YES);
-            } else {
-                response.addError("Invalid bail number provided. The bail number must be either 16 digits long "
-                                  + "(e.g. 1111222233334444) or 8 characters long (e.g. HW/12345)");
-            }
-        } else {
-            bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_CCD, YesOrNo.NO);
-            bailCase.write(PREVIOUS_APPLICATION_DONE_VIA_ARIA, YesOrNo.NO);
-        }
+        response.addError("A case record already exists for this applicant.\n"
+                          + "If you did not make a previous application on the applicant’s behalf you will need to "
+                          + "acquire the case record to continue.  You can do so by using Notice of Change\n"
+                          + "If you did you need to find the applicant in your case list and make a new application "
+                          + "from within the existing record.");
 
         return response;
     }
