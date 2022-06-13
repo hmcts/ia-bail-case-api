@@ -75,7 +75,8 @@ public class StatelessHandlerTest {
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
                 boolean canHandle = statelessHandler.canHandle(callbackStage, callback);
 
-                if (event == Event.START_APPLICATION && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT) {
+                if ((event == Event.START_APPLICATION || callback.getEvent() == Event.MAKE_NEW_APPLICATION)
+                        && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
