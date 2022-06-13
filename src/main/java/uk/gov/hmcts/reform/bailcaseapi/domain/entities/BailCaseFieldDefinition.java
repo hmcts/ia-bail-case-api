@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.util.Arrays;
 import java.util.List;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
@@ -334,7 +336,7 @@ public enum BailCaseFieldDefinition {
     REASON_FOR_REFUSAL_DETAILS(
         "reasonForRefusalDetails", new TypeReference<String>(){}),
     TRIBUNAL_REFUSAL_REASON(
-        "tribunalRefusalReason ", new TypeReference<String>(){}),
+        "tribunalRefusalReason", new TypeReference<String>(){}),
     REASON_JUDGE_IS_MINDED_DETAILS(
         "reasonsJudgeIsMindedDetails", new TypeReference<String>(){}),
     JUDGE_DETAILS_NAME(
@@ -371,6 +373,18 @@ public enum BailCaseFieldDefinition {
         "currentUser", new TypeReference<String>(){}),
     EDIT_DOCUMENTS_REASON(
         "editDocumentsReason", new TypeReference<String>(){}),
+    OUTCOME_STATE(
+        "outcomeState", new TypeReference<String>(){}),
+    OUTCOME_DATE(
+        "outcomeDate", new TypeReference<String>(){}),
+    PRIOR_APPLICATIONS(
+        "priorApplications1", new TypeReference<List<IdValue<PriorApplication>>>(){}),
+    NOTIFICATIONS_SENT(
+        "notificationsSent", new TypeReference<List<IdValue<String>>>() {}),
+    DECLARATION_ON_SUBMIT(
+        "declarationOnSubmit", new TypeReference<List<String>>(){}),
+    SUBMIT_NOTIFICATION_STATUS(
+        "submitNotificationStatus", new TypeReference<String>() {}),
     ;
 
 
@@ -388,5 +402,14 @@ public enum BailCaseFieldDefinition {
 
     public TypeReference getTypeReference() {
         return typeReference;
+    }
+
+    public static BailCaseFieldDefinition getEnumFromString(String stringToGet) {
+
+        return Arrays.stream(BailCaseFieldDefinition.values())
+            .filter(ccd -> ccd.value.equals(stringToGet))
+            .findFirst().orElseThrow(
+                () -> new IllegalArgumentException("No BailCaseFieldDefinition found with the value: " + stringToGet)
+            );
     }
 }

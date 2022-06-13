@@ -107,8 +107,10 @@ class DetentionFacilityAppenderTest {
             when(callback.getEvent()).thenReturn(event);
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
                 boolean canHandle = detentionFacilityAppender.canHandle(callbackStage, callback);
-                if (callbackStage == ABOUT_TO_SUBMIT && (callback.getEvent() == Event.START_APPLICATION
-                                                         || callback.getEvent() == Event.EDIT_BAIL_APPLICATION)) {
+                  if (callbackStage == ABOUT_TO_SUBMIT
+                    && (callback.getEvent() == Event.START_APPLICATION
+                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
+                        || callback.getEvent() == Event.MAKE_NEW_APPLICATION)) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);

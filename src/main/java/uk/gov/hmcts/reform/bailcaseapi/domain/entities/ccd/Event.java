@@ -18,6 +18,7 @@ public enum Event {
     UPLOAD_DOCUMENTS("uploadDocuments"),
     EDIT_BAIL_DOCUMENTS("editBailDocuments"),
     EDIT_BAIL_APPLICATION("editBailApplication"),
+    MAKE_NEW_APPLICATION("makeNewApplication"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
