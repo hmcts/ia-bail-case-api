@@ -33,7 +33,8 @@ public class CaseInferenceByBailNumberHandler implements PreSubmitCallbackHandle
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.MID_EVENT
-               && callback.getEvent() == Event.START_APPLICATION;
+               && (callback.getEvent() == Event.START_APPLICATION
+               || callback.getEvent() == Event.EDIT_BAIL_APPLICATION);
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(

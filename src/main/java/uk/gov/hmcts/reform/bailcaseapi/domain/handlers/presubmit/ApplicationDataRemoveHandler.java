@@ -364,7 +364,6 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(SUPPORTER_2_HAS_PASSPORT);
         bailCase.remove(SUPPORTER_2_PASSPORT);
         bailCase.remove(FINANCIAL_AMOUNT_SUPPORTER_2_UNDERTAKES);
-        bailCase.remove(HAS_FINANCIAL_COND_SUPPORTER_2);
     }
 
     private void clearFinancialSupporter3Details(BailCase bailCase) {
@@ -383,7 +382,6 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(SUPPORTER_3_HAS_PASSPORT);
         bailCase.remove(SUPPORTER_3_PASSPORT);
         bailCase.remove(FINANCIAL_AMOUNT_SUPPORTER_3_UNDERTAKES);
-        bailCase.remove(HAS_FINANCIAL_COND_SUPPORTER_3);
     }
 
     private void clearFinancialSupporter4Details(BailCase bailCase) {
@@ -402,7 +400,6 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(SUPPORTER_4_HAS_PASSPORT);
         bailCase.remove(SUPPORTER_4_PASSPORT);
         bailCase.remove(FINANCIAL_AMOUNT_SUPPORTER_4_UNDERTAKES);
-        bailCase.remove(HAS_FINANCIAL_COND_SUPPORTER_4);
     }
 
     private void clearLegalRepDetails(BailCase bailCase) {
