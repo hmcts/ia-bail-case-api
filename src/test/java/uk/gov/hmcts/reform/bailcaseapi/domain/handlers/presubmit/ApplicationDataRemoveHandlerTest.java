@@ -122,16 +122,16 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class EditApplicationHandlerTest {
+public class ApplicationDataRemoveHandlerTest {
     @Mock private Callback<BailCase> callback;
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
-    private EditApplicationHandler editApplicationHandler;
+    private ApplicationDataRemoveHandler applicationDataRemoveHandler;
 
     @BeforeEach
     void setUp() {
         reset(callback);
-        editApplicationHandler = new EditApplicationHandler();
+        applicationDataRemoveHandler = new ApplicationDataRemoveHandler();
         when(callback.getEvent()).thenReturn(Event.EDIT_BAIL_APPLICATION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
@@ -141,12 +141,12 @@ public class EditApplicationHandlerTest {
     @Test
     void handling_should_throw_if_cannot_actually_handle() {
 
-        assertThatThrownBy(() -> editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
+        assertThatThrownBy(() -> applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
 
         when(callback.getEvent()).thenReturn(Event.SUBMIT_APPLICATION);
-        assertThatThrownBy(() -> editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
+        assertThatThrownBy(() -> applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
     }
@@ -156,10 +156,11 @@ public class EditApplicationHandlerTest {
         for (Event event : Event.values()) {
             when(callback.getEvent()).thenReturn(event);
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
-                boolean canHandle = editApplicationHandler.canHandle(callbackStage, callback);
+                boolean canHandle = applicationDataRemoveHandler.canHandle(callbackStage, callback);
                 assertThat(canHandle).isEqualTo(
                     callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-                        && event.equals(Event.EDIT_BAIL_APPLICATION)
+                        && (event.equals(Event.EDIT_BAIL_APPLICATION)
+                            || event.equals(Event.MAKE_NEW_APPLICATION))
                 );
             }
             reset(callback);
@@ -169,19 +170,19 @@ public class EditApplicationHandlerTest {
     @Test
     void should_not_allow_null_arguments() {
 
-        assertThatThrownBy(() -> editApplicationHandler.canHandle(null, callback))
+        assertThatThrownBy(() -> applicationDataRemoveHandler.canHandle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> editApplicationHandler.canHandle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
+        assertThatThrownBy(() -> applicationDataRemoveHandler.canHandle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> editApplicationHandler.handle(null, callback))
+        assertThatThrownBy(() -> applicationDataRemoveHandler.handle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
+        assertThatThrownBy(() -> applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
     }
@@ -189,7 +190,7 @@ public class EditApplicationHandlerTest {
     @Test
     void should_remove_supporters_if_no_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         assertFinancialConditionSupporter1Removed();
         assertFinancialConditionSupporter2Removed();
         assertFinancialConditionSupporter3Removed();
@@ -200,7 +201,7 @@ public class EditApplicationHandlerTest {
     void should_remove_supporter_other_values_if_supporter1_present() {
         setUpValuesIfValuesAreRemoved();
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         assertFinancialConditionSupporter2Removed();
         assertFinancialConditionSupporter3Removed();
@@ -212,7 +213,7 @@ public class EditApplicationHandlerTest {
         setUpValuesIfValuesAreRemoved();
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
         assertFinancialConditionSupporter3Removed();
@@ -225,7 +226,7 @@ public class EditApplicationHandlerTest {
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_3_GIVEN_NAMES);
@@ -239,7 +240,7 @@ public class EditApplicationHandlerTest {
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_3_GIVEN_NAMES);
@@ -249,56 +250,56 @@ public class EditApplicationHandlerTest {
     @Test
     void should_remove_transfer_management_reason_if_agreed() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(NO_TRANSFER_BAIL_MANAGEMENT_REASONS);
     }
 
     @Test
     void should_remove_financial_condition_amt_if_none_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(FINANCIAL_COND_AMOUNT);
     }
 
     @Test
     void should_remove_appeal_reference_number_if_none_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPEAL_REFERENCE_NUMBER);
     }
 
     @Test
     void should_remove_video_hearing_details_if_none_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(VIDEO_HEARING_DETAILS);
     }
 
     @Test
     void should_remove_applicant_address_if_none_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_ADDRESS);
     }
 
     @Test
     void should_remove_disability_details_if_none_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_DISABILITY_DETAILS);
     }
 
     @Test
     void should_remove_mobile_details_if_none_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_MOBILE_NUMBER);
     }
 
     @Test
     void should_remove_gender_other_details_if_male_female() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_GENDER_OTHER);
     }
 
@@ -306,7 +307,7 @@ public class EditApplicationHandlerTest {
     void should_remove_prison_details_if_irc() {
         setUpValuesIfValuesAreRemoved();
         //For IRC
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(PRISON_NAME);
         verify(bailCase, times(1)).remove(APPLICANT_PRISON_DETAILS);
         verify(bailCase, never()).remove(IRC_NAME);
@@ -317,7 +318,7 @@ public class EditApplicationHandlerTest {
         setUpValuesIfValuesAreRemoved();
         //For Prison
         when(bailCase.read(APPLICANT_DETENTION_LOCATION, String.class)).thenReturn(Optional.of("prison"));
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(IRC_NAME);
         verify(bailCase, never()).remove(PRISON_NAME);
 
@@ -326,21 +327,21 @@ public class EditApplicationHandlerTest {
     @Test
     void should_remove_bail_evidence_if_not_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(BAIL_EVIDENCE);
     }
 
     @Test
     void should_remove_interpreter_language_if_not_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(INTERPRETER_LANGUAGES);
     }
 
     @Test
     void should_remove_LR_details_if_not_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(LEGAL_REP_COMPANY);
         verify(bailCase, times(1)).remove(LEGAL_REP_EMAIL_ADDRESS);
         verify(bailCase, times(1)).remove(LEGAL_REP_NAME);
@@ -352,14 +353,14 @@ public class EditApplicationHandlerTest {
     @Test
     void should_remove_nationalities_if_not_present() {
         setUpValuesIfValuesAreRemoved();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_NATIONALITIES);
     }
 
     @Test
     void should_not_remove_if_values_present() {
         setUpValuesIfValuesArePresent();
-        editApplicationHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(NO_TRANSFER_BAIL_MANAGEMENT_REASONS);
         verify(bailCase, never()).remove(FINANCIAL_COND_AMOUNT);
         verify(bailCase, never()).remove(APPLICANT_ADDRESS);
