@@ -71,19 +71,13 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
         Document maybeSignedDecisionNotice = bailCase.read(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class)
             .orElseThrow(() -> new IllegalStateException("signedDecisionNotice is not present"));
 
-        Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingTribunalDocuments =
-            bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA);
-
-        final List<IdValue<DocumentWithMetadata>> existingTribunalDocuments =
-            maybeExistingTribunalDocuments.orElse(Collections.emptyList());
-
         List<IdValue<DocumentWithMetadata>> allTribunalDocuments = new ArrayList<>();
 
         documentReceiver.tryReceive(
                 new DocumentWithDescription(maybeSignedDecisionNotice, ""), DocumentTag.SIGNED_DECISION_NOTICE)
             .ifPresent(signedDecisionNoticeDocumentWithMetadata ->
                            allTribunalDocuments.addAll(documentsAppender.append(
-                               existingTribunalDocuments, List.of(signedDecisionNoticeDocumentWithMetadata)
+                               allTribunalDocuments, List.of(signedDecisionNoticeDocumentWithMetadata)
             )));
 
         bailCase.write(TRIBUNAL_DOCUMENTS_WITH_METADATA, allTribunalDocuments);
