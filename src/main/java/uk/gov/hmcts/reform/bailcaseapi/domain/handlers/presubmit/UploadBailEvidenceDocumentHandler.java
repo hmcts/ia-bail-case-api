@@ -51,7 +51,8 @@ public class UploadBailEvidenceDocumentHandler implements PreSubmitCallbackHandl
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
             && (callback.getEvent() == Event.SUBMIT_APPLICATION
-            || callback.getEvent() == Event.MAKE_NEW_APPLICATION);
+            || callback.getEvent() == Event.MAKE_NEW_APPLICATION
+            || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT);
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
