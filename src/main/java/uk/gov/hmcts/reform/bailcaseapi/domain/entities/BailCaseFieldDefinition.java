@@ -336,7 +336,7 @@ public enum BailCaseFieldDefinition {
     REASON_FOR_REFUSAL_DETAILS(
         "reasonForRefusalDetails", new TypeReference<String>(){}),
     TRIBUNAL_REFUSAL_REASON(
-        "tribunalRefusalReason ", new TypeReference<String>(){}),
+        "tribunalRefusalReason", new TypeReference<String>(){}),
     REASON_JUDGE_IS_MINDED_DETAILS(
         "reasonsJudgeIsMindedDetails", new TypeReference<String>(){}),
     JUDGE_DETAILS_NAME(
@@ -383,6 +383,8 @@ public enum BailCaseFieldDefinition {
         "notificationsSent", new TypeReference<List<IdValue<String>>>() {}),
     DECLARATION_ON_SUBMIT(
         "declarationOnSubmit", new TypeReference<List<String>>(){}),
+    SUBMIT_NOTIFICATION_STATUS(
+        "submitNotificationStatus", new TypeReference<String>() {}),
     ;
 
 

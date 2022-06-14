@@ -64,7 +64,8 @@ public class ApplicantFullNameFormatterTest {
             ImmutableMap
                 .of(Pair.of("Max Anthony", "Smith"), "Max Anthony Smith",
                     Pair.of("John", "Doe"), "John Doe",
-                    Pair.of(" Mary ", " Bell "), "Mary Bell");
+                    Pair.of(" Mary ", " Bell "), "Mary Bell"
+                );
 
         exampleInputOutputs
             .forEach((input, output) -> {
@@ -120,6 +121,7 @@ public class ApplicantFullNameFormatterTest {
                 boolean canHandle = applicantFullNameFormatter.canHandle(callbackStage, callback);
                 if (callbackStage == ABOUT_TO_SUBMIT
                     && (callback.getEvent() == Event.START_APPLICATION
+                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
                         || callback.getEvent() == Event.MAKE_NEW_APPLICATION)) {
                     assertTrue(canHandle);
                 } else {
