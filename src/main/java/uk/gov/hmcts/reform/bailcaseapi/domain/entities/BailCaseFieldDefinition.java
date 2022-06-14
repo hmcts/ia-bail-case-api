@@ -19,8 +19,8 @@ public enum BailCaseFieldDefinition {
         "previousApplicationDoneViaAria", new TypeReference<YesOrNo>() {}),
     PREVIOUS_APPLICATION_DONE_VIA_CCD(
         "previousApplicationDoneViaCcd", new TypeReference<YesOrNo>() {}),
-    PREVIOUS_APPLICATION_SCAN_CASE_REFERENCE(
-        "previousApplicationScanCaseReference", new TypeReference<String>() {}),
+    REDIRECT_TO_PREVIOUS_APPLICATION_OR_NOC(
+        "redirectToPreviousApplicationOrNoc", new TypeReference<String>() {}),
     APPLICATION_SENT_BY(
         "sentByChecklist", new TypeReference<String>() {}),
     IS_ADMIN(
