@@ -100,6 +100,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
+import com.google.common.collect.Lists;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -113,15 +115,23 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Slf4j
 @Component
-public class EditApplicationHandler implements PreSubmitCallbackHandler<BailCase> {
+public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<BailCase> {
 
     public boolean canHandle(PreSubmitCallbackStage callbackStage, Callback<BailCase> callback) {
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-            && ((callback.getEvent() == Event.EDIT_BAIL_APPLICATION)
-                || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT);
+               && getEventsToHandle().contains(callback.getEvent());
+    }
+
+    private List<Event> getEventsToHandle() {
+        List<Event> eventsToHandle = Lists.newArrayList(
+            Event.MAKE_NEW_APPLICATION,
+            Event.EDIT_BAIL_APPLICATION,
+            Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT
+        );
+        return eventsToHandle;
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
