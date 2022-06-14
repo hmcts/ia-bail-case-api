@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_NATIONALITIES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_NATIONALITY;
 
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -27,17 +26,10 @@ public class StatelessHandler implements PreSubmitCallbackHandler<BailCase> {
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-               && getEventsToHandle().contains(callback.getEvent());
-    }
-
-    private List<Event> getEventsToHandle() {
-        List<Event> eventsToHandle = Lists.newArrayList(
-            Event.START_APPLICATION,
-            Event.MAKE_NEW_APPLICATION,
-            Event.EDIT_BAIL_APPLICATION,
-            Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT
-        );
-        return eventsToHandle;
+               && (callback.getEvent() == Event.START_APPLICATION
+                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
+                   || callback.getEvent() == Event.MAKE_NEW_APPLICATION
+                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT);
     }
 
     @Override
