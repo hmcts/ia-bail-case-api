@@ -29,7 +29,8 @@ public class IsLegallyRepresentedForFlagHandler implements PreSubmitCallbackHand
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
                && (callback.getEvent() == Event.START_APPLICATION
                    || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
-                   || callback.getEvent() == Event.MAKE_NEW_APPLICATION);
+                   || callback.getEvent() == Event.MAKE_NEW_APPLICATION
+                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT);
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(

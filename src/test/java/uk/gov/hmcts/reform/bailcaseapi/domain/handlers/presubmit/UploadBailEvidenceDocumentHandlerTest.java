@@ -196,7 +196,8 @@ class UploadBailEvidenceDocumentHandlerTest {
                 boolean canHandle = uploadBailEvidenceDocumentHandler.canHandle(stage, callback);
                 if (stage.equals(PreSubmitCallbackStage.ABOUT_TO_SUBMIT) && Arrays.asList(
                     Event.SUBMIT_APPLICATION,
-                    Event.MAKE_NEW_APPLICATION
+                    Event.MAKE_NEW_APPLICATION,
+                    Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT
                 ).contains(event)) {
                     assertTrue(canHandle);
                 } else {

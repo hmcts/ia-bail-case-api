@@ -78,7 +78,8 @@ public class StatelessHandlerTest {
                 if (callbackStage == ABOUT_TO_SUBMIT
                     && (callback.getEvent() == Event.START_APPLICATION
                         || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
-                        || callback.getEvent() == Event.MAKE_NEW_APPLICATION)) {
+                        || callback.getEvent() == Event.MAKE_NEW_APPLICATION
+                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT)) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
