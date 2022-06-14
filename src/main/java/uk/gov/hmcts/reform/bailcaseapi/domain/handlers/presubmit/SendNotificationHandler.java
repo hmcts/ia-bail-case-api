@@ -51,7 +51,8 @@ public class SendNotificationHandler implements PreSubmitCallbackHandler<BailCas
             Event.SEND_BAIL_DIRECTION,
             Event.EDIT_BAIL_DOCUMENTS,
             Event.CHANGE_BAIL_DIRECTION_DUE_DATE,
-            Event.MAKE_NEW_APPLICATION
+            Event.MAKE_NEW_APPLICATION,
+            Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT
         );
         return eventsToHandle;
     }
