@@ -113,7 +113,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Slf4j
 @Component
-public class EditApplicationHandler implements PreSubmitCallbackHandler<BailCase> {
+public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<BailCase> {
 
     public boolean canHandle(PreSubmitCallbackStage callbackStage, Callback<BailCase> callback) {
         requireNonNull(callbackStage, "callbackStage must not be null");
