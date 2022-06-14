@@ -160,7 +160,7 @@ public class ApplicationDataRemoveHandlerTest {
                 assertThat(canHandle).isEqualTo(
                     callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
                         && (event.equals(Event.EDIT_BAIL_APPLICATION)
-                            || event.equals(Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT))
+                            || event.equals(Event.MAKE_NEW_APPLICATION))
                 );
             }
             reset(callback);

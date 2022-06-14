@@ -64,16 +64,12 @@ public class MakeNewApplicationService {
     }
 
     public void clearUnrelatedFields(BailCase bailCase) {
-        List<BailCaseFieldDefinition> fieldDefinitionsToBeRemoved = bailCase.keySet()
+        List<String> fieldDefinitionsToBeRemoved = bailCase.keySet()
             .stream()
             .filter(o -> !VALID_MAKE_NEW_APPLICATION_FIELDS.contains(o))
-            .map(BailCaseFieldDefinition::getEnumFromString)
             .collect(Collectors.toList());
 
-        fieldDefinitionsToBeRemoved.forEach(bailCase::remove);
-
-        //To be removed after merging clear fields handler
-        bailCase.entrySet().removeIf(entry -> entry.getValue() == null);
+        fieldDefinitionsToBeRemoved.forEach(bailCase::removeByString);
 
         clearRoleDependentFields(bailCase);
     }

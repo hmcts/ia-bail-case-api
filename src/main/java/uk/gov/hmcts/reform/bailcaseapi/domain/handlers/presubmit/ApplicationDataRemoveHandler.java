@@ -169,6 +169,7 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         final Optional<YesOrNo> optionalTransferBailManagement = bailCase.read(
             TRANSFER_BAIL_MANAGEMENT_OPTION,YesOrNo.class);
 
+
         final YesOrNo hasFinancialConditionSupporter1 = bailCase.read(
             HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(NO);
         final YesOrNo hasFinancialConditionSupporter2 = bailCase.read(
