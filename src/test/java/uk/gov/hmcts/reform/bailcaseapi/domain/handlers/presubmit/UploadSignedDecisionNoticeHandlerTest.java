@@ -92,7 +92,6 @@ public class UploadSignedDecisionNoticeHandlerTest {
     @Test
     void should_add_new_document_to_the_case() {
 
-        //create empty variables
         List<IdValue<DocumentWithMetadata>> allTribunalDocs =
             List.of(
                 new IdValue<>("1", signedDecisionNoticeMetadata1)
@@ -104,31 +103,25 @@ public class UploadSignedDecisionNoticeHandlerTest {
         when(bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA)).thenReturn(
             Optional.empty());
 
-        //add description to doc
         when(documentReceiver.tryReceive(new DocumentWithDescription(signedDecisionNotice1, ""),
                                          DocumentTag.SIGNED_DECISION_NOTICE))
             .thenReturn(Optional.of(signedDecisionNoticeMetadata1));
 
-        //append doc to array
         when(documentsAppender.append(eq(new ArrayList<>()), eq(List.of(signedDecisionNoticeMetadata1))))
             .thenReturn(allTribunalDocs);
 
-        //progress through the screen
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             uploadSignedDecisionNoticeHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
         assertNotNull(callbackResponse);
         assertEquals(bailCase, callbackResponse.getData());
 
-        //return data from event
         verify(bailCase, times(1)).read(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class);
 
-        //check tag for doc
         verify(documentReceiver, times(1)).tryReceive(
             new DocumentWithDescription(signedDecisionNotice1, ""),
             DocumentTag.SIGNED_DECISION_NOTICE);
-
-
+        
         verify(documentsAppender, times(1))
             .append(existingDecisionNoticeDocumentsCaptor.capture(), eq(List.of(signedDecisionNoticeMetadata1)));
 
