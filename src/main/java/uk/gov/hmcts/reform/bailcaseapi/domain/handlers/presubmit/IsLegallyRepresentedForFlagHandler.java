@@ -27,8 +27,9 @@ public class IsLegallyRepresentedForFlagHandler implements PreSubmitCallbackHand
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-            && (callback.getEvent() == Event.START_APPLICATION
-            || callback.getEvent() == Event.MAKE_NEW_APPLICATION);
+               && (callback.getEvent() == Event.START_APPLICATION
+                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
+                   || callback.getEvent() == Event.MAKE_NEW_APPLICATION);
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
