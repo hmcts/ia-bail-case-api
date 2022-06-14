@@ -5,8 +5,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
 
-import com.google.common.collect.Lists;
-import java.util.List;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -38,17 +36,10 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-               && getEventsToHandle().contains(callback.getEvent());
-    }
-
-    private List<Event> getEventsToHandle() {
-        List<Event> eventsToHandle = Lists.newArrayList(
-            Event.START_APPLICATION,
-            Event.MAKE_NEW_APPLICATION,
-            Event.EDIT_BAIL_APPLICATION,
-            Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT
-        );
-        return eventsToHandle;
+               && (callback.getEvent() == Event.START_APPLICATION
+                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
+                   || callback.getEvent() == Event.MAKE_NEW_APPLICATION
+                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT);
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(PreSubmitCallbackStage callbackStage,
