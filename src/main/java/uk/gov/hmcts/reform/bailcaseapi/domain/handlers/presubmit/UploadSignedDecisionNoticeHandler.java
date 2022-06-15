@@ -5,9 +5,10 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OUTCOME_STATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.ArrayList;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -69,14 +70,27 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
         Document maybeSignedDecisionNotice = bailCase.read(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class)
             .orElseThrow(() -> new IllegalStateException("signedDecisionNotice is not present"));
 
+        Optional<List<IdValue<DocumentWithMetadata>>> maybeExistingTribunalDocuments =
+            bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA);
+
+        final List<IdValue<DocumentWithMetadata>> existingTribunalDocuments =
+            maybeExistingTribunalDocuments.orElse(Collections.emptyList());
+
         List<IdValue<DocumentWithMetadata>> allTribunalDocuments = new ArrayList<>();
 
         documentReceiver.tryReceive(
                 new DocumentWithDescription(maybeSignedDecisionNotice, ""), DocumentTag.SIGNED_DECISION_NOTICE)
             .ifPresent(signedDecisionNoticeDocumentWithMetadata ->
                            allTribunalDocuments.addAll(documentsAppender.append(
-                               allTribunalDocuments, List.of(signedDecisionNoticeDocumentWithMetadata)
+                               existingTribunalDocuments, List.of(signedDecisionNoticeDocumentWithMetadata)
             )));
+
+        for (int i = 0; i < allTribunalDocuments.size();  i++) {
+
+            if (allTribunalDocuments.get(i).getValue().getTag().equals(DocumentTag.BAIL_DECISION_UNSIGNED)) {
+                allTribunalDocuments.remove(i);
+            }
+        }
 
         bailCase.write(TRIBUNAL_DOCUMENTS_WITH_METADATA, allTribunalDocuments);
         bailCase.write(OUTCOME_DATE, dateProvider.nowWithTime().toString());
