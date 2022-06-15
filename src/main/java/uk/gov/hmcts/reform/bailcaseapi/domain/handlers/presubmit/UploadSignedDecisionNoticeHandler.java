@@ -85,12 +85,8 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
                                existingTribunalDocuments, List.of(signedDecisionNoticeDocumentWithMetadata)
                            )));
 
-        for (int i = 0; i < allTribunalDocuments.size();  i++) {
-
-            if (allTribunalDocuments.get(i).getValue().getTag().equals(DocumentTag.BAIL_DECISION_UNSIGNED)) {
-                allTribunalDocuments.remove(i);
-            }
-        }
+        allTribunalDocuments
+            .removeIf(document -> document.getValue().getTag().equals(DocumentTag.BAIL_DECISION_UNSIGNED));
 
         bailCase.write(TRIBUNAL_DOCUMENTS_WITH_METADATA, allTribunalDocuments);
         bailCase.write(OUTCOME_DATE, dateProvider.nowWithTime().toString());
