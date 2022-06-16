@@ -45,7 +45,7 @@ public class MakeNewApplicationSubmitHandler implements PreSubmitCallbackStateHa
 
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        makeNewApplicationService.clearUnrelatedFields(bailCase);
+        makeNewApplicationService.clearFieldsAboutToSubmit(bailCase);
 
         CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
 

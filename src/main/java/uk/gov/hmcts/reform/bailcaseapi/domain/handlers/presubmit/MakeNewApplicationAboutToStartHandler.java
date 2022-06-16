@@ -43,9 +43,11 @@ public class MakeNewApplicationAboutToStartHandler implements PreSubmitCallbackS
 
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        makeNewApplicationService.clearUnrelatedFields(bailCase);
+        makeNewApplicationService.clearFieldsAboutToStart(bailCase);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
+
+
 
 }

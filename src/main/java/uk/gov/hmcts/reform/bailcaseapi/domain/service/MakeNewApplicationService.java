@@ -63,15 +63,23 @@ public class MakeNewApplicationService {
 
     }
 
-    public void clearUnrelatedFields(BailCase bailCase) {
+    private void clearUnrelatedFields(BailCase bailCase, List<String> listOfValidDefinitions) {
         List<String> fieldDefinitionsToBeRemoved = bailCase.keySet()
             .stream()
-            .filter(o -> !VALID_MAKE_NEW_APPLICATION_FIELDS.contains(o))
+            .filter(o -> !listOfValidDefinitions.contains(o))
             .collect(Collectors.toList());
 
         fieldDefinitionsToBeRemoved.forEach(bailCase::removeByString);
 
         clearRoleDependentFields(bailCase);
+    }
+
+    public void clearFieldsAboutToStart(BailCase bailCase) {
+        clearUnrelatedFields(bailCase, VALID_ABOUT_TO_START_MAKE_NEW_APPLICATION_FIELDS);
+    }
+
+    public void clearFieldsAboutToSubmit(BailCase bailCase) {
+        clearUnrelatedFields(bailCase, VALID_ABOUT_TO_SUBMIT_MAKE_NEW_APPLICATION_FIELDS);
     }
 
     private void clearRoleDependentFields(BailCase bailCase) {
@@ -92,7 +100,22 @@ public class MakeNewApplicationService {
         );
     }
 
-    public static final List<String> VALID_MAKE_NEW_APPLICATION_FIELDS = List.of(
+    private static final List<String> VALID_ABOUT_TO_START_MAKE_NEW_APPLICATION_FIELDS = List.of(
+        BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER.value(),
+        BailCaseFieldDefinition.PRIOR_APPLICATIONS.value(),
+        BailCaseFieldDefinition.IS_ADMIN.value(),
+        BailCaseFieldDefinition.APPLICANT_GIVEN_NAMES.value(),
+        BailCaseFieldDefinition.APPLICANT_FAMILY_NAME.value(),
+        BailCaseFieldDefinition.APPLICANT_DOB.value(),
+        BailCaseFieldDefinition.APPLICANT_GENDER.value(),
+        BailCaseFieldDefinition.APPLICANT_GENDER_OTHER.value(),
+        BailCaseFieldDefinition.APPLICANT_NATIONALITY.value(),
+        BailCaseFieldDefinition.APPLICANT_NATIONALITIES.value(),
+        BailCaseFieldDefinition.HOME_OFFICE_REFERENCE_NUMBER.value(),
+        BailCaseFieldDefinition.APPLICANT_PRISON_DETAILS.value(),
+        BailCaseFieldDefinition.APPLICANT_ARRIVAL_IN_UK.value());
+
+    private static final List<String> VALID_ABOUT_TO_SUBMIT_MAKE_NEW_APPLICATION_FIELDS = List.of(
         BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER.value(),
         BailCaseFieldDefinition.PRIOR_APPLICATIONS.value(),
         BailCaseFieldDefinition.IS_ADMIN.value(),
@@ -109,5 +132,101 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.APPLICANT_PRISON_DETAILS.value(),
         BailCaseFieldDefinition.IRC_NAME.value(),
         BailCaseFieldDefinition.PRISON_NAME.value(),
-        BailCaseFieldDefinition.APPLICANT_ARRIVAL_IN_UK.value());
+        BailCaseFieldDefinition.APPLICANT_ARRIVAL_IN_UK.value(),
+        BailCaseFieldDefinition.APPLICANT_HAS_MOBILE.value(),
+        BailCaseFieldDefinition.APPLICANT_MOBILE_NUMBER.value(),
+        BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING.value(),
+        BailCaseFieldDefinition.APPEAL_REFERENCE_NUMBER.value(),
+        BailCaseFieldDefinition.HAS_PREVIOUS_BAIL_APPLICATION.value(),
+        BailCaseFieldDefinition.PREV_BAIL_APPLICATION_NUMBER.value(),
+        BailCaseFieldDefinition.APPLICANT_BEEN_REFUSED_BAIL.value(),
+        BailCaseFieldDefinition.BAIL_HEARING_DATE.value(),
+        BailCaseFieldDefinition.APPLICANT_HAS_ADDRESS.value(),
+        BailCaseFieldDefinition.APPLICANT_ADDRESS.value(),
+        BailCaseFieldDefinition.AGREES_TO_BOUND_BY_FINANCIAL_COND.value(),
+        BailCaseFieldDefinition.FINANCIAL_COND_AMOUNT.value(),
+        BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER.value(),
+        BailCaseFieldDefinition.SUPPORTER_GIVEN_NAMES.value(),
+        BailCaseFieldDefinition.SUPPORTER_FAMILY_NAMES.value(),
+        BailCaseFieldDefinition.SUPPORTER_ADDRESS_DETAILS.value(),
+        BailCaseFieldDefinition.SUPPORTER_CONTACT_DETAILS.value(),
+        BailCaseFieldDefinition.SUPPORTER_TELEPHONE_NUMBER.value(),
+        BailCaseFieldDefinition.SUPPORTER_MOBILE_NUMBER.value(),
+        BailCaseFieldDefinition.SUPPORTER_EMAIL_ADDRESS.value(),
+        BailCaseFieldDefinition.SUPPORTER_DOB.value(),
+        BailCaseFieldDefinition.SUPPORTER_RELATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_OCCUPATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_IMMIGRATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_NATIONALITY.value(),
+        BailCaseFieldDefinition.SUPPORTER_HAS_PASSPORT.value(),
+        BailCaseFieldDefinition.SUPPORTER_PASSPORT.value(),
+        BailCaseFieldDefinition.FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES.value(),
+        BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER_2.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_GIVEN_NAMES.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_FAMILY_NAMES.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_ADDRESS_DETAILS.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_CONTACT_DETAILS.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_TELEPHONE_NUMBER.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_MOBILE_NUMBER.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_EMAIL_ADDRESS.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_DOB.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_RELATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_OCCUPATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_IMMIGRATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_NATIONALITY.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_HAS_PASSPORT.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_PASSPORT.value(),
+        BailCaseFieldDefinition.FINANCIAL_AMOUNT_SUPPORTER_2_UNDERTAKES.value(),
+        BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER_3.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_GIVEN_NAMES.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_FAMILY_NAMES.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_ADDRESS_DETAILS.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_CONTACT_DETAILS.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_TELEPHONE_NUMBER.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_MOBILE_NUMBER.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_EMAIL_ADDRESS.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_DOB.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_RELATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_OCCUPATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_IMMIGRATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_NATIONALITY.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_HAS_PASSPORT.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_PASSPORT.value(),
+        BailCaseFieldDefinition.FINANCIAL_AMOUNT_SUPPORTER_3_UNDERTAKES.value(),
+        BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER_4.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_GIVEN_NAMES.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_FAMILY_NAMES.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_ADDRESS_DETAILS.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_CONTACT_DETAILS.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_TELEPHONE_NUMBER.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_MOBILE_NUMBER.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_EMAIL_ADDRESS.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_DOB.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_RELATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_OCCUPATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_IMMIGRATION.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_NATIONALITY.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_HAS_PASSPORT.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_PASSPORT.value(),
+        BailCaseFieldDefinition.FINANCIAL_AMOUNT_SUPPORTER_4_UNDERTAKES.value(),
+        BailCaseFieldDefinition.GROUNDS_FOR_BAIL_REASONS.value(),
+        BailCaseFieldDefinition.GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION.value(),
+        BailCaseFieldDefinition.BAIL_EVIDENCE.value(),
+        BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION.value(),
+        BailCaseFieldDefinition.NO_TRANSFER_BAIL_MANAGEMENT_REASONS.value(),
+        BailCaseFieldDefinition.INTERPRETER_YESNO.value(),
+        BailCaseFieldDefinition.INTERPRETER_LANGUAGES.value(),
+        BailCaseFieldDefinition.DISABILITY_YESNO.value(),
+        BailCaseFieldDefinition.APPLICANT_DISABILITY_DETAILS.value(),
+        BailCaseFieldDefinition.VIDEO_HEARING_YESNO.value(),
+        BailCaseFieldDefinition.VIDEO_HEARING_DETAILS.value(),
+        BailCaseFieldDefinition.IS_HOME_OFFICE.value(),
+        BailCaseFieldDefinition.HAS_LEGAL_REP.value(),
+        BailCaseFieldDefinition.IS_LEGAL_REP.value(),
+        BailCaseFieldDefinition.LEGAL_REP_COMPANY.value(),
+        BailCaseFieldDefinition.LEGAL_REP_NAME.value(),
+        BailCaseFieldDefinition.LEGAL_REP_EMAIL_ADDRESS.value(),
+        BailCaseFieldDefinition.LEGAL_REP_PHONE.value(),
+        BailCaseFieldDefinition.LEGAL_REP_REFERENCE.value(),
+        BailCaseFieldDefinition.UPLOAD_B1_FORM_DOCS.value());
 }
