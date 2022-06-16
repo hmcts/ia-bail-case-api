@@ -94,7 +94,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
     }
 
     @Test
-    void should_add_new_document_to_the_case() {
+    void should_add_signed_document_remove_unsigned_document() {
 
         List<IdValue<DocumentWithMetadata>> allTribunalDocs =
             List.of(
