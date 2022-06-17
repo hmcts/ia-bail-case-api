@@ -205,7 +205,8 @@ public class CcdCaseAssignment {
         return payload;
     }
 
-    private Map<String, Object> buildRevokeAccessCaseUserMap(String organisationIdentifier, long caseId, String idamUserId) {
+    private Map<String, Object> buildRevokeAccessCaseUserMap(String organisationIdentifier,
+                                                             long caseId, String idamUserId) {
         Map<String, Object> caseUser = Maps.newHashMap();
         caseUser.put("case_id", caseId);
         caseUser.put("case_role", "[CREATOR]");

@@ -69,7 +69,10 @@ class LegalRepresentativeDetailsAppenderTest {
     @BeforeEach
     public void setUp() {
         legalRepresentativeDetailsAppender =
-            new LegalRepresentativeDetailsAppender(userDetails, userDetailsHelper, companyNameProvider, professionalOrganisationRetriever);
+            new LegalRepresentativeDetailsAppender(userDetails,
+                                                   userDetailsHelper,
+                                                   companyNameProvider,
+                                                   professionalOrganisationRetriever);
     }
 
     @Test
