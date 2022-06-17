@@ -80,14 +80,26 @@ class MakeNewApplicationServiceTest {
 
 
     @Test
-    void should_remove_fields_not_in_list() {
+    void should_remove_fields_not_in_list_about_to_start() {
         BailCase bailCase = new BailCase();
         bailCase.write(CURRENT_USER, "current_user");
         bailCase.write(OUTCOME_STATE, "applicationEnded");
 
         Mockito.when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.ADMIN_OFFICER);
 
-        makeNewApplicationService.clearUnrelatedFields(bailCase);
+        makeNewApplicationService.clearFieldsAboutToStart(bailCase);
+        assertThat(bailCase).isEmpty();
+    }
+
+    @Test
+    void should_remove_fields_not_in_list_about_to_submit() {
+        BailCase bailCase = new BailCase();
+        bailCase.write(CURRENT_USER, "current_user");
+        bailCase.write(OUTCOME_STATE, "applicationEnded");
+
+        Mockito.when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.ADMIN_OFFICER);
+
+        makeNewApplicationService.clearFieldsAboutToSubmit(bailCase);
         assertThat(bailCase).isEmpty();
     }
 
@@ -99,7 +111,7 @@ class MakeNewApplicationServiceTest {
 
         Mockito.when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.ADMIN_OFFICER);
 
-        makeNewApplicationService.clearUnrelatedFields(bailCase);
+        makeNewApplicationService.clearFieldsAboutToSubmit(bailCase);
         assertThat(bailCase).isEmpty();
     }
 
@@ -115,7 +127,7 @@ class MakeNewApplicationServiceTest {
 
         Mockito.when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(userRoleLabel);
 
-        makeNewApplicationService.clearUnrelatedFields(bailCase);
+        makeNewApplicationService.clearFieldsAboutToSubmit(bailCase);
         Mockito.verify(bailCase, Mockito.times(1)).remove(UPLOAD_B1_FORM_DOCS);
     }
 
@@ -130,7 +142,7 @@ class MakeNewApplicationServiceTest {
 
         Mockito.when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.ADMIN_OFFICER);
 
-        makeNewApplicationService.clearUnrelatedFields(bailCase);
+        makeNewApplicationService.clearFieldsAboutToSubmit(bailCase);
         Mockito.verify(bailCase, Mockito.times(0)).clear(UPLOAD_B1_FORM_DOCS);
     }
 
