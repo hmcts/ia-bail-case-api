@@ -63,15 +63,23 @@ public class MakeNewApplicationService {
 
     }
 
-    public void clearUnrelatedFields(BailCase bailCase) {
+    private void clearUnrelatedFields(BailCase bailCase, List<String> listOfValidDefinitions) {
         List<String> fieldDefinitionsToBeRemoved = bailCase.keySet()
             .stream()
-            .filter(o -> !VALID_MAKE_NEW_APPLICATION_FIELDS.contains(o))
+            .filter(o -> !listOfValidDefinitions.contains(o))
             .collect(Collectors.toList());
 
         fieldDefinitionsToBeRemoved.forEach(bailCase::removeByString);
 
         clearRoleDependentFields(bailCase);
+    }
+
+    public void clearFieldsAboutToStart(BailCase bailCase) {
+        clearUnrelatedFields(bailCase, VALID_ABOUT_TO_START_MAKE_NEW_APPLICATION_FIELDS);
+    }
+
+    public void clearFieldsAboutToSubmit(BailCase bailCase) {
+        clearUnrelatedFields(bailCase, VALID_ABOUT_TO_SUBMIT_MAKE_NEW_APPLICATION_FIELDS);
     }
 
     private void clearRoleDependentFields(BailCase bailCase) {
@@ -92,7 +100,22 @@ public class MakeNewApplicationService {
         );
     }
 
-    public static final List<String> VALID_MAKE_NEW_APPLICATION_FIELDS = List.of(
+    private static final List<String> VALID_ABOUT_TO_START_MAKE_NEW_APPLICATION_FIELDS = List.of(
+        BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER.value(),
+        BailCaseFieldDefinition.PRIOR_APPLICATIONS.value(),
+        BailCaseFieldDefinition.IS_ADMIN.value(),
+        BailCaseFieldDefinition.APPLICANT_GIVEN_NAMES.value(),
+        BailCaseFieldDefinition.APPLICANT_FAMILY_NAME.value(),
+        BailCaseFieldDefinition.APPLICANT_DOB.value(),
+        BailCaseFieldDefinition.APPLICANT_GENDER.value(),
+        BailCaseFieldDefinition.APPLICANT_GENDER_OTHER.value(),
+        BailCaseFieldDefinition.APPLICANT_NATIONALITY.value(),
+        BailCaseFieldDefinition.APPLICANT_NATIONALITIES.value(),
+        BailCaseFieldDefinition.HOME_OFFICE_REFERENCE_NUMBER.value(),
+        BailCaseFieldDefinition.APPLICANT_PRISON_DETAILS.value(),
+        BailCaseFieldDefinition.APPLICANT_ARRIVAL_IN_UK.value());
+
+    private static final List<String> VALID_ABOUT_TO_SUBMIT_MAKE_NEW_APPLICATION_FIELDS = List.of(
         BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER.value(),
         BailCaseFieldDefinition.PRIOR_APPLICATIONS.value(),
         BailCaseFieldDefinition.IS_ADMIN.value(),
