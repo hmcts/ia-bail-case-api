@@ -314,9 +314,14 @@ dependencies {
 //  compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: log4JVersion
   compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.3.3'
 
+
+
+
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jacksonAnnotation
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksonDatabind
+
+  testCompile group: 'uk.gov.hmcts.reform', name: 'document-management-client', version: '7.0.0'
 
   testCompile (group: 'io.rest-assured', name: 'rest-assured-all', version: '4.3.1')
   testCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
