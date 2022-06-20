@@ -10,9 +10,9 @@ plugins {
   id 'application'
   id 'checkstyle'
   id 'com.github.ben-manes.versions' version '0.42.0'
-  id "info.solidsoft.pitest" version '1.5.1'
+  id "info.solidsoft.pitest" version '1.5.2'
   id "io.freefair.lombok" version "5.3.0"
-  id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id 'jacoco'
   id 'org.flywaydb.flyway' version '5.2.4'
   id 'org.owasp.dependencycheck' version '6.5.3'
@@ -31,7 +31,7 @@ def versions = [
   jackson            : '2.13.3',
   jacksonAnnotation  : '2.13.3',
   jacksonDatabind    : '2.13.3',
-  junit              : '5.8.2',
+  junit              : '5.7.0',
   junitPlatform      : '1.7.2',
   pitest             : '1.5.2',
   reformLogging      : '5.1.7',
@@ -174,6 +174,7 @@ task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verificatio
   testClassesDirs = sourceSets.smokeTest.output.classesDirs
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
+
 
 project.ext {
   pacticipant = 'bail_caseApi'
@@ -328,7 +329,7 @@ dependencies {
 
   contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.7.0")
   contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.7.0")
-  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.6.2')
+  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
 
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.6.28'
 
