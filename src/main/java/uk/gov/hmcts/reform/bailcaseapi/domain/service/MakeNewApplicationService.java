@@ -112,7 +112,7 @@ public class MakeNewApplicationService {
         try {
             bailCase = mapper.readValue(caseDataJson, BailCase.class);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new IllegalArgumentException("Could not convert data", e);
         }
         return bailCase;
     }
