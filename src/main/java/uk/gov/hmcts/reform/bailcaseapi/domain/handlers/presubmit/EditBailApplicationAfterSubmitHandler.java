@@ -71,14 +71,12 @@ public class EditBailApplicationAfterSubmitHandler implements PreSubmitCallbackH
 
             List<IdValue<DocumentWithMetadata>> updatedApplicantDocumentsList =
                 applicantDocumentsList
-                .stream()
-                .filter(documentWithMetaData ->
-                            !documentWithMetaData.getValue().getTag().equals(DocumentTag.B1_DOCUMENT))
-                .filter(documentWithMetaData ->
-                            !documentWithMetaData.getValue().getTag().equals(DocumentTag.BAIL_EVIDENCE))
-                .filter(documentWithMetaData ->
-                            !documentWithMetaData.getValue().getTag().equals(DocumentTag.BAIL_SUBMISSION))
-                .collect(Collectors.toList());
+                    .stream()
+                    .filter(documentWithMetaData ->
+                                !documentWithMetaData.getValue().getTag().equals(DocumentTag.B1_DOCUMENT)
+                                && !documentWithMetaData.getValue().getTag().equals(DocumentTag.BAIL_EVIDENCE)
+                                && !documentWithMetaData.getValue().getTag().equals(DocumentTag.BAIL_SUBMISSION))
+                    .collect(Collectors.toList());
 
             bailCase.write(APPLICANT_DOCUMENTS_WITH_METADATA, updatedApplicantDocumentsList);
         }
