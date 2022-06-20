@@ -63,6 +63,12 @@ public class PopulatePreviousApplicationsHandler implements PreSubmitCallbackHan
 
         List<IdValue<PriorApplication>> priorApplications = maybePriorApplications.orElse(emptyList());
 
+        if (priorApplications.isEmpty()) {
+            PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
+            response.addError("There is no previous application to view");
+            return response;
+        }
+
         List<Value> previousApplicationsElements = priorApplications
             .stream()
             .map(idValue -> {

@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -70,6 +71,18 @@ public class PopulatePreviousApplicationsHandlerTest {
         when(priorCase.read(BailCaseFieldDefinition.DECISION_DETAILS_DATE, String.class))
             .thenReturn(Optional.of("2022-06-20"));
 
+    }
+
+    @Test
+    void should_error_if_empty_list() {
+        when(bailCase.read(BailCaseFieldDefinition.PRIOR_APPLICATIONS)).thenReturn(Optional.empty());
+        when(callback.getEvent()).thenReturn(VIEW_PREVIOUS_APPLICATIONS);
+        PreSubmitCallbackResponse<BailCase> response =
+            populatePreviousApplicationsHandler.handle(ABOUT_TO_START, callback);
+        assertNotNull(response);
+        assertEquals(1, response.getErrors().size());
+        assertEquals(bailCase, response.getData());
+        assertTrue(response.getErrors().contains("There is no previous application to view"));
     }
 
     @Test
