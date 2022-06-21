@@ -385,6 +385,8 @@ public enum BailCaseFieldDefinition {
         "declarationOnSubmit", new TypeReference<List<String>>(){}),
     SUBMIT_NOTIFICATION_STATUS(
         "submitNotificationStatus", new TypeReference<String>() {}),
+    PREVIOUS_APPLICATION_LIST(
+        "previousApplicationList", new TypeReference<DynamicList>() {})
     ;
 
 
