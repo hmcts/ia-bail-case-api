@@ -305,11 +305,6 @@ dependencies {
   compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
   compile group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: '5.9.0'
 
-//  compile group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLoggingVersion
-//  compile group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: reformLoggingVersion
-
-//  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: log4JVersion
-//  compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: log4JVersion
   compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.3.3'
 
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
@@ -371,14 +366,14 @@ dependencies {
   contractTestCompile sourceSets.test.runtimeClasspath
 }
 
-//task runAndPublishConsumerPactTests(type: Test) {
-//  logger.lifecycle("Runs pact Tests")
-//  testClassesDirs = sourceSets.contractTest.output.classesDirs
-//  classpath = sourceSets.contractTest.runtimeClasspath
-//
-//}
-//
-//runAndPublishConsumerPactTests.finalizedBy pactPublish
+task runAndPublishConsumerPactTests(type: Test) {
+  logger.lifecycle("Runs pact Tests")
+  testClassesDirs = sourceSets.contractTest.output.classesDirs
+  classpath = sourceSets.contractTest.runtimeClasspath
+
+}
+
+runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 
 pact {
