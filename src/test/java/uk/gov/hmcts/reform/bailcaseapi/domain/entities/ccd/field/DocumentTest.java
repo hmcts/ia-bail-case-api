@@ -24,7 +24,7 @@ class DocumentTest {
         assertEquals(documentUrl, document.getDocumentUrl());
         assertEquals(documentBinaryUrl, document.getDocumentBinaryUrl());
         assertEquals(documentFilename, document.getDocumentFilename());
-        assertEquals(documentFilename, document.getDocumentHash());
+        assertEquals(documentHash, document.getDocumentHash());
 
     }
 
