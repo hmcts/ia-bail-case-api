@@ -120,6 +120,7 @@ tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
+
 configurations {
   integrationTestCompile.extendsFrom testCompile
   integrationTestRuntime.extendsFrom testRuntime
@@ -175,6 +176,13 @@ task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verificatio
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
 
+task contract(type: Test, description: 'Runs the pact contract tests.', group: 'Verification') {
+  description = "Runs the consumer Pact tests"
+  useJUnitPlatform()
+  testClassesDirs = sourceSets.contractTest.output.classesDirs
+  classpath = sourceSets.contractTest.runtimeClasspath
+
+}
 
 project.ext {
   pacticipant = 'bail_caseApi'
@@ -358,16 +366,20 @@ dependencies {
 
   smokeTestCompile sourceSets.main.runtimeClasspath
   smokeTestCompile sourceSets.test.runtimeClasspath
+
+  contractTestCompile sourceSets.main.runtimeClasspath
+  contractTestCompile sourceSets.test.runtimeClasspath
 }
 
-task runAndPublishConsumerPactTests(type: Test) {
-  logger.lifecycle("Runs pact Tests")
-  testClassesDirs = sourceSets.contractTest.output.classesDirs
-  classpath = sourceSets.contractTest.runtimeClasspath
+//task runAndPublishConsumerPactTests(type: Test) {
+//  logger.lifecycle("Runs pact Tests")
+//  testClassesDirs = sourceSets.contractTest.output.classesDirs
+//  classpath = sourceSets.contractTest.runtimeClasspath
+//
+//}
+//
+//runAndPublishConsumerPactTests.finalizedBy pactPublish
 
-}
-
-runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 pact {
   broker {
