@@ -21,6 +21,7 @@ public enum Event {
     EDIT_BAIL_APPLICATION_AFTER_SUBMIT("editBailApplicationAfterSubmit"),
     MAKE_NEW_APPLICATION("makeNewApplication"),
     VIEW_PREVIOUS_APPLICATIONS("viewPreviousApplications"),
+    NOC_REQUEST("nocRequest"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
