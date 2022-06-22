@@ -44,8 +44,10 @@ public class RemoveRepresentationPreparer implements PreSubmitCallbackHandler<Ba
         PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
 
         if (bailCase.read(BailCaseFieldDefinition.LOCAL_AUTHORITY_POLICY, OrganisationPolicy.class).isEmpty()) {
-            response.addError("You cannot use this feature because the legal representative does not have a MyHMCTS account.");
-            response.addError("If you are a legal representative, you must contact all parties confirming you no longer represent this client.");
+            response.addError("You cannot use this feature because the legal representative does not have "
+                              + "a MyHMCTS account.");
+            response.addError("If you are a legal representative, you must contact all parties confirming "
+                              + "you no longer represent this client.");
             return response;
         } else {
             Value caseRole = new Value("[LEGALREPRESENTATIVE]", "Legal Representative");

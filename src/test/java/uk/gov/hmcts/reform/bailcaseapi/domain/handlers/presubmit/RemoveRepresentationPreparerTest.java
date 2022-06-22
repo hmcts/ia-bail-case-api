@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -77,7 +78,8 @@ class RemoveRepresentationPreparerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(event);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(LOCAL_AUTHORITY_POLICY)).thenReturn(Optional.of(organisationPolicy));
+        when(bailCase.read(LOCAL_AUTHORITY_POLICY, OrganisationPolicy.class))
+            .thenReturn(Optional.of(organisationPolicy));
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             removeRepresentationPreparer.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback);
@@ -86,7 +88,7 @@ class RemoveRepresentationPreparerTest {
         assertEquals(bailCase, callbackResponse.getData());
         assertThat(callbackResponse.getErrors()).isEmpty();
 
-        verify(bailCase, times(1)).read(LOCAL_AUTHORITY_POLICY);
+        verify(bailCase, times(1)).read(LOCAL_AUTHORITY_POLICY, OrganisationPolicy.class);
     }
 
     @Test
@@ -115,7 +117,7 @@ class RemoveRepresentationPreparerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(LOCAL_AUTHORITY_POLICY)).thenReturn(Optional.empty());
+        when(bailCase.read(LOCAL_AUTHORITY_POLICY, OrganisationPolicy.class)).thenReturn(Optional.empty());
 
         PreSubmitCallbackResponse<BailCase> response =
             removeRepresentationPreparer.handle(
@@ -124,11 +126,13 @@ class RemoveRepresentationPreparerTest {
             );
 
         assertThat(response.getData()).isInstanceOf(BailCase.class);
-        assertThat(response.getErrors()).contains("You cannot use this feature because the legal representative does not have a MyHMCTS account or the appeal was created before 10 February 2021.");
-        assertThat(response.getErrors()).contains("If you are a legal representative, you must contact all parties confirming you no longer represent this client.");
+        assertThat(response.getErrors()).contains("You cannot use this feature because the legal representative "
+                                                  + "does not have a MyHMCTS account.");
+        assertThat(response.getErrors()).contains("If you are a legal representative, you must contact all parties "
+                                                  + "confirming you no longer represent this client.");
 
-        verify(bailCase, times(1)).read(LOCAL_AUTHORITY_POLICY);
-        verify(bailCase, times(0)).write(CHANGE_ORGANISATION_REQUEST_FIELD, changeOrganisationRequest);
+        verify(bailCase, times(1)).read(LOCAL_AUTHORITY_POLICY, OrganisationPolicy.class);
+        verify(bailCase, never()).write(CHANGE_ORGANISATION_REQUEST_FIELD, changeOrganisationRequest);
     }
 
     @Test
