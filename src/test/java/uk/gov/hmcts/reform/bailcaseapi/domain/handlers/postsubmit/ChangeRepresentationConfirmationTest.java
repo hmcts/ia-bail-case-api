@@ -67,7 +67,6 @@ class ChangeRepresentationConfirmationTest {
         assertThat(
             callbackResponse.getConfirmationHeader().get())
             .contains("# You're now representing a client on case 1111222233334444");
-<<<<<<< HEAD
     }
 
     @Test
