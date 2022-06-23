@@ -181,11 +181,7 @@ public class CcdCaseAssignment {
         log.info("Apply NoC. Http status received from AAC API; {} for case {}",
                  response.getStatusCodeValue(), callback.getCaseDetails().getId());
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 4ae143d (Ria 5765 remove Legal Representative (#186))
     public Map<String, Object> buildRevokeAccessPayload(String organisationIdentifier, long caseId, String idamUserId) {
         Map<String, Object> caseUser = buildRevokeAccessCaseUserMap(organisationIdentifier, caseId, idamUserId);
 
