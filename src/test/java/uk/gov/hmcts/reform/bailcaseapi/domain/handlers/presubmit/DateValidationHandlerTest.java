@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_ARRIVAL_IN_UK;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOB;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_HEARING_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_2_DOB;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_3_DOB;
@@ -121,6 +122,49 @@ class DateValidationHandlerTest {
         when(callback.getEvent()).thenReturn(event);
         when(callback.getPageId()).thenReturn("applicantArrivalInUKDate");
         when(bailCase.read(APPLICANT_ARRIVAL_IN_UK, String.class)).thenReturn(Optional.of(yesterdayString));
+
+        PreSubmitCallbackResponse<BailCase> response = dateValidationHandler
+            .handle(MID_EVENT, callback);
+
+        assertNotNull(response);
+        assertThat(response.getData()).isNotEmpty();
+        assertThat(response.getData()).isEqualTo(bailCase);
+        assertEquals(0, response.getErrors().size());
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"START_APPLICATION",
+            "EDIT_BAIL_APPLICATION",
+            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+            "MAKE_NEW_APPLICATION"})
+    void should_add_error_if_applicantDateOfBirth_is_future(Event event) {
+
+        when(callback.getEvent()).thenReturn(event);
+        when(callback.getPageId()).thenReturn("applicantDateOfBirth");
+        when(bailCase.read(APPLICANT_DOB, String.class)).thenReturn(Optional.of(tomorrowString));
+
+        PreSubmitCallbackResponse<BailCase> response = dateValidationHandler
+            .handle(MID_EVENT, callback);
+
+        assertNotNull(response);
+        assertEquals(1, response.getErrors().size());
+        assertEquals(FUTURE_DATE_ERROR_MESSAGE, response.getErrors().stream().findFirst().get());
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"START_APPLICATION",
+            "EDIT_BAIL_APPLICATION",
+            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+            "MAKE_NEW_APPLICATION"})
+    void should_not_add_error_if_applicantDateOfBirth_is_past(Event event) {
+
+        when(callback.getEvent()).thenReturn(event);
+        when(callback.getPageId()).thenReturn("applicantDateOfBirth");
+        when(bailCase.read(APPLICANT_DOB, String.class)).thenReturn(Optional.of(yesterdayString));
 
         PreSubmitCallbackResponse<BailCase> response = dateValidationHandler
             .handle(MID_EVENT, callback);

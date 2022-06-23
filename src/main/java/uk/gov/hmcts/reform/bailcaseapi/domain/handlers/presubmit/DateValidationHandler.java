@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_ARRIVAL_IN_UK;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOB;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_HEARING_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_2_DOB;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_3_DOB;
@@ -35,12 +36,13 @@ public class DateValidationHandler implements PreSubmitCallbackHandler<BailCase>
                                                Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT,
                                                Event.MAKE_NEW_APPLICATION);
 
-    private static final Set<BailCaseFieldDefinition> fieldsToHandle = Set.of(APPLICANT_ARRIVAL_IN_UK,
-                                                 BAIL_HEARING_DATE,
-                                                 SUPPORTER_DOB,
-                                                 SUPPORTER_2_DOB,
-                                                 SUPPORTER_3_DOB,
-                                                 SUPPORTER_4_DOB);
+    private static final Set<BailCaseFieldDefinition> fieldsToHandle = Set.of(APPLICANT_DOB,
+                                                                              APPLICANT_ARRIVAL_IN_UK,
+                                                                              BAIL_HEARING_DATE,
+                                                                              SUPPORTER_DOB,
+                                                                              SUPPORTER_2_DOB,
+                                                                              SUPPORTER_3_DOB,
+                                                                              SUPPORTER_4_DOB);
 
     private static final Map<String, BailCaseFieldDefinition> pageIdsToHandle = fieldsToHandle.stream()
         .collect(Collectors.toMap(BailCaseFieldDefinition::value, def -> def));
