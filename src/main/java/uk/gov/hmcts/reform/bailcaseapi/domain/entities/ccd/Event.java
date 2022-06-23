@@ -22,6 +22,7 @@ public enum Event {
     MAKE_NEW_APPLICATION("makeNewApplication"),
     VIEW_PREVIOUS_APPLICATIONS("viewPreviousApplications"),
     NOC_REQUEST("nocRequest"),
+    REMOVE_BAIL_LEGAL_REPRESENTATIVE("removeBailLegalRepresentative"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
