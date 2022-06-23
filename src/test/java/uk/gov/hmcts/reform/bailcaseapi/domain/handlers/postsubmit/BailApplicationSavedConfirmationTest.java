@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -149,7 +150,6 @@ public class BailApplicationSavedConfirmationTest {
     @Test
     void should_not_assign_and_revoke_access_to_case_when_user_is_not_LR() {
         long caseId = 1234L;
-        String organisationIdentifier = "someOrgIdentifier";
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getCaseDetails().getId()).thenReturn(caseId);
@@ -161,6 +161,6 @@ public class BailApplicationSavedConfirmationTest {
         bailApplicationSavedConfirmation.handle(callback);
 
         verify(ccdCaseAssignment, never()).assignAccessToCase(callback);
-        verify(ccdCaseAssignment, never()).revokeAccessToCase(callback, organisationIdentifier);
+        verify(ccdCaseAssignment, never()).revokeAccessToCase(any(), anyString());
     }
 }
