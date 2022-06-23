@@ -67,10 +67,27 @@ class ChangeRepresentationConfirmationTest {
         assertThat(
             callbackResponse.getConfirmationHeader().get())
             .contains("# You're now representing a client on case 1111222233334444");
+    }
 
-        //assertThat(
-        //    callbackResponse.getConfirmationBody().get())
-        //    .contains("All parties will be notified.");
+    @Test
+    void should_handle_removal_of_legal_representative() {
+
+        when(callback.getEvent()).thenReturn(Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE);
+
+        PostSubmitCallbackResponse callbackResponse =
+            changeRepresentationConfirmation.handle(callback);
+
+        assertNotNull(callbackResponse);
+
+        verify(ccdCaseAssignment, times(1)).applyNoc(callback);
+
+        assertThat(
+            callbackResponse.getConfirmationHeader().get())
+            .contains("# You have removed the legal representative from this case");
+
+        assertThat(
+            callbackResponse.getConfirmationBody().get())
+            .contains("#### What happens next\n\nAll parties will be notified.");
     }
 
     @Test
@@ -108,7 +125,7 @@ class ChangeRepresentationConfirmationTest {
 
             boolean canHandle = changeRepresentationConfirmation.canHandle(callback);
 
-            if (event == Event.NOC_REQUEST) {
+            if (event == Event.NOC_REQUEST || event == Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE) {
 
                 assertTrue(canHandle);
             } else {

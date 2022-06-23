@@ -182,10 +182,6 @@ public class CcdCaseAssignment {
                  response.getStatusCodeValue(), callback.getCaseDetails().getId());
     }
 
-    public void updateLegalRepDetails() {
-
-    }
-
     public Map<String, Object> buildRevokeAccessPayload(String organisationIdentifier, long caseId, String idamUserId) {
         Map<String, Object> caseUser = buildRevokeAccessCaseUserMap(organisationIdentifier, caseId, idamUserId);
 
