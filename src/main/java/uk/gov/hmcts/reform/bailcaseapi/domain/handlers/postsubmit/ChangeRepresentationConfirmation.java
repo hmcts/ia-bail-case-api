@@ -21,7 +21,6 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
     public ChangeRepresentationConfirmation(
         CcdCaseAssignment ccdCaseAssignment
     ) {
-
         this.ccdCaseAssignment = ccdCaseAssignment;
     }
 
@@ -29,7 +28,8 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
         Callback<BailCase> callback
     ) {
         requireNonNull(callback, "callback must not be null");
-        return (callback.getEvent() == Event.NOC_REQUEST);
+        return (callback.getEvent() == Event.NOC_REQUEST
+                || callback.getEvent() == Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE);
     }
 
     /**
@@ -48,7 +48,6 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
         try {
             ccdCaseAssignment.applyNoc(callback);
 
-            // redundant IF-statement for now, but there'll be more IF-statements when removal of LR gets implemented
             if (callback.getEvent() == Event.NOC_REQUEST) {
 
                 String caseReference = callback.getCaseDetails().getCaseData()
@@ -56,6 +55,16 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
 
                 postSubmitResponse.setConfirmationHeader(
                     "# You're now representing a client on case " + caseReference
+                );
+            }
+
+            if (callback.getEvent() == Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE) {
+                postSubmitResponse.setConfirmationHeader(
+                    "# You have removed the legal representative from this case"
+                );
+                postSubmitResponse.setConfirmationBody(
+                    "#### What happens next\n\n"
+                    + "All parties will be notified."
                 );
             }
         } catch (Exception e) {
