@@ -62,10 +62,6 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
                 postSubmitResponse.setConfirmationHeader(
                     "# You have removed the legal representative from this case"
                 );
-                postSubmitResponse.setConfirmationBody(
-                    "#### What happens next\n\n"
-                    + "All parties will be notified."
-                );
             }
         } catch (Exception e) {
             log.error("Unable to change representation (apply noc) for case id {} with error message: {}",
@@ -73,10 +69,6 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
 
             postSubmitResponse.setConfirmationBody(
                 "### Something went wrong\n\n"
-                + "You have not stopped representing the appellant in this appeal.\n\n"
-                + "Use the [stop representing a client](/case/IA/Bail/"
-                + callback.getCaseDetails().getId()
-                + "/trigger/removeRepresentation/removeRepresentationSingleFormPageWithComplex) feature to try again."
             );
         }
 
