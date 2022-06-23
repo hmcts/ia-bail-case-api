@@ -149,7 +149,8 @@ public class CaseInferenceByBailNumberHandlerTest {
 
                 if (callbackStage == PreSubmitCallbackStage.MID_EVENT
                     && (callback.getEvent() == Event.START_APPLICATION
-                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION)
+                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
+                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT)
                     && callback.getPageId().equals(HAS_PREVIOUS_BAIL_APPLICATION.value())) {
 
                     assertTrue(canHandle);

@@ -75,7 +75,7 @@ public enum BailCaseFieldDefinition {
     APPEAL_REFERENCE_NUMBER(
         "appealReferenceNumber", new TypeReference<String>(){}),
     HAS_PREV_BAIL_APPLICATION(
-        "hasPreviousBailApplication", new TypeReference<String>(){}),
+        "hasPreviousBailApplication", new TypeReference<YesOrNo>(){}),
     PREV_BAIL_APPLICATION_NUMBER(
         "previousBailApplicationNumber", new TypeReference<String>(){}),
     APPLICANT_BEEN_REFUSED_BAIL(
