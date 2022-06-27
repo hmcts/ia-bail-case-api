@@ -97,6 +97,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_PREVIOUS_BAIL_APPLICATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_BEEN_REFUSED_BAIL;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_HEARING_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_LEGALLY_REPRESENTED_FOR_FLAG;
@@ -157,6 +158,7 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         final Optional<YesOrNo> optionalDisability = bailCase.read(DISABILITY_YESNO, YesOrNo.class);
         final Optional<YesOrNo> optionalVideoHearing = bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class);
         final Optional<String> optionalAppealHearing = bailCase.read(HAS_APPEAL_HEARING_PENDING, String.class);
+        final Optional<String> optionalPreviousApplication = bailCase.read(HAS_PREVIOUS_BAIL_APPLICATION, String.class);
         final Optional<YesOrNo> optionalApplicantAddress = bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class);
         final Optional<YesOrNo> optionalFinancialConditionAmount = bailCase.read(
             AGREES_TO_BOUND_BY_FINANCIAL_COND,YesOrNo.class);
@@ -172,6 +174,17 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class).orElse(NO);
         final YesOrNo hasFinancialConditionSupporter4 = bailCase.read(
             HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(NO);
+
+        if (optionalPreviousApplication.isPresent()) {
+            String hasPreviousApplication = optionalPreviousApplication.get();
+
+            if (hasPreviousApplication.equals("No")
+                || hasPreviousApplication.equals("Don't know")
+            ) {
+                bailCase.remove(APPLICANT_BEEN_REFUSED_BAIL);
+                bailCase.remove(BAIL_HEARING_DATE);
+            }
+        }
 
         if (optionalTransferBailManagement.isPresent()) {
             YesOrNo transferBailManagementValue = optionalTransferBailManagement.get();
@@ -205,8 +218,6 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
                 || hasAppealHearing.equals("DontKnow")
             ) {
                 bailCase.remove(APPEAL_REFERENCE_NUMBER);
-                bailCase.remove(APPLICANT_BEEN_REFUSED_BAIL);
-                bailCase.remove(BAIL_HEARING_DATE);
             }
         }
 
