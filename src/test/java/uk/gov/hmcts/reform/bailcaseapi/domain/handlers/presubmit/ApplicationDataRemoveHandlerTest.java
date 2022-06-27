@@ -103,6 +103,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_BEEN_REFUSED_BAIL;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_HEARING_DATE;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -267,6 +269,8 @@ public class ApplicationDataRemoveHandlerTest {
         setUpValuesIfValuesAreRemoved();
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPEAL_REFERENCE_NUMBER);
+        verify(bailCase, times(1)).remove(APPLICANT_BEEN_REFUSED_BAIL);
+        verify(bailCase, times(1)).remove(BAIL_HEARING_DATE);
     }
 
     @Test
@@ -376,6 +380,8 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_3_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_4_GIVEN_NAMES);
+        verify(bailCase, never()).remove(APPLICANT_BEEN_REFUSED_BAIL);
+        verify(bailCase, never()).remove(BAIL_HEARING_DATE);
     }
 
     private void setUpValuesIfValuesAreRemoved() {
