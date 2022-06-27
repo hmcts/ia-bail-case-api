@@ -268,7 +268,7 @@ public class ApplicationDataRemoveHandlerTest {
     }
 
     @Test
-    void should_remove_previous_app_details_if_none_present() {
+    void should_remove_previous_application_details_if_none_present() {
         setUpValuesIfValuesAreRemoved();
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_BEEN_REFUSED_BAIL);
