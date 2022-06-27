@@ -1,0 +1,23 @@
+{
+  "description": "Start application",
+  "request": {
+    "uri": "/bail/aboutToStart",
+    "credentials": "AdminOfficer",
+    "input": {
+      "eventId": "startApplication",
+      "state": null,
+      "caseData": {
+        "template": "no-case-data.json",
+        "replacements": {
+        }
+      }
+    }
+  },
+  "expectation": {
+    "status": 200,
+    "errors": [],
+    "caseData": {
+      "template": {}
+    }
+  }
+}
