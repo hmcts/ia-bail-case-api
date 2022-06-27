@@ -99,6 +99,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_BEEN_REFUSED_BAIL;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_HEARING_DATE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_LEGALLY_REPRESENTED_FOR_FLAG;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
@@ -413,6 +414,7 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(LEGAL_REP_NAME);
         bailCase.remove(LEGAL_REP_PHONE);
         bailCase.remove(LEGAL_REP_REFERENCE);
+        bailCase.write(IS_LEGALLY_REPRESENTED_FOR_FLAG, NO);
     }
 
 }
