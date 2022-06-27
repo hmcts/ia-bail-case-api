@@ -218,8 +218,6 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
                 || hasAppealHearing.equals("DontKnow")
             ) {
                 bailCase.remove(APPEAL_REFERENCE_NUMBER);
-                bailCase.remove(APPLICANT_BEEN_REFUSED_BAIL);
-                bailCase.remove(BAIL_HEARING_DATE);
             }
         }
 
