@@ -176,10 +176,10 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(NO);
 
         if (optionalPreviousApplication.isPresent()) {
-            String hasPreviousApplication = optionalPreviousApplication.get();
+            String hasPreviousApplications = optionalPreviousApplication.get();
 
-            if (hasPreviousApplication.equals("No")
-                || hasPreviousApplication.equals("Don't know")
+            if (hasPreviousApplications.equals("No")
+                || hasPreviousApplications.equals("Don't know")
             ) {
                 bailCase.remove(APPLICANT_BEEN_REFUSED_BAIL);
                 bailCase.remove(BAIL_HEARING_DATE);
