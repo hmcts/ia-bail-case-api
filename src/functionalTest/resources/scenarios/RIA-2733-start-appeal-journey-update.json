@@ -1,7 +1,7 @@
 {
   "description": "RIA-2733 Grounds of appeal for protection type appeals",
   "request": {
-    "uri": "/asylum/ccdAboutToSubmit",
+    "uri": "/asylum/ccdAboutToSubmittttt",
     "credentials": "LegalRepresentativeOrgSuccess",
     "input": {
       "eventId": "startAppeal",
