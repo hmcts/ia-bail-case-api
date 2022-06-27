@@ -23,9 +23,9 @@ public class EndpointSecurityTest {
 
     private final List<String> callbackEndpoints =
         Arrays.asList(
-            "/asylum/ccdAboutToStart",
-            "/asylum/ccdAboutToSubmit",
-            "/asylum/ccdSubmitted"
+            "/bail/ccdAboutToStart",
+            "/bail/ccdAboutToSubmit",
+            "/bail/ccdSubmitted"
         );
 
     @Autowired private AuthorizationHeadersProvider authorizationHeadersProvider;
