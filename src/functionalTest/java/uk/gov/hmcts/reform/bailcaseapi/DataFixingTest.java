@@ -1,8 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
@@ -13,14 +10,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.serenitybdd.rest.SerenityRest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.bailcaseapi.util.AuthorizationHeadersProvider;
 import uk.gov.hmcts.reform.bailcaseapi.util.MapSerializer;
@@ -48,40 +41,40 @@ public class DataFixingTest {
         RestAssured.useRelaxedHTTPSValidation();
     }
 
-    @Test
-    public void corrects_field_names() throws Exception {
-
-        Map<String, Object> asylumCaseMap = new HashMap<>();
-        asylumCaseMap.put("appealType", "refusalOfHumanRights");
-        asylumCaseMap.put("respondentsAgreedScheduleOfIssuesDescription", "some-value");
-
-        String callbackBody = buildCallbackBodyWithMinimalRequired(
-            asylumCaseMap,
-            "appealSubmitted",
-            "startAppeal"
-        );
-
-        callbackEndpoints.forEach(endpoint -> {
-
-            String responseJson =
-                SerenityRest
-                    .given()
-                    .headers(getAuthorizationHeaders())
-                    .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                    .body(callbackBody)
-                    .when()
-                    .post(endpoint)
-                    .then()
-                    .statusCode(HttpStatus.OK.value())
-                    .and()
-                    .extract().body().asString();
-
-            Map<String, String> caseDetails = extractCaseData(responseJson);
-
-            assertThat(caseDetails.get("respondentsAgreedScheduleOfIssuesDescription")).isNull();
-            assertThat(caseDetails.get("appellantsAgreedScheduleOfIssuesDescription")).isEqualTo("some-value");
-        });
-    }
+    //@Test
+    //public void corrects_field_names() throws Exception {
+    //
+    //    Map<String, Object> asylumCaseMap = new HashMap<>();
+    //    asylumCaseMap.put("appealType", "refusalOfHumanRights");
+    //    asylumCaseMap.put("respondentsAgreedScheduleOfIssuesDescription", "some-value");
+    //
+    //    String callbackBody = buildCallbackBodyWithMinimalRequired(
+    //        asylumCaseMap,
+    //        "appealSubmitted",
+    //        "startAppeal"
+    //    );
+    //
+    //    callbackEndpoints.forEach(endpoint -> {
+    //
+    //        String responseJson =
+    //            SerenityRest
+    //                .given()
+    //                .headers(getAuthorizationHeaders())
+    //                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+    //                .body(callbackBody)
+    //                .when()
+    //                .post(endpoint)
+    //                .then()
+    //                .statusCode(HttpStatus.OK.value())
+    //                .and()
+    //                .extract().body().asString();
+    //
+    //        Map<String, String> caseDetails = extractCaseData(responseJson);
+    //
+    //        assertThat(caseDetails.get("respondentsAgreedScheduleOfIssuesDescription")).isNull();
+    //        assertThat(caseDetails.get("appellantsAgreedScheduleOfIssuesDescription")).isEqualTo("some-value");
+    //    });
+    //}
 
     private Map<String, String> extractCaseData(String responseJson) {
 
