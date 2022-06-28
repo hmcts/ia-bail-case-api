@@ -5,7 +5,7 @@
     "credentials": "AdminOfficer",
     "input": {
       "eventId": "startApplication",
-      "state": null,
+      "state": "startApplication",
       "caseData": {
         "template": "no-case-data.json",
         "replacements": {
