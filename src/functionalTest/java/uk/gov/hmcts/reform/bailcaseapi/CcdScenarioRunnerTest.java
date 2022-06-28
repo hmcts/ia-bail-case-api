@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.StreamSupport;
-import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.serenitybdd.rest.SerenityRest;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +45,6 @@ import uk.gov.hmcts.reform.bailcaseapi.verifiers.Verifier;
 @RunWith(SpringIntegrationSerenityRunner.class)
 @SpringBootTest
 @ActiveProfiles("functional")
-@Slf4j
 public class CcdScenarioRunnerTest {
 
     @Value("${targetInstance}")
@@ -73,18 +71,12 @@ public class CcdScenarioRunnerTest {
         MapSerializer.setObjectMapper(objectMapper);
         RestAssured.baseURI = targetInstance;
         RestAssured.useRelaxedHTTPSValidation();
-
-        log.info("restAssured.baseURI");
-        log.debug(RestAssured.baseURI);
     }
 
     @Test
     public void scenarios_should_behave_as_specified() throws IOException {
 
         loadPropertiesIntoMapValueExpander();
-
-        log.info("fixtures");
-        fixtures.forEach(f -> log.debug(f.toString()));
 
         for (Fixture fixture : fixtures) {
             fixture.prepare();
@@ -98,25 +90,16 @@ public class CcdScenarioRunnerTest {
 
         String scenarioPattern = System.getProperty("scenario");
 
-        log.debug("scenarioPattern (1)");
-        log.debug(scenarioPattern);
-
         if (scenarioPattern == null) {
             scenarioPattern = "*.json";
         } else {
             scenarioPattern = "*" + scenarioPattern + "*.json";
         }
 
-        log.debug("scenarioPattern (2)");
-        log.debug(scenarioPattern);
-
         Collection<String> scenarioSources =
             StringResourceLoader
                 .load("/scenarios/" + scenarioPattern)
                 .values();
-
-        log.info("ScenarioSources");
-        scenarioSources.forEach(log::debug);
 
         System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
         System.out.println((char) 27 + "[33m" + "RUNNING " + scenarioSources.size() + " SCENARIOS");
