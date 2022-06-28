@@ -1,29 +1,50 @@
 {
-  "homeOfficeReferenceNumber": "123456789",
-  "homeOfficeDecisionDate": "{$TODAY}",
-  "appellantTitle": "Mr",
-  "appellantGivenNames": "Talha",
-  "appellantFamilyName": "Awan",
-  "appellantDateOfBirth": "{$TODAY-7300}",
-  "appellantNationalities": [
+  "ircName": "Colnbrook",
+  "isAdmin": "Yes",
+  "hasLegalRep": "No",
+  "isHomeOffice": "No",
+  "hearingCentre": "hattonCross",
+  "videoHearing1": "Yes",
+  "applicantGender": "Male",
+  "sentByChecklist": "Applicant",
+  "interpreterYesNo": "No",
+
+  "applicantFullName": "FirstName LastName",
+  "detentionFacility": "Colnbrook",
+  "applicantHasMobile": "No",
+  "applicantFamilyName": "FirstName",
+  "applicantGivenNames": "LastName",
+  "applicantHasAddress": "No",
+  "bailReferenceNumber": "1111-2222-3333-4444",
+  "applicantDateOfBirth": "1111-01-01",
+  "applicantDetainedLoc": "immigrationRemovalCentre",
+  "applicantDisability1": "No",
+  "applicantNationality": "STATELESS",
+  "interpreterLanguages": [],
+  "groundsForBailReasons": "groundsForBails",
+  "applicantNationalities": [
     {
       "id": "1",
       "value": {
-        "code": "IS"
+        "code": "Stateless"
       }
     }
   ],
-  "appellantHasFixedAddress": "No",
-  "contactPreference": "wantsSms",
-  "wantsSms": "Text message",
-  "mobileNumber": "07977111111",
-  "appealType": "protection",
-  "appealGroundsProtection": {
-    "values": [
-      "refugeeConvention"
-    ]
-  },
-  "hasNewMatters": "No",
-  "hasOtherAppeals": "No",
-  "appealReferenceNumber": "DRAFT"
+  "applicationSubmittedBy": "Applicant",
+  "hasAppealHearingPending": "No",
+  "applicantArrivalInUKDate": "1111-01-01",
+  "hasFinancialCondSupporter": "No",
+  "homeOfficeReferenceNumber": "00000",
+  "hasPreviousBailApplication": "No",
+  "isLegallyRepresentedForFlag": "No",
+  "agreesToBoundByFinancialCond": "No",
+  "previousApplicationDoneViaCcd": "No",
+  "transferBailManagementYesOrNo": "Yes",
+  "currentCaseStateVisibleToJudge": "applicationStarted",
+  "previousApplicationDoneViaAria": "No",
+  "currentCaseStateVisibleToAllUsers": "applicationStarted",
+  "currentCaseStateVisibleToHomeOffice": "applicationStarted",
+  "groundsForBailProvideEvidenceOption": "No",
+  "currentCaseStateVisibleToAdminOfficer": "applicationStarted",
+  "currentCaseStateVisibleToLegalRepresentative": "applicationStarted"
 }
