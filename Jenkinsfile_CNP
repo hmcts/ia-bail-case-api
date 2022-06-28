@@ -23,7 +23,9 @@ def secrets = [
     secret('prof-ref-data-url', 'PROF_REF_DATA_URL'),
     secret('docmosis-enabled', 'IA_DOCMOSIS_ENABLED'),
     secret('em-stitching-enabled', 'IA_EM_STITCHING_ENABLED'),
-    secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY')
+    secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
+    secret('test-adminofficer-username', 'TEST_ADMINOFFICER_USERNAME'),
+    secret('test-adminofficer-password', 'TEST_ADMINOFFICER_PASSWORD'),
 
   ]
 ]
