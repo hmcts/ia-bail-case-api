@@ -31,7 +31,7 @@ public class SystemDocumentManagementUploader {
     ) {
         final String serviceAuthorizationToken =
             authorizationHeadersProvider
-                .getLegalRepresentativeAuthorization()
+                .getAdminOfficerAuthorization()
                 .getValue("ServiceAuthorization");
 
         final String accessToken =
