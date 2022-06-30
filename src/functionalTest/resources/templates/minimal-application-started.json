@@ -12,21 +12,21 @@
   "applicantFullName": "FirstName LastName",
   "detentionFacility": "Colnbrook",
   "applicantHasMobile": "No",
-  "applicantFamilyName": "FirstName",
-  "applicantGivenNames": "LastName",
+  "applicantFamilyName": "LastName",
+  "applicantGivenNames": "FirstName",
   "applicantHasAddress": "No",
   "bailReferenceNumber": "1111-2222-3333-4444",
   "applicantDateOfBirth": "1111-01-01",
   "applicantDetainedLoc": "immigrationRemovalCentre",
   "applicantDisability1": "No",
-  "applicantNationality": "STATELESS",
+  "applicantNationality": "HAS_NATIONALITY",
   "interpreterLanguages": [],
   "groundsForBailReasons": "groundsForBails",
   "applicantNationalities": [
     {
-      "id": "1",
+      "id": "3b607d2b-6e29-4bda-a0eb-8320e676f584",
       "value": {
-        "code": "Stateless"
+        "code": "English"
       }
     }
   ],
