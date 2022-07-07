@@ -6,7 +6,7 @@
     "input": {
       "id": 1111,
       "eventId": "startApplication",
-      "state": "applicationStartedLR",
+      "state": "applicationStartedByLR",
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
