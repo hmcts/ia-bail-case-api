@@ -1,5 +1,5 @@
 {
-  "description": "RIA-5947 End application confirmation by Admin Offier",
+  "description": "RIA-5947 End application confirmation by Admin Offier (post-submit REST call)",
   "request": {
     "uri": "/bail/ccdSubmitted",
     "credentials": "AdminOfficer",
