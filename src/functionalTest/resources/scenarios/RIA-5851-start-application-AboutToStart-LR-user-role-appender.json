@@ -5,7 +5,7 @@
     "credentials": "LegalRepresentative",
     "input": {
       "id": 1111,
-      "eventId": "startApplication",
+      "eventId": "submitApplication",
       "state": "applicationStarted",
       "caseData": {
         "template": "minimal-application-started.json",
