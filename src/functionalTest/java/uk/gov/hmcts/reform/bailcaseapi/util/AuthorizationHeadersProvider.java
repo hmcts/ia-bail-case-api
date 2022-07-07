@@ -4,6 +4,7 @@ import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.IdamApi;
 
 @Service
+@Slf4j
 public class AuthorizationHeadersProvider {
 
     @Value("${idam.redirectUrl}") protected String idamRedirectUrl;
@@ -38,8 +40,12 @@ public class AuthorizationHeadersProvider {
         tokenRequestForm.add("username", System.getenv("TEST_LAW_FIRM_A_USERNAME"));
         tokenRequestForm.add("password", System.getenv("TEST_LAW_FIRM_A_PASSWORD"));
         tokenRequestForm.add("scope", userScope);
-
+        log.info("username" + System.getenv("TEST_LAW_FIRM_A_USERNAME"));
+        log.info("password" + System.getenv("TEST_LAW_FIRM_A_PASSWORD"));
         String serviceToken = tokens.computeIfAbsent("ServiceAuth", user -> serviceAuthTokenGenerator.generate());
+        
+        log.info("After auth token generation");
+
         String accessToken = tokens.computeIfAbsent(
             "LegalRepresentative",
             user -> "Bearer " + idamApi.token(tokenRequestForm).getAccessToken()
