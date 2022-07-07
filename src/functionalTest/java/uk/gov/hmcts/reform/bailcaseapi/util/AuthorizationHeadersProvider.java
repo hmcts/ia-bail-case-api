@@ -51,10 +51,14 @@ public class AuthorizationHeadersProvider {
             user -> "Bearer " + idamApi.token(tokenRequestForm).getAccessToken()
         );
 
+        log.info(serviceToken);
+        log.info(accessToken);
+
         return new Headers(
             new Header("ServiceAuthorization", serviceToken),
             new Header("Authorization", accessToken)
         );
+
     }
 
     public Headers getCaseOfficerAuthorization() {
