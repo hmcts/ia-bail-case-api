@@ -43,7 +43,7 @@ public class AuthorizationHeadersProvider {
         log.info("username" + System.getenv("TEST_LAW_FIRM_A_USERNAME"));
         log.info("password" + System.getenv("TEST_LAW_FIRM_A_PASSWORD"));
         String serviceToken = tokens.computeIfAbsent("ServiceAuth", user -> serviceAuthTokenGenerator.generate());
-        
+
         log.info("After auth token generation");
 
         String accessToken = tokens.computeIfAbsent(
