@@ -13,7 +13,7 @@
           "uploadB1FormDocs":
           [
             {
-              "id": "3",
+              "id": "2",
               "value": {
                 "document": {
                   "document_url": "http:\/\/dm-store:8080\/documents\/aaaaaaaa-bbbb-1ccc-8ddd-eeeeeeeeeeee",
@@ -37,7 +37,7 @@
         "uploadB1FormDocs":
         [
           {
-            "id": "3",
+            "id": "2",
             "value": {
               "document": {
                 "document_url": "$/http:\/\/dm-store:8080\/documents\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/",
@@ -45,6 +45,38 @@
                 "document_filename": "B1.PDF"
               },
               "description":"test b1 description"
+            }
+          }
+        ],
+        "applicantDocumentsWithMetadata": [
+          {
+            "id": "2",
+            "value": {
+              "document": {
+                "document_url": "$/http:\/\/dm-store:8080\/documents\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/",
+                "document_binary_url": "$/http://dm-store:8080/documents/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\/binary/",
+                "document_filename": "B1.PDF",
+                "document_hash": null
+              },
+              "description": "test b1 description",
+              "dateUploaded": "{$TODAY}",
+              "tag": "b1Document",
+              "suppliedBy": null
+            }
+          },
+          {
+            "id": "1",
+            "value": {
+              "document": {
+                "document_url": "$/http:\/\/dm-store:8080\/documents\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/",
+                "document_binary_url": "$/http://dm-store:8080/documents/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\/binary/",
+                "document_filename": "LastName-bail-application-details.PDF",
+                "document_hash": null
+              },
+              "description": "",
+              "dateUploaded": "{$TODAY}",
+              "tag": "bailSubmission",
+              "suppliedBy": ""
             }
           }
         ],
