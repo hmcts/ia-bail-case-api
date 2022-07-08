@@ -1,0 +1,53 @@
+{
+  "description": "uploadSignedDecisionNotice - About to submit test",
+  "request": {
+    "uri": "/bail/ccdAboutToSubmit",
+    "credentials": "AdminOfficer",
+    "input": {
+      "id": 1111,
+      "eventId": "uploadSignedDecisionNotice",
+      "state": "decisionDecided",
+      "caseData": {
+        "template": "minimal-application-started.json",
+        "replacements": {
+          "uploadSignedDecisionNoticeDocument": {
+            "document_url": "http://dm-store:8080/documents/1488f4de-c9fe-4f3e-a6b6-ee032ca759c1",
+            "document_binary_url": "http://dm-store:8080/documents/1488f4de-c9fe-4f3e-a6b6-ee032ca759c1/binary",
+            "document_filename": "Upload-signed-decision-notice.pdf"
+          }
+        }
+      }
+    }
+  },
+  "expectation": {
+    "status": 200,
+    "errors": [],
+    "caseData": {
+      "template": "minimal-application-started.json",
+      "replacements": {
+        "currentCaseStateVisibleToJudge": "decisionDecided",
+        "currentCaseStateVisibleToAllUsers": "decisionDecided",
+        "currentCaseStateVisibleToHomeOffice": "decisionDecided",
+        "currentCaseStateVisibleToAdminOfficer": "decisionDecided",
+        "currentCaseStateVisibleToLegalRepresentative": "decisionDecided",
+        "tribunalDocumentsWithMetadata":
+        [
+          {
+            "id":"1",
+            "value":{
+              "document":{
+                "document_url": "http://dm-store:8080/documents/1488f4de-c9fe-4f3e-a6b6-ee032ca759c1",
+                "document_binary_url": "http://dm-store:8080/documents/1488f4de-c9fe-4f3e-a6b6-ee032ca759c1/binary",
+                "document_filename": "Upload-signed-decision-notice.pdf"
+              },
+              "description":"",
+              "dateUploaded": "{$TODAY}",
+              "tag":"signedDecisionNotice",
+              "suppliedBy": null
+            }
+          }
+        ]
+      }
+    }
+  }
+}
