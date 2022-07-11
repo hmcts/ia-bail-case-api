@@ -66,7 +66,6 @@ public class PreSubmitCallbackController {
                 responseCode = "500",
                 description = "Internal Server Error")}
     )
-
     @PostMapping(path = "/ccdAboutToStart")
     public ResponseEntity<PreSubmitCallbackResponse<BailCase>> ccdAboutToStart(
         @Parameter(name = "Bail case data", required = true) @NotNull @RequestBody Callback<BailCase> callback
@@ -127,7 +126,6 @@ public class PreSubmitCallbackController {
                 responseCode = "500",
                 description = "Internal Server Error")}
     )
-
     @PostMapping(path = "/ccdMidEvent")
     public ResponseEntity<PreSubmitCallbackResponse<BailCase>> ccdMidEvent(
         @Parameter(name = "Bail case data", required = true) @NotNull @RequestBody Callback<BailCase> callback,

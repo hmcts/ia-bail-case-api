@@ -1,48 +1,39 @@
 package uk.gov.hmcts.reform.bailcaseapi.infrastructure.config;
 
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
-import org.springdoc.core.customizers.OperationCustomizer;
+import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.method.HandlerMethod;
 
 @Configuration
 public class OpenAPIConfiguration {
 
     @Bean
-    public GroupedOpenApi publicApi(OperationCustomizer customGlobalHeaders) {
+    public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
             .group("case-event-handler-public")
             .pathsToMatch("/**")
-            .addOperationCustomizer(customGlobalHeaders)
+            .addOpenApiCustomiser(publicApiCustomizer())
             .build();
     }
 
     @Bean
-    public OperationCustomizer customGlobalHeaders() {
-        return (Operation customOperation, HandlerMethod handlerMethod) -> {
-            Parameter serviceAuthorizationHeader = new Parameter()
-                .in(ParameterIn.HEADER.toString())
-                .schema(new StringSchema())
-                .name("ServiceAuthorization")
-                .description("Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service")
-                .required(true);
-            customOperation.addParametersItem(serviceAuthorizationHeader);
-
-            Parameter authorizationHeader = new Parameter()
-                .in(ParameterIn.HEADER.toString())
-                .schema(new StringSchema())
-                .name("Authorization")
-                .description("")
-                .required(true);
-            customOperation.addParametersItem(authorizationHeader);
-
-            return customOperation;
-        };
+    public OpenApiCustomiser publicApiCustomizer() {
+        return openApi -> openApi
+            .components(new Components()
+                .addSecuritySchemes("Authorization", new SecurityScheme()
+                    .type(SecurityScheme.Type.APIKEY)
+                    .in(SecurityScheme.In.HEADER)
+                    .name("Authorization")
+                )
+                .addSecuritySchemes("ServiceAuthorization", new SecurityScheme()
+                    .type(SecurityScheme.Type.APIKEY)
+                    .in(SecurityScheme.In.HEADER)
+                    .name("ServiceAuthorization")
+                )
+            );
     }
 
 }
