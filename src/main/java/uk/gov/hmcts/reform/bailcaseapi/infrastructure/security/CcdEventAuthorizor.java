@@ -15,7 +15,8 @@ public class CcdEventAuthorizor {
     private final Map<String, List<Event>> roleEventAccess;
     private final AuthorizedRolesProvider authorizedRolesProvider;
 
-    public CcdEventAuthorizor(Map<String, List<Event>> roleEventAccess, AuthorizedRolesProvider authorizedRolesProvider) {
+    public CcdEventAuthorizor(Map<String, List<Event>> roleEventAccess,
+                              AuthorizedRolesProvider authorizedRolesProvider) {
         this.roleEventAccess = roleEventAccess;
         this.authorizedRolesProvider = authorizedRolesProvider;
     }
