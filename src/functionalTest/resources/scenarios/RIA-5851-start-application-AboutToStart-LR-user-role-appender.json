@@ -22,7 +22,7 @@
       "template": "minimal-application-started.json",
       "replacements": {
         "applicationSubmittedBy": "Legal Representative",
-        "isAdmin": "No",
+        "isAdmin": "Yes",
         "isLegalRep": "Yes"
       }
     }
