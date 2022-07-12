@@ -10,7 +10,6 @@
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
-          "detentionFacility": "Brookhouse",
           "ircName": "Brookhouse",
           "hearingCentre": "taylorHouse"
         }

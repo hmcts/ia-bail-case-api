@@ -10,7 +10,6 @@
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
-          "applicantFullName": "Joris Bohnson",
           "applicantFamilyName": "Bohnson",
           "applicantGivenNames": "Joris"
         }

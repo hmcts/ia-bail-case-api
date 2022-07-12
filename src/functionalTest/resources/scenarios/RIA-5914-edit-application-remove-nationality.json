@@ -10,15 +10,7 @@
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
-          "applicantNationality": "STATELESS",
-          "applicantNationalities": [
-            {
-              "id": "1",
-              "value": {
-                "code": "Stateless"
-              }
-            }
-          ]
+          "applicantNationality": "STATELESS"
         }
       }
     }
