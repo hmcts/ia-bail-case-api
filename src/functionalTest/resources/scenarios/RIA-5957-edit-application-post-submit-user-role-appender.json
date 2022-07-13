@@ -1,0 +1,32 @@
+{
+  "description": "Edit the application by Home Office - HO appender(post-submit)",
+  "request": {
+    "uri": "/bail/ccdAboutToSubmit",
+    "credentials": "HomeOfficeGeneric",
+    "input": {
+      "id": 1111,
+      "eventId": "editBailApplicationAfterSubmit",
+      "state": "applicationSubmitted",
+      "caseData": {
+        "template": "minimal-application-submitted.json",
+        "replacements": {
+          "applicationSubmittedBy": "Home Office"
+        }
+      }
+    }
+  },
+  "expectation": {
+    "status": 200,
+    "errors": [],
+    "caseData": {
+      "template": "minimal-application-submitted.json",
+      "replacements": {
+        "applicationSubmittedBy": "Home Office",
+        "isAdmin": "No",
+        "isLegalRep": "No",
+        "isHomeOffice": "Yes",
+        "interpreterLanguages": null
+      }
+    }
+  }
+}
