@@ -72,7 +72,10 @@ public class LegalRepresentativeDetailsAppender implements PreSubmitCallbackHand
 
             final OrganisationEntityResponse organisationEntityResponse =
                 professionalOrganisationRetriever.retrieve();
-            setupLocalAuthorityPolicy(callback, organisationEntityResponse.getOrganisationIdentifier());
+
+            if (organisationEntityResponse != null) {
+                setupLocalAuthorityPolicy(callback, organisationEntityResponse.getOrganisationIdentifier());
+            }
         }
 
         return new PreSubmitCallbackResponse<>(bailCase);
