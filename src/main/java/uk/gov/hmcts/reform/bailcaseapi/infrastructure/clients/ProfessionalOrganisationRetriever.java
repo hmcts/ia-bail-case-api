@@ -50,9 +50,9 @@ public class ProfessionalOrganisationRetriever {
         headers.set(HttpHeaders.AUTHORIZATION, accessToken);
         headers.set(SERVICE_AUTHORIZATION, serviceAuthorizationToken);
 
-        log.info( "AUTHORIZATION :" + accessToken);
-        log.info( "SERVICE_AUTHORIZATION :" + serviceAuthorizationToken);
-        
+        log.info("AUTHORIZATION :" + accessToken);
+        log.info("SERVICE_AUTHORIZATION :" + serviceAuthorizationToken);
+
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
         OrganisationEntityResponse response = null;
