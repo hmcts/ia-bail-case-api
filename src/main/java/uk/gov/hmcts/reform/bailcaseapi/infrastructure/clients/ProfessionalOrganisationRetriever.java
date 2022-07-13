@@ -40,6 +40,7 @@ public class ProfessionalOrganisationRetriever {
 
     public OrganisationEntityResponse retrieve() {
 
+
         final String serviceAuthorizationToken = serviceAuthTokenGenerator.generate();
         final UserDetails userDetails = userDetailsProvider.getUserDetails();
         final String accessToken = userDetails.getAccessToken();
