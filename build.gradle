@@ -308,6 +308,8 @@ dependencies {
 
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.1.1'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.1'
+  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-config', version: '3.1.1'
+
 
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
