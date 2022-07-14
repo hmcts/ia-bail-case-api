@@ -2,7 +2,7 @@
   "description": "Start the application by admin - application submitted by LR appender",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
-    "credentials": "LegalRepresentative",
+    "credentials": "LegalRepresentativeOrgSuccess",
     "input": {
       "id": 1111,
       "eventId": "startApplication",

@@ -2,7 +2,7 @@
   "description": "Start the application by Legal Representative - append LR ref data",
   "request": {
     "uri": "/bail/ccdAboutToStart",
-    "credentials": "LegalRepresentative",
+    "credentials": "LegalRepresentativeOrgSuccess",
     "input": {
       "id": 1111,
       "eventId": "startApplication",
@@ -22,7 +22,7 @@
       "template": "minimal-application-started.json",
       "replacements": {
         "applicationSubmittedBy": "Legal Representative",
-        "legalRepEmail":"ia-law-firm-a@fake.hmcts.net",
+        "legalRepEmail":"ia-law-firm-success@fake.hmcts.net",
         "legalRepCompany":"Fake Org Ltd",
         "isAdmin": "No",
         "isLegalRep": "Yes"
