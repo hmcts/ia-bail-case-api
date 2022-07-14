@@ -330,7 +330,9 @@ dependencies {
 
   testCompile group: 'uk.gov.hmcts.reform', name: 'document-management-client', version: '7.0.0'
 
-  testCompile (group: 'io.rest-assured', name: 'rest-assured-all', version: '4.3.1')
+  testCompile group: 'io.rest-assured', name: 'rest-assured-all', version: '4.3.1'
+  testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
+
   testCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
   testCompile group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
   testCompile group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
