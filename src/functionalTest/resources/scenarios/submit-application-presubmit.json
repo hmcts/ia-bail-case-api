@@ -1,5 +1,6 @@
 {
   "description": "Submit the application (pre-submit REST call)",
+  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
