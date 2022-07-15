@@ -1,5 +1,6 @@
 {
   "description": "Send direction event - direction sent to Applicant",
+  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
