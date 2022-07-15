@@ -1,5 +1,6 @@
 {
   "description": "Change bail direction due date event - direction updated",
+  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
