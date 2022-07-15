@@ -1,5 +1,6 @@
 {
   "description": "Submit the application with bail evidence attached (pre-submit REST call)",
+  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
