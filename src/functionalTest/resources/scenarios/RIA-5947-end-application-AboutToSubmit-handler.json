@@ -1,5 +1,6 @@
 {
   "description": "RIA-5947 End the application by admin officer",
+  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
