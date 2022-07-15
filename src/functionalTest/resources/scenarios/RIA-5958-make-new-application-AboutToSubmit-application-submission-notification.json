@@ -1,5 +1,6 @@
 {
   "description": "Make new application submit application - generate bail submission notification",
+  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",

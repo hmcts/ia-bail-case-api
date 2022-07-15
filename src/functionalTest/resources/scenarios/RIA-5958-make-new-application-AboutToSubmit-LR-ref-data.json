@@ -2,7 +2,7 @@
   "description": "Make new application by Legal Representative - append LR ref data",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
-    "credentials": "LegalRepresentative",
+    "credentials": "LegalRepresentativeOrgSuccess",
     "input": {
       "id": 1111,
       "eventId": "makeNewApplication",
@@ -26,8 +26,8 @@
       "template": "minimal-application-make-new-application.json",
       "replacements": {
         "applicationSubmittedBy": "Legal Representative",
-        "legalRepEmail":"ia-law-firm-a@fake.hmcts.net",
-        "legalRepCompany":"Fake Org Ltd",
+        "legalRepEmail":"ialegalreporgcreator12@mailnesia.com",
+        "legalRepCompany":"ia-legal-rep-org777",
         "isAdmin": "No",
         "isLegalRep": "Yes",
         "isLegallyRepresentedForFlag": "Yes"
