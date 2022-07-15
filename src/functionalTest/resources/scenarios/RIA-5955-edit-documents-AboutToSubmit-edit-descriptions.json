@@ -1,5 +1,6 @@
 {
   "description": "Edit bail documents event - update description",
+  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
