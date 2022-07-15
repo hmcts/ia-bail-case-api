@@ -318,8 +318,8 @@ public class CcdScenarioRunnerTest {
                 newState = State.valueOf(MapValueExtractor.extractOrThrow(expectation, "state"));
             }
 
-            PreSubmitCallbackResponse<BailCase> preSubmitCallbackResponse = (newState == null) ?
-                new PreSubmitCallbackResponse<>(
+            PreSubmitCallbackResponse<BailCase> preSubmitCallbackResponse = (newState == null)
+                ? new PreSubmitCallbackResponse<>(
                     objectMapper.readValue(
                         MapSerializer.serialize(caseData),
                         new TypeReference<BailCase>() {
