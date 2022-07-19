@@ -1,7 +1,7 @@
 {
-  "description": "Edit the application to change the hearing centre (post-submit REST call)",
+  "description": "Edit the application by admin - show error message (redirect) if applicant has application already",
   "request": {
-    "uri": "/bail/ccdAboutToSubmit",
+    "uri": "/bail/ccdMidEvent?pageId=redirectToPreviousApplicationOrNoc",
     "credentials": "AdminOfficer",
     "input": {
       "id": 1111,
@@ -10,21 +10,18 @@
       "caseData": {
         "template": "minimal-application-submitted.json",
         "replacements": {
-          "ircName": "Brookhouse"
+          "previousApplicationDoneViaCcd": "Yes"
         }
       }
     }
   },
   "expectation": {
     "status": 200,
-    "errors": [],
+    "errors": ["contains(A case record already exists for this applicant.\nIf you did not make a previous application on the)"],
     "caseData": {
       "template": "minimal-application-submitted.json",
       "replacements": {
-        "detentionFacility": "Brookhouse",
-        "ircName": "Brookhouse",
-        "hearingCentre": "taylorHouse",
-        "interpreterLanguages": null
+        "previousApplicationDoneViaCcd": "Yes"
       }
     }
   }

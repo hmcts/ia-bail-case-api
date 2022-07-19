@@ -1,7 +1,7 @@
 {
-  "description": "Edit the application to add a previous bail application (post-submit REST call)",
+  "description": "Edit the application append previous application done by type CCD",
   "request": {
-    "uri": "/bail/ccdAboutToSubmit",
+    "uri": "/bail/ccdMidEvent?pageId=hasPreviousBailApplication",
     "credentials": "AdminOfficer",
     "input": {
       "id": 1111,
@@ -23,8 +23,7 @@
       "template": "minimal-application-submitted.json",
       "replacements": {
         "hasPreviousBailApplication": "Yes",
-        "previousBailApplicationNumber": "1111222233334444",
-        "interpreterLanguages": null
+        "previousApplicationDoneViaCcd": "Yes"
       }
     }
   }

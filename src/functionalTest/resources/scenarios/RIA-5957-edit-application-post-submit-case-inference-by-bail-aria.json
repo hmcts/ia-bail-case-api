@@ -1,8 +1,8 @@
 {
-  "description": "Edit the application by Home Office - HO appender(post-submit)",
+  "description": "Edit the application append previous application done by type ARIA",
   "request": {
-    "uri": "/bail/ccdAboutToSubmit",
-    "credentials": "HomeOfficeGeneric",
+    "uri": "/bail/ccdMidEvent?pageId=hasPreviousBailApplication",
+    "credentials": "AdminOfficer",
     "input": {
       "id": 1111,
       "eventId": "editBailApplicationAfterSubmit",
@@ -10,7 +10,8 @@
       "caseData": {
         "template": "minimal-application-submitted.json",
         "replacements": {
-          "applicationSubmittedBy": "Home Office"
+          "hasPreviousBailApplication": "Yes",
+          "previousBailApplicationNumber": "HW/12345"
         }
       }
     }
@@ -21,11 +22,8 @@
     "caseData": {
       "template": "minimal-application-submitted.json",
       "replacements": {
-        "applicationSubmittedBy": "Home Office",
-        "isAdmin": "No",
-        "isLegalRep": "No",
-        "isHomeOffice": "Yes",
-        "interpreterLanguages": null
+        "hasPreviousBailApplication": "Yes",
+        "previousApplicationDoneViaAria": "Yes"
       }
     }
   }
