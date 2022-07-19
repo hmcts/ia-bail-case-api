@@ -81,7 +81,7 @@ public class ShowPreviousApplicationService {
         String decisionDetails = selectedApplicationValue.getLabel().contains("Ended")
             ? populateEndDetails(previousBailCase) : populateDecisionDetails(previousBailCase);
 
-        return "|Decision details||\n| --------|--------|\n"
+        return "|Decision details||\n|--------|--------|\n"
             + decisionDetails;
     }
 
@@ -90,7 +90,7 @@ public class ShowPreviousApplicationService {
             || previousBailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA).isPresent()
             || previousBailCase.read(HOME_OFFICE_DOCUMENTS_WITH_METADATA).isPresent()
         ) {
-            return "|Documents||\n|----------|--------|\n"
+            return "|Documents||\n|--------|--------|\n"
                 + getApplicantDocumentsDetails(previousBailCase)
                 + getTribunalDocumentsDetails(previousBailCase)
                 + getHODocumentsDetails(previousBailCase);
@@ -102,7 +102,7 @@ public class ShowPreviousApplicationService {
         Optional<List<IdValue<Direction>>> mayBeDirections = previousBailCase.read(DIRECTIONS);
         AtomicInteger index = new AtomicInteger(0);
         if (mayBeDirections.isPresent()) {
-            String label = "|Directions||\n|----------|---------|\n|Directions|";
+            String label = "|Directions||\n|--------|--------|\n|Directions|";
             List<IdValue<Direction>> directions = mayBeDirections.get();
             String directionDetails = directions
                 .stream()
@@ -121,8 +121,8 @@ public class ShowPreviousApplicationService {
         Optional<List<IdValue<CaseNote>>> mayBeCaseNotes = previousBailCase.read(CASE_NOTES);
         AtomicInteger index = new AtomicInteger(0);
         if (mayBeCaseNotes.isPresent()) {
-            String label = "|Case notes||\n|-----------------------|-----------------------|\n"
-                + getColumnTitle("Case notes");
+            String label = "|Case notes||\n|--------|--------|\n"
+                + getColumnTitle("Case notes", 84);
             List<IdValue<CaseNote>> caseNote = mayBeCaseNotes.get();
             String caseNoteDetails = caseNote
                 .stream()
@@ -139,7 +139,7 @@ public class ShowPreviousApplicationService {
     }
 
     public String getHearingReqDetails(BailCase previousBailCase) {
-        StringBuilder stringBuilder = new StringBuilder("|Hearing requirements||\n|---------|------------|\n");
+        StringBuilder stringBuilder = new StringBuilder("|Hearing requirements||\n|--------|--------|\n");
         stringBuilder.append("|Interpreter|")
             .append(previousBailCase.read(INTERPRETER_YESNO, YesOrNo.class).orElse(YesOrNo.NO))
             .append("|\n");
@@ -160,7 +160,7 @@ public class ShowPreviousApplicationService {
         stringBuilder.append("|Disability|")
             .append(previousBailCase.read(DISABILITY_YESNO, YesOrNo.class).orElse(YesOrNo.NO));
         if (previousBailCase.read(DISABILITY_YESNO, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
-            stringBuilder.append("|\n|Explain any special arrangements needed <br>for the hearing|")
+            stringBuilder.append("|\n|Explain any special <br>arrangements needed for the <br>hearing|")
                 .append(previousBailCase.read(APPLICANT_DISABILITY_DETAILS).orElse(""));
         }
         stringBuilder.append("|\n");
@@ -169,7 +169,7 @@ public class ShowPreviousApplicationService {
             .append(previousBailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class).orElse(YesOrNo.NO));
         if (previousBailCase.read(DISABILITY_YESNO, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             stringBuilder
-                .append("|\n|Explain why the applicant would not be <br>able to join the hearing by video link|")
+                .append("|\n|Explain why the applicant <br>would not be able to join the <br>hearing by video link|")
                 .append(previousBailCase.read(VIDEO_HEARING_DETAILS).orElse(""));
         }
         stringBuilder.append("|\n");
@@ -178,7 +178,8 @@ public class ShowPreviousApplicationService {
     }
 
     public String getSubmissionDetails(BailCase previousBailCase) {
-        return "|Submission||\n|-------------|-------------:|\n|Application submitted by|"
+        return "|Submission||\n|--------|--------|\n"
+            + getColumnTitle("Application submitted by", 32)
             + previousBailCase.read(APPLICATION_SUBMITTED_BY)
             .orElseThrow(getErrorThrowable(APPLICATION_SUBMITTED_BY))
             + "|/n";
@@ -189,7 +190,7 @@ public class ShowPreviousApplicationService {
             previousBailCase.read(APPLICANT_NATIONALITIES));
 
         StringBuilder stringBuilder = new StringBuilder(
-            "|Personal information||\n|---------|----------|\n"
+            "|Personal information||\n|--------|--------|\n"
         );
         stringBuilder
             .append("|Given names|")
@@ -198,10 +199,10 @@ public class ShowPreviousApplicationService {
             .append("|\n|Family name|")
             .append(previousBailCase.read(APPLICANT_FAMILY_NAME)
                         .orElseThrow(getErrorThrowable(APPLICANT_FAMILY_NAME)))
-            .append("|\n|Date of birth|")
-            .append(previousBailCase.read(APPLICANT_DOB)
-                        .orElseThrow(getErrorThrowable(APPLICANT_DOB)))
-            .append("|\n|Gender|")
+            .append("|\n|Date of birth")
+            .append(getColumnTitle(String.valueOf(previousBailCase.read(APPLICANT_DOB)
+                                       .orElseThrow(getErrorThrowable(APPLICANT_DOB))), 18))
+            .append("\n|Gender|")
             .append(previousBailCase.read(APPLICANT_GENDER)
                         .orElseThrow(getErrorThrowable(APPLICANT_GENDER)))
             .append("|\n|Nationalities|")
@@ -214,10 +215,10 @@ public class ShowPreviousApplicationService {
     public String getApplicantInfo(BailCase previousBailCase) {
 
         StringBuilder stringBuilder = new StringBuilder(
-            "|Applicant information||\n|---------|-----------|\n"
+            "|Applicant information||\n|--------|--------|\n"
         );
         stringBuilder
-            .append("|Home office reference|")
+            .append(getColumnTitle("Home office reference", 85))
             .append(previousBailCase.read(HOME_OFFICE_REFERENCE_NUMBER)
                         .orElseThrow(getErrorThrowable(HOME_OFFICE_REFERENCE_NUMBER)))
             .append("|\n");
@@ -272,11 +273,12 @@ public class ShowPreviousApplicationService {
     }
 
     public String getFinancialCondCommitment(BailCase previousBailCase) {
-        StringBuilder stringBuilder = new StringBuilder("|Financial condition commitment||\n|-------- |-----|\n");
+        StringBuilder stringBuilder = new StringBuilder("|Financial condition commitment||\n|--------|--------|\n");
         stringBuilder
-            .append("|Financial condition|")
-            .append(previousBailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class).orElse(YesOrNo.NO))
-            .append("|\n");
+            .append("|Financial condition")
+            .append(getColumnTitle(String.valueOf(
+                previousBailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class).orElse(YesOrNo.NO)), 36))
+            .append("\n");
         if (previousBailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             stringBuilder
                 .append("|Financial condition amount|")
@@ -308,7 +310,7 @@ public class ShowPreviousApplicationService {
     ) {
         if (previousBailCase.read(hasFinancialCondSupporter, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
 
-            StringBuilder stringBuilder = new StringBuilder("|Financial condition supporter 1||\n|------- |------|\n");
+            StringBuilder stringBuilder = new StringBuilder("|Financial condition supporter 1||\n|--------|--------|\n");
             stringBuilder.append("|Financial condition supporter|Yes|\n")
                 .append("|Given names|")
                 .append(previousBailCase.read(supporterGivenNames)
@@ -382,7 +384,7 @@ public class ShowPreviousApplicationService {
     }
 
     public String getGroundsForBail(BailCase previousBailCase) {
-        StringBuilder stringBuilder = new StringBuilder("|Grounds for bail||\n|----------|---------|\n");
+        StringBuilder stringBuilder = new StringBuilder("|Grounds for bail||\n|--------|--------|\n");
         stringBuilder
             .append("|Bail Grounds|")
             .append(previousBailCase.read(GROUNDS_FOR_BAIL_REASONS, String.class)
@@ -409,7 +411,7 @@ public class ShowPreviousApplicationService {
     public String getLegalRepDetails(BailCase previousBailCase) {
         StringBuilder stringBuilder = new StringBuilder();
         if (previousBailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
-            stringBuilder.append("|Legal representative||\n|----------|-----------|\n");
+            stringBuilder.append("|Legal representative||\n|--------|--------|\n");
             stringBuilder.append("|Company|")
                 .append(previousBailCase.read(LEGAL_REP_COMPANY)
                             .orElseThrow(getErrorThrowable(LEGAL_REP_COMPANY)))
@@ -430,16 +432,15 @@ public class ShowPreviousApplicationService {
         return stringBuilder.toString();
     }
 
-    private String getColumnTitle(String title) {
-        int finalLen = 65;
-        return "|<pre>" + StringUtils.rightPad(title, finalLen) + "</pre>|";
+    private String getColumnTitle(String title, int padLen) {
+        return "|<pre>" + StringUtils.rightPad(title, padLen) + "</pre>|";
     }
 
     private String populateDecisionDetails(BailCase previousBailCase) {
         StringBuilder stringBuilder = new StringBuilder();
         String conditions = populateConditions(previousBailCase).replaceAll("[\\n]", "<br>");
         stringBuilder
-            .append(getColumnTitle("Decision"))
+            .append(getColumnTitle("Decision", 95))
             .append(formatDecisionStr(previousBailCase.read(RECORD_DECISION_TYPE, String.class).orElse("")))
             .append("|\n|Decision date|")
             .append(previousBailCase.read(DECISION_DETAILS_DATE).get())
@@ -450,7 +451,7 @@ public class ShowPreviousApplicationService {
     private String populateEndDetails(BailCase previousBailCase) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-            .append(getColumnTitle("Outcome"))
+            .append(getColumnTitle("Outcome", 95))
             .append(formatDecisionStr(previousBailCase.read(END_APPLICATION_OUTCOME, String.class).get()))
             .append("|\n|End date|")
             .append(previousBailCase.read(END_APPLICATION_DATE).get())
@@ -592,7 +593,7 @@ public class ShowPreviousApplicationService {
      */
     private String getDetailsForGivenCollection(Optional<List<IdValue<DocumentWithMetadata>>> mayBeDocs,
                                                 String prefix) {
-        StringBuilder stringBuilder = new StringBuilder(getColumnTitle(prefix + " documents"));
+        StringBuilder stringBuilder = new StringBuilder(getColumnTitle(prefix + " documents", 84));
         AtomicInteger index = new AtomicInteger(0);
         mayBeDocs.get().stream()
             .forEach((idValue) -> stringBuilder
