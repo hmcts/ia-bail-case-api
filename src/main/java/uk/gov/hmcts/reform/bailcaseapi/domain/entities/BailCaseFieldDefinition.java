@@ -89,7 +89,7 @@ public enum BailCaseFieldDefinition {
     AGREES_TO_BOUND_BY_FINANCIAL_COND(
         "agreesToBoundByFinancialCond", new TypeReference<YesOrNo>(){}),
     FINANCIAL_COND_AMOUNT(
-        "financialCondAmount", new TypeReference<String>(){}),
+        "financialCondAmount1", new TypeReference<String>(){}),
     HAS_FINANCIAL_COND_SUPPORTER(
         "hasFinancialCondSupporter", new TypeReference<YesOrNo>(){}),
     SUPPORTER_GIVEN_NAMES(
@@ -121,7 +121,7 @@ public enum BailCaseFieldDefinition {
     SUPPORTER_PASSPORT(
         "supporterPassport", new TypeReference<String>(){}),
     FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES(
-        "financialAmountSupporterUndertakes", new TypeReference<String>(){}),
+        "financialAmountSupporterUndertakes1", new TypeReference<String>(){}),
     HAS_FINANCIAL_COND_SUPPORTER_2(
         "hasFinancialCondSupporter2", new TypeReference<YesOrNo>(){}),
     SUPPORTER_2_GIVEN_NAMES(
