@@ -178,8 +178,7 @@ public class ShowPreviousApplicationService {
     }
 
     public String getSubmissionDetails(BailCase previousBailCase) {
-        return "|Submission||\n|--------|--------|\n"
-            + getColumnTitle("Application submitted by", 32)
+        return "|Submission||\n|-------------|-------------:|\n|Application submitted by|"
             + previousBailCase.read(APPLICATION_SUBMITTED_BY)
             .orElseThrow(getErrorThrowable(APPLICATION_SUBMITTED_BY))
             + "|/n";
@@ -310,7 +309,8 @@ public class ShowPreviousApplicationService {
     ) {
         if (previousBailCase.read(hasFinancialCondSupporter, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
 
-            StringBuilder stringBuilder = new StringBuilder("|Financial condition supporter 1||\n|--------|--------|\n");
+            StringBuilder stringBuilder =
+                new StringBuilder("|Financial condition supporter 1||\n|--------|--------|\n");
             stringBuilder.append("|Financial condition supporter|Yes|\n")
                 .append("|Given names|")
                 .append(previousBailCase.read(supporterGivenNames)
