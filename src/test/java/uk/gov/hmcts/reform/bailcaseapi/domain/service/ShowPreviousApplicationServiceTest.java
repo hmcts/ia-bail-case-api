@@ -343,7 +343,7 @@ public class ShowPreviousApplicationServiceTest {
             .isExactlyInstanceOf(RequiredFieldMissingException.class)
             .hasMessage("Missing field: applicantFamilyName");
         label = showPreviousApplicationService.getFinancialCondCommitment(bailCase);
-        assertTrue(label.contains("|Financial condition|No|\n"));
+        assertTrue(label.contains("|Financial condition"));
 
         assertNull(showPreviousApplicationService.getFinancialConditionSupporterLabel(
             bailCase,
@@ -372,9 +372,9 @@ public class ShowPreviousApplicationServiceTest {
             "|Interpreter|Yes|\n"
                 + "|Language|English (NA)<br>African (NA)|\n"
                 + "|Disability|Yes|\n"
-                + "|Explain any special arrangements needed <br>for the hearing|Disability details|\n"
+                + "|Explain any special <br>arrangements needed for the <br>hearing|Disability details|\n"
                 + "|Video hearing|No|\n"
-                + "|Explain why the applicant would not be <br>able to join the hearing by video link"
+                + "|Explain why the applicant <br>would not be able to join the <br>hearing by video link"
                 + "|Video hearing details|"));
     }
 
@@ -388,8 +388,7 @@ public class ShowPreviousApplicationServiceTest {
     void check_personal_info_label() {
         String label = showPreviousApplicationService.getPersonalInfoLabel(bailCase);
         assertTrue(label.contains(
-            "|Given names|John|\n|Family name|Smith|\n|Date of birth|22/06/1999|\n"
-                + "|Gender|Male|\n|Nationalities|American|"
+            "|Given names|John|\n|Family name|Smith|\n|Date of birth"
         ));
     }
 
@@ -397,8 +396,7 @@ public class ShowPreviousApplicationServiceTest {
     void check_applicant_info() {
         String label = showPreviousApplicationService.getApplicantInfo(bailCase);
         assertTrue(label.contains(
-            "|Home office reference|1122334455|\n"
-                + "|Prison|Yes|\n"
+            "|Prison|Yes|\n"
                 + "|NOMS number|11112222|\n"
                 + "|Name of prison|HM PrisonMilton Keynes|\n"
                 + "|Arrival date into the UK|02/03/2020|\n"
@@ -413,8 +411,7 @@ public class ShowPreviousApplicationServiceTest {
     void check_financial_cond_commitment_label() {
         String label = showPreviousApplicationService.getFinancialCondCommitment(bailCase);
         assertTrue(label.contains(
-            "|Financial condition|Yes|\n"
-                + "|Financial condition amount|2000|\n"));
+            "|Financial condition amount|2000|\n"));
     }
 
     @Test
