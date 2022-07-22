@@ -26,7 +26,7 @@ public class SignedDecisionNoticeUploadedConfirmation implements PostSubmitCallb
 
         postSubmitResponse.setConfirmationBody(
             "### What happens next\n\n"
-            + "The signed decision notice is available to view in the [documents tab](/cases/case-details/"
+            + "The signed decision notice is available to view in the [documents tab](/case/IA/Bail/"
             + callback.getCaseDetails().getId()
             + "#Documents)."
         );

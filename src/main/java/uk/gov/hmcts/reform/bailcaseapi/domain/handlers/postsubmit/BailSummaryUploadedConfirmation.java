@@ -26,7 +26,7 @@ public class BailSummaryUploadedConfirmation implements PostSubmitCallbackHandle
 
         postSubmitResponse.setConfirmationBody(
             "### What happens next\n\n"
-            + "The bail summary is now available in the [documents tab](/cases/case-details/"
+            + "The bail summary is now available in the [documents tab](/case/IA/Bail/"
             + callback.getCaseDetails().getId()
             + "#Documents). The application will be decided at the hearing."
         );

@@ -26,7 +26,7 @@ public class DocumentsUploadedConfirmation implements PostSubmitCallbackHandler<
         postSubmitResponse.setConfirmationHeader("# Your upload is complete");
         postSubmitResponse.setConfirmationBody(
             "#### What happens next\n\n"
-            + "The document(s) you uploaded are available to view in the [documents tab](/cases/case-details/"
+            + "The document(s) you uploaded are available to view in the [documents tab](/case/IA/Bail/"
             + callback.getCaseDetails().getId()
             + "#Documents)."
         );

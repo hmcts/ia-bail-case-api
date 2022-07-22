@@ -54,7 +54,7 @@ public class DocumentsUploadedConfirmationTest {
         assertNotNull(response.getConfirmationBody(), "Confirmation Body is null");
         assertThat(response.getConfirmationBody().get()).contains("#### What happens next\n\n"
                                                                   + "The document(s) you uploaded are available to view"
-                                                                  + " in the [documents tab](/cases/case-details/"
+                                                                  + " in the [documents tab](/case/IA/Bail/"
                                                                   + "1000#Documents).");
 
         assertNotNull(response.getConfirmationHeader(), "Confirmation Header is null");
