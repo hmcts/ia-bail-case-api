@@ -4,11 +4,10 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import java.io.IOException;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.TestPropertySource;
-
-import java.io.IOException;
 
 @PactTestFor(providerName = "ccdDataStoreAPI_caseAssignedUserRoles", port = "8871")
 @TestPropertySource(
@@ -24,7 +23,8 @@ public class CcdCaseAssignmentConsumerTest extends CcdCaseAssignmentProviderBase
             .method("DELETE")
             .headers(SERVICE_AUTHORIZATION_HEADER, SERVICE_AUTH_TOKEN, AUTHORIZATION_HEADER, AUTHORIZATION_TOKEN)
             .path("/case-users")
-            .body(createJsonObject(ccdCaseAssignment.buildRevokeAccessPayload("some-org-identifier", CASE_ID, IDAM_ID_OF_USER_CREATING_CASE)))
+            .body(createJsonObject(ccdCaseAssignment.buildRevokeAccessPayload("some-org-identifier",
+                                                                              CASE_ID, IDAM_ID_OF_USER_CREATING_CASE)))
             .willRespondWith()
             .status(HttpStatus.SC_OK)
             .toPact();

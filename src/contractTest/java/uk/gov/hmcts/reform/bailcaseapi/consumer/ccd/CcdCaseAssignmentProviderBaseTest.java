@@ -66,7 +66,8 @@ public class CcdCaseAssignmentProviderBaseTest {
     @BeforeEach
     public void setUpTest() {
         ccdCaseAssignment =
-            new CcdCaseAssignment(new RestTemplate(), serviceAuthTokenGenerator, userDetailsProvider, ccdUrl, aacUrl, ccdAssignmentsApiPath,
+            new CcdCaseAssignment(new RestTemplate(), serviceAuthTokenGenerator, userDetailsProvider,
+                                  ccdUrl, aacUrl, ccdAssignmentsApiPath,
                 aacAssignmentsApiPath, applyNocAssignmentsApiPath);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getId()).thenReturn(CASE_ID);
