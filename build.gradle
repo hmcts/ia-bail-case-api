@@ -287,7 +287,6 @@ dependencyManagement {
       entry 'spring-security-config'
       entry 'spring-security-core'
       entry 'spring-security-crypto'
-      entry 'spring-security-crypto'
       entry 'spring-security-oauth2-core'
       entry 'spring-security-oauth2-client'
       entry 'spring-security-oauth2-jose'
