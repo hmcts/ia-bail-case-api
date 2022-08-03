@@ -338,7 +338,7 @@ public enum BailCaseFieldDefinition {
         "reasonForRefusalDetails", new TypeReference<String>(){}),
     TRIBUNAL_REFUSAL_REASON(
         "tribunalRefusalReason", new TypeReference<String>(){}),
-    REASON_JUDGE_IS_MINDED_DETAILS(
+    REASONS_JUDGE_IS_MINDED_DETAILS(
         "reasonsJudgeIsMindedDetails", new TypeReference<String>(){}),
     JUDGE_DETAILS_NAME(
         "judgeDetailsName", new TypeReference<String>(){}),

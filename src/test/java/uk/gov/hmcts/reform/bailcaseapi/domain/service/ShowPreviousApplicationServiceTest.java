@@ -293,11 +293,14 @@ public class ShowPreviousApplicationServiceTest {
     void check_documents_label() {
         String label = showPreviousApplicationService.getDocumentsLabel(bailCase);
         assertTrue(label.contains(
-            "|Applicant document 1<br>*Document:* <a href=\"/documents/document1BinaryUrl\">document1FileName</a>"));
+            "|Applicant document 1<br>*Document:* <a href=\"/documents/document1BinaryUrl\""
+                + " target=\"_blank\">document1FileName</a>"));
         assertTrue(label.contains(
-            "|Tribunal document 1<br>*Document:* <a href=\"/documents/document2BinaryUrl\">document2FileName</a>"));
+            "|Tribunal document 1<br>*Document:* <a href=\"/documents/document2BinaryUrl\" "
+                + "target=\"_blank\">document2FileName</a>"));
         assertTrue(label.contains(
-            "|Home Office document 1<br>*Document:* <a href=\"/documents/document2BinaryUrl\">document2FileName</a>"));
+            "|Home Office document 1<br>*Document:* <a href=\"/documents/document2BinaryUrl\" "
+                + "target=\"_blank\">document2FileName</a>"));
     }
 
     @Test

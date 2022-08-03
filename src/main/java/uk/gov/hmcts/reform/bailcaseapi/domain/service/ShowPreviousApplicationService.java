@@ -44,9 +44,14 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_REFERENCE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NO_TRANSFER_BAIL_MANAGEMENT_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASONS_JUDGE_IS_MINDED_DETAILS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASON_FOR_REFUSAL_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SECRETARY_OF_STATE_REFUSAL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_REFUSAL_REASON;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
 
@@ -148,7 +153,7 @@ public class ShowPreviousApplicationService {
         if (previousBailCase.read(INTERPRETER_YESNO, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             Optional<List<IdValue<InterpreterLanguage>>> mayBeInterpreterLangs =
                 previousBailCase.read(INTERPRETER_LANGUAGES);
-            interpreterLang = mayBeInterpreterLangs.get().stream()
+            interpreterLang = mayBeInterpreterLangs.orElseThrow(getErrorThrowable(INTERPRETER_LANGUAGES)).stream()
                 .map(idValue -> idValue.getValue().getLanguage()
                     + " (" + idValue.getValue().getLanguageDialect() + ")")
                 .collect(Collectors.joining("<br>"));
@@ -244,7 +249,8 @@ public class ShowPreviousApplicationService {
 
         if (previousBailCase.read(APPLICANT_ARRIVAL_IN_UK).isPresent()) {
             stringBuilder.append("|Arrival date into the UK|")
-                .append(previousBailCase.read(APPLICANT_ARRIVAL_IN_UK).get())
+                .append(previousBailCase.read(APPLICANT_ARRIVAL_IN_UK)
+                            .orElseThrow(getErrorThrowable(APPLICANT_ARRIVAL_IN_UK)))
                 .append("|\n");
         }
 
@@ -323,19 +329,22 @@ public class ShowPreviousApplicationService {
 
             if (!previousBailCase.read(supporterTelephoneNumber, String.class).orElse("").isBlank()) {
                 stringBuilder.append("|Telephone number|")
-                    .append(previousBailCase.read(supporterTelephoneNumber, String.class).get())
+                    .append(previousBailCase.read(supporterTelephoneNumber, String.class)
+                                .orElseThrow(getErrorThrowable(supporterTelephoneNumber)))
                     .append("|\n");
             }
 
             if (!previousBailCase.read(supporterMobileNumber, String.class).orElse("").isBlank()) {
                 stringBuilder.append("|Mobile number|")
-                    .append(previousBailCase.read(supporterMobileNumber, String.class).get())
+                    .append(previousBailCase.read(supporterMobileNumber, String.class)
+                                .orElseThrow(getErrorThrowable(supporterMobileNumber)))
                     .append("|\n");
             }
 
             if (!previousBailCase.read(supporterEmailAddress, String.class).orElse("").isBlank()) {
                 stringBuilder.append("|Email address|")
-                    .append(previousBailCase.read(supporterEmailAddress, String.class).get())
+                    .append(previousBailCase.read(supporterEmailAddress, String.class)
+                                .orElseThrow(getErrorThrowable(supporterEmailAddress)))
                     .append("|\n");
             }
             stringBuilder.append("|Date of birth|")
@@ -443,8 +452,32 @@ public class ShowPreviousApplicationService {
             .append(getColumnTitle("Decision", 95))
             .append(formatDecisionStr(previousBailCase.read(RECORD_DECISION_TYPE, String.class).orElse("")))
             .append("|\n|Decision date|")
-            .append(previousBailCase.read(DECISION_DETAILS_DATE).get())
-            .append((conditions.isEmpty() ? "|" : "|\n|Conditions|" + conditions + "|"));
+            .append(previousBailCase.read(DECISION_DETAILS_DATE).orElseThrow(getErrorThrowable(DECISION_DETAILS_DATE)));
+
+        boolean isRefused = previousBailCase.read(RECORD_DECISION_TYPE, String.class)
+            .orElse("")
+            .equalsIgnoreCase("refused");
+
+        if (isRefused) {
+            boolean isMindedToGrant = previousBailCase.read(RECORD_THE_DECISION_LIST, String.class)
+                .orElse("")
+                .equalsIgnoreCase("mindedToGrant");
+
+            if (isMindedToGrant) {
+                stringBuilder.append("|\n|Reasons judge minded to grant bail|")
+                    .append(previousBailCase.read(REASONS_JUDGE_IS_MINDED_DETAILS, String.class)
+                                         .orElseThrow(getErrorThrowable(REASONS_JUDGE_IS_MINDED_DETAILS)));
+            }
+
+            stringBuilder.append("|\n|Reasons for refusal|")
+                .append(previousBailCase.read(SECRETARY_OF_STATE_REFUSAL_REASONS, String.class)
+                                     .orElse(""))
+                .append(previousBailCase.read(REASON_FOR_REFUSAL_DETAILS, String.class).orElse(""))
+                .append(previousBailCase.read(TRIBUNAL_REFUSAL_REASON, String.class).orElse(""));
+        } else {
+            stringBuilder.append((conditions.isEmpty() ? "|" : "|\n|Conditions|" + conditions + "|"));
+        }
+
         return stringBuilder.toString();
     }
 
@@ -452,11 +485,13 @@ public class ShowPreviousApplicationService {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
             .append(getColumnTitle("Outcome", 95))
-            .append(formatDecisionStr(previousBailCase.read(END_APPLICATION_OUTCOME, String.class).get()))
+            .append(formatDecisionStr(previousBailCase.read(END_APPLICATION_OUTCOME, String.class)
+                                          .orElseThrow(getErrorThrowable(END_APPLICATION_OUTCOME))))
             .append("|\n|End date|")
-            .append(previousBailCase.read(END_APPLICATION_DATE).get())
+            .append(previousBailCase.read(END_APPLICATION_DATE).orElseThrow(getErrorThrowable(END_APPLICATION_DATE)))
             .append("||\n|End reasons|")
-            .append(previousBailCase.read(END_APPLICATION_REASONS).get())
+            .append(previousBailCase.read(END_APPLICATION_REASONS)
+                        .orElseThrow(getErrorThrowable(END_APPLICATION_REASONS)))
             .append("|");
         return stringBuilder.toString();
     }
@@ -470,27 +505,33 @@ public class ShowPreviousApplicationService {
 
         if (previousBailCase.read(CONDITION_APPEARANCE).isPresent()) {
             stringBuilder.append("*Appearance*\n")
-                .append(previousBailCase.read((CONDITION_APPEARANCE)).get());
+                .append(previousBailCase.read((CONDITION_APPEARANCE))
+                            .orElseThrow(getErrorThrowable(CONDITION_APPEARANCE)));
         }
         if (previousBailCase.read(CONDITION_ACTIVITIES).isPresent()) {
             stringBuilder.append("\n\n *Activities*\n")
-                .append(previousBailCase.read((CONDITION_ACTIVITIES)).get());
+                .append(previousBailCase.read((CONDITION_ACTIVITIES))
+                            .orElseThrow(getErrorThrowable(CONDITION_ACTIVITIES)));
         }
         if (previousBailCase.read(CONDITION_RESIDENCE).isPresent()) {
             stringBuilder.append("\n\n *Residence*\n")
-                .append(previousBailCase.read((CONDITION_RESIDENCE)).get());
+                .append(previousBailCase.read((CONDITION_RESIDENCE))
+                            .orElseThrow(getErrorThrowable(CONDITION_RESIDENCE)));
         }
         if (previousBailCase.read(CONDITION_REPORTING).isPresent()) {
             stringBuilder.append("\n\n *Reporting*\n")
-                .append(previousBailCase.read((CONDITION_REPORTING)).get());
+                .append(previousBailCase.read((CONDITION_REPORTING))
+                            .orElseThrow(getErrorThrowable(CONDITION_REPORTING)));
         }
         if (previousBailCase.read(CONDITION_ELECTRONIC_MONITORING).isPresent()) {
             stringBuilder.append("\n\n *Electronic monitoring*\n")
-                .append(previousBailCase.read((CONDITION_ELECTRONIC_MONITORING)).get());
+                .append(previousBailCase.read((CONDITION_ELECTRONIC_MONITORING))
+                            .orElseThrow(getErrorThrowable(CONDITION_ELECTRONIC_MONITORING)));
         }
         if (previousBailCase.read(CONDITION_OTHER).isPresent()) {
             stringBuilder.append("\n\n*Other*\n")
-                .append(previousBailCase.read((CONDITION_OTHER)).get());
+                .append(previousBailCase.read((CONDITION_OTHER))
+                            .orElseThrow(getErrorThrowable(CONDITION_OTHER)));
         }
         return stringBuilder.toString();
     }
@@ -532,32 +573,39 @@ public class ShowPreviousApplicationService {
             stringBuilder.append("|Address|");
             AddressUK applicantAddress = optionalAddressUK.get();
 
-            if (applicantAddress.getAddressLine1().isPresent() && !applicantAddress.getAddressLine1().get().isBlank()) {
-                stringBuilder.append(applicantAddress.getAddressLine1().get()).append("<br>");
+            if (applicantAddress.getAddressLine1().isPresent()
+                && !applicantAddress.getAddressLine1().orElseThrow().isBlank()) {
+                stringBuilder.append(applicantAddress.getAddressLine1().orElseThrow()).append("<br>");
             }
 
-            if (applicantAddress.getAddressLine2().isPresent() && !applicantAddress.getAddressLine2().get().isBlank()) {
-                stringBuilder.append(applicantAddress.getAddressLine2().get()).append("<br>");
+            if (applicantAddress.getAddressLine2().isPresent()
+                && !applicantAddress.getAddressLine2().orElseThrow().isBlank()) {
+                stringBuilder.append(applicantAddress.getAddressLine2().orElseThrow()).append("<br>");
             }
 
-            if (applicantAddress.getAddressLine3().isPresent() && !applicantAddress.getAddressLine3().get().isBlank()) {
-                stringBuilder.append(applicantAddress.getAddressLine3().get()).append("<br>");
+            if (applicantAddress.getAddressLine3().isPresent()
+                && !applicantAddress.getAddressLine3().orElseThrow().isBlank()) {
+                stringBuilder.append(applicantAddress.getAddressLine3().orElseThrow()).append("<br>");
             }
 
-            if (applicantAddress.getPostTown().isPresent() && !applicantAddress.getPostTown().get().isBlank()) {
-                stringBuilder.append(applicantAddress.getPostTown().get()).append("<br>");
+            if (applicantAddress.getPostTown().isPresent()
+                && !applicantAddress.getPostTown().orElseThrow().isBlank()) {
+                stringBuilder.append(applicantAddress.getPostTown().orElseThrow()).append("<br>");
             }
 
-            if (applicantAddress.getCounty().isPresent() && !applicantAddress.getCounty().get().isBlank()) {
-                stringBuilder.append(applicantAddress.getCounty().get()).append("<br>");
+            if (applicantAddress.getCounty().isPresent()
+                && !applicantAddress.getCounty().orElseThrow().isBlank()) {
+                stringBuilder.append(applicantAddress.getCounty().orElseThrow()).append("<br>");
             }
 
-            if (applicantAddress.getPostCode().isPresent() && !applicantAddress.getPostCode().get().isBlank()) {
-                stringBuilder.append(applicantAddress.getPostCode().get()).append("<br>");
+            if (applicantAddress.getPostCode().isPresent()
+                && !applicantAddress.getPostCode().orElseThrow().isBlank()) {
+                stringBuilder.append(applicantAddress.getPostCode().orElseThrow()).append("<br>");
             }
 
-            if (applicantAddress.getCountry().isPresent() && !applicantAddress.getCountry().get().isBlank()) {
-                stringBuilder.append(applicantAddress.getCountry().get()).append("<br>");
+            if (applicantAddress.getCountry().isPresent()
+                && !applicantAddress.getCountry().orElseThrow().isBlank()) {
+                stringBuilder.append(applicantAddress.getCountry().orElseThrow()).append("<br>");
             }
             stringBuilder.append("|\n");
         }
@@ -595,7 +643,7 @@ public class ShowPreviousApplicationService {
                                                 String prefix) {
         StringBuilder stringBuilder = new StringBuilder(getColumnTitle(prefix + " documents", 84));
         AtomicInteger index = new AtomicInteger(0);
-        mayBeDocs.get().stream()
+        mayBeDocs.orElseThrow().stream()
             .forEach((idValue) -> stringBuilder
                 .append(prefix + " document " + index.incrementAndGet())
                 .append("<br>")
@@ -614,12 +662,12 @@ public class ShowPreviousApplicationService {
         StringBuilder stringBuilder = new StringBuilder("*Document:* <a href=\"");
         stringBuilder
             .append(document.getDocumentBinaryUrl().substring(document.getDocumentBinaryUrl().indexOf("/documents/")))
-            .append("\">")
+            .append("\" target=\"_blank\">")
             .append(document.getDocumentFilename())
             .append("</a><br>*Date uploaded:* ")
             .append(documentWithMetadata.getDateUploaded())
             .append((documentWithMetadata.getDescription() == null || documentWithMetadata.getDescription().isEmpty()
-                ? "" : "<br>*Description:* " + documentWithMetadata.getDescription()));
+                ? "<br><br>" : "<br>*Description:* " + documentWithMetadata.getDescription() + "<br><br>"));
 
         return stringBuilder.toString();
     }
