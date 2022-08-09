@@ -92,6 +92,30 @@ class ChangeRepresentationConfirmationTest {
     }
 
     @Test
+    void should_handle_stop_legal_representing_by_legal_rep() {
+
+        when(callback.getEvent()).thenReturn(Event.STOP_LEGAL_REPRESENTING);
+
+        PostSubmitCallbackResponse callbackResponse =
+            changeRepresentationConfirmation.handle(callback);
+
+        assertNotNull(callbackResponse);
+
+        verify(ccdCaseAssignment, times(1)).applyNoc(callback);
+
+        assertThat(
+            callbackResponse.getConfirmationHeader().get())
+            .contains("# You have stopped representing this client");
+
+        assertThat(
+            callbackResponse.getConfirmationBody().get())
+            .contains("### What happens next\n\n"
+                          + "We've sent you an email confirming you're no longer representing this client. "
+                          + "You have been "
+                          + "removed from this case and no longer have access to it.");
+    }
+
+    @Test
     void should_handle_when_rest_exception_thrown_for_apply_noc() {
 
         when(callback.getEvent()).thenReturn(Event.NOC_REQUEST);
@@ -126,7 +150,9 @@ class ChangeRepresentationConfirmationTest {
 
             boolean canHandle = changeRepresentationConfirmation.canHandle(callback);
 
-            if (event == Event.NOC_REQUEST || event == Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE) {
+            if (event == Event.NOC_REQUEST
+                || event == Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE
+                || event == Event.STOP_LEGAL_REPRESENTING) {
 
                 assertTrue(canHandle);
             } else {
