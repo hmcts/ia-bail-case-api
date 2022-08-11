@@ -12,6 +12,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_GENDER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_GIVEN_NAMES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_HAS_ADDRESS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_HAS_MOBILE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_MOBILE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_NATIONALITIES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_PRISON_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICATION_SUBMITTED_BY;
@@ -55,6 +57,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -114,8 +118,9 @@ public class ShowPreviousApplicationService {
                 .map((idValue) -> "Directions " + index.incrementAndGet()
                     + "<br>*Explanation:* " + idValue.getValue().getSendDirectionDescription()
                     + "<br>*Parties:* " + idValue.getValue().getSendDirectionList()
-                    + "<br>*Date due:* " + idValue.getValue().getDateOfCompliance()
-                    + "<br>*Date sent:* " + idValue.getValue().getDateSent())
+                    + "<br>*Date due:* " + formatDate(idValue.getValue().getDateOfCompliance())
+                    + "<br>*Date sent:* " + formatDate(idValue.getValue().getDateSent())
+                    + "<br>")
                 .collect(Collectors.joining("<br>"));
             return label + directionDetails + "|";
         }
@@ -136,7 +141,8 @@ public class ShowPreviousApplicationService {
                     + "<br>*Case note:* " + idValue.getValue().getCaseNoteDescription()
                     + "<br>*Document:* " + createDocumentLabel(idValue.getValue().getCaseNoteDocument())
                     + "<br>*Added by:* " + idValue.getValue().getUser()
-                    + "<br>*Date added:* " + idValue.getValue().getDateAdded())
+                    + "<br>*Date added:* " + formatDate(idValue.getValue().getDateAdded())
+                    + "<br>")
                 .collect(Collectors.joining("<br>"));
             return label + caseNoteDetails;
         }
@@ -204,14 +210,24 @@ public class ShowPreviousApplicationService {
             .append(previousBailCase.read(APPLICANT_FAMILY_NAME)
                         .orElseThrow(getErrorThrowable(APPLICANT_FAMILY_NAME)))
             .append("|\n|Date of birth")
-            .append(getColumnTitle(String.valueOf(previousBailCase.read(APPLICANT_DOB)
-                                       .orElseThrow(getErrorThrowable(APPLICANT_DOB))), 18))
+            .append(getColumnTitle(formatDate(
+                String.valueOf(previousBailCase.read(APPLICANT_DOB)
+                                   .orElseThrow(getErrorThrowable(APPLICANT_DOB)))), 18))
             .append("\n|Gender|")
             .append(previousBailCase.read(APPLICANT_GENDER)
                         .orElseThrow(getErrorThrowable(APPLICANT_GENDER)))
             .append("|\n|Nationalities|")
             .append(nationalities)
-            .append("|\n");
+            .append("\n|Mobile phone|").append(previousBailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class)
+                                                   .orElse(YesOrNo.NO)).append("|\n");
+
+        if (previousBailCase.read(APPLICANT_HAS_MOBILE).orElse(YesOrNo.NO) == YesOrNo.YES) {
+            stringBuilder
+                .append("|Mobile phone number|")
+                .append(previousBailCase.read(APPLICANT_MOBILE_NUMBER)
+                            .orElseThrow(getErrorThrowable(APPLICANT_MOBILE_NUMBER)))
+                .append("|\n");
+        }
 
         return stringBuilder.toString();
     }
@@ -249,8 +265,8 @@ public class ShowPreviousApplicationService {
 
         if (previousBailCase.read(APPLICANT_ARRIVAL_IN_UK).isPresent()) {
             stringBuilder.append("|Arrival date into the UK|")
-                .append(previousBailCase.read(APPLICANT_ARRIVAL_IN_UK)
-                            .orElseThrow(getErrorThrowable(APPLICANT_ARRIVAL_IN_UK)))
+                .append(formatDate(previousBailCase.read(APPLICANT_ARRIVAL_IN_UK, String.class)
+                                       .orElseThrow(getErrorThrowable(APPLICANT_ARRIVAL_IN_UK))))
                 .append("|\n");
         }
 
@@ -258,7 +274,8 @@ public class ShowPreviousApplicationService {
             .append(previousBailCase.read(HAS_APPEAL_HEARING_PENDING).orElse(YesOrNo.NO))
             .append("|\n");
 
-        if (previousBailCase.read(HAS_APPEAL_HEARING_PENDING).orElse(YesOrNo.NO) == YesOrNo.YES) {
+        if (previousBailCase.read(HAS_APPEAL_HEARING_PENDING)
+            .orElse(YesOrNo.NO.toString()).equals(YesOrNo.YES.toString())) {
             stringBuilder
                 .append("|Pending appeal reference|")
                 .append(previousBailCase.read(APPEAL_REFERENCE_NUMBER)
@@ -348,8 +365,8 @@ public class ShowPreviousApplicationService {
                     .append("|\n");
             }
             stringBuilder.append("|Date of birth|")
-                .append(previousBailCase.read(supporterDOB)
-                            .orElseThrow(getErrorThrowable(supporterDOB)))
+                .append(formatDate(previousBailCase.read(supporterDOB, String.class)
+                                       .orElseThrow(getErrorThrowable(supporterDOB))))
                 .append("|\n");
 
             stringBuilder.append("|Relationship to the applicant|")
@@ -452,7 +469,8 @@ public class ShowPreviousApplicationService {
             .append(getColumnTitle("Decision", 95))
             .append(formatDecisionStr(previousBailCase.read(RECORD_DECISION_TYPE, String.class).orElse("")))
             .append("|\n|Decision date|")
-            .append(previousBailCase.read(DECISION_DETAILS_DATE).orElseThrow(getErrorThrowable(DECISION_DETAILS_DATE)));
+            .append(formatDate(previousBailCase.read(DECISION_DETAILS_DATE, String.class)
+                                   .orElseThrow(getErrorThrowable(DECISION_DETAILS_DATE))));
 
         boolean isRefused = previousBailCase.read(RECORD_DECISION_TYPE, String.class)
             .orElse("")
@@ -488,7 +506,8 @@ public class ShowPreviousApplicationService {
             .append(formatDecisionStr(previousBailCase.read(END_APPLICATION_OUTCOME, String.class)
                                           .orElseThrow(getErrorThrowable(END_APPLICATION_OUTCOME))))
             .append("|\n|End date|")
-            .append(previousBailCase.read(END_APPLICATION_DATE).orElseThrow(getErrorThrowable(END_APPLICATION_DATE)))
+            .append(formatDate(previousBailCase.read(END_APPLICATION_DATE, String.class)
+                                   .orElseThrow(getErrorThrowable(END_APPLICATION_DATE))))
             .append("||\n|End reasons|")
             .append(previousBailCase.read(END_APPLICATION_REASONS)
                         .orElseThrow(getErrorThrowable(END_APPLICATION_REASONS)))
@@ -665,10 +684,15 @@ public class ShowPreviousApplicationService {
             .append("\" target=\"_blank\">")
             .append(document.getDocumentFilename())
             .append("</a><br>*Date uploaded:* ")
-            .append(documentWithMetadata.getDateUploaded())
+            .append(formatDate(documentWithMetadata.getDateUploaded()))
             .append((documentWithMetadata.getDescription() == null || documentWithMetadata.getDescription().isEmpty()
                 ? "<br><br>" : "<br>*Description:* " + documentWithMetadata.getDescription() + "<br><br>"));
 
         return stringBuilder.toString();
+    }
+
+    private String formatDate(String date) {
+        return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE)
+            .format(DateTimeFormatter.ofPattern("d MMM yyyy"));
     }
 }

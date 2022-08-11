@@ -163,8 +163,8 @@ public class ShowPreviousApplicationServiceTest {
 
         when(bailCase.read(END_APPLICATION_OUTCOME, String.class))
             .thenReturn(Optional.of("Withdrawn"));
-        when(bailCase.read(END_APPLICATION_DATE))
-            .thenReturn(Optional.of("20/06/2022"));
+        when(bailCase.read(END_APPLICATION_DATE, String.class))
+            .thenReturn(Optional.of("2022-06-20"));
         when(bailCase.read(END_APPLICATION_REASONS))
             .thenReturn(Optional.of("Withdraw Reasons"));
         when(bailCase.read(CONDITION_APPEARANCE))
@@ -181,8 +181,8 @@ public class ShowPreviousApplicationServiceTest {
             .thenReturn(Optional.of("Other Conditions"));
         when(bailCase.read(RECORD_DECISION_TYPE))
             .thenReturn(Optional.of("Refused"));
-        when(bailCase.read(DECISION_DETAILS_DATE))
-            .thenReturn(Optional.of("20/06/2022"));
+        when(bailCase.read(DECISION_DETAILS_DATE, String.class))
+            .thenReturn(Optional.of("2022-06-20"));
         when(bailCase.read(APPLICANT_DOCUMENTS_WITH_METADATA))
             .thenReturn(Optional.of(existingApplicantDocuments));
         when(bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA))
@@ -192,9 +192,11 @@ public class ShowPreviousApplicationServiceTest {
         when(document1WithMetadata.getDocument())
             .thenReturn(new Document("document1Url", "/hostname/documents/document1BinaryUrl",
                                      "document1FileName", "document1Hash"));
+        when(document1WithMetadata.getDateUploaded()).thenReturn("2022-05-25");
         when(document2WithMetadata.getDocument())
             .thenReturn(new Document("document2Url", "/hostname/documents/document2BinaryUrl",
                                      "document2FileName", "document2Hash"));
+        when(document2WithMetadata.getDateUploaded()).thenReturn("2022-05-27");
         when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
         when(bailCase.read(CASE_NOTES)).thenReturn(Optional.of(existingCaseNotes));
         when(caseNote.getCaseNoteDocument()).thenReturn(new Document(
@@ -204,7 +206,7 @@ public class ShowPreviousApplicationServiceTest {
         when(caseNote.getCaseNoteSubject()).thenReturn("subject");
         when(caseNote.getCaseNoteDescription()).thenReturn("description");
         when(caseNote.getUser()).thenReturn("admin-user");
-        when(caseNote.getDateAdded()).thenReturn("23/06/2022");
+        when(caseNote.getDateAdded()).thenReturn("2022-06-23");
 
         when(bailCase.read(INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(INTERPRETER_LANGUAGES)).thenReturn(Optional.of(interpreterLanguages));
@@ -216,7 +218,7 @@ public class ShowPreviousApplicationServiceTest {
         when(bailCase.read(APPLICATION_SUBMITTED_BY)).thenReturn(Optional.of("Applicant"));
         when(bailCase.read(APPLICANT_GIVEN_NAMES)).thenReturn(Optional.of("John"));
         when(bailCase.read(APPLICANT_FAMILY_NAME)).thenReturn(Optional.of("Smith"));
-        when(bailCase.read(APPLICANT_DOB)).thenReturn(Optional.of("22/06/1999"));
+        when(bailCase.read(APPLICANT_DOB)).thenReturn(Optional.of("1999-06-22"));
         when(bailCase.read(APPLICANT_GENDER)).thenReturn(Optional.of("Male"));
         when(bailCase.read(APPLICANT_NATIONALITIES)).thenReturn(Optional.of(nationalities));
 
@@ -225,8 +227,10 @@ public class ShowPreviousApplicationServiceTest {
         when(bailCase.read(PRISON_NAME)).thenReturn(Optional.of("Milton Keynes"));
         when(bailCase.read(APPLICANT_PRISON_DETAILS)).thenReturn(Optional.of("11112222"));
         when(bailCase.read(IRC_NAME)).thenReturn(Optional.of("IRC Name"));
-        when(bailCase.read(APPLICANT_ARRIVAL_IN_UK)).thenReturn(Optional.of("02/03/2020"));
-        when(bailCase.read(HAS_APPEAL_HEARING_PENDING)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(APPLICANT_ARRIVAL_IN_UK))
+            .thenReturn(Optional.ofNullable(Optional.of("2020-03-02").toString()));
+        when(bailCase.read(APPLICANT_ARRIVAL_IN_UK, String.class)).thenReturn(Optional.of("2020-03-02"));
+        when(bailCase.read(HAS_APPEAL_HEARING_PENDING)).thenReturn(Optional.of(YesOrNo.YES.toString()));
         when(bailCase.read(APPEAL_REFERENCE_NUMBER)).thenReturn(Optional.of("REF12345"));
         when(bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(APPLICANT_ADDRESS, AddressUK.class)).thenReturn(Optional.of(
@@ -241,7 +245,7 @@ public class ShowPreviousApplicationServiceTest {
         when(bailCase.read(SUPPORTER_TELEPHONE_NUMBER, String.class)).thenReturn(Optional.of("7799885544"));
         when(bailCase.read(SUPPORTER_MOBILE_NUMBER, String.class)).thenReturn(Optional.of("1122336655"));
         when(bailCase.read(SUPPORTER_EMAIL_ADDRESS, String.class)).thenReturn(Optional.of("jane.smith@test.com"));
-        when(bailCase.read(SUPPORTER_DOB)).thenReturn(Optional.of("05/04/1988"));
+        when(bailCase.read(SUPPORTER_DOB, String.class)).thenReturn(Optional.of("1988-04-05"));
         when(bailCase.read(SUPPORTER_RELATION)).thenReturn(Optional.of("Wife"));
         when(bailCase.read(SUPPORTER_OCCUPATION)).thenReturn(Optional.of("Doctor"));
         when(bailCase.read(SUPPORTER_IMMIGRATION)).thenReturn(Optional.of("Resident"));
@@ -270,7 +274,7 @@ public class ShowPreviousApplicationServiceTest {
         assertNotNull(label);
         assertTrue(label.contains("|Withdrawn|"));
         assertTrue(label.contains("|\n|End reasons|Withdraw Reasons|"));
-        assertTrue(label.contains("|\n|End date|20/06/2022|"));
+        assertTrue(label.contains("|\n|End date|20 Jun 2022|"));
     }
 
     @Test
@@ -280,7 +284,7 @@ public class ShowPreviousApplicationServiceTest {
             .getDecisionLabel(bailCase, selectedApplicationValue);
         assertNotNull(label);
         assertTrue(label.contains("|Decision details||"));
-        assertTrue(label.contains("|\n|Decision date|20/06/2022|"));
+        assertTrue(label.contains("|\n|Decision date|20 Jun 2022|"));
         assertTrue(label.contains("|\n|Conditions|*Appearance*<br>Appearance Conditions"));
         assertTrue(label.contains("<br><br> *Activities*<br>Activities Conditions"));
         assertTrue(label.contains("<br><br> *Residence*<br>Residence Conditions"));
@@ -308,10 +312,10 @@ public class ShowPreviousApplicationServiceTest {
         String label = showPreviousApplicationService.getDirectionLabel(bailCase);
         assertTrue(label.contains(
             "|Directions 1<br>*Explanation:* explanation-1<br>*Parties:* Applicant<br>"
-                + "*Date due:* 2020-12-01<br>*Date sent:* 2019-12-01<br>"));
+                + "*Date due:* 1 Dec 2020<br>*Date sent:* 1 Dec 2019<br><br>"));
         assertTrue(label.contains(
             "Directions 2<br>*Explanation:* explanation-2<br>*Parties:* Home Office<br>"
-                + "*Date due:* 2020-11-01<br>*Date sent:* 2019-11-01|"));
+                + "*Date due:* 1 Nov 2020<br>*Date sent:* 1 Nov 2019<br>|"));
     }
 
     @Test
@@ -319,7 +323,7 @@ public class ShowPreviousApplicationServiceTest {
         String label = showPreviousApplicationService.getCaseNoteLabel(bailCase);
         assertTrue(label.contains("|Case notes 1<br>*Subject:* subject<br>*Case note:* description<br>*Document:*"
                                       + " <a href=\"/documents/document1BinaryUrl\">document1FileName</a><br>"
-                                      + "*Added by:* admin-user<br>*Date added:* 23/06/2022"));
+                                      + "*Added by:* admin-user<br>*Date added:* 23 Jun 2022<br>"));
     }
 
 
@@ -402,7 +406,7 @@ public class ShowPreviousApplicationServiceTest {
             "|Prison|Yes|\n"
                 + "|NOMS number|11112222|\n"
                 + "|Name of prison|HM PrisonMilton Keynes|\n"
-                + "|Arrival date into the UK|02/03/2020|\n"
+                + "|Arrival date into the UK|2 Mar 2020|\n"
                 + "|Pending appeal hearing|Yes|\n"
                 + "|Pending appeal reference|REF12345|\n"
                 + "|Address if bail granted|Yes|\n"
@@ -444,7 +448,7 @@ public class ShowPreviousApplicationServiceTest {
                 + "|Telephone number|7799885544|\n"
                 + "|Mobile number|1122336655|\n"
                 + "|Email address|jane.smith@test.com|\n"
-                + "|Date of birth|05/04/1988|\n"
+                + "|Date of birth|5 Apr 1988|\n"
                 + "|Relationship to the applicant|Wife|\n"
                 + "|Occupation|Doctor|\n"
                 + "|Immigration status|Resident|\n"
