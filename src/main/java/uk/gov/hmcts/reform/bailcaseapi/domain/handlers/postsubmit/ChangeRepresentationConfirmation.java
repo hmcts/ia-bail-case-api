@@ -78,7 +78,8 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
                 postSubmitResponse.setConfirmationBody(
                     "### What happens next\n\n"
                         + "We've sent you an email confirming you're no longer representing this client. You have been "
-                        + "removed from this case and no longer have access to it."
+                        + "removed from this case and no longer have access to it.\n\n\n\n"
+                        + "[View case list](/cases)"
                 );
             }
         } catch (Exception e) {
