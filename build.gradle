@@ -340,7 +340,7 @@ dependencies {
   testCompile group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
   testCompile group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
   testCompile group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
-  testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.0'
+  testCompile group: 'org.mockito', name: 'mockito-core', version: '4.7.0'
 
   testCompile group: 'org.springframework.security', name: 'spring-security-test'
 
