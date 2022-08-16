@@ -81,6 +81,7 @@ security:
       - "makeNewApplication"
       - "viewPreviousApplications"
       - "stopLegalRepresenting"
+      - "updateBailLegalRepDetails"
     caseworker-ia-admofficer:
       - "startApplication"
       - "submitApplication"

@@ -391,7 +391,15 @@ public enum BailCaseFieldDefinition {
     LOCAL_AUTHORITY_POLICY(
         "localAuthorityPolicy", new TypeReference<OrganisationPolicy>() {}),
     CHANGE_ORGANISATION_REQUEST_FIELD(
-        "changeOrganisationRequestField", new TypeReference<ChangeOrganisationRequest>() {});
+        "changeOrganisationRequestField", new TypeReference<ChangeOrganisationRequest>() {}),
+    UPDATE_LEGAL_REP_COMPANY(
+        "updateLegalRepCompany", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_EMAIL_ADDRESS(
+        "updateLegalRepEmail1", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_NAME(
+        "updateLegalRepName", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_REFERENCE(
+        "updateLegalRepReference", new TypeReference<String>(){}),;
 
 
     private final String value;
