@@ -24,6 +24,7 @@ public enum Event {
     NOC_REQUEST("nocRequest"),
     APPLY_NOC_DECISION("applyNocDecision"),
     REMOVE_BAIL_LEGAL_REPRESENTATIVE("removeBailLegalRepresentative"),
+    UPDATE_BAIL_LEGAL_REP_DETAILS("updateBailLegalRepDetails"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");

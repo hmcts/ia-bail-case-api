@@ -429,8 +429,15 @@ public enum BailCaseFieldDefinition {
     PREV_APP_GROUNDS_FOR_BAIL(
         "prevAppGroundsForBail", new TypeReference<String>() {}),
     PREV_APP_LEGAL_REP_DETAILS(
-        "prevAppLegalRepDetails", new TypeReference<String>() {})
-    ;
+        "prevAppLegalRepDetails", new TypeReference<String>() {}),
+    UPDATE_LEGAL_REP_COMPANY(
+        "updateLegalRepCompany", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_EMAIL_ADDRESS(
+        "updateLegalRepEmail1", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_NAME(
+        "updateLegalRepName", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_REFERENCE(
+        "updateLegalRepReference", new TypeReference<String>(){}),;
 
 
     private final String value;
