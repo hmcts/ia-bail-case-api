@@ -80,6 +80,7 @@ security:
       - "editBailApplication"
       - "makeNewApplication"
       - "viewPreviousApplications"
+      - "stopLegalRepresenting"
       - "updateBailLegalRepDetails"
     caseworker-ia-admofficer:
       - "startApplication"

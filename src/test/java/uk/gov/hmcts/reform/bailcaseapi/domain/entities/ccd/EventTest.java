@@ -26,6 +26,7 @@ public class EventTest {
         assertEquals("viewPreviousApplications", Event.VIEW_PREVIOUS_APPLICATIONS.toString());
         assertEquals("nocRequest", Event.NOC_REQUEST.toString());
         assertEquals("applyNocDecision", Event.APPLY_NOC_DECISION.toString());
+        assertEquals("stopLegalRepresenting", Event.STOP_LEGAL_REPRESENTING.toString());
         assertEquals("updateBailLegalRepDetails", Event.UPDATE_BAIL_LEGAL_REP_DETAILS.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
     }

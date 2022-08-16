@@ -29,7 +29,8 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
     ) {
         requireNonNull(callback, "callback must not be null");
         return (callback.getEvent() == Event.NOC_REQUEST
-                || callback.getEvent() == Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE);
+                || callback.getEvent() == Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE
+                || callback.getEvent() == Event.STOP_LEGAL_REPRESENTING);
     }
 
     /**
@@ -66,6 +67,19 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
                 postSubmitResponse.setConfirmationBody(
                     "### What happens next\n\n"
                     + "This legal representative will no longer have access to this case."
+                );
+            }
+
+            if (callback.getEvent() == Event.STOP_LEGAL_REPRESENTING) {
+                postSubmitResponse.setConfirmationHeader(
+                    "# You have stopped representing this client"
+                );
+
+                postSubmitResponse.setConfirmationBody(
+                    "### What happens next\n\n"
+                        + "We've sent you an email confirming you're no longer representing this client. You have been "
+                        + "removed from this case and no longer have access to it.\n\n\n\n"
+                        + "[View case list](/cases)"
                 );
             }
         } catch (Exception e) {
