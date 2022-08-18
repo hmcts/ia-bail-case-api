@@ -38,6 +38,8 @@ public class IdamUserDetailsHelper implements UserDetailsHelper {
                 return UserRoleLabel.JUDGE;
             case SYSTEM:
                 return UserRoleLabel.SYSTEM;
+            case BAILS:
+                return UserRoleLabel.BAILS;
 
             default:
                 throw new IllegalStateException("Unauthorized role to make an application");
