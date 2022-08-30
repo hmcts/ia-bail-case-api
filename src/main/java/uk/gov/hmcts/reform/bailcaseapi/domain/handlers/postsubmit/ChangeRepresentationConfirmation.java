@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PostSubmitCallbackHandler;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.PostNotificationSender;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdCaseAssignment;
 
 @Slf4j
@@ -17,11 +18,14 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdCaseAssignment;
 public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandler<BailCase> {
 
     private final CcdCaseAssignment ccdCaseAssignment;
+    private final PostNotificationSender<BailCase> postNotificationSender;
 
     public ChangeRepresentationConfirmation(
-        CcdCaseAssignment ccdCaseAssignment
+        CcdCaseAssignment ccdCaseAssignment,
+        PostNotificationSender<BailCase> postNotificationSender
     ) {
         this.ccdCaseAssignment = ccdCaseAssignment;
+        this.postNotificationSender = postNotificationSender;
     }
 
     public boolean canHandle(
@@ -71,6 +75,8 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
             }
 
             if (callback.getEvent() == Event.STOP_LEGAL_REPRESENTING) {
+                postNotificationSender.send(callback);
+
                 postSubmitResponse.setConfirmationHeader(
                     "# You have stopped representing this client"
                 );

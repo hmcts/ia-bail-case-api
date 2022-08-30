@@ -25,6 +25,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.PostNotificationSender;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdCaseAssignment;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +34,8 @@ class ChangeRepresentationConfirmationTest {
 
     @Mock private Callback<BailCase> callback;
     @Mock private CcdCaseAssignment ccdCaseAssignment;
+    @Mock
+    PostNotificationSender<BailCase> postNotificationSender;
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
 
@@ -44,7 +47,8 @@ class ChangeRepresentationConfirmationTest {
     public void setUp() throws Exception {
 
         changeRepresentationConfirmation = new ChangeRepresentationConfirmation(
-            ccdCaseAssignment
+            ccdCaseAssignment,
+            postNotificationSender
         );
     }
 
@@ -102,6 +106,7 @@ class ChangeRepresentationConfirmationTest {
         assertNotNull(callbackResponse);
 
         verify(ccdCaseAssignment, times(1)).applyNoc(callback);
+        verify(postNotificationSender, times(1)).send(callback);
 
         assertThat(
             callbackResponse.getConfirmationHeader().get())
