@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -25,6 +26,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.PostNotificationSender;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdCaseAssignment;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,16 +37,19 @@ class ChangeRepresentationConfirmationTest {
     @Mock private CcdCaseAssignment ccdCaseAssignment;
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
+    @Mock private PostNotificationSender<BailCase> postNotificationSender;
 
     public static final long CASE_ID = 1234567890L;
     public static final String BAILCASE_REFERENCE_NUMBER = "1111222233334444";
     private ChangeRepresentationConfirmation changeRepresentationConfirmation;
 
+
     @BeforeEach
     public void setUp() throws Exception {
 
         changeRepresentationConfirmation = new ChangeRepresentationConfirmation(
-            ccdCaseAssignment
+            ccdCaseAssignment,
+            postNotificationSender
         );
     }
 
@@ -174,6 +179,30 @@ class ChangeRepresentationConfirmationTest {
         assertThatThrownBy(() -> changeRepresentationConfirmation.handle(null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void should_send_notification() {
+        reset(callback);
+        when(callback.getEvent()).thenReturn(Event.NOC_REQUEST);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(bailCase.read(BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER, String.class))
+            .thenReturn(Optional.of(BAILCASE_REFERENCE_NUMBER));
+
+        PostSubmitCallbackResponse callbackResponse =
+            changeRepresentationConfirmation.handle(callback);
+        verify(ccdCaseAssignment, times(1)).applyNoc(callback);
+        // In order to distinguish from asylum in notification-api,
+        // we are changing the event name from NOC_REQUEST to NOC_REQUEST_BAIL
+        // And NotificationSender uses the new callback with new event name.
+        verify(postNotificationSender, times(1)).send(any(Callback.class));
+
+        assertNotNull(callbackResponse);
+
+        assertThat(
+            callbackResponse.getConfirmationHeader().get())
+            .contains("# You're now representing a client on case 1111222233334444");
     }
 }
 
