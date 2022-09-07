@@ -11,7 +11,8 @@ public enum UserRole {
     JUDGE("caseworker-ia-iacjudge"),
     SYSTEM("caseworker-ia-system"),
     HOME_OFFICE_GENERIC("caseworker-ia-respondentofficer"),
-    CITIZEN("citizen");
+    CITIZEN("citizen"),
+    BAILS("caseworker-ia-bails");
 
     @JsonValue
     private final String id;

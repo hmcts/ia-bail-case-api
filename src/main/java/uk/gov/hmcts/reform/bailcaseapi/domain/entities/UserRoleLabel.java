@@ -9,7 +9,8 @@ public enum UserRoleLabel {
     ADMIN_OFFICER("Admin Officer"),
     HOME_OFFICE_GENERIC("Home Office"),
     LEGAL_REPRESENTATIVE("Legal Representative"),
-    SYSTEM("System");
+    SYSTEM("System"),
+    BAILS("Bails");
 
     @JsonValue
     private final String id;
