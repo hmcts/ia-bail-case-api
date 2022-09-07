@@ -8,7 +8,11 @@ import java.net.URI;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
@@ -35,7 +39,8 @@ public class CcdSupplementaryUpdater {
                                    AuthTokenGenerator serviceAuthTokenGenerator,
                                    UserDetails userDetails,
                                    @Value("${core_case_data_api_url}") String ccrUrl,
-                                   @Value("${core_case_data_api_supplementary_data_path}") String ccdSupplementaryApiPath,
+                                   @Value("${core_case_data_api_supplementary_data_path}")
+                                       String ccdSupplementaryApiPath,
                                    @Value("${hmcts_service_id}") String hmctsServiceId
     ) {
         this.restTemplate = restTemplate;

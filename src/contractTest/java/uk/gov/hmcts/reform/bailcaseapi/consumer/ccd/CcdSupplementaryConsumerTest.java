@@ -21,7 +21,8 @@ import org.springframework.test.context.TestPropertySource;
 public class CcdSupplementaryConsumerTest extends CcdSupplementaryProviderBaseTest {
 
     @Pact(provider = "ccdDataStoreAPI_supplementaryUpdate", consumer = "bail_caseApi")
-    public RequestResponsePact generatePactFragmentForSupplementaryUpdate(PactDslWithProvider builder) throws IOException {
+    public RequestResponsePact generatePactFragmentForSupplementaryUpdate(PactDslWithProvider builder)
+        throws IOException {
 
         Map<String, Map<String, Object>> payloadData = Maps.newHashMap();
         payloadData.put("$set", singletonMap("HMCTSServiceId", "some-id"));
