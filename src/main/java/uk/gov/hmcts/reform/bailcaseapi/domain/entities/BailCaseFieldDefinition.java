@@ -437,7 +437,7 @@ public enum BailCaseFieldDefinition {
     UPDATE_LEGAL_REP_NAME(
         "updateLegalRepName", new TypeReference<String>(){}),
     UPDATE_LEGAL_REP_REFERENCE(
-        "updateLegalRepReference", new TypeReference<String>(){}),;
+        "updateLegalRepReference", new TypeReference<String>(){});
 
 
     private final String value;
