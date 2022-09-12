@@ -427,7 +427,9 @@ public enum BailCaseFieldDefinition {
     PREV_APP_GROUNDS_FOR_BAIL(
         "prevAppGroundsForBail", new TypeReference<String>() {}),
     PREV_APP_LEGAL_REP_DETAILS(
-        "prevAppLegalRepDetails", new TypeReference<String>() {})
+        "prevAppLegalRepDetails", new TypeReference<String>() {}),
+    APPELLANT_LEVEL_FLAGS("appellantLevelFlags", new TypeReference<StrategicCaseFlag>() {}),
+    CASE_LEVEL_FLAGS("caseLevelFlags", new TypeReference<StrategicCaseFlag>(){})
     ;
 
 
