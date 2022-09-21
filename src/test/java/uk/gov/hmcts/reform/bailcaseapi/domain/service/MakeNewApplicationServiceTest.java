@@ -3,7 +3,9 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_NOTES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_USER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OUTCOME_STATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRIOR_APPLICATIONS;
@@ -119,7 +121,7 @@ class MakeNewApplicationServiceTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = UserRoleLabel.class, names = {"LEGAL_REPRESENTATIVE", "HOME_OFFICE_GENERIC"})
+    @EnumSource(value = UserRoleLabel.class, names = {"LEGAL_REPRESENTATIVE", "HOME_OFFICE_BAIL"})
     void should_clear_role_dependent_field(UserRoleLabel userRoleLabel) {
         List<IdValue<DocumentWithDescription>> b1DocumentList =
             Arrays.asList(
@@ -177,5 +179,25 @@ class MakeNewApplicationServiceTest {
         assertThatThrownBy(() -> makeNewApplicationService.getBailCaseFromString(json))
             .hasMessage("CaseData (json) is missing")
             .isExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void should_keep_case_notes_about_to_start() {
+        BailCase bailCase = new BailCase();
+        bailCase.write(CASE_NOTES, "case note");
+
+        when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.ADMIN_OFFICER);
+        makeNewApplicationService.clearFieldsAboutToStart(bailCase);
+        assertTrue(bailCase.containsKey(CASE_NOTES.value()));
+    }
+
+    @Test
+    void should_keep_case_notes_about_to_submit() {
+        BailCase bailCase = new BailCase();
+        bailCase.write(CASE_NOTES, "case note");
+
+        when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.ADMIN_OFFICER);
+        makeNewApplicationService.clearFieldsAboutToSubmit(bailCase);
+        assertTrue(bailCase.containsKey(CASE_NOTES.value()));
     }
 }
