@@ -333,7 +333,6 @@ dependencies {
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jacksonAnnotation
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jacksonDatabind
-  implementation group: 'com.github.hmcts', name: 'ccd-case-document-am-client', version: '1.7.3'
 
   testCompile (group: 'io.rest-assured', name: 'rest-assured-all', version: '4.3.1')
   testCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
@@ -344,7 +343,7 @@ dependencies {
 
   testCompile group: 'org.springframework.security', name: 'spring-security-test'
 
-
+  testImplementation group: 'com.github.hmcts', name: 'ccd-case-document-am-client', version: '1.7.3'
 
   testImplementation libraries.junit5
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
