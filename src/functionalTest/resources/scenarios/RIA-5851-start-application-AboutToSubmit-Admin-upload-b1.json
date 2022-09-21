@@ -1,5 +1,6 @@
 {
   "description": "Start the application by admin application sent by Applicant",
+  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
