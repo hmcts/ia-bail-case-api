@@ -13,10 +13,12 @@
           "updateLegalRepCompany": "Company example",
           "updateLegalRepName": "Legal rep Bob",
           "updateLegalRepEmail1": "example123@test.com",
+          "updateLegalRepPhone": "01234567891",
           "updateLegalRepReference": "ref-678910",
           "legalRepCompany": "Company original",
           "legalRepName": "Legal rep John Doe",
           "legalRepEmail": "JohnDoe@exampletest.com",
+          "legalRepPhone": "01111111111",
           "legalRepReference": "ref-12345"
         }
       }
@@ -36,10 +38,12 @@
         "updateLegalRepCompany": null,
         "updateLegalRepName": null,
         "updateLegalRepEmail1": null,
+        "updateLegalRepPhone": null,
         "updateLegalRepReference": null,
         "legalRepCompany": "Company example",
         "legalRepName": "Legal rep Bob",
         "legalRepEmail": "example123@test.com",
+        "legalRepPhone": "01234567891",
         "legalRepReference": "ref-678910"
       }
     }
