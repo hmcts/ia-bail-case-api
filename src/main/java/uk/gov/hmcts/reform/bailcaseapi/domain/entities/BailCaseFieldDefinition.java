@@ -240,6 +240,8 @@ public enum BailCaseFieldDefinition {
         "legalRepPhone", new TypeReference<String>(){}),
     LEGAL_REP_REFERENCE(
         "legalRepReference", new TypeReference<String>(){}),
+    LEGAL_REP_COMPANY_ADDRESS(
+        "legalRepCompanyAddress", new TypeReference<AddressUK>(){}),
     GROUNDS_FOR_BAIL_REASONS(
         "groundsForBailReasons", new TypeReference<String>(){}),
     GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION(
@@ -338,7 +340,7 @@ public enum BailCaseFieldDefinition {
         "reasonForRefusalDetails", new TypeReference<String>(){}),
     TRIBUNAL_REFUSAL_REASON(
         "tribunalRefusalReason", new TypeReference<String>(){}),
-    REASON_JUDGE_IS_MINDED_DETAILS(
+    REASONS_JUDGE_IS_MINDED_DETAILS(
         "reasonsJudgeIsMindedDetails", new TypeReference<String>(){}),
     JUDGE_DETAILS_NAME(
         "judgeDetailsName", new TypeReference<String>(){}),
@@ -388,10 +390,46 @@ public enum BailCaseFieldDefinition {
         "submitNotificationStatus", new TypeReference<String>() {}),
     PREVIOUS_APPLICATION_LIST(
         "previousApplicationList", new TypeReference<DynamicList>() {}),
+    PREV_APP_ID(
+        "prevAppId", new TypeReference<String>() {}),
+    PREV_APP_APPLICANT_DOCS_DETAILS(
+        "prevAppApplicantDocsDetails", new TypeReference<String>() {}),
+    PREV_APP_DOCS_WITH_METADATA(
+        "prevAppDocsWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    PREV_APP_DECISION_DETAILS_LABEL(
+        "prevAppDecisionDetailsLabel", new TypeReference<String>() {}),
+    PREV_APP_DIRECTION_DETAILS(
+        "prevAppDirectionDetails", new TypeReference<String>() {}),
+    PREV_APP_CASE_NOTES_DETAILS(
+        "prevAppCaseNotesDetails", new TypeReference<String>() {}),
+    PREV_APP_HEARING_REQ_DETAILS(
+        "prevAppHearingReqDetails", new TypeReference<String>() {}),
+    PREV_APP_PERSONAL_INFO_DETAILS(
+        "prevAppPersonalInfoDetails", new TypeReference<String>() {}),
+    PREV_APP_SUBMISSION_DETAILS(
+        "prevAppSubmissionDetails", new TypeReference<String>() {}),
+    PREV_APP_DECISION_CONDITIONS(
+        "prevAppDecisionConditions", new TypeReference<String>() {}),
     LOCAL_AUTHORITY_POLICY(
         "localAuthorityPolicy", new TypeReference<OrganisationPolicy>() {}),
     CHANGE_ORGANISATION_REQUEST_FIELD(
         "changeOrganisationRequestField", new TypeReference<ChangeOrganisationRequest>() {}),
+    PREV_APP_APPLICANT_INFO(
+        "prevAppApplicantInfo", new TypeReference<String>() {}),
+    PREV_APP_FINANCIAL_COND_COMMITMENT(
+        "prevAppFinancialCondCommitment", new TypeReference<String>() {}),
+    PREV_APP_FINANCIAL_COND_SUPPORTER1(
+        "prevAppFinancialCondSupporter1", new TypeReference<String>() {}),
+    PREV_APP_FINANCIAL_COND_SUPPORTER2(
+        "prevAppFinancialCondSupporter2", new TypeReference<String>() {}),
+    PREV_APP_FINANCIAL_COND_SUPPORTER3(
+        "prevAppFinancialCondSupporter3", new TypeReference<String>() {}),
+    PREV_APP_FINANCIAL_COND_SUPPORTER4(
+        "prevAppFinancialCondSupporter4", new TypeReference<String>() {}),
+    PREV_APP_GROUNDS_FOR_BAIL(
+        "prevAppGroundsForBail", new TypeReference<String>() {}),
+    PREV_APP_LEGAL_REP_DETAILS(
+        "prevAppLegalRepDetails", new TypeReference<String>() {}),
     UPDATE_LEGAL_REP_COMPANY(
         "updateLegalRepCompany", new TypeReference<String>(){}),
     UPDATE_LEGAL_REP_EMAIL_ADDRESS(
