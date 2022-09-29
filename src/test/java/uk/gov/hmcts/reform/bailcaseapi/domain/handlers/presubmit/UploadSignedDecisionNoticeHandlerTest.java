@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.DispatchPriority;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 
@@ -63,10 +64,18 @@ public class UploadSignedDecisionNoticeHandlerTest {
 
         assertNotNull(callbackResponse);
         assertEquals(bailCase, callbackResponse.getData());
-
         verify(bailCase).write(OUTCOME_DATE, nowWithTime.toString());
         verify(bailCase, times(1)).write(OUTCOME_STATE, State.DECISION_DECIDED);
 
+    }
+
+    @Test
+    void should_get_dispatch_priority_as_latest() {
+        DispatchPriority dispatchPriority =
+            uploadSignedDecisionNoticeHandler.getDispatchPriority();
+
+        assertNotNull(dispatchPriority);
+        assertEquals(DispatchPriority.LATEST, dispatchPriority);
     }
 
     @Test
