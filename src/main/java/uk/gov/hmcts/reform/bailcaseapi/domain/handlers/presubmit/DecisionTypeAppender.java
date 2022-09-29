@@ -94,7 +94,9 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
         // Following two definitions are needed for UI only.
         // It is to have different section for Unsigned Decision Details for Admin and Judges.
         bailCase.write(DECISION_UNSIGNED_DETAILS_DATE, decisionDate);
-        bailCase.write(RECORD_UNSIGNED_DECISION_TYPE, bailCase.read(RECORD_DECISION_TYPE, String.class).get());
+        bailCase.write(RECORD_UNSIGNED_DECISION_TYPE,
+                       bailCase.read(RECORD_DECISION_TYPE, String.class)
+                           .orElseThrow(() -> new IllegalStateException("Record decision type missing")));
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

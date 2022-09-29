@@ -94,6 +94,19 @@ class DecisionTypeAppenderTest {
     }
 
     @Test
+    void throw_exception_if_record_decision_is_empty() {
+
+        when(bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class)).thenReturn(Optional.of(REFUSED));
+        when(bailCase.read(SECRETARY_OF_STATE_YES_OR_NO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(
+            () -> decisionTypeAppender.handle(ABOUT_TO_SUBMIT, callback))
+            .hasMessage("Record decision type missing")
+            .isExactlyInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
     void set_decision_type_to_refused_branch_with_ss_consent() {
 
         when(bailCase.read(RECORD_THE_DECISION_LIST, String.class)).thenReturn(Optional.of(REFUSED));
