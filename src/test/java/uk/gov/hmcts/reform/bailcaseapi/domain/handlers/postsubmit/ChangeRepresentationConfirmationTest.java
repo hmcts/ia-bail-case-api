@@ -25,7 +25,9 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.service.CcdDataService;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdCaseAssignment;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.idam.IdentityManagerResponseException;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
@@ -33,6 +35,7 @@ class ChangeRepresentationConfirmationTest {
 
     @Mock private Callback<BailCase> callback;
     @Mock private CcdCaseAssignment ccdCaseAssignment;
+    @Mock private CcdDataService ccdDataService;
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
 
@@ -44,7 +47,8 @@ class ChangeRepresentationConfirmationTest {
     public void setUp() throws Exception {
 
         changeRepresentationConfirmation = new ChangeRepresentationConfirmation(
-            ccdCaseAssignment
+            ccdCaseAssignment,
+            ccdDataService
         );
     }
 
@@ -80,6 +84,7 @@ class ChangeRepresentationConfirmationTest {
         assertNotNull(callbackResponse);
 
         verify(ccdCaseAssignment, times(1)).applyNoc(callback);
+        verify(ccdDataService, times(1)).clearLegalRepDetails(callback);
 
         assertThat(
             callbackResponse.getConfirmationHeader().get())
@@ -102,6 +107,7 @@ class ChangeRepresentationConfirmationTest {
         assertNotNull(callbackResponse);
 
         verify(ccdCaseAssignment, times(1)).applyNoc(callback);
+        verify(ccdDataService, times(1)).clearLegalRepDetails(callback);
 
         assertThat(
             callbackResponse.getConfirmationHeader().get())
@@ -125,6 +131,24 @@ class ChangeRepresentationConfirmationTest {
 
         RestClientResponseException restClientResponseEx = mock(RestClientResponseException.class);
         doThrow(restClientResponseEx).when(ccdCaseAssignment).applyNoc(callback);
+
+        PostSubmitCallbackResponse callbackResponse =
+            changeRepresentationConfirmation.handle(callback);
+
+        assertThat(
+            callbackResponse.getConfirmationBody().get())
+            .contains("Something went wrong");
+    }
+
+    @Test
+    void should_handle_when_exception_thrown_by_ccd_service() {
+
+        when(callback.getEvent()).thenReturn(Event.REMOVE_BAIL_LEGAL_REPRESENTATIVE);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getId()).thenReturn(CASE_ID);
+
+        IdentityManagerResponseException identityManagerResponseEx = mock(IdentityManagerResponseException.class);
+        doThrow(identityManagerResponseEx).when(ccdDataService).clearLegalRepDetails(callback);
 
         PostSubmitCallbackResponse callbackResponse =
             changeRepresentationConfirmation.handle(callback);
