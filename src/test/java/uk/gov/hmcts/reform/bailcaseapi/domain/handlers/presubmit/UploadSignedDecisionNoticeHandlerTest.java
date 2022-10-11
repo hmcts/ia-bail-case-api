@@ -8,17 +8,26 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OUTCOME_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OUTCOME_STATE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentTag;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
@@ -26,6 +35,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.DispatchPriority;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +50,17 @@ public class UploadSignedDecisionNoticeHandlerTest {
     private BailCase bailCase;
     @Mock
     private DateProvider dateProvider;
+    @Mock
+    private DocumentWithMetadata unsignedDecisionNoticeMetadata1;
+    @Mock
+    private DocumentWithMetadata tribunalDocument1;
+    @Mock
+    private DocumentWithMetadata tribunalDocument2;
+
+    @Captor
+    private ArgumentCaptor<List<IdValue<DocumentWithMetadata>>> existingDecisionNoticeDocumentsCaptor;
+
+    private List<IdValue<DocumentWithMetadata>> existingTribunalDocumentsWithMetadata = new ArrayList<>();
 
     private UploadSignedDecisionNoticeHandler uploadSignedDecisionNoticeHandler;
 
@@ -55,18 +76,72 @@ public class UploadSignedDecisionNoticeHandlerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(dateProvider.nowWithTime()).thenReturn(nowWithTime);
+        when(unsignedDecisionNoticeMetadata1.getTag()).thenReturn(DocumentTag.BAIL_DECISION_UNSIGNED);
+        when(tribunalDocument1.getTag()).thenReturn(DocumentTag.UPLOAD_DOCUMENT);
+        when(tribunalDocument2.getTag()).thenReturn(DocumentTag.BAIL_SUBMISSION);
+
     }
 
     @Test
-    void should_add_outcome_date_state() {
+    void should_add_outcome_date_state_and_remove_unsigned_doc_from_tribunal() {
+        List<IdValue<DocumentWithMetadata>> tribunalDocumentsWithUnsignedDoc = List.of(
+            new IdValue<>("1", tribunalDocument1),
+            new IdValue<>("2", tribunalDocument2),
+            new IdValue<>("3", unsignedDecisionNoticeMetadata1));
+        when(bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(tribunalDocumentsWithUnsignedDoc));
+        final List<IdValue<DocumentWithMetadata>> tribunalDocumentsWithoutUnSignedDoc = List.of(
+            new IdValue<>("1", tribunalDocument1),
+            new IdValue<>("2", tribunalDocument2));
+
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             uploadSignedDecisionNoticeHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
         assertNotNull(callbackResponse);
         assertEquals(bailCase, callbackResponse.getData());
+        verify(bailCase, times(1)).read(TRIBUNAL_DOCUMENTS_WITH_METADATA);
+        //Verify - No Document is left in the Tribunal Documents
+        verify(bailCase, times(1))
+            .write(TRIBUNAL_DOCUMENTS_WITH_METADATA, tribunalDocumentsWithoutUnSignedDoc);
         verify(bailCase).write(OUTCOME_DATE, nowWithTime.toString());
         verify(bailCase, times(1)).write(OUTCOME_STATE, State.DECISION_DECIDED);
+    }
 
+    @Test
+    void should_handle_when_tribunal_collection_not_contains_unsigned_document() {
+        List<IdValue<DocumentWithMetadata>> tribunalDocuments = List.of(
+            new IdValue<>("1", tribunalDocument1),
+            new IdValue<>("2", tribunalDocument2));
+        when(bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(tribunalDocuments));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            uploadSignedDecisionNoticeHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertEquals(bailCase, callbackResponse.getData());
+        verify(bailCase, times(1)).read(TRIBUNAL_DOCUMENTS_WITH_METADATA);
+        //Verify - Tribunal Documents are same, as there is no Unsigned Document
+        verify(bailCase, times(1))
+            .write(TRIBUNAL_DOCUMENTS_WITH_METADATA, tribunalDocuments);
+        verify(bailCase).write(OUTCOME_DATE, nowWithTime.toString());
+        verify(bailCase, times(1)).write(OUTCOME_STATE, State.DECISION_DECIDED);
+    }
+
+    @Test
+    void should_handle_when_tribunal_collection_is_empty() {
+        List<IdValue<DocumentWithMetadata>> tribunalDocuments = Collections.EMPTY_LIST;
+        when(bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA)).thenReturn(Optional.of(tribunalDocuments));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            uploadSignedDecisionNoticeHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+        assertEquals(bailCase, callbackResponse.getData());
+        verify(bailCase, times(1)).read(TRIBUNAL_DOCUMENTS_WITH_METADATA);
+        //Verify - Tribunal Documents are same, as there is no document
+        verify(bailCase, times(1))
+            .write(TRIBUNAL_DOCUMENTS_WITH_METADATA, tribunalDocuments);
+        verify(bailCase).write(OUTCOME_DATE, nowWithTime.toString());
+        verify(bailCase, times(1)).write(OUTCOME_STATE, State.DECISION_DECIDED);
     }
 
     @Test
