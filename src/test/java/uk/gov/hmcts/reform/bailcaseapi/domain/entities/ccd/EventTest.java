@@ -28,11 +28,12 @@ public class EventTest {
         assertEquals("applyNocDecision", Event.APPLY_NOC_DECISION.toString());
         assertEquals("stopLegalRepresenting", Event.STOP_LEGAL_REPRESENTING.toString());
         assertEquals("updateBailLegalRepDetails", Event.UPDATE_BAIL_LEGAL_REP_DETAILS.toString());
+        assertEquals("clearLegalRepresentativeDetails", Event.CLEAR_LEGAL_REPRESENTATIVE_DETAILS.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
     }
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(22, Event.values().length);
+        assertEquals(23, Event.values().length);
     }
 }
