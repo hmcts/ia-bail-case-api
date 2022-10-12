@@ -29,7 +29,7 @@ public class EventTest {
         assertEquals("stopLegalRepresenting", Event.STOP_LEGAL_REPRESENTING.toString());
         assertEquals("updateBailLegalRepDetails", Event.UPDATE_BAIL_LEGAL_REP_DETAILS.toString());
         assertEquals("nocRequestBail", Event.NOC_REQUEST_BAIL.toString());
-
+        assertEquals("clearLegalRepresentativeDetails", Event.CLEAR_LEGAL_REPRESENTATIVE_DETAILS.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
     }
 
