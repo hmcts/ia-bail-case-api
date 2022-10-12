@@ -85,6 +85,8 @@ security:
       - "viewPreviousApplications"
       - "stopLegalRepresenting"
       - "updateBailLegalRepDetails"
+      - "nocRequest"
+      - "nocRequestBail"
     caseworker-ia-admofficer:
       - "startApplication"
       - "submitApplication"

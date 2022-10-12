@@ -54,7 +54,7 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
             ccdCaseAssignment.applyNoc(callback);
 
             if (callback.getEvent() == Event.NOC_REQUEST) {
-
+                sendNotification(callback);
                 String caseReference = callback.getCaseDetails().getCaseData()
                     .read(BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER, String.class).orElse("");
 
@@ -98,5 +98,18 @@ public class ChangeRepresentationConfirmation implements PostSubmitCallbackHandl
         }
 
         return postSubmitResponse;
+    }
+
+    private void sendNotification(Callback<BailCase> callback) {
+        //NOC_REQUEST is an event in notification-api, which is used by asylum.
+        // In order to separate bail NOC, we are sending the notification request
+        // with a new Event name NOC_REQUEST_BAIL.
+        Callback<BailCase> callbackForNotification = new Callback<>(
+            callback.getCaseDetails(),
+            callback.getCaseDetailsBefore(),
+            Event.NOC_REQUEST_BAIL
+        );
+
+        postNotificationSender.send(callbackForNotification);
     }
 }
