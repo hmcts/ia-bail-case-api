@@ -137,6 +137,7 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.PRIOR_APPLICATIONS.value(),
         BailCaseFieldDefinition.IS_ADMIN.value(),
         BailCaseFieldDefinition.APPLICATION_SENT_BY.value(),
+        BailCaseFieldDefinition.CASE_TYPE_TTL.value(),
         BailCaseFieldDefinition.APPLICANT_GIVEN_NAMES.value(),
         BailCaseFieldDefinition.APPLICANT_FAMILY_NAME.value(),
         BailCaseFieldDefinition.APPLICANT_DOB.value(),
