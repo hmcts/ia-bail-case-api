@@ -34,8 +34,7 @@ public class ManageCaseTTLHandler implements PreSubmitCallbackHandler<BailCase> 
     public PreSubmitCallbackResponse<BailCase> handle(
         PreSubmitCallbackStage callbackStage,
         Callback<BailCase> callback
-    )
-    {
+    ) {
         if (!canHandle(callbackStage, callback)) {
             throw new IllegalStateException("Cannot handle callback");
         }
@@ -49,7 +48,7 @@ public class ManageCaseTTLHandler implements PreSubmitCallbackHandler<BailCase> 
             .read(CASE_TYPE_TTL, TTL.class)
             .orElseThrow(() -> new IllegalStateException("caseTypeTTL is not present"));
 
-        if(callback.getEvent().equals(MAKE_NEW_APPLICATION)){
+        if (callback.getEvent().equals(MAKE_NEW_APPLICATION)) {
             caseTypeTTL.setSuspended(YesOrNo.YES);
             bailCase.write(CASE_TYPE_TTL, caseTypeTTL);
         }
