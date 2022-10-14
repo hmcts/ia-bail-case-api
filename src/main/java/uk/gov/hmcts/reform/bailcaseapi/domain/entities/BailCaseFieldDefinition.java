@@ -320,6 +320,8 @@ public enum BailCaseFieldDefinition {
         "addCaseNoteDocument", new TypeReference<Document>(){}),
     CASE_NOTES(
         "caseNotes", new TypeReference<List<IdValue<CaseNote>>>(){}),
+    CASE_TYPE_TTL(
+        "caseTypeTTL", new TypeReference<TTL>(){}),
     SEND_DIRECTION_DESCRIPTION(
         "sendDirectionDescription", new TypeReference<String>(){}),
     SEND_DIRECTION_LIST(

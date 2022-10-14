@@ -85,6 +85,7 @@ security:
       - "submitApplication"
       - "recordTheDecision"
       - "addCaseNote"
+      - "manageCaseTTL"
       - "sendBailDirection"
       - "changeBailDirectionDueDate"
       - "uploadSignedDecisionNotice"
