@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.ChangeOrganisationRequest;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.TTL;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 public enum BailCaseFieldDefinition {
@@ -437,7 +438,9 @@ public enum BailCaseFieldDefinition {
     UNSIGNED_DECISION_DOCUMENTS_WITH_METADATA(
         "unsgnDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     SIGNED_DECISION_DOCUMENTS_WITH_METADATA(
-        "signDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){})
+        "signDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    TTL(
+        "TTL", new TypeReference<TTL>() {})
     ;
 
 
