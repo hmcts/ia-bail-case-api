@@ -26,11 +26,12 @@ public class EventTest {
         assertEquals("viewPreviousApplications", Event.VIEW_PREVIOUS_APPLICATIONS.toString());
         assertEquals("nocRequest", Event.NOC_REQUEST.toString());
         assertEquals("applyNocDecision", Event.APPLY_NOC_DECISION.toString());
+        assertEquals("manageCaseTTL", Event.MANAGE_CASE_TTL.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
     }
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(20, Event.values().length);
+        assertEquals(21, Event.values().length);
     }
 }
