@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.ccddataservice.TimeToLiveDataService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -24,9 +25,11 @@ public class MakeNewApplicationConfirmationTest {
     @Mock private CaseDetails<BailCase> caseDetails;
     private MakeNewApplicationConfirmation makeNewApplicationConfirmation;
 
+    @Mock private TimeToLiveDataService timeToLiveDataService;
+
     @BeforeEach
     public void setUp() {
-        makeNewApplicationConfirmation = new MakeNewApplicationConfirmation();
+        makeNewApplicationConfirmation = new MakeNewApplicationConfirmation(timeToLiveDataService);
         when(callback.getEvent()).thenReturn(Event.MAKE_NEW_APPLICATION);
     }
 

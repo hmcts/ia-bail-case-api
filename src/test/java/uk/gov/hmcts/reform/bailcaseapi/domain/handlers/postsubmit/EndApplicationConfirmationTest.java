@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.ccddataservice.TimeToLiveDataService;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
@@ -23,7 +24,11 @@ public class EndApplicationConfirmationTest {
     @Mock
     private Callback<BailCase> callback;
 
-    private final EndApplicationConfirmation endApplicationConfirmation = new EndApplicationConfirmation();
+    @Mock
+    private TimeToLiveDataService timeToLiveDataService;
+
+    private final EndApplicationConfirmation endApplicationConfirmation =
+        new EndApplicationConfirmation(timeToLiveDataService);
 
     @Test
     void should_handle_only_valid_event() {
