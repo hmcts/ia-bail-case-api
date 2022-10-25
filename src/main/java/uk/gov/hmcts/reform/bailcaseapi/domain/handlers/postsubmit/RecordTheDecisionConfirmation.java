@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
-import java.util.Set;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;

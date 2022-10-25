@@ -20,7 +20,9 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdDataApi;
 @Slf4j
 public class TimeToLiveDataService extends CcdDataService {
 
-    public TimeToLiveDataService(CcdDataApi ccdDataApi, IdamService idamService, AuthTokenGenerator serviceAuthorization) {
+    public TimeToLiveDataService(CcdDataApi ccdDataApi,
+                                 IdamService idamService,
+                                 AuthTokenGenerator serviceAuthorization) {
         super(ccdDataApi, idamService, serviceAuthorization);
     }
 

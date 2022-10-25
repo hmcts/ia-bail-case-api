@@ -82,7 +82,13 @@ public class TimeToLiveDataServiceTest {
         when(caseDetails.getId()).thenReturn(CASE_ID);
         when(bailCase.read(BailCaseFieldDefinition.TTL, TTL.class)).thenReturn(Optional.of(ttl));
 
-        when(ccdDataApi.startEvent(USER_TOKEN, S2S_TOKEN, UID, JURISDICTION, CASE_TYPE, "1", Event.MANAGE_CASE_TTL.toString()))
+        when(ccdDataApi.startEvent(USER_TOKEN,
+                                   S2S_TOKEN,
+                                   UID,
+                                   JURISDICTION,
+                                   CASE_TYPE,
+                                   "1",
+                                   Event.MANAGE_CASE_TTL.toString()))
             .thenReturn(startEventDetails);
 
         when(startEventDetails.getToken()).thenReturn(EVENT_TOKEN);
