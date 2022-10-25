@@ -116,6 +116,8 @@ security:
       - "uploadDocuments"
       - "editBailDocuments"
       - "viewPreviousApplications"
+    caseworker-ia-system:
+      - "manageCaseTTL"
 
 
 ### dependency configuration
