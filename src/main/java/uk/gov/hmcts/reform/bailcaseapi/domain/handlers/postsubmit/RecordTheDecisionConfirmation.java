@@ -39,7 +39,7 @@ public class RecordTheDecisionConfirmation implements PostSubmitCallbackHandler<
         // So it requires manual intervention to set "ttl.suspended = NO" when starting the clock again
         if (wasSuccessful(callback) && !isClockActive(bailCase)) {
             // stop the clock
-            timeToLiveDataService.updateTheClock(callback, true);
+            timeToLiveDataService.updateTheClock(callback, false);
         }
 
         return new PostSubmitCallbackResponse();
@@ -47,7 +47,7 @@ public class RecordTheDecisionConfirmation implements PostSubmitCallbackHandler<
 
     private boolean wasSuccessful(Callback<BailCase> callback) {
         CaseDetails<BailCase> caseDetails = callback.getCaseDetails();
-        return !Set.of(State.APPLICATION_ENDED, State.DECISION_DECIDED).contains(caseDetails.getState());
+        return caseDetails.getState().equals(State.UNSIGNED_DECISION);
     }
 
     private boolean isClockActive(BailCase bailCase) {
