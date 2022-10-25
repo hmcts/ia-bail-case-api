@@ -14,6 +14,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_JUDGE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_SYSTEM;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,6 +68,8 @@ class CurrentCaseStateUpdaterTest {
                 .write(CURRENT_CASE_STATE_VISIBLE_TO_JUDGE, state);
             verify(bailCase, times(1))
                 .write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, state);
+            verify(bailCase, times(1))
+                .write(CURRENT_CASE_STATE_VISIBLE_TO_SYSTEM, state);
             reset(bailCase);
         }
     }

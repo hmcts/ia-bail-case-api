@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_JUDGE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_LEGAL_REPRESENTATIVE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_SYSTEM;
 
 
 import org.springframework.stereotype.Component;
@@ -49,6 +50,7 @@ public class CurrentCaseStateUpdater implements PreSubmitCallbackHandler<BailCas
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER, currentCaseState);
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_HOME_OFFICE, currentCaseState);
         bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS, currentCaseState);
+        bailCase.write(CURRENT_CASE_STATE_VISIBLE_TO_SYSTEM, currentCaseState);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

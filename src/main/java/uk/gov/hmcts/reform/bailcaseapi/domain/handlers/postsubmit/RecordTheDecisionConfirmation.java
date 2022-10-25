@@ -1,10 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
-import static java.util.Objects.requireNonNull;
-
-import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -14,40 +12,24 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PostSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.ccddataservice.TimeToLiveDataService;
 
-@Component
-public class EndApplicationConfirmation implements PostSubmitCallbackHandler<BailCase> {
+public class RecordTheDecisionConfirmation implements PostSubmitCallbackHandler<BailCase> {
 
     private final TimeToLiveDataService timeToLiveDataService;
 
-    public EndApplicationConfirmation(TimeToLiveDataService timeToLiveDataService) {
+    public RecordTheDecisionConfirmation(TimeToLiveDataService timeToLiveDataService) {
         this.timeToLiveDataService = timeToLiveDataService;
     }
 
     @Override
-    public boolean canHandle(
-        Callback<BailCase> callback
-    ) {
-
-        requireNonNull(callback, "callback must not be null");
-        return callback.getEvent() == Event.END_APPLICATION;
+    public boolean canHandle(Callback<BailCase> callback) {
+        return (callback.getEvent() == Event.RECORD_THE_DECISION);
     }
 
     @Override
-    public PostSubmitCallbackResponse handle(
-        Callback<BailCase> callback
-    ) {
+    public PostSubmitCallbackResponse handle(Callback<BailCase> callback) {
         if (!canHandle(callback)) {
             throw new IllegalStateException("Cannot handle callback");
         }
-
-        PostSubmitCallbackResponse postSubmitResponse =
-            new PostSubmitCallbackResponse();
-        postSubmitResponse.setConfirmationHeader("# You have ended the application");
-        postSubmitResponse.setConfirmationBody(
-            "#### What happens next\n\n"
-                + "A notification has been sent to all parties. "
-                + "No further action is required.<br>"
-        );
 
         BailCase bailCase = callback.getCaseDetails().getCaseData();
 
@@ -59,12 +41,12 @@ public class EndApplicationConfirmation implements PostSubmitCallbackHandler<Bai
             timeToLiveDataService.updateTheClock(callback, false);
         }
 
-        return postSubmitResponse;
+        return new PostSubmitCallbackResponse();
     }
 
     private boolean wasSuccessful(Callback<BailCase> callback) {
-        State caseState = callback.getCaseDetails().getState();
-        return caseState.equals(State.APPLICATION_ENDED);
+        CaseDetails<BailCase> caseDetails = callback.getCaseDetails();
+        return caseDetails.getState().equals(State.UNSIGNED_DECISION);
     }
 
     private boolean isClockActive(BailCase bailCase) {
@@ -72,4 +54,5 @@ public class EndApplicationConfirmation implements PostSubmitCallbackHandler<Bai
             .map(ttl -> ttl.getSuspended().equals(YesOrNo.NO))
             .orElse(false);
     }
+
 }

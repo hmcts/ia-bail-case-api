@@ -5,10 +5,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Arrays;
 import java.util.List;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.ChangeOrganisationRequest;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.TTL;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 public enum BailCaseFieldDefinition {
@@ -40,6 +42,8 @@ public enum BailCaseFieldDefinition {
         "currentCaseStateVisibleToHomeOffice", new TypeReference<String>(){}),
     CURRENT_CASE_STATE_VISIBLE_TO_ALL_USERS(
         "currentCaseStateVisibleToAllUsers", new TypeReference<String>(){}),
+    CURRENT_CASE_STATE_VISIBLE_TO_SYSTEM(
+        "currentCaseStateVisibleToSystem", new TypeReference<State>(){}),
     APPLICANT_GIVEN_NAMES(
         "applicantGivenNames", new TypeReference<String>() {}),
     APPLICANT_FAMILY_NAME(
@@ -437,7 +441,9 @@ public enum BailCaseFieldDefinition {
     UNSIGNED_DECISION_DOCUMENTS_WITH_METADATA(
         "unsgnDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     SIGNED_DECISION_DOCUMENTS_WITH_METADATA(
-        "signDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){})
+        "signDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    TTL(
+        "TTL", new TypeReference<TTL>() {})
     ;
 
 

@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
@@ -30,7 +28,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.service.ccddataservice.TimeToLiveD
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class EndApplicationConfirmationTest {
+public class RecordTheDecisionConfirmationTest {
     @Mock
     private Callback<BailCase> callback;
     @Mock
@@ -43,19 +41,19 @@ public class EndApplicationConfirmationTest {
     @Mock
     private TimeToLiveDataService timeToLiveDataService;
 
-    private EndApplicationConfirmation endApplicationConfirmation;
+    private RecordTheDecisionConfirmation recordTheDecisionConfirmation;
 
     @BeforeEach
     void setup() {
-        endApplicationConfirmation = new EndApplicationConfirmation(timeToLiveDataService);
+        recordTheDecisionConfirmation = new RecordTheDecisionConfirmation(timeToLiveDataService);
     }
 
     @Test
     void should_handle_only_valid_event() {
         for (Event event: Event.values()) {
             when(callback.getEvent()).thenReturn(event);
-            boolean canHandle = endApplicationConfirmation.canHandle(callback);
-            if (event.equals(Event.END_APPLICATION)) {
+            boolean canHandle = recordTheDecisionConfirmation.canHandle(callback);
+            if (event.equals(Event.RECORD_THE_DECISION)) {
                 assertTrue(canHandle);
             } else {
                 assertFalse(canHandle);
@@ -65,46 +63,23 @@ public class EndApplicationConfirmationTest {
     }
 
     @Test
-    void should_throw_null_args() {
-        assertThatThrownBy(() -> endApplicationConfirmation.canHandle(null))
-            .hasMessage("callback must not be null")
-            .isExactlyInstanceOf(NullPointerException.class);
-    }
-
-    @Test
     void should_not_handle_invalid_event() {
         when(callback.getEvent()).thenReturn(Event.SUBMIT_APPLICATION);
-        assertThatThrownBy(() -> endApplicationConfirmation.handle(callback))
+        assertThatThrownBy(() -> recordTheDecisionConfirmation.handle(callback))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    void should_set_confirmation_header_body() {
-        when(callback.getEvent()).thenReturn(Event.END_APPLICATION);
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(BailCaseFieldDefinition.TTL, TTL.class)).thenReturn(Optional.empty());
-        when(caseDetails.getState()).thenReturn(State.APPLICATION_ENDED);
-
-        PostSubmitCallbackResponse response = endApplicationConfirmation
-            .handle(callback);
-        assertEquals("# You have ended the application", response.getConfirmationHeader().get());
-        assertThat(response.getConfirmationBody().get()).contains("#### What happens next\n\n");
-        assertThat(response.getConfirmationBody().get())
-            .contains("A notification has been sent to all parties. No further action is required.");
-    }
-
-    @Test
     void should_set_ttl_not_suspended_if_necessary() {
-        when(callback.getEvent()).thenReturn(Event.END_APPLICATION);
+        when(callback.getEvent()).thenReturn(Event.RECORD_THE_DECISION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(BailCaseFieldDefinition.TTL, TTL.class)).thenReturn(Optional.of(ttl));
         when(ttl.getSuspended()).thenReturn(YesOrNo.YES);
-        when(caseDetails.getState()).thenReturn(State.APPLICATION_ENDED);
+        when(caseDetails.getState()).thenReturn(State.UNSIGNED_DECISION);
 
-        PostSubmitCallbackResponse response = endApplicationConfirmation
+        PostSubmitCallbackResponse response = recordTheDecisionConfirmation
             .handle(callback);
 
         verify(timeToLiveDataService, times(1)).updateTheClock(callback, false);
@@ -112,14 +87,14 @@ public class EndApplicationConfirmationTest {
 
     @Test
     void should_not_set_ttl_suspended_property_if_already_unsuspended() {
-        when(callback.getEvent()).thenReturn(Event.END_APPLICATION);
+        when(callback.getEvent()).thenReturn(Event.RECORD_THE_DECISION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(BailCaseFieldDefinition.TTL, TTL.class)).thenReturn(Optional.of(ttl));
         when(ttl.getSuspended()).thenReturn(YesOrNo.NO); // suspended=NO (TTL already active)
-        when(caseDetails.getState()).thenReturn(State.APPLICATION_ENDED);
+        when(caseDetails.getState()).thenReturn(State.UNSIGNED_DECISION);
 
-        PostSubmitCallbackResponse response = endApplicationConfirmation
+        PostSubmitCallbackResponse response = recordTheDecisionConfirmation
             .handle(callback);
 
         verify(timeToLiveDataService, never()).updateTheClock(callback, false);
@@ -127,12 +102,12 @@ public class EndApplicationConfirmationTest {
 
     @Test
     void should_not_manage_ttl_if_call_unsuccessful() {
-        when(callback.getEvent()).thenReturn(Event.END_APPLICATION);
+        when(callback.getEvent()).thenReturn(Event.RECORD_THE_DECISION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(caseDetails.getState()).thenReturn(State.APPLICATION_SUBMITTED); // Unsuccessful call: wrong state
 
-        PostSubmitCallbackResponse response = endApplicationConfirmation
+        PostSubmitCallbackResponse response = recordTheDecisionConfirmation
             .handle(callback);
 
         verify(timeToLiveDataService, never()).updateTheClock(callback, false);
