@@ -8,6 +8,7 @@ import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.ccddataservice.TimeToLiveDataService;
@@ -15,6 +16,9 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.service.ccddataservice.TimeToLiveD
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -38,6 +42,7 @@ public class MakeNewApplicationConfirmationTest {
         long caseId = 1234L;
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getCaseDetails().getId()).thenReturn(caseId);
+        when(caseDetails.getState()).thenReturn(State.APPLICATION_SUBMITTED);
         PostSubmitCallbackResponse response = makeNewApplicationConfirmation.handle(callback);
 
         assertNotNull(response.getConfirmationBody(), "Confirmation Body is null");
@@ -45,6 +50,26 @@ public class MakeNewApplicationConfirmationTest {
 
         assertNotNull(response.getConfirmationHeader(), "Confirmation Header is null");
         assertThat(response.getConfirmationHeader().get()).isEqualTo("# You have submitted this application");
+    }
+
+    @Test
+    void should_update_ttl_clock_if_call_successful() {
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getState()).thenReturn(State.APPLICATION_SUBMITTED);
+
+        PostSubmitCallbackResponse response = makeNewApplicationConfirmation.handle(callback);
+
+        verify(timeToLiveDataService, times(1)).updateTheClock(callback, true);
+    }
+
+    @Test
+    void should_not_update_ttl_clock_if_call_successful() {
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getState()).thenReturn(State.APPLICATION_ENDED); // State not updated (call unsuccessful)
+
+        PostSubmitCallbackResponse response = makeNewApplicationConfirmation.handle(callback);
+
+        verify(timeToLiveDataService, never()).updateTheClock(callback, true);
     }
 
     @Test
