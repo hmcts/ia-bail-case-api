@@ -104,7 +104,7 @@ security:
       - "editBailApplicationAfterSubmit"
       - "viewPreviousApplications"
       - "removeBailLegalRepresentative"
-    caseworker-ia-respondentofficer:
+    caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
       - "submitApplication"
