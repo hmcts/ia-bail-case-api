@@ -1,5 +1,12 @@
 package uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,13 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
@@ -44,33 +44,36 @@ class BailCasePostNotificationApiSenderTest {
     @Test
     void should_delegate_callback_to_downstream_api() {
 
-        final PostSubmitCallbackResponse notifiedAsylumCase = mock(PostSubmitCallbackResponse.class);
+        final PostSubmitCallbackResponse notifiedBailCase = mock(PostSubmitCallbackResponse.class);
 
         when(bailCaseCallbackApiDelegator.delegatePostSubmit(callback, ENDPOINT + CCD_SUBMITTED_PATH))
-            .thenReturn(notifiedAsylumCase);
+            .thenReturn(notifiedBailCase);
 
         final PostSubmitCallbackResponse postSubmitCallbackResponse = bailCasePostNotificationApiSender.send(callback);
 
         verify(bailCaseCallbackApiDelegator, times(1))
             .delegatePostSubmit(callback, ENDPOINT + CCD_SUBMITTED_PATH);
 
-        assertEquals(notifiedAsylumCase, postSubmitCallbackResponse);
+        assertEquals(notifiedBailCase, postSubmitCallbackResponse);
+
     }
 
     @Test
     void should_delegate_about_to_start_callback_to_downstream_api() {
 
-        final PostSubmitCallbackResponse notifiedAsylumCase = mock(PostSubmitCallbackResponse.class);
+        final PostSubmitCallbackResponse notifiedBailCase = mock(PostSubmitCallbackResponse.class);
 
         when(bailCaseCallbackApiDelegator.delegatePostSubmit(callback, ENDPOINT + CCD_SUBMITTED_PATH))
-            .thenReturn(notifiedAsylumCase);
+            .thenReturn(notifiedBailCase);
 
-        final PostSubmitCallbackResponse actualAsylumCase = bailCasePostNotificationApiSender.send(callback);
+        final PostSubmitCallbackResponse actualBailCase = bailCasePostNotificationApiSender.send(callback);
+
 
         verify(bailCaseCallbackApiDelegator, times(1))
             .delegatePostSubmit(callback, ENDPOINT + CCD_SUBMITTED_PATH);
 
-        assertEquals(notifiedAsylumCase, actualAsylumCase);
+        assertEquals(notifiedBailCase, actualBailCase);
+
     }
 
     @Test
