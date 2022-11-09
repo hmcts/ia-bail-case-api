@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.PostNotificationSender;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.service.CcdDataService;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdCaseAssignment;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.idam.IdentityManagerResponseException;
@@ -36,10 +37,14 @@ class ChangeRepresentationConfirmationTest {
 
     @Mock private Callback<BailCase> callback;
     @Mock private CcdCaseAssignment ccdCaseAssignment;
+
+    @Mock
+    PostNotificationSender<BailCase> postNotificationSender;
+
     @Mock private CcdDataService ccdDataService;
+
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
-    @Mock private PostNotificationSender<BailCase> postNotificationSender;
 
     public static final long CASE_ID = 1234567890L;
     public static final String BAILCASE_REFERENCE_NUMBER = "1111222233334444";
@@ -51,6 +56,7 @@ class ChangeRepresentationConfirmationTest {
 
         changeRepresentationConfirmation = new ChangeRepresentationConfirmation(
             ccdCaseAssignment,
+            postNotificationSender,
             ccdDataService
         );
     }
@@ -110,6 +116,7 @@ class ChangeRepresentationConfirmationTest {
         assertNotNull(callbackResponse);
 
         verify(ccdCaseAssignment, times(1)).applyNoc(callback);
+        verify(postNotificationSender, times(1)).send(callback);
         verify(ccdDataService, times(1)).clearLegalRepDetails(callback);
 
         assertThat(

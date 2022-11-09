@@ -55,6 +55,7 @@ class BailCasePostNotificationApiSenderTest {
             .delegatePostSubmit(callback, ENDPOINT + CCD_SUBMITTED_PATH);
 
         assertEquals(notifiedBailCase, postSubmitCallbackResponse);
+
     }
 
     @Test
@@ -67,10 +68,12 @@ class BailCasePostNotificationApiSenderTest {
 
         final PostSubmitCallbackResponse actualBailCase = bailCasePostNotificationApiSender.send(callback);
 
+
         verify(bailCaseCallbackApiDelegator, times(1))
             .delegatePostSubmit(callback, ENDPOINT + CCD_SUBMITTED_PATH);
 
         assertEquals(notifiedBailCase, actualBailCase);
+
     }
 
     @Test

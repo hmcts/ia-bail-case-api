@@ -1,13 +1,13 @@
 package uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients;
 
-import static java.util.Objects.requireNonNull;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.PostNotificationSender;
+
+import static java.util.Objects.requireNonNull;
 
 @Service
 public class BailCasePostNotificationApiSender implements PostNotificationSender<BailCase> {
