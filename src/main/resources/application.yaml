@@ -97,6 +97,8 @@ security:
       - "editBailApplicationAfterSubmit"
       - "viewPreviousApplications"
       - "removeBailLegalRepresentative"
+      - "createBailCaseLink"
+      - "maintainBailCaseLinks"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
@@ -116,6 +118,8 @@ security:
       - "uploadDocuments"
       - "editBailDocuments"
       - "viewPreviousApplications"
+      - "createBailCaseLink"
+      - "maintainBailCaseLinks"
 
 
 ### dependency configuration
