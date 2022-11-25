@@ -1,6 +1,5 @@
 {
-  "description": "Submit the application (post-submit REST call)",
-  "disabled": "true",
+  "description": "Submit the application (post-submit REST call)",  
   "request": {
     "uri": "/bail/ccdSubmitted",
     "credentials": "AdminOfficer",
