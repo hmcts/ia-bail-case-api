@@ -1,6 +1,5 @@
 {
-  "description": "RIA-33411 edit documents mid-event handler",
-  "disabled": "true",
+  "description": "RIA-33411 edit documents mid-event handler",  
   "request": {
     "uri": "/bail/ccdMidEvent",
     "credentials": "AdminOfficer",
