@@ -26,6 +26,10 @@ public class EventTest {
         assertEquals("viewPreviousApplications", Event.VIEW_PREVIOUS_APPLICATIONS.toString());
         assertEquals("nocRequest", Event.NOC_REQUEST.toString());
         assertEquals("applyNocDecision", Event.APPLY_NOC_DECISION.toString());
+        assertEquals("stopLegalRepresenting", Event.STOP_LEGAL_REPRESENTING.toString());
+        assertEquals("updateBailLegalRepDetails", Event.UPDATE_BAIL_LEGAL_REP_DETAILS.toString());
+        assertEquals("nocRequestBail", Event.NOC_REQUEST_BAIL.toString());
+        assertEquals("clearLegalRepresentativeDetails", Event.CLEAR_LEGAL_REPRESENTATIVE_DETAILS.toString());
         assertEquals("createBailCaseLink", Event.CREATE_BAIL_CASE_LINK.toString());
         assertEquals("maintainBailCaseLinks", Event.MAINTAIN_BAIL_CASE_LINKS.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
@@ -33,6 +37,6 @@ public class EventTest {
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(22, Event.values().length);
+        assertEquals(26, Event.values().length);
     }
 }
