@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.anyString;
@@ -110,12 +111,7 @@ class CcdSupplementaryUpdaterTest {
             )
         ).thenThrow(restClientResponseEx);
 
-        assertThatThrownBy(() -> ccdSupplementaryUpdater.setHmctsServiceIdSupplementary(callback))
-            .isInstanceOf(CcdDataIntegrationException.class)
-            .hasMessage("Couldn't update CCD case supplementary data using API: "
-                + ccdUrl
-                + ccdSupplementaryApiPath)
-            .hasCauseInstanceOf(RestClientResponseException.class);
+        assertThatNoException().isThrownBy(() -> ccdSupplementaryUpdater.setHmctsServiceIdSupplementary(callback));
 
         verify(restTemplate)
             .exchange(

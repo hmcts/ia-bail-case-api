@@ -25,15 +25,14 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 @Service
 @Slf4j
 public class CcdSupplementaryUpdater {
-
+    public static final String HMCTS_SERVICE_ID = "HMCTSServiceId";
     private static final String SERVICE_AUTHORIZATION = "ServiceAuthorization";
-
     private final RestTemplate restTemplate;
     private final AuthTokenGenerator serviceAuthTokenGenerator;
     private final UserDetails userDetails;
-    private String ccdUrl;
-    private String ccdSupplementaryApiPath;
-    private String hmctsServiceId;
+    private final String ccdUrl;
+    private final String ccdSupplementaryApiPath;
+    private final String hmctsServiceId;
 
     public CcdSupplementaryUpdater(RestTemplate restTemplate,
                                    AuthTokenGenerator serviceAuthTokenGenerator,
@@ -68,7 +67,7 @@ public class CcdSupplementaryUpdater {
         headers.set(SERVICE_AUTHORIZATION, serviceAuthorizationToken);
 
         Map<String, Map<String, Object>> payloadData = Maps.newHashMap();
-        payloadData.put("$set", singletonMap("HMCTSServiceId", hmctsServiceId));
+        payloadData.put("$set", singletonMap(HMCTS_SERVICE_ID, hmctsServiceId));
 
         Map<String, Object> payload = Maps.newHashMap();
         payload.put("supplementary_data_updates", payloadData);
@@ -80,23 +79,18 @@ public class CcdSupplementaryUpdater {
             .build(caseId);
 
         ResponseEntity<Object> response;
+        String url = ccdUrl + uri.getPath();
         try {
             response = restTemplate
                 .exchange(
-                    ccdUrl + uri.getPath(),
+                    url,
                     HttpMethod.POST,
                     requestEntity,
                     Object.class
                 );
-
+            log.info("Http status received from CCD supplementary update API; {}", response.getStatusCodeValue());
         } catch (RestClientResponseException e) {
-            throw new CcdDataIntegrationException(
-                "Couldn't update CCD case supplementary data using API: " + ccdUrl + ccdSupplementaryApiPath,
-                e
-            );
+            log.info("Couldn't update CCD case supplementary data using API: [{}]", url, e);
         }
-
-        log.info("Http status received from CCD supplementary update API; {}", response.getStatusCodeValue());
-
     }
 }
