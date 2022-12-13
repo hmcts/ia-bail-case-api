@@ -41,5 +41,6 @@
     <notes><![CDATA[snakeyml:1.33]]>
     </notes>
     <cve>CVE-2022-41946</cve>
+    <cve>CVE-2022-41854</cve>
   </suppress>
 </suppressions>
