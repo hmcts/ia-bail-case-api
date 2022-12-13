@@ -240,6 +240,8 @@ public enum BailCaseFieldDefinition {
         "legalRepPhone", new TypeReference<String>(){}),
     LEGAL_REP_REFERENCE(
         "legalRepReference", new TypeReference<String>(){}),
+    LEGAL_REP_COMPANY_ADDRESS(
+        "legalRepCompanyAddress", new TypeReference<AddressUK>(){}),
     GROUNDS_FOR_BAIL_REASONS(
         "groundsForBailReasons", new TypeReference<String>(){}),
     GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION(
@@ -300,10 +302,14 @@ public enum BailCaseFieldDefinition {
         "releaseStatusYesOrNo", new TypeReference<YesOrNo>(){}),
     SS_CONSENT_DECISION(
         "ssConsentDecision", new TypeReference<YesOrNo>(){}),
+    RECORD_UNSIGNED_DECISION_TYPE(//For UI
+        "recordUnsignedDecisionType", new TypeReference<String>(){}),
     RECORD_DECISION_TYPE(
         "recordDecisionType", new TypeReference<String>(){}),
     SECRETARY_OF_STATE_YES_OR_NO(
         "secretaryOfStateConsentYesOrNo", new TypeReference<YesOrNo>(){}),
+    DECISION_UNSIGNED_DETAILS_DATE(// For UI
+        "decisionUnsignedDetailsDate", new TypeReference<String>(){}),
     DECISION_DETAILS_DATE(
         "decisionDetailsDate", new TypeReference<String>(){}),
     ADD_CASE_NOTE_SUBJECT(
@@ -427,7 +433,21 @@ public enum BailCaseFieldDefinition {
     PREV_APP_GROUNDS_FOR_BAIL(
         "prevAppGroundsForBail", new TypeReference<String>() {}),
     PREV_APP_LEGAL_REP_DETAILS(
-        "prevAppLegalRepDetails", new TypeReference<String>() {})
+        "prevAppLegalRepDetails", new TypeReference<String>() {}),
+    UPDATE_LEGAL_REP_COMPANY(
+        "updateLegalRepCompany", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_EMAIL_ADDRESS(
+        "updateLegalRepEmail1", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_NAME(
+        "updateLegalRepName", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_REFERENCE(
+        "updateLegalRepReference", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_PHONE(
+        "updateLegalRepPhone", new TypeReference<String>(){}),
+    UNSIGNED_DECISION_DOCUMENTS_WITH_METADATA(
+        "unsgnDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    SIGNED_DECISION_DOCUMENTS_WITH_METADATA(
+        "signDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){})
     ;
 
 
