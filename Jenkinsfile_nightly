@@ -93,4 +93,15 @@ withNightlyPipeline(type, product, component) {
   enableSlackNotifications('#ia-tech')
   enableFullFunctionalTest()
 
+  after('fullFunctionalTest') {
+    publishHTML target: [
+      reportDir            : "target/site/serenity/",
+      reportFiles          : "index.html",
+      reportName           : "AAT Functional Tests",
+      alwaysLinkToLastBuild: true
+    ]
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+  }
+
+
 }

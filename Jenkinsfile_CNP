@@ -87,10 +87,37 @@ withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
 
   after('functionalTest:preview') {
+    publishHTML target: [
+      reportDir            : "build/reports/tests/functional",
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportFiles          : "index.html",
+      reportName           : "Preview Functional Tests",
+      alwaysLinkToLastBuild: true,
+      reportName           : "IA bail case api - Preview Functional Test Report"
+    ]
+
+    publishHTML target: [
+      reportDir            : "target/site/serenity/",
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportFiles          : "index.html",
+      reportName           : "Preview Functional Tests",
+      alwaysLinkToLastBuild: true,
+      reportName           : "IA bail case api - AAT Functional Test Sereneity Report"
+    ]
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
 
   after('functionalTest:aat') {
+    publishHTML target: [
+      reportDir            : "target/site/serenity/",
+      reportFiles          : "index.html",
+      reportName           : "IA bail case api - AAT Functional Tests",
+      alwaysLinkToLastBuild: true
+    ]
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
 
