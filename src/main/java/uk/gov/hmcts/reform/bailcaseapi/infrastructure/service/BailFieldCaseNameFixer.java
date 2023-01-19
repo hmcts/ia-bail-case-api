@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.infrastructure.service;
 
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
+
 import java.util.Optional;
 
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_NAME_HMCTS_INTERNAL;
@@ -34,11 +35,12 @@ public class BailFieldCaseNameFixer implements DataFixer {
 
         String expectedCaseName = null;
 
-        if(applicantFullNameToUse.isPresent()) {
+        if (applicantFullNameToUse.isPresent()) {
             expectedCaseName = applicantFullNameToUse.get().replaceAll("\\s+", " ").trim();
         } else if (applicantGivenNamesToBeConcatenated.isPresent() && applicantFamilyNameToBeConcatenated.isPresent()) {
-            expectedCaseName = getCaseName(applicantGivenNamesToBeConcatenated.get(),
-                                           applicantFamilyNameToBeConcatenated.get()
+            expectedCaseName = getCaseName(
+                applicantGivenNamesToBeConcatenated.get(),
+                applicantFamilyNameToBeConcatenated.get()
             );
         }
 

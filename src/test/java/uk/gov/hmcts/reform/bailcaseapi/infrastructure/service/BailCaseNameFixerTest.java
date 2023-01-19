@@ -29,15 +29,17 @@ class BailCaseNameFixerTest {
 
     @Mock
     private BailCase bailCaseMock;
+
     @BeforeEach
     public void setUp() {
-        bailFieldCaseNameFixer = new BailFieldCaseNameFixer(CASE_NAME_HMCTS_INTERNAL, APPLICANT_GIVEN_NAMES, APPLICANT_FAMILY_NAME, APPLICANT_FULL_NAME);
+        bailFieldCaseNameFixer = new BailFieldCaseNameFixer(CASE_NAME_HMCTS_INTERNAL, APPLICANT_GIVEN_NAMES,
+                                                            APPLICANT_FAMILY_NAME, APPLICANT_FULL_NAME
+        );
         bailCase = new BailCase();
     }
 
     @Test
     void transposes_bail_case_name() {
-
         final String expectedCaseName = "John Smith";
         bailCase.write(APPLICANT_GIVEN_NAMES, "John");
         bailCase.write(APPLICANT_FAMILY_NAME, "Smith");
@@ -50,7 +52,6 @@ class BailCaseNameFixerTest {
 
     @Test
     void transposes_and_format_bail_case_name() {
-
         final String expectedCaseName = "John Smith";
         bailCase.write(APPLICANT_GIVEN_NAMES, "John ");
         bailCase.write(APPLICANT_FAMILY_NAME, "  Smith");
@@ -63,7 +64,6 @@ class BailCaseNameFixerTest {
 
     @Test
     void transposes_and_format_bail_case_name_if_already_exists_and_is_incorrect() {
-
         final String expectedCaseName = "John Smith";
         bailCase.write(APPLICANT_GIVEN_NAMES, "John ");
         bailCase.write(APPLICANT_FAMILY_NAME, "  Smith");
@@ -77,7 +77,6 @@ class BailCaseNameFixerTest {
 
     @Test
     void does_not_set_case_name_when_applicatant_given_names_is_not_present() {
-
         final String expectedCaseName = "Some-CaseName";
         bailCase.write(APPLICANT_FAMILY_NAME, "Smith");
         bailCase.write(CASE_NAME_HMCTS_INTERNAL, expectedCaseName);
@@ -90,7 +89,6 @@ class BailCaseNameFixerTest {
 
     @Test
     void does_not_set_case_name_when_applicatant_family_name_is_not_present() {
-
         final String expectedCaseName = "Some-CaseName";
         bailCase.write(APPLICANT_GIVEN_NAMES, "John ");
         bailCase.write(CASE_NAME_HMCTS_INTERNAL, expectedCaseName);
