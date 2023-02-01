@@ -5,6 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 
@@ -16,6 +22,22 @@ public class CaseDetailsTest {
     private final CaseData caseData = mock(CaseData.class);
     private final LocalDateTime createdDate = LocalDateTime.parse("2022-01-05T11:00:22");
     private final String classification = "PUBLIC";
+    static ObjectMapper mapper = new ObjectMapper();
+    static JsonNode serviceIdValue;
+
+    static {
+        try {
+            serviceIdValue = mapper.readValue("\"BFA1\"", JsonNode.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final Map<String, JsonNode> supplementaryData = new HashMap<>();
+
+    static {
+        supplementaryData.put("HMCTSServiceId:", serviceIdValue);
+    }
 
     private CaseDetails<CaseData> caseDetails = new CaseDetails<>(
         id,
@@ -23,7 +45,8 @@ public class CaseDetailsTest {
         state,
         caseData,
         createdDate,
-        classification
+        classification,
+        supplementaryData
     );
 
     @Test
@@ -46,7 +69,8 @@ public class CaseDetailsTest {
             null,
             null,
             createdDate,
-            classification
+            classification,
+            supplementaryData
         );
 
         assertThatThrownBy(caseDetails::getJurisdiction)
