@@ -448,6 +448,8 @@ public enum BailCaseFieldDefinition {
         "unsgnDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
     SIGNED_DECISION_DOCUMENTS_WITH_METADATA(
         "signDecisionDocumentWithMetadata", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
+    CASE_NAME_HMCTS_INTERNAL(
+        "caseNameHmctsInternal", new TypeReference<String>() {}),
     APPELLANT_LEVEL_FLAGS("appellantLevelFlags", new TypeReference<StrategicCaseFlag>() {}),
     CASE_LEVEL_FLAGS("caseLevelFlags", new TypeReference<StrategicCaseFlag>(){})
     ;
