@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Arrays;
 import java.util.List;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.StrategicCaseFlag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.ChangeOrganisationRequest;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
@@ -451,7 +452,7 @@ public enum BailCaseFieldDefinition {
     CASE_NAME_HMCTS_INTERNAL(
         "caseNameHmctsInternal", new TypeReference<String>() {}),
     APPELLANT_LEVEL_FLAGS("appellantLevelFlags", new TypeReference<StrategicCaseFlag>() {}),
-    CASE_LEVEL_FLAGS("caseLevelFlags", new TypeReference<StrategicCaseFlag>(){})
+    CASE_FLAGS("caseFlags", new TypeReference<StrategicCaseFlag>(){})
     ;
 
 

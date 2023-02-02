@@ -9,7 +9,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_FULL_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPELLANT_LEVEL_FLAGS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_LEVEL_FLAGS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_FLAGS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 
 import java.util.Optional;
@@ -21,9 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.StrategicCaseFlag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.StrategicCaseFlag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -51,7 +52,7 @@ class CreateFlagHandlerTest {
     @BeforeEach
     public void setUp() {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(callback.getEvent()).thenReturn(Event.CREATE_FLAG);
         when(caseDetails.getCaseData()).thenReturn(asylumCase);
         when(asylumCase.read(APPLICANT_FULL_NAME, String.class)).thenReturn(Optional.of(applicantNameForDisplay));
 
@@ -62,18 +63,18 @@ class CreateFlagHandlerTest {
     void should_write_to_case_flag_fields() {
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
-            createFlagHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+            createFlagHandler.handle(ABOUT_TO_START, callback);
 
         verify(asylumCase, times(1))
             .write(APPELLANT_LEVEL_FLAGS, strategicCaseFlag);
         verify(asylumCase, times(1))
-            .write(CASE_LEVEL_FLAGS, strategicCaseFlagEmpty);
+            .write(CASE_FLAGS, strategicCaseFlagEmpty);
     }
 
     @Test
     void handling_should_throw_if_cannot_actually_handle() {
 
-        assertThatThrownBy(() -> createFlagHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
+        assertThatThrownBy(() -> createFlagHandler.handle(ABOUT_TO_SUBMIT, callback))
                 .hasMessage("Cannot handle callback")
                 .isExactlyInstanceOf(IllegalStateException.class);
     }
@@ -89,8 +90,8 @@ class CreateFlagHandlerTest {
 
                 boolean canHandle = createFlagHandler.canHandle(callbackStage, callback);
 
-                if (event == Event.START_APPLICATION
-                    && callbackStage == ABOUT_TO_SUBMIT) {
+                if (event == Event.CREATE_FLAG
+                    && callbackStage == ABOUT_TO_START) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
