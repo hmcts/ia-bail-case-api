@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath("org.yaml:snakeyaml:1.23")
+    classpath("org.yaml:snakeyaml:2.0")
     classpath("net.serenity-bdd:serenity-gradle-plugin:2.0.11")
   }
 }
@@ -368,19 +368,19 @@ dependencies {
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.6.28'
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
-  testCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
+  testCompile(group: 'org.yaml', name: 'snakeyaml', version: '2.0') {
     force = true
   }
 
-  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
+  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '2.0') {
     force = true
   }
 
-  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
+  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '2.0') {
     force = true
   }
 
-  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '1.26') {
+  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: '2.0') {
     force = true
   }
 
