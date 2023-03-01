@@ -79,9 +79,9 @@ public class CcdScenarioRunnerTest {
 
         loadPropertiesIntoMapValueExpander();
 
-        //for (Fixture fixture : fixtures) {
-        //    fixture.prepare();
-        //}
+        for (Fixture fixture : fixtures) {
+            fixture.prepare();
+        }
 
 
         assertFalse(

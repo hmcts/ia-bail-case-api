@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.util;
 
 import com.google.common.io.ByteStreams;
 import java.io.IOException;
-import java.util.List;
+import java.util.Collections;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -58,7 +58,7 @@ public class SystemDocumentManagementUploader {
                         serviceAuthorizationToken,
                         "Bail",
                         "IA",
-                        List.of(file)
+                        Collections.singletonList(file)
                     );
 
 
