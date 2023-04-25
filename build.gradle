@@ -326,7 +326,9 @@ dependencies {
 
   compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.3.3'
 
+  compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
 
+  compile group: 'com.github.ben-manes.caffeine', name: 'caffeine'
 
 
   compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
