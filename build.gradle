@@ -249,20 +249,6 @@ dependencyManagement {
       entry 'snakeyaml'
     }
 
-    // CVE-2019-0232, CVE-2019-0199 - command line injections on windows
-    //CVE-2020-13934
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.73') {
-      entry 'tomcat-embed-core'
-      entry 'tomcat-embed-el'
-      entry 'tomcat-embed-websocket'
-    }
-
-    //CVE-2021-42550
-    dependencySet(group: 'ch.qos.logback', version: '1.2.10') {
-      entry 'logback-classic'
-      entry 'logback-core'
-    }
-
     dependencySet(group: 'commons-fileupload', version: '1.5') {
       entry 'commons-fileupload'
     }
