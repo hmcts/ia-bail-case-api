@@ -38,7 +38,7 @@ def versions = [
   springDoc          : '1.6.8',
   springHystrix      : '2.2.10.RELEASE',
   pact_version       : '4.1.7',
-  snakeyml           : '1.33'
+  snakeyml           : '2.0'
 ]
 
 ext.libraries = [
