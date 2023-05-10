@@ -38,7 +38,7 @@ def versions = [
   springDoc          : '1.6.8',
   springHystrix      : '2.2.10.RELEASE',
   pact_version       : '4.1.7',
-  snakeyml           : '2.0'
+  snakeyaml          : '2.0'
 ]
 
 ext.libraries = [
@@ -245,7 +245,7 @@ repositories {
 dependencyManagement {
   dependencies {
 
-    dependencySet(group: 'org.yaml', version: '2.0') {
+    dependencySet(group: 'org.yaml', version: versions.snakeyaml) {
       entry 'snakeyaml'
     }
 
@@ -354,19 +354,19 @@ dependencies {
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
-  testCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyml) {
+  testCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     force = true
   }
 
-  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyml) {
+  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     force = true
   }
 
-  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyml) {
+  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     force = true
   }
 
-  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyml) {
+  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     force = true
   }
 
