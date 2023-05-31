@@ -113,7 +113,6 @@ security:
       - "editBailApplication"
       - "makeNewApplication"
       - "viewPreviousApplications"
-      - "createFlag"
     caseworker-ia-iacjudge:
       - "recordTheDecision"
       - "addCaseNote"
@@ -125,6 +124,7 @@ security:
       - "uploadDocuments"
       - "editBailDocuments"
       - "viewPreviousApplications"
+      - "createFlag"
 
 
 ### dependency configuration
