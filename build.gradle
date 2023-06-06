@@ -113,13 +113,18 @@ sourceSets {
   }
 }
 
+lombok {
+  config['lombok.addLombokGeneratedAnnotation'] = 'true'
+  config['lombok.anyConstructor.addConstructorProperties'] = 'true'
+}
+
 tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
 
 configurations {
-  integrationTestImplementation.extendsFrom testCompile
+  integrationTestCompile.extendsFrom testCompile
   integrationTestRuntime.extendsFrom testRuntime
   functionalTestCompile.extendsFrom testCompile
   functionalTestRuntime.extendsFrom testRuntime
@@ -346,7 +351,7 @@ dependencies {
 
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.6.28'
 
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
   testImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     version {
