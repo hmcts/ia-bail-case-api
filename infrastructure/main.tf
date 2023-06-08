@@ -24,4 +24,11 @@ data "azurerm_key_vault" "ia_key_vault" {
   resource_group_name = "${local.key_vault_name}"
 }
 
-
+data "azurerm_key_vault_secret" "app_insights_connection_string" {
+  name      = "ia-app-insights-connection-string"
+  key_vault_id = data.azurerm_key_vault.product.id
+}
+resource "azurerm_key_vault_secret" "local_app_insights_connection_string" {
+  name         = "app-insights-connection-string"
+  value        = data.azurerm_key_vault_secret.app_insights_connection_string.value
+}
