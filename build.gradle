@@ -77,10 +77,6 @@ tasks.withType(Test) {
   }
 }
 
-tasks.withType(Copy).configureEach {
-  duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
-
 sourceSets {
 
   functionalTest {
@@ -118,6 +114,14 @@ sourceSets {
     }
     resources.srcDir file('src/contactTest/resources')
   }
+}
+
+processSmokeTestResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+processFunctionalTestResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 lombok {
