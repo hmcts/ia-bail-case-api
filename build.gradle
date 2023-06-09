@@ -77,10 +77,11 @@ tasks.withType(Test) {
   }
 }
 
+tasks.withType(Copy).configureEach {
+  duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
 sourceSets {
-  tasks.withType(Copy).configureEach {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-  }
 
   functionalTest {
     java {
