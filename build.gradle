@@ -77,6 +77,10 @@ tasks.withType(Test) {
   }
 }
 
+tasks.withType(Copy).configureEach {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 sourceSets {
   functionalTest {
     java {
@@ -84,6 +88,7 @@ sourceSets {
       runtimeClasspath += main.output
       srcDir file('src/functionalTest/java')
     }
+    resources.srcDir file('src/functionalTest/resources')
   }
 
   integrationTest {
@@ -101,6 +106,7 @@ sourceSets {
       runtimeClasspath += main.output
       srcDir file('src/smokeTest/java')
     }
+    resources.srcDir file('src/smokeTest/resources')
   }
 
   contractTest {
