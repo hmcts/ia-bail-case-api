@@ -83,6 +83,7 @@ sourceSets {
       runtimeClasspath += main.output
       srcDir file('src/functionalTest/java')
     }
+    resources.srcDir file('src/functionalTest/resources')
   }
 
   integrationTest {
@@ -100,6 +101,7 @@ sourceSets {
       runtimeClasspath += main.output
       srcDir file('src/smokeTest/java')
     }
+    resources.srcDir file('src/smokeTest/resources')
   }
 
   contractTest {
@@ -110,6 +112,14 @@ sourceSets {
     }
     resources.srcDir file('src/contactTest/resources')
   }
+}
+
+processSmokeTestResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+processFunctionalTestResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 lombok {
