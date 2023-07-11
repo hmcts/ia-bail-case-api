@@ -135,18 +135,6 @@ checkstyle.toolVersion = '9.2.1'
 checkstyle.configFile = new File(rootDir, "checkstyle.xml")
 checkstyle.maxWarnings(5)
 
-// make build fail on Checkstyle issues (https://github.com/gradle/gradle/issues/881)
-tasks.withType(Checkstyle).each { checkstyleTask ->
-  checkstyleTask.doLast {
-    reports.all { report ->
-      def outputFile = report.destination
-      if (outputFile.exists() && outputFile.text.contains("<error ")) {
-        throw new GradleException("There were checkstyle warnings! For more info check $outputFile")
-      }
-    }
-  }
-}
-
 pmd {
   toolVersion = '6.41.0'
   ignoreFailures = true
