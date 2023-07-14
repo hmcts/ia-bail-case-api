@@ -16,7 +16,8 @@ class ConfigValidatorAppListenerTest {
         configValidatorAppListener.setIaConfigValidatorSecret(null);
 
         // When/Then
-        assertThrows(IllegalArgumentException.class, configValidatorAppListener::breakOnMissingIaConfigValidatorSecret);
+        assertThrows(IllegalArgumentException.class,
+                     configValidatorAppListener::breakOnMissingIaConfigValidatorSecret);
     }
 
     @Test
@@ -26,7 +27,8 @@ class ConfigValidatorAppListenerTest {
         configValidatorAppListener.setIaConfigValidatorSecret("");
 
         // When/Then
-        assertThrows(IllegalArgumentException.class, configValidatorAppListener::breakOnMissingIaConfigValidatorSecret);
+        assertThrows(IllegalArgumentException.class,
+                     configValidatorAppListener::breakOnMissingIaConfigValidatorSecret);
     }
 
     @Test
