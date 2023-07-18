@@ -35,7 +35,8 @@ public class ConfigValidatorAppListener implements ApplicationListener<ContextRe
         log.info("{} value: {}", CLUSTER_NAME, clusterName);
         if (StringUtils.isBlank(clusterName)) {
             log.warn("{} is null or empty. Skipping this check. This is allowed on a developer's local environment "
-                + "but not on a cluster. If you are in a cluster, this warning is going to be a problem.", CLUSTER_NAME);
+                + "but not on a cluster. If you are in a cluster, this warning is going to be a problem.",
+                     CLUSTER_NAME);
             return;
         }
 
