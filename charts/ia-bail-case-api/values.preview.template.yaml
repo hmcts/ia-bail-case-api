@@ -27,4 +27,4 @@ java:
         - prof-ref-data-url
         - launch-darkly-sdk-key
         - app-insights-connection-string
-
+        - ia-config-validator-secret
