@@ -309,7 +309,7 @@ dependencies {
 
   implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
 
-  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.13.0'
 
   implementation group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
 
