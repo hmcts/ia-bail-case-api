@@ -62,6 +62,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -142,7 +143,8 @@ public class ShowPreviousApplicationService {
                 .map((idValue) -> "Case notes " + index.incrementAndGet()
                     + "<br>*Subject:* " + idValue.getValue().getCaseNoteSubject()
                     + "<br>*Case note:* " + idValue.getValue().getCaseNoteDescription()
-                    + "<br>*Document:* " + createDocumentLabel(idValue.getValue().getCaseNoteDocument())
+                    + (Objects.isNull(idValue.getValue().getCaseNoteDocument()) ? ""
+                    : "<br>*Document:* " + createDocumentLabel(idValue.getValue().getCaseNoteDocument()))
                     + "<br>*Added by:* " + idValue.getValue().getUser()
                     + "<br>*Date added:* " + formatDate(idValue.getValue().getDateAdded())
                     + "<br>")
