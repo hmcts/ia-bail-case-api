@@ -341,7 +341,7 @@ public class ShowPreviousApplicationServiceTest {
                                       + " <a href=\"/documents/document1BinaryUrl\">document1FileName</a><br>"
                                       + "*Added by:* admin-user<br>*Date added:* 23 Jun 2022<br>"
                                       + "<br>Case notes 2<br>*Subject:* subject2<br>*Case note:* description2<br>"
-                                      + "*Added by:* admin-user2<br>*Date added:* 22 Jun 2022<br>"));
+                                      + "*Document:* N/A<br>*Added by:* admin-user2<br>*Date added:* 22 Jun 2022<br>"));
     }
 
 
