@@ -3,12 +3,20 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
-@Value
+@Getter
+@Setter
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaseFlagDetail {
-    String id;
-    @JsonProperty("value") CaseFlagValue caseFlagValue;
+
+    private CaseFlagDetail() {
+        // noop -- for deserializer
+    }
+
+    private String id;
+    @JsonProperty("value")
+    private CaseFlagValue caseFlagValue;
 }

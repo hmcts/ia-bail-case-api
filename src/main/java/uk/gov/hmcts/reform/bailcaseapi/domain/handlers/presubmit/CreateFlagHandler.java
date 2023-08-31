@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_FLAGS;
 
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.StrategicCaseFlag;
@@ -15,6 +16,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
+@Slf4j
 @Component
 class CreateFlagHandler implements PreSubmitCallbackHandler<BailCase> {
 
@@ -57,10 +59,14 @@ class CreateFlagHandler implements PreSubmitCallbackHandler<BailCase> {
                     .orElseThrow(() -> new IllegalStateException("applicantFullName is not present"));
 
             bailCase.write(APPELLANT_LEVEL_FLAGS, new StrategicCaseFlag(appellantNameForDisplay));
+        } else {
+            log.info("Existing Appellant Level flags: {}", existingAppellantLevelFlags);
         }
 
         if (existingCaseLevelFlags.isEmpty()) {
             bailCase.write(CASE_FLAGS, new StrategicCaseFlag());
+        }  else {
+            log.info("Existing Case Level flags: {}", existingCaseLevelFlags);
         }
 
         return new PreSubmitCallbackResponse<>(bailCase);
