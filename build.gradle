@@ -125,6 +125,7 @@ processSmokeTestResources {
 }
 
 lombok {
+  config['config.stopbubbling'] = 'true'
   config['lombok.addLombokGeneratedAnnotation'] = 'true'
   config['lombok.anyConstructor.addConstructorProperties'] = 'true'
 }
@@ -327,6 +328,10 @@ dependencies {
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
+
+  compileOnly 'org.projectlombok:lombok'
+
+  annotationProcessor 'org.projectlombok:lombok'
 
   testImplementation group: 'uk.gov.hmcts.reform', name: 'document-management-client', version: '7.0.0'
 
