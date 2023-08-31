@@ -17,7 +17,7 @@ plugins {
   id 'org.flywaydb.flyway' version '5.2.4'
   id 'org.owasp.dependencycheck' version '8.2.1'
   id 'org.sonarqube' version '3.0'
-  id 'org.springframework.boot' version '2.7.11'
+  id 'org.springframework.boot' version '2.7.14'
   id 'pmd'
   id 'uk.gov.hmcts.java' version '0.12.5'
 }
@@ -112,6 +112,18 @@ sourceSets {
   }
 }
 
+processIntegrationTestResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+processFunctionalTestResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+processSmokeTestResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 lombok {
   config['lombok.addLombokGeneratedAnnotation'] = 'true'
   config['lombok.anyConstructor.addConstructorProperties'] = 'true'
@@ -123,11 +135,11 @@ tasks.withType(JavaCompile) {
 
 
 configurations {
-  integrationTestCompile.extendsFrom testCompile
+  integrationTestCompile.extendsFrom testImplementation
   integrationTestRuntime.extendsFrom testRuntime
-  functionalTestCompile.extendsFrom testCompile
+  functionalTestCompile.extendsFrom testImplementation
   functionalTestRuntime.extendsFrom testRuntime
-  contractTestCompile.extendsFrom testCompile
+  contractTestCompile.extendsFrom testImplementation
   contractTestRuntime.extendsFrom testRuntime
 }
 
@@ -280,53 +292,53 @@ dependencyManagement {
 }
 
 dependencies {
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server'
 
-  compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.14'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.14'
 
-  compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
+  implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'
 
-  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.1.1'
-  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.1'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.1.1'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.1'
 
-  compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
+  implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
-  compile group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
+  implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
 
-  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 
-  compile group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
+  implementation group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
 
-  compile group: 'com.google.guava', name: 'guava', version: '31.1-jre'
-  compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
-  compile group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: '6.1.0'
+  implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
+  implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
+  implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: '6.1.0'
 
-  compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.3.3'
-
-
+  implementation group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.3.3'
 
 
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-core'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations'
-  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
 
-  testCompile group: 'uk.gov.hmcts.reform', name: 'document-management-client', version: '7.0.0'
 
-  testCompile group: 'io.rest-assured', name: 'rest-assured-all', version: '4.3.1'
-  testCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
-  testCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-  testCompile group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
-  testCompile group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
-  testCompile group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
-  testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.0'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
 
-  testCompile group: 'org.springframework.security', name: 'spring-security-test'
+  testImplementation group: 'uk.gov.hmcts.reform', name: 'document-management-client', version: '7.0.0'
+
+  testImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: '4.3.1'
+  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
+  testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
+  testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+  testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
+  testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
+  testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.5.0'
+
+  testImplementation group: 'org.springframework.security', name: 'spring-security-test'
 
   testImplementation libraries.junit5
 
@@ -343,44 +355,44 @@ dependencies {
 
 
   //pact contract testing
-  contractTestCompile group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
-  contractTestCompile group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
+  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
+  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
 
-  contractTestCompile("org.junit.jupiter:junit-jupiter-api:5.7.0")
+  contractTestImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
   contractTestRuntime("org.junit.jupiter:junit-jupiter-engine:5.7.0")
   contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.3.2')
 
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.6.28'
 
-  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
-  testCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
+  testImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     force = true
   }
 
-  integrationTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
+  integrationTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     force = true
   }
 
-  functionalTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
+  functionalTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     force = true
   }
 
-  contractTestCompile(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
+  contractTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     force = true
   }
 
-  integrationTestCompile sourceSets.main.runtimeClasspath
-  integrationTestCompile sourceSets.test.runtimeClasspath
+  integrationTestImplementation sourceSets.main.runtimeClasspath
+  integrationTestImplementation sourceSets.test.runtimeClasspath
 
-  functionalTestCompile sourceSets.main.runtimeClasspath
-  functionalTestCompile sourceSets.test.runtimeClasspath
+  functionalTestImplementation sourceSets.main.runtimeClasspath
+  functionalTestImplementation sourceSets.test.runtimeClasspath
 
-  smokeTestCompile sourceSets.main.runtimeClasspath
-  smokeTestCompile sourceSets.test.runtimeClasspath
+  smokeTestImplementation sourceSets.main.runtimeClasspath
+  smokeTestImplementation sourceSets.test.runtimeClasspath
 
-  contractTestCompile sourceSets.main.runtimeClasspath
-  contractTestCompile sourceSets.test.runtimeClasspath
+  contractTestImplementation sourceSets.main.runtimeClasspath
+  contractTestImplementation sourceSets.test.runtimeClasspath
 }
 
 task runAndPublishConsumerPactTests(type: Test) {
