@@ -105,6 +105,8 @@ security:
       - "viewPreviousApplications"
       - "removeBailLegalRepresentative"
       - "createFlag"
+      - "createBailCaseLink"
+      - "maintainBailCaseLinks"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
@@ -125,13 +127,15 @@ security:
       - "editBailDocuments"
       - "viewPreviousApplications"
       - "createFlag"
+      - "createBailCaseLink"
+      - "maintainBailCaseLinks"
 
 
 ### dependency configuration
 ccdGatewayUrl: ${CCD_GW_URL:http://localhost:3453}
 core_case_data_api_url: ${CCD_URL:http://127.0.0.1:4452}
 document_management.url: ${DM_URL:http://127.0.0.1:4506}
-
+case_document_am.url: ${CASE_DOCUMENT_AM_URL:http://127.0.0.1:4455}
 
 documentsApi:
   endpoint: ${IA_CASE_DOCUMENTS_API_URL:http://127.0.0.1:8092}
@@ -205,3 +209,8 @@ assign_case_access_api_url: ${AAC_URL:http://127.0.0.1:4454}
 core_case_data_api_assignments_path: "/case-users"
 assign_case_access_api_assignments_path: "/case-assignments"
 apply_noc_access_api_assignments_path: "/noc/check-noc-approval"
+
+ia:
+  config:
+    validator:
+      secret: ${IA_CONFIG_VALIDATOR_SECRET:}

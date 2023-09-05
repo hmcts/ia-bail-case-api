@@ -29,6 +29,8 @@ public enum Event {
     NOC_REQUEST_BAIL("nocRequestBail"),
     CLEAR_LEGAL_REPRESENTATIVE_DETAILS("clearLegalRepresentativeDetails"),
     CREATE_FLAG("createFlag"),
+    CREATE_BAIL_CASE_LINK("createBailCaseLink"),
+    MAINTAIN_BAIL_CASE_LINKS("maintainBailCaseLinks"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
