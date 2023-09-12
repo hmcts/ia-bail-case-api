@@ -167,7 +167,7 @@ task integration(type: Test, description: 'Runs the integration tests.', group: 
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
-  print('./gradlew --no-daemon --init-script init.gradle --rerun-tasks functional'.execute().text.trim())
+
   systemProperty "scenario", System.getProperty('scenario')
 
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
