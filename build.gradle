@@ -93,8 +93,8 @@ sourceSets {
 
   integrationTest {
     java {
-      compileClasspath += main.output
-      runtimeClasspath += main.output
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
       srcDir file('src/integrationTest/java')
     }
     resources.srcDir file('src/integrationTest/resources')
@@ -102,8 +102,8 @@ sourceSets {
 
   smokeTest {
     java {
-      compileClasspath += main.output
-      runtimeClasspath += main.output
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
       srcDir file('src/smokeTest/java')
     }
     resources.srcDir file('src/smokeTest/resources')
@@ -111,8 +111,8 @@ sourceSets {
 
   contractTest {
     java {
-      compileClasspath += main.output
-      runtimeClasspath += main.output
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
       srcDir file('src/contractTest/java')
     }
     resources.srcDir file('src/contactTest/resources')
@@ -138,10 +138,13 @@ tasks.withType(JavaCompile) {
 
 
 configurations {
+  integrationTestImplementation.extendsFrom testImplementation
   integrationTestCompile.extendsFrom testCompile
   integrationTestRuntime.extendsFrom testRuntime
+  functionalTestImplementation.extendsFrom testImplementation
   functionalTestCompile.extendsFrom testCompile
   functionalTestRuntime.extendsFrom testRuntime
+  contractTestImplementation.extendsFrom testImplementation
   contractTestCompile.extendsFrom testCompile
   contractTestRuntime.extendsFrom testRuntime
 }
@@ -173,10 +176,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
   finalizedBy aggregate
-  testLogging {
-    outputs.upToDateWhen {false}
-    showStandardStreams = true
-  }
+  testLogging.showStandardStreams = true
 }
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
