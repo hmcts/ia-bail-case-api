@@ -84,8 +84,8 @@ tasks.withType(Test) {
 sourceSets {
   functionalTest {
     java {
-      compileClasspath += main.output + test.output
-      runtimeClasspath += main.output + test.output
+      compileClasspath += main.output
+      runtimeClasspath += main.output
       srcDir file('src/functionalTest/java')
     }
     resources.srcDir file('src/functionalTest/resources')
@@ -93,8 +93,8 @@ sourceSets {
 
   integrationTest {
     java {
-      compileClasspath += main.output + test.output
-      runtimeClasspath += main.output + test.output
+      compileClasspath += main.output
+      runtimeClasspath += main.output
       srcDir file('src/integrationTest/java')
     }
     resources.srcDir file('src/integrationTest/resources')
@@ -102,8 +102,8 @@ sourceSets {
 
   smokeTest {
     java {
-      compileClasspath += main.output + test.output
-      runtimeClasspath += main.output + test.output
+      compileClasspath += main.output
+      runtimeClasspath += main.output
       srcDir file('src/smokeTest/java')
     }
     resources.srcDir file('src/smokeTest/resources')
@@ -111,8 +111,8 @@ sourceSets {
 
   contractTest {
     java {
-      compileClasspath += main.output + test.output
-      runtimeClasspath += main.output + test.output
+      compileClasspath += main.output
+      runtimeClasspath += main.output
       srcDir file('src/contractTest/java')
     }
     resources.srcDir file('src/contactTest/resources')
@@ -138,13 +138,10 @@ tasks.withType(JavaCompile) {
 
 
 configurations {
-  integrationTestImplementation.extendsFrom testImplementation
   integrationTestCompile.extendsFrom testCompile
   integrationTestRuntime.extendsFrom testRuntime
-  functionalTestImplementation.extendsFrom testImplementation
   functionalTestCompile.extendsFrom testCompile
   functionalTestRuntime.extendsFrom testRuntime
-  contractTestImplementation.extendsFrom testImplementation
   contractTestCompile.extendsFrom testCompile
   contractTestRuntime.extendsFrom testRuntime
 }
@@ -176,7 +173,6 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
   finalizedBy aggregate
-  testLogging.showStandardStreams = true
 }
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
@@ -375,7 +371,8 @@ dependencies {
   contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: versions.pact_version
   contractTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiter
-  contractTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version : versions.jupiter
+  contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiter
+  contractTestRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version : versions.jupiter
 
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.6.28'
 
@@ -383,8 +380,6 @@ dependencies {
     exclude group: 'commons-io', module: 'commons-io'
     exclude group: 'org.apache.commons', module: 'commons-lang3'
   }
-
-  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 
   testImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
     version {
