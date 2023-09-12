@@ -173,7 +173,13 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
   finalizedBy aggregate
-  verbose = true
+  testLogging {
+    outputs.upToDateWhen {false}
+    showStandardStreams = true
+    showStackTraces = true
+    showExceptions = true
+    showCauses = true
+  }
 }
 
 task smoke(type: Test, description: 'Runs the smoke tests.', group: 'Verification') {
