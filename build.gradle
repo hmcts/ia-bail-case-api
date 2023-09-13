@@ -177,8 +177,6 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
     outputs.upToDateWhen {false}
     showStandardStreams = true
     showStackTraces = true
-    showExceptions = true
-    showCauses = true
   }
 }
 
@@ -233,7 +231,7 @@ pitest {
   timestampedReports = true
   failWhenNoMutations = false
   verbose = true
-  mutationThreshold = 85
+  mutationThreshold = 90
 }
 
 project.tasks['pitest'].group = "Verification"
