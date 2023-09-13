@@ -124,10 +124,6 @@ processFunctionalTestResources {
 }
 
 configurations {
-  integrationTestCompile.extendsFrom testCompile
-  integrationTestRuntime.extendsFrom testRuntime
-  functionalTestCompile.extendsFrom testCompile
-  functionalTestRuntime.extendsFrom testRuntime
   contractTestCompile.extendsFrom testCompile
   contractTestRuntime.extendsFrom testRuntime
 }
