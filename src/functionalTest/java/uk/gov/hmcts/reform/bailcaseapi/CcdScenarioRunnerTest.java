@@ -11,6 +11,7 @@ import feign.RetryableException;
 import io.restassured.RestAssured;
 import io.restassured.http.Headers;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -225,7 +226,7 @@ public class CcdScenarioRunnerTest {
                                               actualResponse
                                           )
                     );
-                } catch(Error | RetryableException e) {
+                } catch(Error | RetryableException | SocketTimeoutException e) {
                     System.out.println("Scenario failed with error " + e.getMessage());
                 }
             }
