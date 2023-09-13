@@ -190,9 +190,8 @@ jacoco {
   toolVersion = "0.8.10"
 }
 
-//TODO: include integration in parameter along with test once integration tests are added.
 jacocoTestReport {
-  executionData(test)
+  executionData(test, integration)
   reports {
     xml.required = true
     csv.required = false
