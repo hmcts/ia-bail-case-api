@@ -65,12 +65,8 @@ java {
   }
 }
 
-compileJava {
-  options.compilerArgs << '-parameters' << '-Xlint:deprecation' << "-Xlint:unchecked" << "-Werror"
-}
-
-compileTestJava {
-  options.compilerArgs << '-Xlint:deprecation' << "-Xlint:unchecked" << "-Werror"
+tasks.withType(JavaCompile) {
+  options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
 tasks.withType(Test) {
@@ -126,16 +122,6 @@ processSmokeTestResources {
 processFunctionalTestResources {
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
-
-lombok {
-  config['lombok.addLombokGeneratedAnnotation'] = 'true'
-  config['lombok.anyConstructor.addConstructorProperties'] = 'true'
-}
-
-tasks.withType(JavaCompile) {
-  options.compilerArgs << "-Xlint:unchecked" << "-Werror"
-}
-
 
 configurations {
   integrationTestCompile.extendsFrom testCompile
