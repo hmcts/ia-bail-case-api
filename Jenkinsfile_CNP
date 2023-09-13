@@ -15,7 +15,6 @@ def component = "bail-case-api"
 
 def secrets = [
   'ia-${env}': [
-
     secret('idam-client-id', 'IA_IDAM_CLIENT_ID'),
     secret('idam-secret', 'IA_IDAM_SECRET'),
     secret('s2s-secret', 'IA_S2S_SECRET'),
@@ -24,6 +23,8 @@ def secrets = [
     secret('docmosis-enabled', 'IA_DOCMOSIS_ENABLED'),
     secret('em-stitching-enabled', 'IA_EM_STITCHING_ENABLED'),
     secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
+    secret('app-insights-connection-string', 'app-insights-connection-string'),
+    secret('ia-config-validator-secret', 'IA_CONFIG_VALIDATOR_SECRET'),
 
     secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),
     secret('test-caseofficer-password', 'TEST_CASEOFFICER_PASSWORD'),
@@ -81,6 +82,7 @@ withPipeline(type, product, component) {
   env.OPEN_ID_IDAM_URL = "https://idam-web-public.aat.platform.hmcts.net"
   env.S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
   env.PACT_BROKER_FULL_URL = "https://pact-broker.platform.hmcts.net"
+  env.CASE_DOCUMENT_AM_URL = "http://ccd-case-document-am-api-aat.service.core-compute-aat.internal"
 
   enableAksStagingDeployment()
   disableLegacyDeployment()
