@@ -30,8 +30,8 @@ apply plugin: 'project-report'
 apply plugin: 'idea'
 
 def versions = [
-  jupiter            : '5.8.2',
-  junitPlatform      : '1.8.2',
+  jupiter            : '5.8.1',
+  junitPlatform      : '1.8.1',
   pitest             : '1.9.0',
   gradlePitest       : '1.9.0',
   reformLogging      : '5.1.7',
