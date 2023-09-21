@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.consumer.ccd;
 
 import static org.mockito.Mockito.when;
 
-import io.pactfoundation.consumer.junit5.PactConsumerTestExt;
+import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;

@@ -2,9 +2,9 @@ package uk.gov.hmcts.reform.bailcaseapi.consumer.ccd;
 
 import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 
-import io.pactfoundation.consumer.dsl.DslPart;
-import io.pactfoundation.consumer.dsl.PactDslWithProvider;
-import io.pactfoundation.consumer.junit5.PactTestFor;
+import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
+import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import java.io.IOException;
