@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.consumer.ccd;
 
-import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
 import static java.util.Collections.singletonMap;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
