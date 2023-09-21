@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.consumer.ccd;
 
-import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
+import io.pactfoundation.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.core.model.annotations.PactFolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

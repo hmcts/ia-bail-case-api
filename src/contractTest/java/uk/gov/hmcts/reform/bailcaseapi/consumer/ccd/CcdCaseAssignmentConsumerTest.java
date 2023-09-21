@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.consumer.ccd;
 
-import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.consumer.junit5.PactTestFor;
+import io.pactfoundation.consumer.dsl.PactDslWithProvider;
+import io.pactfoundation.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import java.io.IOException;

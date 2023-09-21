@@ -1,11 +1,11 @@
 package uk.gov.hmcts.reform.bailcaseapi.consumer.ccd;
 
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static java.util.Collections.singletonMap;
 
-import au.com.dius.pact.consumer.dsl.DslPart;
-import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.consumer.junit5.PactTestFor;
+import io.pactfoundation.consumer.dsl.DslPart;
+import io.pactfoundation.consumer.dsl.PactDslWithProvider;
+import io.pactfoundation.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.google.common.collect.Maps;

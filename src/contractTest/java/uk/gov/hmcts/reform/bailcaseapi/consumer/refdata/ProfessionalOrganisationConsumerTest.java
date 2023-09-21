@@ -1,9 +1,9 @@
 package uk.gov.hmcts.reform.bailcaseapi.consumer.refdata;
 
-import au.com.dius.pact.consumer.dsl.DslPart;
-import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
-import au.com.dius.pact.consumer.junit5.PactTestFor;
+import io.pactfoundation.consumer.dsl.DslPart;
+import io.pactfoundation.consumer.dsl.PactDslWithProvider;
+import io.pactfoundation.consumer.junit5.PactConsumerTestExt;
+import io.pactfoundation.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
@@ -26,7 +26,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ref.OrganisationEntityResponse;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.ProfessionalOrganisationRetriever;
 
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
+import static io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.bailcaseapi.consumer.idam;
 
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
-import au.com.dius.pact.consumer.dsl.PactDslJsonRootValue;
-import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
-import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
-import au.com.dius.pact.consumer.junit5.PactTestFor;
+import io.pactfoundation.consumer.dsl.PactDslJsonBody;
+import io.pactfoundation.consumer.dsl.PactDslJsonRootValue;
+import io.pactfoundation.consumer.dsl.PactDslWithProvider;
+import io.pactfoundation.consumer.junit5.PactConsumerTestExt;
+import io.pactfoundation.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
