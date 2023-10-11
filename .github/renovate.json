@@ -1,4 +1,6 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>hmcts/.github:renovate-config"],
   "enabledManagers": ["helm-requirements","gradle-wrapper"],
   "labels": ["dependencies"],
   "helm-requirements":
@@ -20,9 +22,14 @@
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
       "automerge": true
+    },
+    {
+      "packagePatterns": ["^ccd-case-document-am-client$"],
+      "enabled": false
     }
   ],
+  "timezone": "Europe/London",
   "schedule": [
-    "3am"
+    "before 3am every weekday"
   ]
 }
