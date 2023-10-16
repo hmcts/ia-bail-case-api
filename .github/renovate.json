@@ -25,6 +25,10 @@
     {
       "packagePatterns": ["^ccd-case-document-am-client$"],
       "enabled": false
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ],
   "timezone": "Europe/London",
