@@ -99,7 +99,7 @@ public enum BailCaseFieldDefinition {
     SUPPORTER_ADDRESS_DETAILS(
         "supporterAddressDetails", new TypeReference<AddressUK>(){}),
     SUPPORTER_CONTACT_DETAILS(
-        "supporterContactDetails", new TypeReference<String>(){}),
+        "supporterContactDetails", new TypeReference<List<ContactPreference>>(){}),
     SUPPORTER_TELEPHONE_NUMBER(
         "supporterTelephoneNumber1", new TypeReference<String>(){}),
     SUPPORTER_MOBILE_NUMBER(
@@ -131,7 +131,7 @@ public enum BailCaseFieldDefinition {
     SUPPORTER_2_ADDRESS_DETAILS(
         "supporter2AddressDetails", new TypeReference<AddressUK>(){}),
     SUPPORTER_2_CONTACT_DETAILS(
-        "supporter2ContactDetails", new TypeReference<String>(){}),
+        "supporter2ContactDetails", new TypeReference<List<ContactPreference>>(){}),
     SUPPORTER_2_TELEPHONE_NUMBER(
         "supporter2TelephoneNumber1", new TypeReference<String>(){}),
     SUPPORTER_2_MOBILE_NUMBER(
@@ -163,7 +163,7 @@ public enum BailCaseFieldDefinition {
     SUPPORTER_3_ADDRESS_DETAILS(
         "supporter3AddressDetails", new TypeReference<AddressUK>(){}),
     SUPPORTER_3_CONTACT_DETAILS(
-        "supporter3ContactDetails", new TypeReference<String>(){}),
+        "supporter3ContactDetails", new TypeReference<List<ContactPreference>>(){}),
     SUPPORTER_3_TELEPHONE_NUMBER(
         "supporter3TelephoneNumber1", new TypeReference<String>(){}),
     SUPPORTER_3_MOBILE_NUMBER(
@@ -195,7 +195,7 @@ public enum BailCaseFieldDefinition {
     SUPPORTER_4_ADDRESS_DETAILS(
         "supporter4AddressDetails", new TypeReference<AddressUK>(){}),
     SUPPORTER_4_CONTACT_DETAILS(
-        "supporter4ContactDetails", new TypeReference<String>(){}),
+        "supporter4ContactDetails", new TypeReference<List<ContactPreference>>(){}),
     SUPPORTER_4_TELEPHONE_NUMBER(
         "supporter4TelephoneNumber1", new TypeReference<String>(){}),
     SUPPORTER_4_MOBILE_NUMBER(

@@ -1,0 +1,127 @@
+package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
+
+import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_2_CONTACT_DETAILS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_3_CONTACT_DETAILS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_4_CONTACT_DETAILS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_CONTACT_DETAILS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference.EMAIL;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference.MOBILE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference.TELEPHONE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.EDIT_BAIL_APPLICATION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.MAKE_NEW_APPLICATION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.START_APPLICATION;
+
+import java.util.List;
+import java.util.Optional;
+import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
+
+@Component
+public class FinancialConditionSupporterContactPreferenceMidEventHandler implements PreSubmitCallbackHandler<BailCase> {
+
+    private static final String SUPPORTER_1_CONTACT_PREF_PAGE_ID = "supporterContactDetails";
+    private static final String SUPPORTER_2_CONTACT_PREF_PAGE_ID = "supporter2ContactDetails";
+    private static final String SUPPORTER_3_CONTACT_PREF_PAGE_ID = "supporter3ContactDetails";
+    private static final String SUPPORTER_4_CONTACT_PREF_PAGE_ID = "supporter4ContactDetails";
+    private static final String EMAIL_REQUIRED_ERROR = "Email is required.";
+    private static final String PHONE_REQUIRED_ERROR = "At least one phone type is required.";
+
+    public boolean canHandle(
+        PreSubmitCallbackStage callbackStage,
+        Callback<BailCase> callback
+    ) {
+        requireNonNull(callbackStage, "callbackStage must not be null");
+        requireNonNull(callback, "callback must not be null");
+
+        List<Event> listOfEvents = List.of(START_APPLICATION, EDIT_BAIL_APPLICATION,
+            EDIT_BAIL_APPLICATION_AFTER_SUBMIT, MAKE_NEW_APPLICATION);
+        List<String> listOfPages = List.of(SUPPORTER_1_CONTACT_PREF_PAGE_ID, SUPPORTER_2_CONTACT_PREF_PAGE_ID,
+            SUPPORTER_3_CONTACT_PREF_PAGE_ID, SUPPORTER_4_CONTACT_PREF_PAGE_ID);
+
+        return callbackStage == PreSubmitCallbackStage.MID_EVENT
+               && listOfEvents.contains(callback.getEvent())
+               && listOfPages.contains(callback.getPageId());
+    }
+
+    public PreSubmitCallbackResponse<BailCase> handle(
+        PreSubmitCallbackStage callbackStage,
+        Callback<BailCase> callback
+    ) {
+        if (!canHandle(callbackStage, callback)) {
+            throw new IllegalStateException("Cannot handle callback");
+        }
+
+        final BailCase bailCase =
+            callback
+                .getCaseDetails()
+                .getCaseData();
+
+        PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
+
+        String pageId = callback.getPageId();
+
+        switch (pageId) {
+            case SUPPORTER_1_CONTACT_PREF_PAGE_ID -> {
+                Optional<List<ContactPreference>> supporter1ContactPreferences
+                    = bailCase.read(SUPPORTER_CONTACT_DETAILS);
+                String error = validateContactPreferences(supporter1ContactPreferences);
+
+                if (!error.isBlank()) {
+                    response.addError(error);
+                }
+            }
+            case SUPPORTER_2_CONTACT_PREF_PAGE_ID -> {
+                Optional<List<ContactPreference>> supporter2ContactPreferences
+                    = bailCase.read(SUPPORTER_2_CONTACT_DETAILS);
+                String error = validateContactPreferences(supporter2ContactPreferences);
+
+                if (!error.isBlank()) {
+                    response.addError(error);
+                }
+            }
+            case SUPPORTER_3_CONTACT_PREF_PAGE_ID -> {
+                Optional<List<ContactPreference>> supporter3ContactPreferences
+                    = bailCase.read(SUPPORTER_3_CONTACT_DETAILS);
+                String error = validateContactPreferences(supporter3ContactPreferences);
+
+                if (!error.isBlank()) {
+                    response.addError(error);
+                }
+            }
+            case SUPPORTER_4_CONTACT_PREF_PAGE_ID -> {
+                Optional<List<ContactPreference>> supporter4ContactPreferences
+                    = bailCase.read(SUPPORTER_4_CONTACT_DETAILS);
+                String error = validateContactPreferences(supporter4ContactPreferences);
+
+                if (!error.isBlank()) {
+                    response.addError(error);
+                }
+            }
+            default -> {
+            }
+        }
+
+        return response;
+    }
+
+    private String validateContactPreferences(Optional<List<ContactPreference>> listOfContactPreferences) {
+
+        String error = "";
+
+        if (listOfContactPreferences.stream().noneMatch(list -> list.contains(EMAIL))) {
+            error = EMAIL_REQUIRED_ERROR;
+        } else if (listOfContactPreferences.stream().noneMatch(list -> list.contains(MOBILE)
+                                                                       || list.contains(TELEPHONE))) {
+            error = PHONE_REQUIRED_ERROR;
+        }
+        return error;
+    }
+}
