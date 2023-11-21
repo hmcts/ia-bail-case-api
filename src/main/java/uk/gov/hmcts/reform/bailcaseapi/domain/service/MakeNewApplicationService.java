@@ -243,6 +243,7 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.IS_LEGAL_REP.value(),
         BailCaseFieldDefinition.LEGAL_REP_COMPANY.value(),
         BailCaseFieldDefinition.LEGAL_REP_NAME.value(),
+        BailCaseFieldDefinition.LEGAL_REP_FAMILY_NAME.value(),
         BailCaseFieldDefinition.LEGAL_REP_EMAIL_ADDRESS.value(),
         BailCaseFieldDefinition.LEGAL_REP_PHONE.value(),
         BailCaseFieldDefinition.LEGAL_REP_REFERENCE.value(),

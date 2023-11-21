@@ -236,6 +236,8 @@ public enum BailCaseFieldDefinition {
         "legalRepEmail", new TypeReference<String>(){}),
     LEGAL_REP_NAME(
         "legalRepName", new TypeReference<String>(){}),
+    LEGAL_REP_FAMILY_NAME(
+        "legalRepFamilyName", new TypeReference<String>(){}),
     LEGAL_REP_PHONE(
         "legalRepPhone", new TypeReference<String>(){}),
     LEGAL_REP_REFERENCE(
@@ -440,6 +442,8 @@ public enum BailCaseFieldDefinition {
         "updateLegalRepEmail1", new TypeReference<String>(){}),
     UPDATE_LEGAL_REP_NAME(
         "updateLegalRepName", new TypeReference<String>(){}),
+    UPDATE_LEGAL_REP_FAMILY_NAME(
+        "updateLegalRepFamilyName", new TypeReference<String>(){}),
     UPDATE_LEGAL_REP_REFERENCE(
         "updateLegalRepReference", new TypeReference<String>(){}),
     UPDATE_LEGAL_REP_PHONE(
