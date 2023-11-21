@@ -1,15 +1,11 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.*;
 
 import java.util.Arrays;
 import java.util.List;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.ChangeOrganisationRequest;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 public enum BailCaseFieldDefinition {
     HAS_PREVIOUS_BAIL_APPLICATION(
@@ -453,7 +449,15 @@ public enum BailCaseFieldDefinition {
     APPELLANT_LEVEL_FLAGS(
         "appellantLevelFlags", new TypeReference<StrategicCaseFlag>() {}),
     CASE_FLAGS(
-        "caseFlags", new TypeReference<StrategicCaseFlag>(){});
+        "caseFlags", new TypeReference<StrategicCaseFlag>(){}),
+    APPLICANT_INTERPRETER_SPOKEN_LANGUAGE(
+        "applicantInterpreterSpokenLanguage", new TypeReference<InterpreterLanguageRefData>() {}),
+
+    APPLICANT_INTERPRETER_SIGN_LANGUAGE(
+        "applicantInterpreterSignLanguage", new TypeReference<InterpreterLanguageRefData>() {}),
+
+    APPLICANT_INTERPRETER_LANGUAGE_CATEGORY(
+        "applicantInterpreterLanguageCategory", new TypeReference<List<String>>() {}),;
 
 
     private final String value;

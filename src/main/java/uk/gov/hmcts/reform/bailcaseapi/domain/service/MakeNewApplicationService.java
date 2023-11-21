@@ -2,20 +2,16 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.PriorApplication;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserRoleLabel;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 
 @Service
 public class MakeNewApplicationService {
@@ -234,6 +230,9 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.NO_TRANSFER_BAIL_MANAGEMENT_REASONS.value(),
         BailCaseFieldDefinition.INTERPRETER_YESNO.value(),
         BailCaseFieldDefinition.INTERPRETER_LANGUAGES.value(),
+        BailCaseFieldDefinition.APPLICANT_INTERPRETER_SPOKEN_LANGUAGE.value(),
+        BailCaseFieldDefinition.APPLICANT_INTERPRETER_SIGN_LANGUAGE.value(),
+        BailCaseFieldDefinition.APPLICANT_INTERPRETER_LANGUAGE_CATEGORY.value(),
         BailCaseFieldDefinition.DISABILITY_YESNO.value(),
         BailCaseFieldDefinition.APPLICANT_DISABILITY_DETAILS.value(),
         BailCaseFieldDefinition.VIDEO_HEARING_YESNO.value(),

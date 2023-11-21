@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8099}
+  port: ${PORT:8686}
 
 management:
   endpoint:
@@ -214,3 +214,8 @@ ia:
   config:
     validator:
       secret: ${IA_CONFIG_VALIDATOR_SECRET:}
+
+
+commonData:
+  api:
+    url: ${COMMON_DATA_API:http://localhost:8991}
