@@ -67,61 +67,30 @@ public class FinancialConditionSupporterContactPreferenceMidEventHandler impleme
         PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
 
         String pageId = callback.getPageId();
+        String error = "";
+        Optional<List<ContactPreference>> supporterContactPreferences = Optional.empty();
 
         switch (pageId) {
-            case SUPPORTER_1_CONTACT_PREF_PAGE_ID -> {
-                Optional<List<ContactPreference>> supporter1ContactPreferences
-                    = bailCase.read(SUPPORTER_CONTACT_DETAILS);
-                String error = validateContactPreferences(supporter1ContactPreferences);
-
-                if (!error.isBlank()) {
-                    response.addError(error);
-                }
-            }
-            case SUPPORTER_2_CONTACT_PREF_PAGE_ID -> {
-                Optional<List<ContactPreference>> supporter2ContactPreferences
-                    = bailCase.read(SUPPORTER_2_CONTACT_DETAILS);
-                String error = validateContactPreferences(supporter2ContactPreferences);
-
-                if (!error.isBlank()) {
-                    response.addError(error);
-                }
-            }
-            case SUPPORTER_3_CONTACT_PREF_PAGE_ID -> {
-                Optional<List<ContactPreference>> supporter3ContactPreferences
-                    = bailCase.read(SUPPORTER_3_CONTACT_DETAILS);
-                String error = validateContactPreferences(supporter3ContactPreferences);
-
-                if (!error.isBlank()) {
-                    response.addError(error);
-                }
-            }
-            case SUPPORTER_4_CONTACT_PREF_PAGE_ID -> {
-                Optional<List<ContactPreference>> supporter4ContactPreferences
-                    = bailCase.read(SUPPORTER_4_CONTACT_DETAILS);
-                String error = validateContactPreferences(supporter4ContactPreferences);
-
-                if (!error.isBlank()) {
-                    response.addError(error);
-                }
-            }
+            case SUPPORTER_1_CONTACT_PREF_PAGE_ID -> supporterContactPreferences = bailCase.read(SUPPORTER_CONTACT_DETAILS);
+            case SUPPORTER_2_CONTACT_PREF_PAGE_ID -> supporterContactPreferences = bailCase.read(SUPPORTER_2_CONTACT_DETAILS);
+            case SUPPORTER_3_CONTACT_PREF_PAGE_ID -> supporterContactPreferences = bailCase.read(SUPPORTER_3_CONTACT_DETAILS);
+            case SUPPORTER_4_CONTACT_PREF_PAGE_ID -> supporterContactPreferences = bailCase.read(SUPPORTER_4_CONTACT_DETAILS);
             default -> {
             }
         }
 
-        return response;
-    }
-
-    private String validateContactPreferences(Optional<List<ContactPreference>> listOfContactPreferences) {
-
-        String error = "";
-
-        if (listOfContactPreferences.stream().noneMatch(list -> list.contains(EMAIL))) {
-            error = EMAIL_REQUIRED_ERROR;
-        } else if (listOfContactPreferences.stream().noneMatch(list -> list.contains(MOBILE)
-                                                                       || list.contains(TELEPHONE))) {
-            error = PHONE_REQUIRED_ERROR;
+        if (supporterContactPreferences.isPresent()) {
+            if (supporterContactPreferences.stream().noneMatch(list -> list.contains(EMAIL))) {
+                error = EMAIL_REQUIRED_ERROR;
+            } else if (supporterContactPreferences.stream().noneMatch(list -> list.contains(MOBILE)
+                                                                              || list.contains(TELEPHONE))) {
+                error = PHONE_REQUIRED_ERROR;
+            }
         }
-        return error;
+
+        if (!error.isEmpty()) {
+            response.addError(error);
+        }
+        return response;
     }
 }
