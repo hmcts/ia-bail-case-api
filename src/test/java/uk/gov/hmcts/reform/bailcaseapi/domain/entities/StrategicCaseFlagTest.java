@@ -20,7 +20,7 @@ class StrategicCaseFlagTest {
     @Test
     void should_hold_onto_values() {
         assertThat(strategicCaseFlag.getPartyName()).isEqualTo((appellantName));
-        assertThat(strategicCaseFlag.getRoleOnCase()).isEqualTo(("Appellant"));
+        assertThat(strategicCaseFlag.getRoleOnCase()).isEqualTo(("Applicant"));
         assertThat(strategicCaseFlag.getDetails()).isEqualTo((Collections.emptyList()));
     }
 }

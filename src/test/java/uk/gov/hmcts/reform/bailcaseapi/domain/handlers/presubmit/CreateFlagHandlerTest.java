@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -66,6 +67,7 @@ class CreateFlagHandlerTest {
 
         verify(bailCase, times(1))
             .write(APPELLANT_LEVEL_FLAGS, strategicCaseFlag);
+        assertThat(strategicCaseFlag.getRoleOnCase()).isEqualTo(("Applicant"));
         verify(bailCase, times(1))
             .write(CASE_FLAGS, strategicCaseFlagEmpty);
     }
