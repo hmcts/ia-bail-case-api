@@ -14,9 +14,9 @@
           "hasLegalRep": "No",
           "isLegallyRepresentedForFlag": "No",
           "hasFinancialCondSupporter": "No",
-          "applicantPartyId": "123456789",
-          "legalRepIndividualPartyId": "123456789",
-          "legalRepOrganisationPartyId": "123456789"
+          "applicantPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
+          "legalRepIndividualPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
+          "legalRepOrganisationPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/"
         }
       }
     }
@@ -31,9 +31,10 @@
         "hasLegalRep": "No",
         "isLegallyRepresentedForFlag": "No",
         "hasFinancialCondSupporter": "No",
-        "applicantPartyId": "123456789",
+        "applicantPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
         "legalRepIndividualPartyId": null,
-        "legalRepOrganisationPartyId": null
+        "legalRepOrganisationPartyId": null,
+        "interpreterLanguages": null
       }
     }
   }
