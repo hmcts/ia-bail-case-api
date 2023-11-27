@@ -14,7 +14,7 @@
           "hasLegalRep": "No",
           "isLegallyRepresentedForFlag": "No",
           "hasFinancialCondSupporter": "Yes",
-          "applicantPartyId": "$[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+          "applicantPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
           "supporter1PartyId": null
         }
       }
@@ -30,8 +30,8 @@
         "hasLegalRep": "No",
         "isLegallyRepresentedForFlag": "No",
         "hasFinancialCondSupporter": "Yes",
-        "applicantPartyId": "$[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
-        "supporter1PartyId": "$[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+        "applicantPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
+        "supporter1PartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/"
       }
     }
   }
