@@ -1,0 +1,40 @@
+{
+  "description": "Edit application - New party IDs generated for legal rep added",
+  "request": {
+    "uri": "/bail/ccdAboutToSubmit",
+    "credentials": "AdminOfficer",
+    "input": {
+      "id": 7996,
+      "eventId": "editBailApplication",
+      "state": "applicationStarted",
+      "caseData": {
+        "template": "minimal-application-started.json",
+        "replacements": {
+          "isLegalRep": "No",
+          "hasLegalRep": "Yes",
+          "isLegallyRepresentedForFlag": "Yes",
+          "hasFinancialCondSupporter": "No",
+          "applicantPartyId": "123456789",
+          "legalRepIndividualPartyId": null,
+          "legalRepOrganisationPartyId": null
+        }
+      }
+    }
+  },
+  "expectation": {
+    "status": 200,
+    "errors": [],
+    "caseData": {
+      "template": "minimal-application-started.json",
+      "replacements": {
+        "isLegalRep": "No",
+        "hasLegalRep": "Yes",
+        "isLegallyRepresentedForFlag": "Yes",
+        "hasFinancialCondSupporter": "No",
+        "applicantPartyId": "123456789",
+        "legalRepIndividualPartyId": "123456789",
+        "legalRepOrganisationPartyId": "123456789"
+      }
+    }
+  }
+}

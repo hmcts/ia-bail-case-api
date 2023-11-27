@@ -1,0 +1,37 @@
+{
+  "description": "Start application - Party IDs generated for applicant and legal rep",
+  "request": {
+    "uri": "/bail/ccdAboutToSubmit",
+    "credentials": "AdminOfficer",
+    "input": {
+      "id": 7996,
+      "eventId": "startApplication",
+      "state": "applicationStarted",
+      "caseData": {
+        "template": "minimal-application-started.json",
+        "replacements": {
+          "isLegalRep": "No",
+          "hasLegalRep": "Yes",
+          "isLegallyRepresentedForFlag": "Yes",
+          "hasFinancialCondSupporter": "No"
+        }
+      }
+    }
+  },
+  "expectation": {
+    "status": 200,
+    "errors": [],
+    "caseData": {
+      "template": "minimal-application-started.json",
+      "replacements": {
+        "isLegalRep": "No",
+        "hasLegalRep": "No",
+        "isLegallyRepresentedForFlag": "Yes",
+        "hasFinancialCondSupporter": "No",
+        "applicantPartyId": "123456789",
+        "legalRepIndividualPartyId": "123456789",
+        "legalRepOrganisationPartyId": "123456789"
+      }
+    }
+  }
+}

@@ -46,34 +46,29 @@ public class PartyIdHandler implements PreSubmitCallbackHandler<BailCase> {
                 .getCaseDetails()
                 .getCaseData();
 
-        if (Set.of(START_APPLICATION).contains(callback.getEvent())) {
+        if (Set.of(START_APPLICATION, EDIT_BAIL_APPLICATION, EDIT_BAIL_APPLICATION_AFTER_SUBMIT).contains(callback.getEvent())) {
             setAppellantPartyId(bailCase);
             setLegalRepPartyId(bailCase);
             setSupporterPartyIds(bailCase);
-            // Need final confirmation on if we need to generate ID for this
-            setRespondentPartyId(bailCase);
-        }
 
+            if (Set.of(EDIT_BAIL_APPLICATION, EDIT_BAIL_APPLICATION_AFTER_SUBMIT).contains(callback.getEvent())) {
+                clearSupporterPartyIds(bailCase);
+                clearLegalRepPartyIds(bailCase);
+            }
+        }
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 
     private void setAppellantPartyId(BailCase bailCase) {
 
-        if (bailCase.read(APPELLANT_PARTY_ID, String.class).orElse("").isEmpty()) {
-            bailCase.write(APPELLANT_PARTY_ID, PartyIdGenerator.generate());
-        }
-    }
-
-    private void setRespondentPartyId(BailCase bailCase) {
-
-        if (bailCase.read(RESPONDENT_PARTY_ID, String.class).orElse("").isEmpty()) {
-            bailCase.write(RESPONDENT_PARTY_ID, PartyIdGenerator.generate());
+        if (bailCase.read(APPLICANT_PARTY_ID, String.class).orElse("").isEmpty()) {
+            bailCase.write(APPLICANT_PARTY_ID, PartyIdGenerator.generate());
         }
     }
 
     private void setLegalRepPartyId(BailCase bailCase) {
 
-        if (bailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class).orElse(NO).equals(YES)) {
+        if (bailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class).orElse(NO) == YES) {
             if (bailCase.read(LEGAL_REP_INDIVIDUAL_PARTY_ID, String.class).orElse("").isEmpty()) {
                 bailCase.write(LEGAL_REP_INDIVIDUAL_PARTY_ID, PartyIdGenerator.generate());
             }
@@ -86,29 +81,74 @@ public class PartyIdHandler implements PreSubmitCallbackHandler<BailCase> {
 
     private void setSupporterPartyIds(BailCase bailCase) {
 
-        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER).orElse(NO).equals(YES)) {
+        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(NO) == YES) {
             if (bailCase.read(SUPPORTER_1_PARTY_ID, String.class).orElse("").isEmpty()) {
                 bailCase.write(SUPPORTER_1_PARTY_ID, PartyIdGenerator.generate());
             }
         }
 
-        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2).orElse(NO).equals(YES)) {
+        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class).orElse(NO) == YES) {
             if (bailCase.read(SUPPORTER_2_PARTY_ID, String.class).orElse("").isEmpty()) {
                 bailCase.write(SUPPORTER_2_PARTY_ID, PartyIdGenerator.generate());
             }
         }
 
-        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3).orElse(NO).equals(YES)) {
+        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class).orElse(NO) == YES) {
             if (bailCase.read(SUPPORTER_3_PARTY_ID, String.class).orElse("").isEmpty()) {
                 bailCase.write(SUPPORTER_3_PARTY_ID, PartyIdGenerator.generate());
             }
         }
 
-        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4).orElse(NO).equals(YES)) {
+        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(NO) == YES) {
             if (bailCase.read(SUPPORTER_4_PARTY_ID, String.class).orElse("").isEmpty()) {
                 bailCase.write(SUPPORTER_4_PARTY_ID, PartyIdGenerator.generate());
             }
         }
     }
 
+    private void clearSupporterPartyIds(BailCase bailCase) {
+
+        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(NO) == NO) {
+            if (!bailCase.read(SUPPORTER_1_PARTY_ID, String.class).orElse("").isEmpty()) {
+                bailCase.clear(SUPPORTER_1_PARTY_ID);
+                bailCase.clear(SUPPORTER_2_PARTY_ID);
+                bailCase.clear(SUPPORTER_3_PARTY_ID);
+                bailCase.clear(SUPPORTER_4_PARTY_ID);
+            }
+        }
+
+        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class).orElse(NO) == NO) {
+            if (!bailCase.read(SUPPORTER_2_PARTY_ID, String.class).orElse("").isEmpty()) {
+                bailCase.clear(SUPPORTER_2_PARTY_ID);
+                bailCase.clear(SUPPORTER_3_PARTY_ID);
+                bailCase.clear(SUPPORTER_4_PARTY_ID);
+            }
+        }
+
+        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class).orElse(NO) == NO) {
+            if (!bailCase.read(SUPPORTER_3_PARTY_ID, String.class).orElse("").isEmpty()) {
+                bailCase.clear(SUPPORTER_3_PARTY_ID);
+                bailCase.clear(SUPPORTER_4_PARTY_ID);
+            }
+        }
+
+        if (bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(NO) == NO) {
+            if (!bailCase.read(SUPPORTER_4_PARTY_ID, String.class).orElse("").isEmpty()) {
+                bailCase.clear(SUPPORTER_4_PARTY_ID);
+            }
+        }
+    }
+
+    private void clearLegalRepPartyIds(BailCase bailCase) {
+
+        if (bailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class).orElse(NO) == NO) {
+            if (!bailCase.read(LEGAL_REP_INDIVIDUAL_PARTY_ID, String.class).orElse("").isEmpty()) {
+                bailCase.clear(LEGAL_REP_INDIVIDUAL_PARTY_ID);
+            }
+
+            if (!bailCase.read(LEGAL_REP_ORGANISATION_PARTY_ID, String.class).orElse("").isEmpty()) {
+                bailCase.clear(LEGAL_REP_ORGANISATION_PARTY_ID);
+            }
+        }
+    }
 }
