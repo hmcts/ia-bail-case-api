@@ -15,9 +15,8 @@
           "isLegallyRepresentedForFlag": "No",
           "hasFinancialCondSupporter": "No",
           "hasFinancialCondSupporter2": "Yes",
-          "applicantPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
-          "supporter1PartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
-          "supporter2PartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/"
+          "supporter1PartyId": "39804a48-70b6-49be-af16-af4c1f385dad",
+          "supporter2PartyId": "a3468ed5-5844-4edd-98a6-d0059af7d8ca"
         }
       }
     }
@@ -33,9 +32,9 @@
         "isLegallyRepresentedForFlag": "No",
         "hasFinancialCondSupporter": "No",
         "hasFinancialCondSupporter2": "Yes",
-        "applicantPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
         "supporter1PartyId": null,
-        "supporter2PartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/"
+        "supporter2PartyId": null,
+        "interpreterLanguages": null
       }
     }
   }
