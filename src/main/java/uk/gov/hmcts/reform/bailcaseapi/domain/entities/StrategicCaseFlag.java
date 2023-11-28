@@ -23,7 +23,7 @@ public class StrategicCaseFlag {
 
     public StrategicCaseFlag(String appellantNameForDisplay) {
         this.partyName = appellantNameForDisplay;
-        this.roleOnCase = "Appellant";
+        this.roleOnCase = "Applicant";
         this.details = Collections.emptyList();
     }
 
