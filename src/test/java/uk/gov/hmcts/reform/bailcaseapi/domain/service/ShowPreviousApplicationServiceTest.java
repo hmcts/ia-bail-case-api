@@ -1,5 +1,17 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -216,6 +228,7 @@ public class ShowPreviousApplicationServiceTest {
         when(bailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(LEGAL_REP_COMPANY)).thenReturn(Optional.of("Legal Rep Company"));
         when(bailCase.read(LEGAL_REP_NAME)).thenReturn(Optional.of("LR ABC"));
+        when(bailCase.read(LEGAL_REP_FAMILY_NAME)).thenReturn(Optional.of("Jones"));
         when(bailCase.read(LEGAL_REP_EMAIL_ADDRESS)).thenReturn(Optional.of("lr_abc@test.com"));
         when(bailCase.read(LEGAL_REP_PHONE)).thenReturn(Optional.of("1122334455"));
         when(bailCase.read(LEGAL_REP_REFERENCE)).thenReturn(Optional.of("Ref78965"));
@@ -455,6 +468,7 @@ public class ShowPreviousApplicationServiceTest {
         assertTrue(label.contains(
             "|Company|Legal Rep Company|\n"
                 + "|Name|LR ABC|\n"
+                + "|Family name|Jones|\n"
                 + "|Email address|lr_abc@test.com|\n"
                 + "|Phone number|1122334455|\n"
                 + "|Reference|Ref78965|"

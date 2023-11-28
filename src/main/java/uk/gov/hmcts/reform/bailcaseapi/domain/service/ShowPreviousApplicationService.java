@@ -1,5 +1,16 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
+import static java.util.Objects.isNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -407,6 +418,8 @@ public class ShowPreviousApplicationService {
                 .append("|\n|Name|")
                 .append(previousBailCase.read(LEGAL_REP_NAME)
                             .orElseThrow(getErrorThrowable(LEGAL_REP_NAME)))
+                .append("|\n|Family name|")
+                .append(previousBailCase.read(LEGAL_REP_FAMILY_NAME).orElse(""))
                 .append("|\n|Email address|")
                 .append(previousBailCase.read(LEGAL_REP_EMAIL_ADDRESS)
                             .orElseThrow(getErrorThrowable(LEGAL_REP_EMAIL_ADDRESS)))

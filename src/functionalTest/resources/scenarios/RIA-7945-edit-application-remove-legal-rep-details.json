@@ -1,19 +1,18 @@
 {
-  "description": "Start the application by admin - application submitted by LR appender",
+  "description": "Edit the application to remove legal rep details (pre-submit REST call)",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
-    "credentials": "LegalRepresentativeOrgSuccess",
+    "credentials": "AdminOfficer",
     "input": {
       "id": 1111,
-      "eventId": "startApplication",
+      "eventId": "editBailApplication",
       "state": "applicationStarted",
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
           "applicationSubmittedBy": "Legal Representative",
-          "isAdmin": "No",
-          "isLegalRep": "Yes",
-          "sentByChecklist": "",
+          "isAdmin": "Yes",
+          "hasLegalRep": "No",
           "legalRepName": "John",
           "legalRepFamilyName": "Doe"
         }
@@ -26,13 +25,10 @@
     "caseData": {
       "template": "minimal-application-started.json",
       "replacements": {
-        "applicationSubmittedBy": "Legal Representative",
-        "isAdmin": "No",
-        "isLegalRep": "Yes",
-        "sentByChecklist": "",
-        "isLegallyRepresentedForFlag": "Yes",
-        "legalRepName": "John",
-        "legalRepFamilyName": "Doe"
+        "isAdmin": "Yes",
+        "hasLegalRep": "No",
+        "legalRepName": null,
+        "legalRepFamilyName": null
       }
     }
   }
