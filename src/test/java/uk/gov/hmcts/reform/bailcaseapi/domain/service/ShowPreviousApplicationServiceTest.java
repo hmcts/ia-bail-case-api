@@ -230,6 +230,10 @@ public class ShowPreviousApplicationServiceTest {
         when(valueSpoken1.getLabel()).thenReturn("lang 1");
         when(valueSign1.getLabel()).thenReturn("lang sign 1");
 
+        when(bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(FCS1_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(List.of("spokenLanguageInterpreter")));
+        when(bailCase.read(FCS1_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.of(interpreterLanguageRefDataSpoken1));
+
     }
 
     @Test
@@ -339,7 +343,9 @@ public class ShowPreviousApplicationServiceTest {
              SUPPORTER_NATIONALITY,
              SUPPORTER_HAS_PASSPORT,
              SUPPORTER_PASSPORT,
-             FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES));
+             FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES,
+             FCS1_INTERPRETER_SPOKEN_LANGUAGE,
+             FCS1_INTERPRETER_SIGN_LANGUAGE));
         assertTrue(showPreviousApplicationService.getLegalRepDetails(bailCase).isEmpty());
     }
 
@@ -410,7 +416,9 @@ public class ShowPreviousApplicationServiceTest {
             SUPPORTER_NATIONALITY,
             SUPPORTER_HAS_PASSPORT,
             SUPPORTER_PASSPORT,
-            FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES
+            FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES,
+            FCS1_INTERPRETER_SPOKEN_LANGUAGE,
+            FCS1_INTERPRETER_SIGN_LANGUAGE
         );
         assertTrue(label.contains(
             "|Financial condition supporter|Yes|\n"
@@ -425,6 +433,7 @@ public class ShowPreviousApplicationServiceTest {
                 + "|Immigration status|Resident|\n"
                 + "|Nationalities|American|\n"
                 + "|Passport number|No|\n"
+                + "|Spoken language Interpreter|lang 1|\n"
                 + "|Financial condition amount (£)|3000|"
         ));
     }
