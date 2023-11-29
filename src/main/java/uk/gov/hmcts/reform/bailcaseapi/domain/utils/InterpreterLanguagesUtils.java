@@ -12,9 +12,11 @@ import java.util.List;
 
 public class InterpreterLanguagesUtils {
     public static final String IS_CHILD_REQUIRED = "Y";
+
     private InterpreterLanguagesUtils() {
         // Utils classes should not have public or default constructors
     }
+
     public static InterpreterLanguageRefData generateDynamicList(RefDataUserService refDataUserService, String languageCategory) {
         List<CategoryValues> languages;
         DynamicList dynamicListOfLanguages;

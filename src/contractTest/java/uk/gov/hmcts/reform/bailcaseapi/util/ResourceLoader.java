@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
