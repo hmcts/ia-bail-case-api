@@ -15,18 +15,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseNote;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguage;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 
 @Service
 public class ShowPreviousApplicationService {
@@ -109,13 +115,31 @@ public class ShowPreviousApplicationService {
         if (previousBailCase.read(INTERPRETER_YESNO, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             Optional<List<IdValue<InterpreterLanguage>>> mayBeInterpreterLangs =
                 previousBailCase.read(INTERPRETER_LANGUAGES);
-            interpreterLang = mayBeInterpreterLangs.orElseThrow(getErrorThrowable(INTERPRETER_LANGUAGES)).stream()
-                .map(idValue -> idValue.getValue().getLanguage()
-                    + " (" + idValue.getValue().getLanguageDialect() + ")")
-                .collect(Collectors.joining("<br>"));
-            stringBuilder.append("|Language|")
-                .append(interpreterLang)
-                .append("|\n");
+
+            if (mayBeInterpreterLangs.isPresent()) {
+                // Interpreter language from prior to List Assist
+                interpreterLang = mayBeInterpreterLangs.orElseThrow(getErrorThrowable(INTERPRETER_LANGUAGES)).stream()
+                    .map(idValue -> idValue.getValue().getLanguage()
+                        + " (" + idValue.getValue().getLanguageDialect() + ")")
+                    .collect(Collectors.joining("<br>"));
+                stringBuilder.append("|Language|")
+                    .append(interpreterLang)
+                    .append("|\n");
+            } else {
+                Optional<InterpreterLanguageRefData> mayBeInterpreterLanguage =
+                    previousBailCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
+                if (mayBeInterpreterLanguage.isPresent()) {
+                    interpreterLang = constructInterpreterLanguageString(mayBeInterpreterLanguage, "Spoken language Interpreter");
+                    stringBuilder.append(interpreterLang);
+                }
+                mayBeInterpreterLanguage =
+                    previousBailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE);
+                if (mayBeInterpreterLanguage.isPresent()) {
+                    interpreterLang = constructInterpreterLanguageString(mayBeInterpreterLanguage, "Sign language Interpreter");
+                    stringBuilder.append(interpreterLang);
+                }
+            }
+
         }
 
         stringBuilder.append("|Disability|")
@@ -653,5 +677,19 @@ public class ShowPreviousApplicationService {
     private String formatDate(String date) {
         return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE)
             .format(DateTimeFormatter.ofPattern("d MMM yyyy"));
+    }
+
+    private String constructInterpreterLanguageString(Optional<InterpreterLanguageRefData> interpreterLanguageRefData, String typeOfLanguage) {
+        StringBuilder interpreterLanguageString = new StringBuilder();
+        interpreterLanguageString.append("|" + typeOfLanguage + "|");
+        interpreterLanguageRefData.ifPresent(language -> {
+            if (language.getLanguageRefData() != null) {
+                interpreterLanguageString.append(language.getLanguageRefData().getValue().getLabel());
+            } else if (language.getLanguageManualEntry() != null && !language.getLanguageManualEntry().isEmpty()) {
+                interpreterLanguageString.append(language.getLanguageManualEntryDescription());
+            }
+        });
+        interpreterLanguageString.append("|\n");
+        return interpreterLanguageString.toString();
     }
 }

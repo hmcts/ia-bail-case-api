@@ -214,3 +214,8 @@ ia:
   config:
     validator:
       secret: ${IA_CONFIG_VALIDATOR_SECRET:}
+
+
+commonData:
+  api:
+    url: ${COMMON_DATA_API:http://localhost:8991}

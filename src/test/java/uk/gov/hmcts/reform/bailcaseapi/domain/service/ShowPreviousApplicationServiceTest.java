@@ -20,17 +20,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseNote;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguage;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -48,6 +54,18 @@ public class ShowPreviousApplicationServiceTest {
     private CaseNote caseNote;
     @Mock
     private CaseNote caseNoteWithoutDocument;
+    @Mock
+    InterpreterLanguageRefData interpreterLanguageRefDataSpoken1;
+    @Mock
+    DynamicList dynamicListSpoken1;
+    @Mock
+    Value valueSpoken1;
+    @Mock
+    InterpreterLanguageRefData interpreterLanguageRefDataSign1;
+    @Mock
+    DynamicList dynamicListSign1;
+    @Mock
+    Value valueSign1;
 
 
     @BeforeEach
@@ -214,6 +232,17 @@ public class ShowPreviousApplicationServiceTest {
         when(bailCase.read(LEGAL_REP_EMAIL_ADDRESS)).thenReturn(Optional.of("lr_abc@test.com"));
         when(bailCase.read(LEGAL_REP_PHONE)).thenReturn(Optional.of("1122334455"));
         when(bailCase.read(LEGAL_REP_REFERENCE)).thenReturn(Optional.of("Ref78965"));
+
+
+        when(interpreterLanguageRefDataSpoken1.getLanguageRefData()).thenReturn(dynamicListSpoken1);
+        when(interpreterLanguageRefDataSign1.getLanguageRefData()).thenReturn(dynamicListSign1);
+        when(bailCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.of(interpreterLanguageRefDataSpoken1));
+        when(bailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.of(interpreterLanguageRefDataSign1));
+        when(dynamicListSpoken1.getValue()).thenReturn(valueSpoken1);
+        when(dynamicListSign1.getValue()).thenReturn(valueSign1);
+        when(valueSpoken1.getLabel()).thenReturn("lang 1");
+        when(valueSign1.getLabel()).thenReturn("lang sign 1");
+
     }
 
     @Test
@@ -444,5 +473,19 @@ public class ShowPreviousApplicationServiceTest {
                 + "|Phone number|1122334455|\n"
                 + "|Reference|Ref78965|"
         ));
+    }
+
+    @Test
+    void test_interpreter_details_label_after_list_assist() {
+        when(bailCase.read(INTERPRETER_LANGUAGES)).thenReturn(Optional.empty());
+        String label = showPreviousApplicationService.getHearingReqDetails(bailCase);
+        assertTrue(label.contains(
+            "|Interpreter|Yes|\n"
+                + "|Spoken language Interpreter|lang 1|\n|Sign language Interpreter|lang sign 1|\n"
+                + "|Disability|Yes|\n"
+                + "|Explain any special <br>arrangements needed for the <br>hearing|Disability details|\n"
+                + "|Video hearing|No|\n"
+                + "|Explain why the applicant <br>would not be able to join the <br>hearing by video link"
+                + "|Video hearing details|"));
     }
 }
