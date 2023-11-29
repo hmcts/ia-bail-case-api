@@ -29,8 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_INTERPRETER_SIGN_LANGUAGE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_INTERPRETER_SPOKEN_LANGUAGE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
@@ -49,7 +48,7 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
     @Mock
     private CaseDetails<BailCase> caseDetailsBefore;
     @Mock
-    private BailCase asylumCase;
+    private BailCase bailCase;
     @Mock
     private BailCase asylumCaseBefore;
     @Mock
@@ -75,7 +74,7 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
             new ApplicantInterpreterLanguagesDynamicListUpdater(refDataUserService);
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
 
         interpreterLanguagesUtils = mockStatic(InterpreterLanguagesUtils.class);
     }
@@ -97,9 +96,9 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
 
         when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetails)); // asylumCase doesn't differ when drafting hearing reqs
 
-        when(asylumCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, InterpreterLanguageRefData.class))
+        when(bailCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, InterpreterLanguageRefData.class))
             .thenReturn(Optional.empty());
-        when(asylumCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE, InterpreterLanguageRefData.class))
+        when(bailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE, InterpreterLanguageRefData.class))
             .thenReturn(Optional.empty());
 
         when(refDataUserService.retrieveCategoryValues(INTERPRETER_LANGUAGES, IS_CHILD_REQUIRED))
@@ -114,8 +113,16 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
 
         applicantInterpreterLanguagesDynamicListUpdater.handle(ABOUT_TO_START, callback);
 
-        verify(asylumCase).write(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
-        verify(asylumCase).write(APPLICANT_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(APPLICANT_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(FCS1_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(FCS1_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(FCS2_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(FCS2_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(FCS3_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(FCS3_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(FCS4_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(FCS4_INTERPRETER_SIGN_LANGUAGE, signLanguages);
     }
 
     @Test
@@ -125,9 +132,9 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
         when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore)); // asylumCase doesn't differ when drafting hearing reqs
         when(caseDetailsBefore.getCaseData()).thenReturn(asylumCaseBefore);
 
-        when(asylumCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, InterpreterLanguageRefData.class))
+        when(bailCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, InterpreterLanguageRefData.class))
             .thenReturn(Optional.empty());
-        when(asylumCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE, InterpreterLanguageRefData.class))
+        when(bailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE, InterpreterLanguageRefData.class))
             .thenReturn(Optional.empty());
 
         when(asylumCaseBefore.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE))
@@ -155,8 +162,16 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
         verify(signLanguages).setLanguageManualEntry(List.of("Yes"));
         verify(spokenLanguages).setLanguageManualEntryDescription("desc");
         verify(signLanguages).setLanguageManualEntryDescription("desc");
-        verify(asylumCase).write(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
-        verify(asylumCase).write(APPLICANT_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(APPLICANT_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(FCS1_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(FCS1_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(FCS2_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(FCS2_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(FCS3_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(FCS3_INTERPRETER_SIGN_LANGUAGE, signLanguages);
+        verify(bailCase).write(FCS4_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
+        verify(bailCase).write(FCS4_INTERPRETER_SIGN_LANGUAGE, signLanguages);
     }
 
     @Test
