@@ -1,12 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
-import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_INTERPRETER_SIGN_LANGUAGE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_INTERPRETER_SPOKEN_LANGUAGE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.*;
-
-import java.util.Optional;
-import java.util.Set;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
@@ -18,14 +11,22 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.service.RefDataUserService;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.*;
+
 @Component
-public class ApplicantInterpreterLanguagesDynamicListUpdater implements PreSubmitCallbackHandler<BailCase> {
+public class InterpreterLanguagesDynamicListUpdater implements PreSubmitCallbackHandler<BailCase> {
 
     public static final String INTERPRETER_LANGUAGES = "InterpreterLanguage";
     public static final String SIGN_LANGUAGES = "SignLanguage";
     private final RefDataUserService refDataUserService;
 
-    public ApplicantInterpreterLanguagesDynamicListUpdater(RefDataUserService refDataUserService) {
+    public InterpreterLanguagesDynamicListUpdater(RefDataUserService refDataUserService) {
         this.refDataUserService = refDataUserService;
     }
 
@@ -50,36 +51,30 @@ public class ApplicantInterpreterLanguagesDynamicListUpdater implements PreSubmi
             .map(caseDetails -> caseDetails.getCaseData())
             .orElse(bailCase);
 
-        boolean shouldPopulateSpokenLanguage = bailCase
-            .read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, InterpreterLanguageRefData.class)
-            .map(applicantSpoken -> applicantSpoken.getLanguageRefData() == null)
-            .orElse(true);
+        List.of(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, FCS1_INTERPRETER_SPOKEN_LANGUAGE, FCS2_INTERPRETER_SPOKEN_LANGUAGE, FCS3_INTERPRETER_SPOKEN_LANGUAGE, FCS4_INTERPRETER_SPOKEN_LANGUAGE)
+                .forEach(languageCategory -> populateDynamicList(bailCase, bailCaseBefore, INTERPRETER_LANGUAGES, languageCategory));
 
-        boolean shouldPopulateSignLanguage = bailCase
-            .read(APPLICANT_INTERPRETER_SIGN_LANGUAGE, InterpreterLanguageRefData.class)
-            .map(applicantSign -> applicantSign.getLanguageRefData() == null)
-            .orElse(true);
-
-        if (shouldPopulateSpokenLanguage) {
-            populateDynamicList(bailCase, bailCaseBefore, INTERPRETER_LANGUAGES, APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
-        }
-        if (shouldPopulateSignLanguage) {
-            populateDynamicList(bailCase, bailCaseBefore, SIGN_LANGUAGES, APPLICANT_INTERPRETER_SIGN_LANGUAGE);
-        }
+        List.of(APPLICANT_INTERPRETER_SIGN_LANGUAGE, FCS1_INTERPRETER_SIGN_LANGUAGE, FCS2_INTERPRETER_SIGN_LANGUAGE, FCS3_INTERPRETER_SIGN_LANGUAGE, FCS4_INTERPRETER_SIGN_LANGUAGE)
+                .forEach(languageCategory -> populateDynamicList(bailCase, bailCaseBefore, SIGN_LANGUAGES, languageCategory));
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 
     private void populateDynamicList(BailCase bailCase, BailCase bailCaseBefore, String languageCategory, BailCaseFieldDefinition languageCategoryDefinition) {
-        InterpreterLanguageRefData interpreterLanguage = generateDynamicList(languageCategory);
-        Optional<InterpreterLanguageRefData> optionalExistingInterpreterLanguageRefData = bailCaseBefore.read(languageCategoryDefinition);
+        if (bailCase
+                .read(languageCategoryDefinition, InterpreterLanguageRefData.class)
+                .map(applicantSpoken -> applicantSpoken.getLanguageRefData() == null)
+                .orElse(true)) {
+            InterpreterLanguageRefData interpreterLanguage = generateDynamicList(languageCategory);
+            Optional<InterpreterLanguageRefData> optionalExistingInterpreterLanguageRefData = bailCaseBefore.read(languageCategoryDefinition);
 
-        optionalExistingInterpreterLanguageRefData.ifPresent(existing -> {
-            interpreterLanguage.setLanguageManualEntry(existing.getLanguageManualEntry());
-            interpreterLanguage.setLanguageManualEntryDescription(existing.getLanguageManualEntryDescription());
-        });
+            optionalExistingInterpreterLanguageRefData.ifPresent(existing -> {
+                interpreterLanguage.setLanguageManualEntry(existing.getLanguageManualEntry());
+                interpreterLanguage.setLanguageManualEntryDescription(existing.getLanguageManualEntryDescription());
 
-        bailCase.write(languageCategoryDefinition, interpreterLanguage);
+            });
+            bailCase.write(languageCategoryDefinition, interpreterLanguage);
+        }
     }
 
     private InterpreterLanguageRefData generateDynamicList(String languageCategory) {

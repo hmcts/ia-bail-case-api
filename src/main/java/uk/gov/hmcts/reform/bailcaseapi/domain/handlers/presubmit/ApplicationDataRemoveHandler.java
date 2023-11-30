@@ -1,20 +1,23 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
-import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
-
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 @Slf4j
 @Component
@@ -66,7 +69,7 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         final Optional<YesOrNo> optionalTransferBailManagement = bailCase.read(
             TRANSFER_BAIL_MANAGEMENT_OPTION,YesOrNo.class);
 
-
+        final Optional<YesOrNo> optionalFcsInterpreter = bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class);
         final YesOrNo hasFinancialConditionSupporter1 = bailCase.read(
             HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(NO);
         final YesOrNo hasFinancialConditionSupporter2 = bailCase.read(
@@ -186,6 +189,11 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
             if (interpreterLanguages.equals(NO)) {
                 bailCase.remove(INTERPRETER_LANGUAGES);
+                bailCase.remove(APPLICANT_INTERPRETER_LANGUAGE_CATEGORY);
+                bailCase.remove(APPLICANT_INTERPRETER_SIGN_LANGUAGE);
+                bailCase.remove(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
+            } else {
+                sanitizeInterpreterLanguages(bailCase, APPLICANT_INTERPRETER_LANGUAGE_CATEGORY, APPLICANT_INTERPRETER_SIGN_LANGUAGE, APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
             }
         }
 
@@ -197,11 +205,20 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             }
         }
 
+        // if the language category has been removed, remove the language details
+
         if (optionalFinancialSupporter1.isPresent()) {
 
             //Clear all the supporter 1-4 fields
             if (hasFinancialConditionSupporter1.equals(NO)) {
                 log.info("Clearing Financial Supporter details from bail application case data");
+                if (callback.getEvent().equals(Event.MAKE_NEW_APPLICATION)) {
+                    //Specifically for the make new application event, we need to clear the hasFinancialSupporter fields so that it doesn't show up on bail tab and affect other fieldShowConditions.
+                    clearHasFinancialSupporter(bailCase, "");
+                    clearHasFinancialSupporter(bailCase, "_2");
+                    clearHasFinancialSupporter(bailCase, "_3");
+                    clearHasFinancialSupporter(bailCase, "_4");
+                }
                 clearFinancialSupporter1Details(bailCase);
                 clearFinancialSupporter2Details(bailCase);
                 clearFinancialSupporter3Details(bailCase);
@@ -214,6 +231,11 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
             //Clear all the supporter 2-4 fields
             if (hasFinancialConditionSupporter2.equals(NO)) {
+                if (callback.getEvent().equals(Event.MAKE_NEW_APPLICATION)) {
+                    clearHasFinancialSupporter(bailCase, "_2");
+                    clearHasFinancialSupporter(bailCase, "_3");
+                    clearHasFinancialSupporter(bailCase, "_4");
+                }
                 log.info("Clearing Financial Supporter details from bail application case data");
                 clearFinancialSupporter2Details(bailCase);
                 clearFinancialSupporter3Details(bailCase);
@@ -227,6 +249,11 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
             //Clear all the supporter 3-4 fields
             if (hasFinancialConditionSupporter3.equals(NO)) {
+                if (callback.getEvent().equals(Event.MAKE_NEW_APPLICATION)) {
+                    clearHasFinancialSupporter(bailCase, "_3");
+                    clearHasFinancialSupporter(bailCase, "_4");
+
+                }
                 log.info("Clearing Financial Supporter details from bail application case data");
                 clearFinancialSupporter3Details(bailCase);
                 clearFinancialSupporter4Details(bailCase);
@@ -240,12 +267,83 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
             //Clear all the supporter 4 fields
             if (hasFinancialConditionSupporter4.equals(NO)) {
+                if (callback.getEvent().equals(Event.MAKE_NEW_APPLICATION)) {
+                    clearHasFinancialSupporter(bailCase, "_4");
+
+                }
                 log.info("Clearing Financial Supporter details from bail application case data");
                 clearFinancialSupporter4Details(bailCase);
             }
         }
 
+        //Clear language details for FCS if fields were deleted in the Edit event
+        if (optionalFcsInterpreter.isPresent()) {
+            if (optionalFcsInterpreter.get().equals(NO)) {
+                //remove all fcs language related fields
+                removeFcsLanguageFields(bailCase, FCS1_INTERPRETER_LANGUAGE_CATEGORY, FCS1_INTERPRETER_SIGN_LANGUAGE,
+                                        FCS1_INTERPRETER_SPOKEN_LANGUAGE, FCS2_INTERPRETER_LANGUAGE_CATEGORY,
+                                        FCS2_INTERPRETER_SIGN_LANGUAGE, FCS2_INTERPRETER_SPOKEN_LANGUAGE,
+                                        FCS3_INTERPRETER_LANGUAGE_CATEGORY, FCS3_INTERPRETER_SIGN_LANGUAGE,
+                                        FCS3_INTERPRETER_SPOKEN_LANGUAGE, FCS4_INTERPRETER_LANGUAGE_CATEGORY,
+                                        FCS4_INTERPRETER_SIGN_LANGUAGE, FCS4_INTERPRETER_SPOKEN_LANGUAGE);
+            } else {
+                sanitizeInterpreterLanguages(bailCase, FCS1_INTERPRETER_LANGUAGE_CATEGORY,
+                                             FCS1_INTERPRETER_SIGN_LANGUAGE, FCS1_INTERPRETER_SPOKEN_LANGUAGE);
+                sanitizeInterpreterLanguages(bailCase, FCS2_INTERPRETER_LANGUAGE_CATEGORY,
+                                             FCS2_INTERPRETER_SIGN_LANGUAGE, FCS2_INTERPRETER_SPOKEN_LANGUAGE);
+                sanitizeInterpreterLanguages(bailCase, FCS3_INTERPRETER_LANGUAGE_CATEGORY,
+                                             FCS3_INTERPRETER_SIGN_LANGUAGE, FCS3_INTERPRETER_SPOKEN_LANGUAGE);
+                sanitizeInterpreterLanguages(bailCase, FCS4_INTERPRETER_LANGUAGE_CATEGORY,
+                                             FCS4_INTERPRETER_SIGN_LANGUAGE, FCS4_INTERPRETER_SPOKEN_LANGUAGE);
+            }
+        }
+
         return new PreSubmitCallbackResponse<>(bailCase);
+    }
+
+    private static void removeFcsLanguageFields(BailCase bailCase,
+                                                BailCaseFieldDefinition fcs1InterpreterLanguageCategory,
+                                                BailCaseFieldDefinition fcs1InterpreterSignLanguage,
+                                                BailCaseFieldDefinition fcs1InterpreterSpokenLanguage,
+                                                BailCaseFieldDefinition fcs2InterpreterLanguageCategory,
+                                                BailCaseFieldDefinition fcs2InterpreterSignLanguage,
+                                                BailCaseFieldDefinition fcs2InterpreterSpokenLanguage,
+                                                BailCaseFieldDefinition fcs3InterpreterLanguageCategory,
+                                                BailCaseFieldDefinition fcs3InterpreterSignLanguage,
+                                                BailCaseFieldDefinition fcs3InterpreterSpokenLanguage,
+                                                BailCaseFieldDefinition fcs4InterpreterLanguageCategory,
+                                                BailCaseFieldDefinition fcs4InterpreterSignLanguage,
+                                                BailCaseFieldDefinition fcs4InterpreterSpokenLanguage) {
+        bailCase.remove(fcs1InterpreterLanguageCategory);
+        bailCase.remove(fcs1InterpreterSignLanguage);
+        bailCase.remove(fcs1InterpreterSpokenLanguage);
+        bailCase.remove(fcs2InterpreterLanguageCategory);
+        bailCase.remove(fcs2InterpreterSignLanguage);
+        bailCase.remove(fcs2InterpreterSpokenLanguage);
+        bailCase.remove(fcs3InterpreterLanguageCategory);
+        bailCase.remove(fcs3InterpreterSignLanguage);
+        bailCase.remove(fcs3InterpreterSpokenLanguage);
+        bailCase.remove(fcs4InterpreterLanguageCategory);
+        bailCase.remove(fcs4InterpreterSignLanguage);
+        bailCase.remove(fcs4InterpreterSpokenLanguage);
+    }
+
+    private void sanitizeInterpreterLanguages(BailCase bailCase, BailCaseFieldDefinition interpreterLanguageCategory,
+                                              BailCaseFieldDefinition interpreterSignLanguage,
+                                              BailCaseFieldDefinition interpreterSpokenLanguage) {
+        Optional<List<String>> optionalInterpreterCategory = bailCase.read(interpreterLanguageCategory);
+        List<String> interpreterCategory = optionalInterpreterCategory.orElse(null);
+        if (optionalInterpreterCategory.isPresent() && optionalInterpreterCategory.get().size() > 0) {
+            if (!interpreterCategory.contains("spokenLanguageInterpreter")) {
+                bailCase.remove(interpreterSpokenLanguage);
+            }
+            if (!interpreterCategory.contains("signLanguageInterpreter")) {
+                bailCase.remove(interpreterSignLanguage);
+            }
+        } else {
+            bailCase.remove(interpreterSpokenLanguage);
+            bailCase.remove(interpreterSignLanguage);
+        }
     }
 
     private void clearFinancialSupporter1Details(BailCase bailCase) {
@@ -264,6 +362,9 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(SUPPORTER_HAS_PASSPORT);
         bailCase.remove(SUPPORTER_PASSPORT);
         bailCase.remove(FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES);
+        bailCase.remove(FCS1_INTERPRETER_SPOKEN_LANGUAGE);
+        bailCase.remove(FCS1_INTERPRETER_SIGN_LANGUAGE);
+        bailCase.remove(FCS1_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
     private void clearFinancialSupporter2Details(BailCase bailCase) {
@@ -282,6 +383,9 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(SUPPORTER_2_HAS_PASSPORT);
         bailCase.remove(SUPPORTER_2_PASSPORT);
         bailCase.remove(FINANCIAL_AMOUNT_SUPPORTER_2_UNDERTAKES);
+        bailCase.remove(FCS2_INTERPRETER_SPOKEN_LANGUAGE);
+        bailCase.remove(FCS2_INTERPRETER_SIGN_LANGUAGE);
+        bailCase.remove(FCS2_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
     private void clearFinancialSupporter3Details(BailCase bailCase) {
@@ -300,6 +404,13 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(SUPPORTER_3_HAS_PASSPORT);
         bailCase.remove(SUPPORTER_3_PASSPORT);
         bailCase.remove(FINANCIAL_AMOUNT_SUPPORTER_3_UNDERTAKES);
+        bailCase.remove(FCS3_INTERPRETER_SPOKEN_LANGUAGE);
+        bailCase.remove(FCS3_INTERPRETER_SIGN_LANGUAGE);
+        bailCase.remove(FCS3_INTERPRETER_LANGUAGE_CATEGORY);
+    }
+
+    private void clearHasFinancialSupporter(BailCase bailcase, String index) {
+        bailcase.removeByString("HAS_FINANCIAL_COND_SUPPORTER" + index);
     }
 
     private void clearFinancialSupporter4Details(BailCase bailCase) {
@@ -318,6 +429,9 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(SUPPORTER_4_HAS_PASSPORT);
         bailCase.remove(SUPPORTER_4_PASSPORT);
         bailCase.remove(FINANCIAL_AMOUNT_SUPPORTER_4_UNDERTAKES);
+        bailCase.remove(FCS4_INTERPRETER_SPOKEN_LANGUAGE);
+        bailCase.remove(FCS4_INTERPRETER_SIGN_LANGUAGE);
+        bailCase.remove(FCS4_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
     private void clearLegalRepDetails(BailCase bailCase) {

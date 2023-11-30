@@ -302,12 +302,15 @@ public class ShowPreviousApplicationService {
         BailCaseFieldDefinition supporterNationality,
         BailCaseFieldDefinition supporterHasPassport,
         BailCaseFieldDefinition supporterPassport,
-        BailCaseFieldDefinition financialAmountSupporterUndertakes
+        BailCaseFieldDefinition financialAmountSupporterUndertakes,
+        BailCaseFieldDefinition spokenLanguageInterpreter,
+        BailCaseFieldDefinition signLanguageInterpreter
     ) {
         if (previousBailCase.read(hasFinancialCondSupporter, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
-
+            String index = StringUtils.substringAfter(hasFinancialCondSupporter.toString(), "HAS_FINANCIAL_COND_SUPPORTER").replaceAll("_", "");
+            index = index.isEmpty() ? "1" : index;
             StringBuilder stringBuilder =
-                new StringBuilder("|Financial condition supporter 1||\n|--------|--------|\n");
+                new StringBuilder("|Financial condition supporter " + index + "||\n|--------|--------|\n");
             stringBuilder.append("|Financial condition supporter|Yes|\n")
                 .append("|Given names|")
                 .append(previousBailCase.read(supporterGivenNames)
@@ -373,6 +376,16 @@ public class ShowPreviousApplicationService {
                     .append("|\n");
             }
 
+            Optional<InterpreterLanguageRefData> mayBeInterpreterLanguage =
+                    previousBailCase.read(spokenLanguageInterpreter);
+            if (mayBeInterpreterLanguage.isPresent()) {
+                stringBuilder.append(constructInterpreterLanguageString(mayBeInterpreterLanguage, "Spoken language Interpreter"));
+            }
+            mayBeInterpreterLanguage =
+                    previousBailCase.read(signLanguageInterpreter);
+            if (mayBeInterpreterLanguage.isPresent()) {
+                stringBuilder.append(constructInterpreterLanguageString(mayBeInterpreterLanguage, "Sign language Interpreter"));
+            }
             stringBuilder.append("|Financial condition amount (£)|")
                 .append(previousBailCase.read(financialAmountSupporterUndertakes)
                             .orElseThrow(getErrorThrowable(financialAmountSupporterUndertakes)))
