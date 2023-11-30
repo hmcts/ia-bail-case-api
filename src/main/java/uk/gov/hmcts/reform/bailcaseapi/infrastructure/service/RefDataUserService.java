@@ -35,6 +35,7 @@ public class RefDataUserService {
     }
 
     public CommonDataResponse retrieveCategoryValues(String categoryId, String isChildRequired) {
+        log.info("retrieveCategoryValues {}", categoryId);
         try {
             commonDataResponse = commonDataRefApi.getAllCategoryValuesByCategoryId(
                 userDetails.getAccessToken(),

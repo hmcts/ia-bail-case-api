@@ -20,13 +20,13 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.*;
 
 @Component
-public class ApplicantInterpreterLanguagesDynamicListUpdater implements PreSubmitCallbackHandler<BailCase> {
+public class InterpreterLanguagesDynamicListUpdater implements PreSubmitCallbackHandler<BailCase> {
 
     public static final String INTERPRETER_LANGUAGES = "InterpreterLanguage";
     public static final String SIGN_LANGUAGES = "SignLanguage";
     private final RefDataUserService refDataUserService;
 
-    public ApplicantInterpreterLanguagesDynamicListUpdater(RefDataUserService refDataUserService) {
+    public InterpreterLanguagesDynamicListUpdater(RefDataUserService refDataUserService) {
         this.refDataUserService = refDataUserService;
     }
 

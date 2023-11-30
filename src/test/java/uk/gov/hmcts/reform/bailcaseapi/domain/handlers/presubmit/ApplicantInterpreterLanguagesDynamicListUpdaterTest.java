@@ -65,13 +65,13 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
     private MockedStatic<InterpreterLanguagesUtils> interpreterLanguagesUtils;
 
     private RefDataUserService refDataUserService;
-    private ApplicantInterpreterLanguagesDynamicListUpdater applicantInterpreterLanguagesDynamicListUpdater;
+    private InterpreterLanguagesDynamicListUpdater interpreterLanguagesDynamicListUpdater;
 
     @BeforeEach
     void setup() {
         refDataUserService = mock(RefDataUserService.class);
-        applicantInterpreterLanguagesDynamicListUpdater =
-            new ApplicantInterpreterLanguagesDynamicListUpdater(refDataUserService);
+        interpreterLanguagesDynamicListUpdater =
+            new InterpreterLanguagesDynamicListUpdater(refDataUserService);
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
@@ -111,7 +111,7 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
         interpreterLanguagesUtils.when(() -> InterpreterLanguagesUtils.generateDynamicList(refDataUserService, SIGN_LANGUAGES))
             .thenReturn(signLanguages);
 
-        applicantInterpreterLanguagesDynamicListUpdater.handle(ABOUT_TO_START, callback);
+        interpreterLanguagesDynamicListUpdater.handle(ABOUT_TO_START, callback);
 
         verify(bailCase).write(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
         verify(bailCase).write(APPLICANT_INTERPRETER_SIGN_LANGUAGE, signLanguages);
@@ -156,7 +156,7 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
         interpreterLanguagesUtils.when(() -> InterpreterLanguagesUtils.generateDynamicList(refDataUserService, SIGN_LANGUAGES))
             .thenReturn(signLanguages);
 
-        applicantInterpreterLanguagesDynamicListUpdater.handle(ABOUT_TO_START, callback);
+        interpreterLanguagesDynamicListUpdater.handle(ABOUT_TO_START, callback);
 
         verify(spokenLanguages).setLanguageManualEntry(List.of("Yes"));
         verify(signLanguages).setLanguageManualEntry(List.of("Yes"));
@@ -178,7 +178,7 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
     void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(
-            () -> applicantInterpreterLanguagesDynamicListUpdater.handle(ABOUT_TO_SUBMIT, callback))
+            () -> interpreterLanguagesDynamicListUpdater.handle(ABOUT_TO_SUBMIT, callback))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
     }
@@ -192,7 +192,7 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
 
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
 
-                boolean canHandle = applicantInterpreterLanguagesDynamicListUpdater.canHandle(callbackStage, callback);
+                boolean canHandle = interpreterLanguagesDynamicListUpdater.canHandle(callbackStage, callback);
 
                 if (callbackStage == ABOUT_TO_START
                     && Set.of(START_APPLICATION, EDIT_BAIL_APPLICATION, EDIT_BAIL_APPLICATION_AFTER_SUBMIT, MAKE_NEW_APPLICATION).contains(callback.getEvent())) {
@@ -208,20 +208,20 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
     @Test
     void should_not_allow_null_arguments() {
 
-        assertThatThrownBy(() -> applicantInterpreterLanguagesDynamicListUpdater.canHandle(null, callback))
+        assertThatThrownBy(() -> interpreterLanguagesDynamicListUpdater.canHandle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
         assertThatThrownBy(
-            () -> applicantInterpreterLanguagesDynamicListUpdater.canHandle(PreSubmitCallbackStage.ABOUT_TO_START, null))
+            () -> interpreterLanguagesDynamicListUpdater.canHandle(PreSubmitCallbackStage.ABOUT_TO_START, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> applicantInterpreterLanguagesDynamicListUpdater.handle(null, callback))
+        assertThatThrownBy(() -> interpreterLanguagesDynamicListUpdater.handle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> applicantInterpreterLanguagesDynamicListUpdater.handle(PreSubmitCallbackStage.ABOUT_TO_START, null))
+        assertThatThrownBy(() -> interpreterLanguagesDynamicListUpdater.handle(PreSubmitCallbackStage.ABOUT_TO_START, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
     }
