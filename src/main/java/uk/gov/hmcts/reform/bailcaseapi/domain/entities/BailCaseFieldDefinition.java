@@ -501,7 +501,9 @@ public enum BailCaseFieldDefinition {
 
     FCS4_INTERPRETER_SIGN_LANGUAGE(
             "fcs4InterpreterSignLanguage", new TypeReference<InterpreterLanguageRefData>() {}),
-    ;
+
+    FCS_LEVEL_FLAGS(
+        "fcsLevelFlags", new TypeReference<List<IdValue<StrategicCaseFlag>>>() {}),;
 
 
     private final String value;
