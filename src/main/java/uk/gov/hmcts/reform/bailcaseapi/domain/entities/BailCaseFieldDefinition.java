@@ -454,6 +454,7 @@ public enum BailCaseFieldDefinition {
         "appellantLevelFlags", new TypeReference<StrategicCaseFlag>() {}),
     CASE_FLAGS(
         "caseFlags", new TypeReference<StrategicCaseFlag>(){}),
+
     APPLICANT_INTERPRETER_SPOKEN_LANGUAGE(
         "applicantInterpreterSpokenLanguage", new TypeReference<InterpreterLanguageRefData>() {}),
 
@@ -501,6 +502,27 @@ public enum BailCaseFieldDefinition {
 
     FCS4_INTERPRETER_SIGN_LANGUAGE(
             "fcs4InterpreterSignLanguage", new TypeReference<InterpreterLanguageRefData>() {}),
+
+    APPLICANT_PARTY_ID(
+        "applicantPartyId", new TypeReference<String>(){}),
+
+    LEGAL_REP_INDIVIDUAL_PARTY_ID(
+        "legalRepIndividualPartyId", new TypeReference<String>(){}),
+
+    LEGAL_REP_ORGANISATION_PARTY_ID(
+        "legalRepOrganisationPartyId", new TypeReference<String>(){}),
+
+    SUPPORTER_1_PARTY_ID(
+        "supporter1PartyId", new TypeReference<String>(){}),
+
+    SUPPORTER_2_PARTY_ID(
+        "supporter2PartyId", new TypeReference<String>(){}),
+
+    SUPPORTER_3_PARTY_ID(
+        "supporter3PartyId", new TypeReference<String>(){}),
+
+    SUPPORTER_4_PARTY_ID(
+        "supporter4PartyId", new TypeReference<String>(){}),
     ;
 
 
