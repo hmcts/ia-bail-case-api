@@ -8,8 +8,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.StrategicCaseFlag.
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
@@ -104,14 +102,14 @@ class CreateFlagHandler implements PreSubmitCallbackHandler<BailCase> {
         int i = 0;
         while (i < 4) {
             Optional<List<String>> fcsInterpreterCategoryOptional = bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(i));
-            if (fcsInterpreterCategoryOptional.isPresent() && !fcsInterpreterCategoryOptional.get().isEmpty()){
+            if (fcsInterpreterCategoryOptional.isPresent() && !fcsInterpreterCategoryOptional.get().isEmpty()) {
                 fcsLevelFlags.add(new IdValue<>(String.valueOf(i),
                                   new StrategicCaseFlag(buildFcsFullName(bailCase, i), ROLE_ON_CASE_FCS)));
             }
             i++;
         }
 
-        if (!fcsLevelFlags.isEmpty()){
+        if (!fcsLevelFlags.isEmpty()) {
             bailCase.write(FCS_LEVEL_FLAGS, fcsLevelFlags);
         }
     }
