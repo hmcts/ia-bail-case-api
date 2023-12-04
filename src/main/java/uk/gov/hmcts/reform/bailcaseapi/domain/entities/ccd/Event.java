@@ -32,6 +32,7 @@ public enum Event {
     MAINTAIN_BAIL_CASE_LINKS("maintainBailCaseLinks"),
     CREATE_FLAG("createFlag"),
     CONFIRM_DETENTION_LOCATION("confirmDetentionLocation"),
+    UPDATE_INTERPRETER_DETAILS("updateInterpreterDetails"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
