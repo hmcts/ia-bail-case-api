@@ -39,7 +39,7 @@ class UpdateInterpreterDetailsHandlerTest {
     @Mock
     private CaseDetails<BailCase> caseDetails;
     @Mock
-    private BailCase asylumCase;
+    private BailCase bailCase;
 
     private UpdateInterpreterDetailsHandler handler;
 
@@ -48,7 +48,7 @@ class UpdateInterpreterDetailsHandlerTest {
         handler = new UpdateInterpreterDetailsHandler();
         when(callback.getEvent()).thenReturn(Event.UPDATE_INTERPRETER_DETAILS);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
     }
 
     @Test
@@ -85,7 +85,7 @@ class UpdateInterpreterDetailsHandlerTest {
         interpreterDetailsList.add(new IdValue<>("2", interpreterWithoutId));
 
         // Given that the case has interpreter details, one with an id and one without
-        when(asylumCase.read(eq(INTERPRETER_DETAILS))).thenReturn(Optional.of(interpreterDetailsList));
+        when(bailCase.read(eq(INTERPRETER_DETAILS))).thenReturn(Optional.of(interpreterDetailsList));
 
         PreSubmitCallbackResponse<BailCase> response = handler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         assertNotNull(response);
