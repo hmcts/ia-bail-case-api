@@ -33,6 +33,7 @@ public enum Event {
     CREATE_FLAG("createFlag"),
     CONFIRM_DETENTION_LOCATION("confirmDetentionLocation"),
     UPDATE_INTERPRETER_DETAILS("updateInterpreterDetails"),
+    UPDATE_INTERPRETER_BOOKING_STATUS("updateInterpreterBookingStatus"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
