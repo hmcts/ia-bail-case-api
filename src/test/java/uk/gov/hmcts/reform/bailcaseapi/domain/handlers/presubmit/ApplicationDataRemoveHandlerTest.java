@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -24,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
@@ -94,59 +97,71 @@ public class ApplicationDataRemoveHandlerTest {
             .isExactlyInstanceOf(NullPointerException.class);
     }
 
-    @Test
-    void should_remove_supporters_if_no_present() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {"EDIT_BAIL_APPLICATION", "MAKE_NEW_APPLICATION",
+        "EDIT_BAIL_APPLICATION_AFTER_SUBMIT"})
+    void should_remove_supporters_if_no_present(Event event) {
+        when(callback.getEvent()).thenReturn(event);
         setUpValuesIfValuesAreRemoved();
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        assertFinancialConditionSupporter1Removed();
-        assertFinancialConditionSupporter2Removed();
-        assertFinancialConditionSupporter3Removed();
-        assertFinancialConditionSupporter4Removed();
+        assertFinancialConditionSupporter1Removed(event);
+        assertFinancialConditionSupporter2Removed(event);
+        assertFinancialConditionSupporter3Removed(event);
+        assertFinancialConditionSupporter4Removed(event);
     }
 
-    @Test
-    void should_remove_supporter_other_values_if_supporter1_present() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {"EDIT_BAIL_APPLICATION", "MAKE_NEW_APPLICATION",
+        "EDIT_BAIL_APPLICATION_AFTER_SUBMIT"})
+    void should_remove_supporter_other_values_if_supporter1_present(Event event) {
         setUpValuesIfValuesAreRemoved();
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(callback.getEvent()).thenReturn(event);
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YES));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
-        assertFinancialConditionSupporter2Removed();
-        assertFinancialConditionSupporter3Removed();
-        assertFinancialConditionSupporter4Removed();
+        assertFinancialConditionSupporter2Removed(event);
+        assertFinancialConditionSupporter3Removed(event);
+        assertFinancialConditionSupporter4Removed(event);
     }
 
-    @Test
-    void should_remove_supporter_other_values_if_supporter2_present() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {"EDIT_BAIL_APPLICATION", "MAKE_NEW_APPLICATION",
+        "EDIT_BAIL_APPLICATION_AFTER_SUBMIT"})
+    void should_remove_supporter_other_values_if_supporter2_present(Event event) {
+        when(callback.getEvent()).thenReturn(event);
         setUpValuesIfValuesAreRemoved();
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YES));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
-        assertFinancialConditionSupporter3Removed();
-        assertFinancialConditionSupporter4Removed();
+        assertFinancialConditionSupporter3Removed(event);
+        assertFinancialConditionSupporter4Removed(event);
     }
 
-    @Test
-    void should_remove_supporter_other_values_if_supporter3_present() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {"EDIT_BAIL_APPLICATION", "MAKE_NEW_APPLICATION",
+        "EDIT_BAIL_APPLICATION_AFTER_SUBMIT"})
+    void should_remove_supporter_other_values_if_supporter3_present(Event event) {
+        when(callback.getEvent()).thenReturn(event);
         setUpValuesIfValuesAreRemoved();
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YES));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_3_GIVEN_NAMES);
-        assertFinancialConditionSupporter4Removed();
+        assertFinancialConditionSupporter4Removed(event);
     }
 
     @Test
     void should_remove_supporter_other_values_if_supporter4_present() {
         setUpValuesIfValuesAreRemoved();
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class)).thenReturn(Optional.of(YES));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
@@ -346,6 +361,58 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
+    @Test
+    void should_sanitize_all_fcs_sign_interpreter_details_if_fcs_interpreterNeeded_updated_to_yes() {
+        //when only sign interpreter details are present, make sure spoken language details are removed
+        when(bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
+        setUpValuesIfValuesArePresent();
+        List<String> category = List.of("signLanguageInterpreter");
+        final DynamicList signLanguage = new DynamicList(new Value("1", "Makaton"), List.of(new Value("1", "Makaton")));
+        when(bailCase.read(FCS1_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(FCS1_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.empty());
+        when(bailCase.read(FCS1_INTERPRETER_SIGN_LANGUAGE)).thenReturn((Optional.of(signLanguage)));
+        when(bailCase.read(FCS2_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(FCS2_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.empty());
+        when(bailCase.read(FCS2_INTERPRETER_SIGN_LANGUAGE)).thenReturn((Optional.of(signLanguage)));
+        when(bailCase.read(FCS3_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(FCS3_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.empty());
+        when(bailCase.read(FCS3_INTERPRETER_SIGN_LANGUAGE)).thenReturn((Optional.of(signLanguage)));
+        when(bailCase.read(FCS4_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(FCS4_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.empty());
+        when(bailCase.read(FCS4_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.of(signLanguage));
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, times(1)).remove(FCS1_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS2_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS3_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS4_INTERPRETER_SPOKEN_LANGUAGE);
+    }
+
+    @Test
+    void should_sanitize_all_fcs_spoken_interpreter_details_if_fcs_interpreterNeeded_updated_to_yes() {
+        //when only spoken interpreter details are present, make sure sign language details are removed
+        when(bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
+        setUpValuesIfValuesArePresent();
+        List<String> category = List.of("spokenLanguageInterpreter");
+        final DynamicList spokenLanguage = new DynamicList(new Value("1", "English"), List.of(new Value("1", "English")));
+        when(bailCase.read(FCS1_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(FCS1_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.of(spokenLanguage));
+        when(bailCase.read(FCS1_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.empty());
+        when(bailCase.read(FCS2_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(FCS2_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.of(spokenLanguage));
+        when(bailCase.read(FCS2_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.empty());
+        when(bailCase.read(FCS3_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(FCS3_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.of(spokenLanguage));
+        when(bailCase.read(FCS3_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.empty());
+        when(bailCase.read(FCS4_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(FCS4_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.of(spokenLanguage));
+        when(bailCase.read(FCS4_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.empty());
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, times(1)).remove(FCS1_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS2_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS3_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS4_INTERPRETER_SIGN_LANGUAGE);
+    }
+
     private void setUpValuesIfValuesAreRemoved() {
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
@@ -359,11 +426,11 @@ public class ApplicationDataRemoveHandlerTest {
         when(bailCase.read(HAS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(DISABILITY_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
-        when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
-        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(bailCase.read(APPLICANT_NATIONALITY, String.class)).thenReturn(Optional.of("STATELESS"));
         when(bailCase.read(APPLICANT_DETENTION_LOCATION, String.class)).thenReturn(Optional.of(
             "immigrationRemovalCentre"));
@@ -373,21 +440,21 @@ public class ApplicationDataRemoveHandlerTest {
     }
 
     private void setUpValuesIfValuesArePresent() {
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(bailCase.read(
             GROUNDS_FOR_BAIL_PROVIDE_EVIDENCE_OPTION,
             YesOrNo.class
-        )).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(HAS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(DISABILITY_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        )).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(DISABILITY_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(APPLICANT_NATIONALITY, String.class)).thenReturn(Optional.empty());
@@ -398,7 +465,10 @@ public class ApplicationDataRemoveHandlerTest {
         when(bailCase.read(HAS_PREVIOUS_BAIL_APPLICATION, String.class)).thenReturn(Optional.of("Yes"));
     }
 
-    private void assertFinancialConditionSupporter1Removed() {
+    private void assertFinancialConditionSupporter1Removed(Event event) {
+        if (event == Event.MAKE_NEW_APPLICATION) {
+            verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER.toString());
+        }
         verify(bailCase, times(1)).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_FAMILY_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_ADDRESS_DETAILS);
@@ -419,7 +489,10 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
-    private void assertFinancialConditionSupporter2Removed() {
+    private void assertFinancialConditionSupporter2Removed(Event event) {
+        if (event == Event.MAKE_NEW_APPLICATION) {
+            verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_2.toString());
+        }
         verify(bailCase, times(1)).remove(SUPPORTER_2_GIVEN_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_2_FAMILY_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_2_ADDRESS_DETAILS);
@@ -440,7 +513,10 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
-    private void assertFinancialConditionSupporter3Removed() {
+    private void assertFinancialConditionSupporter3Removed(Event event) {
+        if (event == Event.MAKE_NEW_APPLICATION) {
+            verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_3.toString());
+        }
         verify(bailCase, times(1)).remove(SUPPORTER_3_GIVEN_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_3_FAMILY_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_3_ADDRESS_DETAILS);
@@ -461,7 +537,10 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
-    private void assertFinancialConditionSupporter4Removed() {
+    private void assertFinancialConditionSupporter4Removed(Event event) {
+        if (event == Event.MAKE_NEW_APPLICATION) {
+            verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_4.toString());
+        }
         verify(bailCase, times(1)).remove(SUPPORTER_4_GIVEN_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_4_FAMILY_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_4_ADDRESS_DETAILS);

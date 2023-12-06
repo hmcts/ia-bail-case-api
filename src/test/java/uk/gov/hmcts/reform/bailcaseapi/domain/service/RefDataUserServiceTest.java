@@ -15,7 +15,7 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.service.RefDataUserService
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,6 +66,26 @@ public class RefDataUserServiceTest {
 
         assertEquals(commonDataResponse,
                      refDataUserService.retrieveCategoryValues(categoryId, "Y"));
+    }
+
+    @Test
+    void shouldHandleExceptionRetrieveCategoryValues() {
+        // mock the exception and make sure it is handled
+        String token = "token";
+        when(userDetails.getAccessToken()).thenReturn(token);
+        String authToken = "authToken";
+        when(authTokenGenerator.generate()).thenReturn(authToken);
+        String serviceId = "BFA1";
+        when(commonDataRefApi.getAllCategoryValuesByCategoryId(
+            token,
+            authToken,
+            categoryId,
+            serviceId,
+            "Y"
+        )).thenThrow(new RuntimeException("Gateway timeout"));
+
+        commonDataResponse = assertDoesNotThrow(() -> refDataUserService.retrieveCategoryValues(categoryId, "Y"));
+        assertNull(commonDataResponse);
     }
 
     @Test

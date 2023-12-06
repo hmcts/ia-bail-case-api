@@ -1,20 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
-import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_2_CONTACT_DETAILS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_3_CONTACT_DETAILS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_4_CONTACT_DETAILS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_CONTACT_DETAILS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference.EMAIL;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference.MOBILE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference.TELEPHONE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.EDIT_BAIL_APPLICATION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.MAKE_NEW_APPLICATION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.START_APPLICATION;
-
-import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference;
@@ -23,6 +8,14 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ContactPreference.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.*;
 
 @Component
 public class FinancialConditionSupporterContactPreferenceMidEventHandler implements PreSubmitCallbackHandler<BailCase> {
@@ -76,6 +69,7 @@ public class FinancialConditionSupporterContactPreferenceMidEventHandler impleme
             case SUPPORTER_3_CONTACT_PREF_PAGE_ID -> supporterContactPreferences = bailCase.read(SUPPORTER_3_CONTACT_DETAILS);
             case SUPPORTER_4_CONTACT_PREF_PAGE_ID -> supporterContactPreferences = bailCase.read(SUPPORTER_4_CONTACT_DETAILS);
             default -> {
+                // do nothing
             }
         }
 

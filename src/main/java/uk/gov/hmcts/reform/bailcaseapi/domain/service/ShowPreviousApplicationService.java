@@ -1,16 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
-import static java.util.Objects.isNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -307,7 +296,7 @@ public class ShowPreviousApplicationService {
         BailCaseFieldDefinition signLanguageInterpreter
     ) {
         if (previousBailCase.read(hasFinancialCondSupporter, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
-            String index = StringUtils.substringAfter(hasFinancialCondSupporter.toString(), "HAS_FINANCIAL_COND_SUPPORTER").replaceAll("_", "");
+            String index = StringUtils.substringAfter(hasFinancialCondSupporter.toString(), "HAS_FINANCIAL_COND_SUPPORTER").replace("_", "");
             index = index.isEmpty() ? "1" : index;
             StringBuilder stringBuilder =
                 new StringBuilder("|Financial condition supporter " + index + "||\n|--------|--------|\n");

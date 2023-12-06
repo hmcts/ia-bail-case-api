@@ -1,17 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -274,6 +262,24 @@ public class ShowPreviousApplicationServiceTest {
         assertTrue(label.contains("<br><br> *Reporting*<br>Reporting Conditions"));
         assertTrue(label.contains("<br><br> *Electronic monitoring*<br>Electronic Monitoring Conditions"));
         assertTrue(label.contains("<br><br>*Other*<br>Other Conditions|"));
+    }
+
+    @Test
+    void check_decision_label_for_Decided_Application_with_minded_to_grant() {
+        Value selectedApplicationValue = new Value("1", "Bail Application 1 Decided 20/06/2022");
+        when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of("refused"));
+        when(bailCase.read(RECORD_THE_DECISION_LIST, String.class)).thenReturn(Optional.of("mindedToGrant"));
+        when(bailCase.read(REASONS_JUDGE_IS_MINDED_DETAILS, String.class)).thenReturn(Optional.of("Reasons for minded to Grant"));
+        when(bailCase.read(SECRETARY_OF_STATE_REFUSAL_REASONS, String.class)).thenReturn(Optional.of("Reason 123"));
+
+        String label = showPreviousApplicationService
+            .getDecisionLabel(bailCase, selectedApplicationValue);
+
+        assertNotNull(label);
+        assertTrue(label.contains("|Decision details||"));
+        assertTrue(label.contains("|\n|Decision date|20 Jun 2022|"));
+        assertTrue(label.contains("|\n|Reasons judge minded to grant bail|Reasons for minded to Grant|"));
+        assertTrue(label.contains("|\n|Reasons for refusal|Reason 123"));
     }
 
     @Test
