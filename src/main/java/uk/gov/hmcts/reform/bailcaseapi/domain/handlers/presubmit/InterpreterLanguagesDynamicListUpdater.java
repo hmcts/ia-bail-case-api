@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -48,7 +49,7 @@ public class InterpreterLanguagesDynamicListUpdater implements PreSubmitCallback
         BailCase bailCase = callback.getCaseDetails().getCaseData();
 
         BailCase bailCaseBefore = callback.getCaseDetailsBefore()
-            .map(caseDetails -> caseDetails.getCaseData())
+            .map(CaseDetails::getCaseData)
             .orElse(bailCase);
 
         List.of(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, FCS1_INTERPRETER_SPOKEN_LANGUAGE, FCS2_INTERPRETER_SPOKEN_LANGUAGE, FCS3_INTERPRETER_SPOKEN_LANGUAGE, FCS4_INTERPRETER_SPOKEN_LANGUAGE)
