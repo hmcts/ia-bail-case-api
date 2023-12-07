@@ -67,6 +67,11 @@ public class FcsInterpreterCategoryValidator implements PreSubmitCallbackHandler
             Optional<List<String>> maybeFcs3Category = bailCase.read(FCS3_INTERPRETER_LANGUAGE_CATEGORY);
             Optional<List<String>> maybeFcs4Category = bailCase.read(FCS4_INTERPRETER_LANGUAGE_CATEGORY);
 
+            final boolean fcs1CategoryEmpty = maybeFcs1Category.isPresent() && maybeFcs1Category.get().isEmpty();
+            final boolean fcs2CategoryEmpty = maybeFcs2Category.isPresent() && maybeFcs2Category.get().isEmpty();
+            final boolean fcs3CategoryEmpty = maybeFcs3Category.isPresent() && maybeFcs3Category.get().isEmpty();
+            final boolean fcs4CategoryEmpty = maybeFcs4Category.isPresent() && maybeFcs4Category.get().isEmpty();
+
             final boolean has4Fcs = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES;
             final boolean has3Fcs = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES;
             final boolean has2Fcs = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES;
@@ -74,7 +79,7 @@ public class FcsInterpreterCategoryValidator implements PreSubmitCallbackHandler
 
             //if has4Fcs then either of fcs1 or fcs2 or fcs3 or fcs4 should be present
             if (has4Fcs) {
-                if (maybeFcs1Category.get().isEmpty() && maybeFcs2Category.get().isEmpty() && maybeFcs3Category.get().isEmpty() && maybeFcs4Category.get().isEmpty()) {
+                if (fcs1CategoryEmpty && fcs2CategoryEmpty && fcs3CategoryEmpty && fcs4CategoryEmpty) {
                     response.addError(ERROR_MESSAGE);
                 }
                 return response;
@@ -82,7 +87,7 @@ public class FcsInterpreterCategoryValidator implements PreSubmitCallbackHandler
 
             //if has3Fcs then either of fcs1 or fcs2 or fcs3 should be present
             if (has3Fcs) {
-                if (maybeFcs1Category.get().isEmpty() && maybeFcs2Category.get().isEmpty() && maybeFcs3Category.get().isEmpty()) {
+                if (fcs1CategoryEmpty && fcs2CategoryEmpty && fcs3CategoryEmpty) {
                     response.addError(ERROR_MESSAGE);
                 }
                 return response;
@@ -90,7 +95,7 @@ public class FcsInterpreterCategoryValidator implements PreSubmitCallbackHandler
 
             //if has2Fcs then either of fcs1 or fcs2 should be present
             if (has2Fcs) {
-                if (maybeFcs1Category.get().isEmpty() && maybeFcs2Category.get().isEmpty()) {
+                if (fcs1CategoryEmpty && fcs2CategoryEmpty) {
                     response.addError(ERROR_MESSAGE);
                 }
                 return response;
@@ -98,7 +103,7 @@ public class FcsInterpreterCategoryValidator implements PreSubmitCallbackHandler
 
             //if hasFcs then  fcs1 should be present
             if (hasFcs) {
-                if (maybeFcs1Category.get().isEmpty()) {
+                if (fcs1CategoryEmpty) {
                     response.addError(ERROR_MESSAGE);
                 }
                 return response;
