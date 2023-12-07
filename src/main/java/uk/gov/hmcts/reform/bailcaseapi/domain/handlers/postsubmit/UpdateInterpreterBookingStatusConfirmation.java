@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
+import static java.util.Objects.requireNonNull;
+
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -12,6 +14,7 @@ public class UpdateInterpreterBookingStatusConfirmation implements PostSubmitCal
 
     @Override
     public boolean canHandle(Callback<BailCase> callback) {
+        requireNonNull(callback, "callback must not be null");
         return (callback.getEvent() == Event.UPDATE_INTERPRETER_BOOKING_STATUS);
     }
 
