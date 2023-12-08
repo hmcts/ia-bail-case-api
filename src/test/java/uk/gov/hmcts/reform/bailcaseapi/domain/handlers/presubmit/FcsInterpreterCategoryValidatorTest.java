@@ -146,4 +146,45 @@ public class FcsInterpreterCategoryValidatorTest {
         assertTrue(response.getErrors().size() == 1);
         assertTrue(response.getErrors().contains("You must select at least one interpreter category"));
     }
+
+    @Test
+    void should_throw_error_if_3fcs_present_no_category_selected() {
+        when(bailCase.read(BailCaseFieldDefinition.FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(BailCaseFieldDefinition.FCS1_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(Collections.EMPTY_LIST));
+        when(bailCase.read(BailCaseFieldDefinition.FCS2_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(Collections.EMPTY_LIST));
+        when(bailCase.read(BailCaseFieldDefinition.FCS3_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(Collections.EMPTY_LIST));
+        when(bailCase.read(BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER_3, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+
+        PreSubmitCallbackResponse<BailCase> response = fcsInterpreterCategoryValidator.handle(PreSubmitCallbackStage.MID_EVENT, callback);
+
+        assertTrue(response.getErrors().size() == 1);
+        assertTrue(response.getErrors().contains("You must select at least one interpreter category"));
+    }
+
+    @Test
+    void should_throw_error_if_1fcs_present_no_category_selected() {
+        when(bailCase.read(BailCaseFieldDefinition.FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(BailCaseFieldDefinition.FCS1_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(Collections.EMPTY_LIST));
+        when(bailCase.read(BailCaseFieldDefinition.FCS2_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(Collections.EMPTY_LIST));
+        when(bailCase.read(BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER_2, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+
+        PreSubmitCallbackResponse<BailCase> response = fcsInterpreterCategoryValidator.handle(PreSubmitCallbackStage.MID_EVENT, callback);
+
+        assertTrue(response.getErrors().size() == 1);
+        assertTrue(response.getErrors().contains("You must select at least one interpreter category"));
+    }
+
+    @Test
+    void should_handle_if_no_fcs_present_no_category_selected() {
+        when(bailCase.read(BailCaseFieldDefinition.FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.empty());
+        when(bailCase.read(BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+
+        PreSubmitCallbackResponse<BailCase> response = fcsInterpreterCategoryValidator.handle(PreSubmitCallbackStage.MID_EVENT, callback);
+
+        assertTrue(response.getErrors().size() == 0);
+    }
+
 }

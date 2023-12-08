@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.utils;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.BailCaseServiceResponseException;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.dto.hearingdetails.CategoryValues;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.dto.hearingdetails.CommonDataResponse;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.service.RefDataUserService;
@@ -33,7 +34,7 @@ public class InterpreterLanguagesUtils {
                                                      refDataUserService.mapCategoryValuesToDynamicListValues(languages));
 
         } catch (Exception e) {
-            throw new RuntimeException(String.format("Could not read response by RefData service for %s(s)", languageCategory), e);
+            throw new BailCaseServiceResponseException(String.format("Could not read response by RefData service for %s(s)", languageCategory), e);
         }
 
         return new InterpreterLanguageRefData(
