@@ -6,6 +6,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.StrategicCaseFlag.
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.StrategicCaseFlag.ROLE_ON_CASE_FCS;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Slf4j
@@ -41,6 +41,13 @@ class CreateFlagHandler implements PreSubmitCallbackHandler<BailCase> {
         FCS2_INTERPRETER_LANGUAGE_CATEGORY,
         FCS3_INTERPRETER_LANGUAGE_CATEGORY,
         FCS4_INTERPRETER_LANGUAGE_CATEGORY
+    );
+
+    public static final List<BailCaseFieldDefinition> FCS_N_PARTY_ID_FIELD = List.of(
+        SUPPORTER_1_PARTY_ID,
+        SUPPORTER_2_PARTY_ID,
+        SUPPORTER_3_PARTY_ID,
+        SUPPORTER_4_PARTY_ID
     );
 
     @Override
@@ -98,20 +105,40 @@ class CreateFlagHandler implements PreSubmitCallbackHandler<BailCase> {
     }
 
     private void handleFcsLevelFlags(BailCase bailCase) {
-        List<IdValue<StrategicCaseFlag>> fcsLevelFlags = new ArrayList<>();
+        Optional<List<PartyFlagIdValue>> maybeFcsFlagsOptional = bailCase.read(FCS_LEVEL_FLAGS);
+        List<PartyFlagIdValue> fcsFlags = maybeFcsFlagsOptional.orElse(Collections.emptyList());
+
+        List<PartyFlagIdValue> newFcsLevelFlags = new ArrayList<>();
+
         int i = 0;
         while (i < 4) {
             Optional<List<String>> fcsInterpreterCategoryOptional = bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(i));
             if (fcsInterpreterCategoryOptional.isPresent() && !fcsInterpreterCategoryOptional.get().isEmpty()) {
-                fcsLevelFlags.add(new IdValue<>(String.valueOf(i),
-                                  new StrategicCaseFlag(buildFcsFullName(bailCase, i), ROLE_ON_CASE_FCS)));
+                int finalI = i;
+                String partyId = bailCase.read(FCS_N_PARTY_ID_FIELD.get(i), String.class).orElse(null);
+
+                if (partyId == null) {
+                    // Flags are created only for financial condition supporter with party ID set to a non-null value
+                    i++;
+                    continue;
+                }
+
+                fcsFlags.stream()
+                    .filter(f -> f.getPartyId().equals(partyId))
+                    .findFirst()
+                    .ifPresentOrElse(
+                        existingFcsFlags -> newFcsLevelFlags.add(new PartyFlagIdValue(
+                            partyId, new StrategicCaseFlag(buildFcsFullName(bailCase, finalI), ROLE_ON_CASE_FCS,
+                                                           existingFcsFlags.getValue().getDetails()))),
+                        () -> newFcsLevelFlags.add(new PartyFlagIdValue(
+                            partyId, new StrategicCaseFlag(buildFcsFullName(bailCase, finalI), ROLE_ON_CASE_FCS)))
+                    );
             }
             i++;
         }
 
-        if (!fcsLevelFlags.isEmpty()) {
-            bailCase.write(FCS_LEVEL_FLAGS, fcsLevelFlags);
-        }
+        bailCase.write(FCS_LEVEL_FLAGS, newFcsLevelFlags);
+
     }
 
     private String buildFcsFullName(BailCase bailCase, int index) {
