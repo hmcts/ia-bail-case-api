@@ -33,7 +33,7 @@ public class UpdateInterpreterBookingStatusConfirmation implements PostSubmitCal
             "### What happens next\n\n"
             + "You now need to update the hearing in the [Hearings tab](/cases/case-details/"
             + callback.getCaseDetails().getId()
-            + "/hearing) to ensure the update is displayed in List Assist.\n\nIf an interpreter status has been moved to booked, "
+            + "/hearings) to ensure the update is displayed in List Assist.\n\nIf an interpreter status has been moved to booked, "
             + "or has been cancelled, ensure that the interpreter details are up to date before updating the hearing."
         );
 
