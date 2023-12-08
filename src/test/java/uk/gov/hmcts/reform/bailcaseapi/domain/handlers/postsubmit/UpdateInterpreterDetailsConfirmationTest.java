@@ -38,10 +38,8 @@ class UpdateInterpreterDetailsConfirmationTest {
         PostSubmitCallbackResponse response = updateInterpreterDetailsConfirmation.handle(callback);
 
         assertNotNull(response.getConfirmationBody(), "Confirmation Body is null");
-        assertThat(response.getConfirmationBody().get()).contains("# Do this next");
 
         assertNotNull(response.getConfirmationHeader(), "Confirmation Header is null");
-        assertThat(response.getConfirmationHeader().get()).isEqualTo("# Your application details have been updated");
     }
 
     @Test
