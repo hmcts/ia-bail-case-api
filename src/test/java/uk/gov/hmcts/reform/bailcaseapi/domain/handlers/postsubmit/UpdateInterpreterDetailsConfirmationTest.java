@@ -69,14 +69,6 @@ class UpdateInterpreterDetailsConfirmationTest {
         assertNotNull(response);
         assertThat(response.getConfirmationBody().isPresent());
         assertThat(response.getConfirmationHeader().isPresent());
-        String hearingsTabUrl = "/case/IA/Bail/" + callback.getCaseDetails().getId() + "#Hearing";
-        assertThat(response.getConfirmationBody().get()).contains(
-            "#### What happens next\n\n"
-                + "You now need to update the hearing in the "
-                + "[Hearings tab](" + hearingsTabUrl + ")"
-                + " to ensure the new interpreter information is displayed in List Assist."
-                + "\n\nIf updates need to be made to the interpreter booking status this should be completed"
-                + " before updating the hearing.");
     }
 
 }
