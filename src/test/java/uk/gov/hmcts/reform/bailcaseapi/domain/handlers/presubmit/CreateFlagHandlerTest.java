@@ -1,19 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPELLANT_LEVEL_FLAGS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_FULL_NAME;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_FLAGS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
-
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +16,19 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.StrategicCaseFlag.ROLE_ON_CASE_APPLICANT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.StrategicCaseFlag.ROLE_ON_CASE_FCS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.CreateFlagHandler.*;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
@@ -41,13 +41,21 @@ class CreateFlagHandlerTest {
     private CaseDetails<BailCase> caseDetails;
     @Mock
     private BailCase bailCase;
-
+    @Mock
+    List<String> listOfInterpreterLanguageCategory;
     private CreateFlagHandler createFlagHandler;
-
     private final String appellantNameForDisplay = "some-name";
+    private final String fcsGivenName = "FcsFirstName";
+    private final String fcsFamilyName = "FcsFamilyName";
 
-    private final StrategicCaseFlag strategicCaseFlag = new StrategicCaseFlag(appellantNameForDisplay);
+    private final StrategicCaseFlag fcsCaseFlag =
+        new StrategicCaseFlag(fcsGivenName + " " + fcsFamilyName, ROLE_ON_CASE_FCS);
+
+    private final StrategicCaseFlag strategicCaseFlag = new StrategicCaseFlag(appellantNameForDisplay, ROLE_ON_CASE_APPLICANT);
     private final StrategicCaseFlag strategicCaseFlagEmpty = new StrategicCaseFlag();
+
+    private final List<IdValue<StrategicCaseFlag>> tribunalDocumentsWithoutUnSignedDoc = List.of(
+        new IdValue<>("0", fcsCaseFlag));
 
     @BeforeEach
     public void setUp() {
@@ -70,6 +78,19 @@ class CreateFlagHandlerTest {
         assertThat(strategicCaseFlag.getRoleOnCase()).isEqualTo(("Applicant"));
         verify(bailCase, times(1))
             .write(CASE_FLAGS, strategicCaseFlagEmpty);
+    }
+
+    @Test
+    void should_write_to_fcs_case_flag_fields_if_interpreter_language_category_present() {
+        when(bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(0))).thenReturn(Optional.of(listOfInterpreterLanguageCategory));
+        when(bailCase.read(FCS_N_GIVEN_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsGivenName));
+        when(bailCase.read(FCS_N_FAMILY_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsFamilyName));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            createFlagHandler.handle(ABOUT_TO_START, callback);
+
+        verify(bailCase, times(1))
+            .write(FCS_LEVEL_FLAGS, tribunalDocumentsWithoutUnSignedDoc);
     }
 
     @Test
@@ -109,6 +130,39 @@ class CreateFlagHandlerTest {
         assertThatThrownBy(() -> createFlagHandler.canHandle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void should_throw_when_applicant_full_name_is_not_present() {
+        when(bailCase.read(APPLICANT_FULL_NAME, String.class)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(
+            () -> createFlagHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
+            .hasMessage("applicantFullName is not present")
+            .isExactlyInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void should_throw_when_fcs_given_name_is_not_present() {
+        when(bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(0))).thenReturn(Optional.of(listOfInterpreterLanguageCategory));
+        when(bailCase.read(FCS_N_GIVEN_NAME_FIELD.get(0), String.class)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(
+            () -> createFlagHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
+            .hasMessage("supporterGivenNames is not present")
+            .isExactlyInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void should_throw_when_fcs_family_name_is_not_present() {
+        when(bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(0))).thenReturn(Optional.of(listOfInterpreterLanguageCategory));
+        when(bailCase.read(FCS_N_GIVEN_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsGivenName));
+        when(bailCase.read(FCS_N_FAMILY_NAME_FIELD.get(0), String.class)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(
+            () -> createFlagHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
+            .hasMessage("supporterFamilyNames is not present")
+            .isExactlyInstanceOf(IllegalStateException.class);
     }
 }
 
