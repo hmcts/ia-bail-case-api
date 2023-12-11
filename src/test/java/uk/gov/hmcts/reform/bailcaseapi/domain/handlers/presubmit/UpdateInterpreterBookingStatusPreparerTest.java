@@ -118,16 +118,6 @@ class UpdateInterpreterBookingStatusPreparerTest {
 
     @Test
     void should_set_fcs_interpreter_spoken_and_sign_booking_fields_if_required() {
-        InterpreterLanguageRefData fcsSpokenRefData = new InterpreterLanguageRefData(
-            new DynamicList(new Value("fre", "French"), Collections.emptyList()),
-            Collections.emptyList(),
-            null);
-
-        InterpreterLanguageRefData fcsSignRefData = new InterpreterLanguageRefData(
-            new DynamicList(new Value("", ""), Collections.emptyList()),
-            Collections.emptyList(),
-            "Manual sign language");
-
         List<String> languageCategories = Arrays.asList("spokenLanguageInterpreter", "signLanguageInterpreter");
 
         when(bailCase.read(APPLICANT_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.empty());
@@ -136,6 +126,16 @@ class UpdateInterpreterBookingStatusPreparerTest {
         when(bailCase.read(FCS2_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(languageCategories));
         when(bailCase.read(FCS3_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(languageCategories));
         when(bailCase.read(FCS4_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(languageCategories));
+
+        InterpreterLanguageRefData fcsSignRefData = new InterpreterLanguageRefData(
+            new DynamicList(new Value("", ""), Collections.emptyList()),
+            Collections.emptyList(),
+            "Manual sign language");
+
+        InterpreterLanguageRefData fcsSpokenRefData = new InterpreterLanguageRefData(
+            new DynamicList(new Value("fre", "French"), Collections.emptyList()),
+            Collections.emptyList(),
+            null);
 
         FCS_N_INTERPRETER_SPOKEN_LANGUAGE.forEach(
             language -> when(bailCase.read(language, InterpreterLanguageRefData.class)).thenReturn(Optional.of(fcsSpokenRefData))
