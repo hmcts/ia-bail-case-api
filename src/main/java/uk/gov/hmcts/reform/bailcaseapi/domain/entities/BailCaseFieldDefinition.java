@@ -526,6 +526,8 @@ public enum BailCaseFieldDefinition {
 
     SUPPORTER_4_PARTY_ID(
         "supporter4PartyId", new TypeReference<String>(){}),
+    INTERPRETER_DETAILS(
+        "interpreterDetails", new TypeReference<List<IdValue<InterpreterDetails>>>() {}),
     ;
 
 

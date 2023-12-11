@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventTest {
 
@@ -32,6 +32,7 @@ public class EventTest {
         assertEquals("clearLegalRepresentativeDetails", Event.CLEAR_LEGAL_REPRESENTATIVE_DETAILS.toString());
         assertEquals("createBailCaseLink", Event.CREATE_BAIL_CASE_LINK.toString());
         assertEquals("maintainBailCaseLinks", Event.MAINTAIN_BAIL_CASE_LINKS.toString());
+        assertEquals("updateInterpreterDetails", Event.UPDATE_INTERPRETER_DETAILS.toString());
         assertEquals("createFlag", Event.CREATE_FLAG.toString());
         assertEquals("confirmDetentionLocation", Event.CONFIRM_DETENTION_LOCATION.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
@@ -39,6 +40,6 @@ public class EventTest {
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(28, Event.values().length);
+        assertEquals(29, Event.values().length);
     }
 }

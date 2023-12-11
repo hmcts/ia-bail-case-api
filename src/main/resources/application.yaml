@@ -108,6 +108,7 @@ security:
       - "maintainBailCaseLinks"
       - "createFlag"
       - "confirmDetentionLocation"
+      - "updateInterpreterDetails"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
