@@ -528,6 +528,67 @@ public enum BailCaseFieldDefinition {
         "supporter4PartyId", new TypeReference<String>(){}),
     INTERPRETER_DETAILS(
         "interpreterDetails", new TypeReference<List<IdValue<InterpreterDetails>>>() {}),
+
+    APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING(
+        "applicantInterpreterSpokenLanguageBooking", new TypeReference<String>(){}),
+
+    APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS(
+        "applicantInterpreterSpokenLanguageBookingStatus", new TypeReference<InterpreterBookingStatus>(){}),
+
+    APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING(
+        "applicantInterpreterSignLanguageBooking", new TypeReference<String>(){}),
+
+    APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS(
+        "applicantInterpreterSignLanguageBookingStatus", new TypeReference<InterpreterBookingStatus>(){}),
+
+    FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_1(
+        "fcsInterpreterSpokenLanguageBooking1", new TypeReference<String>(){}),
+
+    FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_1(
+        "fcsInterpreterSpokenLanguageBookingStatus1", new TypeReference<InterpreterBookingStatus>(){}),
+
+    FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_2(
+        "fcsInterpreterSpokenLanguageBooking2", new TypeReference<String>(){}),
+
+    FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_2(
+        "fcsInterpreterSpokenLanguageBookingStatus2", new TypeReference<InterpreterBookingStatus>(){}),
+
+    FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_3(
+        "fcsInterpreterSpokenLanguageBooking3", new TypeReference<String>(){}),
+
+    FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_3(
+        "fcsInterpreterSpokenLanguageBookingStatus3", new TypeReference<InterpreterBookingStatus>(){}),
+
+    FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_4(
+        "fcsInterpreterSpokenLanguageBooking4", new TypeReference<String>(){}),
+
+    FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_4(
+        "fcsInterpreterSpokenLanguageBookingStatus4", new TypeReference<InterpreterBookingStatus>(){}),
+
+    FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_1(
+        "fcsInterpreterSignLanguageBooking1", new TypeReference<String>(){}),
+
+    FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_1(
+        "fcsInterpreterSignLanguageBookingStatus1", new TypeReference<InterpreterBookingStatus>(){}),
+
+    FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_2(
+        "fcsInterpreterSignLanguageBooking2", new TypeReference<String>(){}),
+
+    FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_2(
+        "fcsInterpreterSignLanguageBookingStatus2", new TypeReference<InterpreterBookingStatus>(){}),
+
+    FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_3(
+        "fcsInterpreterSignLanguageBooking3", new TypeReference<String>(){}),
+
+    FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3(
+        "fcsInterpreterSignLanguageBookingStatus3", new TypeReference<InterpreterBookingStatus>(){}),
+
+    FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_4(
+        "fcsInterpreterSignLanguageBooking4", new TypeReference<String>(){}),
+
+    FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4(
+        "fcsInterpreterSignLanguageBookingStatus4", new TypeReference<InterpreterBookingStatus>(){}),
+
     ;
 
 
