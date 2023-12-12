@@ -212,13 +212,11 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             //Clear all the supporter 1-4 fields
             if (hasFinancialConditionSupporter1.equals(NO)) {
                 log.info("Clearing Financial Supporter details from bail application case data");
-                if (callback.getEvent().equals(Event.MAKE_NEW_APPLICATION)) {
-                    //Specifically for the make new application event, we need to clear the hasFinancialSupporter fields so that it doesn't show up on bail tab and affect other fieldShowConditions.
-                    clearHasFinancialSupporter(bailCase, "");
-                    clearHasFinancialSupporter(bailCase, "_2");
-                    clearHasFinancialSupporter(bailCase, "_3");
-                    clearHasFinancialSupporter(bailCase, "_4");
-                }
+
+                clearHasFinancialSupporter(bailCase, "");
+                clearHasFinancialSupporter(bailCase, "2");
+                clearHasFinancialSupporter(bailCase, "3");
+                clearHasFinancialSupporter(bailCase, "4");
                 clearFinancialSupporter1Details(bailCase);
                 clearFinancialSupporter2Details(bailCase);
                 clearFinancialSupporter3Details(bailCase);
@@ -231,11 +229,9 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
             //Clear all the supporter 2-4 fields
             if (hasFinancialConditionSupporter2.equals(NO)) {
-                if (callback.getEvent().equals(Event.MAKE_NEW_APPLICATION)) {
-                    clearHasFinancialSupporter(bailCase, "_2");
-                    clearHasFinancialSupporter(bailCase, "_3");
-                    clearHasFinancialSupporter(bailCase, "_4");
-                }
+                clearHasFinancialSupporter(bailCase, "2");
+                clearHasFinancialSupporter(bailCase, "3");
+                clearHasFinancialSupporter(bailCase, "4");
                 log.info("Clearing Financial Supporter details from bail application case data");
                 clearFinancialSupporter2Details(bailCase);
                 clearFinancialSupporter3Details(bailCase);
@@ -249,11 +245,8 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
             //Clear all the supporter 3-4 fields
             if (hasFinancialConditionSupporter3.equals(NO)) {
-                if (callback.getEvent().equals(Event.MAKE_NEW_APPLICATION)) {
-                    clearHasFinancialSupporter(bailCase, "_3");
-                    clearHasFinancialSupporter(bailCase, "_4");
-
-                }
+                clearHasFinancialSupporter(bailCase, "3");
+                clearHasFinancialSupporter(bailCase, "4");
                 log.info("Clearing Financial Supporter details from bail application case data");
                 clearFinancialSupporter3Details(bailCase);
                 clearFinancialSupporter4Details(bailCase);
@@ -267,10 +260,7 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
             //Clear all the supporter 4 fields
             if (hasFinancialConditionSupporter4.equals(NO)) {
-                if (callback.getEvent().equals(Event.MAKE_NEW_APPLICATION)) {
-                    clearHasFinancialSupporter(bailCase, "_4");
-
-                }
+                clearHasFinancialSupporter(bailCase, "4");
                 log.info("Clearing Financial Supporter details from bail application case data");
                 clearFinancialSupporter4Details(bailCase);
             }
@@ -410,7 +400,7 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
     }
 
     private void clearHasFinancialSupporter(BailCase bailcase, String index) {
-        bailcase.removeByString("HAS_FINANCIAL_COND_SUPPORTER" + index);
+        bailcase.removeByString("hasFinancialCondSupporter" + index);
     }
 
     private void clearFinancialSupporter4Details(BailCase bailCase) {
