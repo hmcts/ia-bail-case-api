@@ -104,10 +104,10 @@ public class ApplicationDataRemoveHandlerTest {
         when(callback.getEvent()).thenReturn(event);
         setUpValuesIfValuesAreRemoved();
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        assertFinancialConditionSupporter1Removed(event);
-        assertFinancialConditionSupporter2Removed(event);
-        assertFinancialConditionSupporter3Removed(event);
-        assertFinancialConditionSupporter4Removed(event);
+        assertFinancialConditionSupporter1Removed();
+        assertFinancialConditionSupporter2Removed();
+        assertFinancialConditionSupporter3Removed();
+        assertFinancialConditionSupporter4Removed();
     }
 
     @ParameterizedTest
@@ -119,9 +119,9 @@ public class ApplicationDataRemoveHandlerTest {
         when(bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class)).thenReturn(Optional.of(YES));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
-        assertFinancialConditionSupporter2Removed(event);
-        assertFinancialConditionSupporter3Removed(event);
-        assertFinancialConditionSupporter4Removed(event);
+        assertFinancialConditionSupporter2Removed();
+        assertFinancialConditionSupporter3Removed();
+        assertFinancialConditionSupporter4Removed();
     }
 
     @ParameterizedTest
@@ -135,8 +135,8 @@ public class ApplicationDataRemoveHandlerTest {
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
-        assertFinancialConditionSupporter3Removed(event);
-        assertFinancialConditionSupporter4Removed(event);
+        assertFinancialConditionSupporter3Removed();
+        assertFinancialConditionSupporter4Removed();
     }
 
     @ParameterizedTest
@@ -152,7 +152,7 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, never()).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_2_GIVEN_NAMES);
         verify(bailCase, never()).remove(SUPPORTER_3_GIVEN_NAMES);
-        assertFinancialConditionSupporter4Removed(event);
+        assertFinancialConditionSupporter4Removed();
     }
 
     @Test
@@ -465,10 +465,8 @@ public class ApplicationDataRemoveHandlerTest {
         when(bailCase.read(HAS_PREVIOUS_BAIL_APPLICATION, String.class)).thenReturn(Optional.of("Yes"));
     }
 
-    private void assertFinancialConditionSupporter1Removed(Event event) {
-        if (event == Event.MAKE_NEW_APPLICATION) {
-            verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER.toString());
-        }
+    private void assertFinancialConditionSupporter1Removed() {
+        verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER.value());
         verify(bailCase, times(1)).remove(SUPPORTER_GIVEN_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_FAMILY_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_ADDRESS_DETAILS);
@@ -489,10 +487,8 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
-    private void assertFinancialConditionSupporter2Removed(Event event) {
-        if (event == Event.MAKE_NEW_APPLICATION) {
-            verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_2.toString());
-        }
+    private void assertFinancialConditionSupporter2Removed() {
+        verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_2.value());
         verify(bailCase, times(1)).remove(SUPPORTER_2_GIVEN_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_2_FAMILY_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_2_ADDRESS_DETAILS);
@@ -513,10 +509,8 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
-    private void assertFinancialConditionSupporter3Removed(Event event) {
-        if (event == Event.MAKE_NEW_APPLICATION) {
-            verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_3.toString());
-        }
+    private void assertFinancialConditionSupporter3Removed() {
+        verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_3.value());
         verify(bailCase, times(1)).remove(SUPPORTER_3_GIVEN_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_3_FAMILY_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_3_ADDRESS_DETAILS);
@@ -537,10 +531,8 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_LANGUAGE_CATEGORY);
     }
 
-    private void assertFinancialConditionSupporter4Removed(Event event) {
-        if (event == Event.MAKE_NEW_APPLICATION) {
-            verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_4.toString());
-        }
+    private void assertFinancialConditionSupporter4Removed() {
+        verify(bailCase, times(1)).removeByString(HAS_FINANCIAL_COND_SUPPORTER_4.value());
         verify(bailCase, times(1)).remove(SUPPORTER_4_GIVEN_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_4_FAMILY_NAMES);
         verify(bailCase, times(1)).remove(SUPPORTER_4_ADDRESS_DETAILS);
