@@ -34,6 +34,7 @@ public enum Event {
     CONFIRM_DETENTION_LOCATION("confirmDetentionLocation"),
     UPDATE_INTERPRETER_DETAILS("updateInterpreterDetails"),
     UPDATE_INTERPRETER_BOOKING_STATUS("updateInterpreterBookingStatus"),
+    SEND_UPLOAD_BAIL_SUMMARY_DIRECTION("sendUploadBailSummaryDirection"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
