@@ -71,7 +71,7 @@ security:
   roleEventAccess:
     caseworker-ia-system:
       - "clearLegalRepresentativeDetails"
-      - "sendBailDirection"
+      - "sendUploadBailSummaryDirection"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
