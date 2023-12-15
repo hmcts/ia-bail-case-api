@@ -7,11 +7,14 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SEND_BAIL_DIRECTION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SEND_UPLOAD_BAIL_SUMMARY_DIRECTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -45,7 +48,9 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
 
-        return callbackStage.equals(ABOUT_TO_SUBMIT) && callback.getEvent().equals(SEND_BAIL_DIRECTION);
+        return callbackStage.equals(ABOUT_TO_SUBMIT) && Set.of(
+            SEND_BAIL_DIRECTION,
+            SEND_UPLOAD_BAIL_SUMMARY_DIRECTION).contains(callback.getEvent());
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
