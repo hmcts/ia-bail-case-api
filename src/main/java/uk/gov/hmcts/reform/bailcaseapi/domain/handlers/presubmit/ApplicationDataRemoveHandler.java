@@ -79,6 +79,9 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         final YesOrNo hasFinancialConditionSupporter4 = bailCase.read(
             HAS_FINANCIAL_COND_SUPPORTER_4, YesOrNo.class).orElse(NO);
 
+        final Optional<YesOrNo> optionalIsDetentionLocationCorrect = bailCase.read(IS_DETENTION_LOCATION_CORRECT, YesOrNo.class);
+
+
         if (optionalPreviousApplication.isPresent()) {
             String hasPreviousApplications = optionalPreviousApplication.get();
 
@@ -286,6 +289,10 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
                 sanitizeInterpreterLanguages(bailCase, FCS4_INTERPRETER_LANGUAGE_CATEGORY,
                                              FCS4_INTERPRETER_SIGN_LANGUAGE, FCS4_INTERPRETER_SPOKEN_LANGUAGE);
             }
+        }
+
+        if (callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT && optionalIsDetentionLocationCorrect.isPresent()) {
+            bailCase.clear(IS_DETENTION_LOCATION_CORRECT);
         }
 
         return new PreSubmitCallbackResponse<>(bailCase);
