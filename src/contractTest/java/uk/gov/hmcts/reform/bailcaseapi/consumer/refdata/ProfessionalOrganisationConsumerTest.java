@@ -7,6 +7,7 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactFolder;
+import com.google.common.collect.ImmutableMap;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
@@ -96,7 +98,7 @@ public class ProfessionalOrganisationConsumerTest {
     }
 
     private DslPart buildOrganisationResponseDsl() {
-        return newJsonBody(o -> {
+        return newJsonBody(o ->
             o.stringType("name", "theKCompany")
                 .stringType("organisationIdentifier", "BJMSDFDS80808")
                 .stringType("companyNumber", "companyNumber")
@@ -105,14 +107,13 @@ public class ProfessionalOrganisationConsumerTest {
                 .booleanType("sraRegulated", Boolean.TRUE)
                 .stringType("status", "ACTIVE")
                 .minArrayLike("contactInformation", 1, 1,
-                    sh -> {
+                    sh ->
                         sh.stringType("addressLine1", "addressLine1")
                             .stringType("addressLine2", "addressLine2")
                             .stringType("country", "UK")
-                            .stringType("postCode", "SM12SX");
-
-                    });
-        }).build();
+                            .stringType("postCode", "SM12SX")
+                    )
+        ).build();
     }
 
 }
