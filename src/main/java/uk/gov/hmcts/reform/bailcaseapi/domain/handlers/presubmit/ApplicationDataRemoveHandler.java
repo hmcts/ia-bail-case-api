@@ -81,7 +81,6 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
         final Optional<YesOrNo> optionalIsDetentionLocationCorrect = bailCase.read(IS_DETENTION_LOCATION_CORRECT, YesOrNo.class);
 
-
         if (optionalPreviousApplication.isPresent()) {
             String hasPreviousApplications = optionalPreviousApplication.get();
 
@@ -291,8 +290,12 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             }
         }
 
-        if (callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT && optionalIsDetentionLocationCorrect.isPresent()) {
-            bailCase.clear(IS_DETENTION_LOCATION_CORRECT);
+        if (callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT
+            && optionalIsDetentionLocationCorrect.isPresent()) {
+            if (optionalIsDetentionLocationCorrect.get().equals(NO)) {
+
+                bailCase.clear(IS_DETENTION_LOCATION_CORRECT);
+            }
         }
 
         return new PreSubmitCallbackResponse<>(bailCase);
