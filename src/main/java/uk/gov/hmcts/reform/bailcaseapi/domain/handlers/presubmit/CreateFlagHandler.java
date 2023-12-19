@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Slf4j
@@ -36,11 +37,11 @@ class CreateFlagHandler implements PreSubmitCallbackHandler<BailCase> {
         SUPPORTER_4_FAMILY_NAMES
     );
 
-    public static final List<BailCaseFieldDefinition> FCS_N_INTERPRETER_CATEGORY_FIELD = List.of(
-        FCS1_INTERPRETER_LANGUAGE_CATEGORY,
-        FCS2_INTERPRETER_LANGUAGE_CATEGORY,
-        FCS3_INTERPRETER_LANGUAGE_CATEGORY,
-        FCS4_INTERPRETER_LANGUAGE_CATEGORY
+    public static final List<BailCaseFieldDefinition> HAS_FINANCIAL_CONDITION_SUPPORTER_N = List.of(
+        HAS_FINANCIAL_COND_SUPPORTER,
+        HAS_FINANCIAL_COND_SUPPORTER_2,
+        HAS_FINANCIAL_COND_SUPPORTER_3,
+        HAS_FINANCIAL_COND_SUPPORTER_4
     );
 
     public static final List<BailCaseFieldDefinition> FCS_N_PARTY_ID_FIELD = List.of(
@@ -112,8 +113,8 @@ class CreateFlagHandler implements PreSubmitCallbackHandler<BailCase> {
 
         int i = 0;
         while (i < 4) {
-            Optional<List<String>> fcsInterpreterCategoryOptional = bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(i));
-            if (fcsInterpreterCategoryOptional.isPresent() && !fcsInterpreterCategoryOptional.get().isEmpty()) {
+            Optional<YesOrNo> hasFcsOptional = bailCase.read(HAS_FINANCIAL_CONDITION_SUPPORTER_N.get(i));
+            if (hasFcsOptional.isPresent()) {
                 int finalI = i;
                 String partyId = bailCase.read(FCS_N_PARTY_ID_FIELD.get(i), String.class).orElse(null);
 

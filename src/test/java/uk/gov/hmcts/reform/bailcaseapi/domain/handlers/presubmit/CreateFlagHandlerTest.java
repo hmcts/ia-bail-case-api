@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,7 +44,7 @@ class CreateFlagHandlerTest {
     @Mock
     private BailCase bailCase;
     @Mock
-    List<String> listOfInterpreterLanguageCategory;
+    YesOrNo hasFcs;
     private CreateFlagHandler createFlagHandler;
     private final String partyId = "party-id";
     private final String appellantNameForDisplay = "some-name";
@@ -85,8 +86,8 @@ class CreateFlagHandlerTest {
     }
 
     @Test
-    void should_write_to_fcs_case_flag_fields_if_interpreter_language_category_present() {
-        when(bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(0))).thenReturn(Optional.of(listOfInterpreterLanguageCategory));
+    void should_write_to_fcs_case_flag_fields_if_has_fcs_field_present() {
+        when(bailCase.read(HAS_FINANCIAL_CONDITION_SUPPORTER_N.get(0))).thenReturn(Optional.of(hasFcs));
         when(bailCase.read(FCS_N_GIVEN_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsGivenName));
         when(bailCase.read(FCS_N_FAMILY_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsFamilyName));
 
@@ -98,7 +99,7 @@ class CreateFlagHandlerTest {
 
     @Test
     void should_write_empty_list_to_fcs_case_flag_fields_if_party_id_is_not_present() {
-        when(bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(0))).thenReturn(Optional.of(listOfInterpreterLanguageCategory));
+        when(bailCase.read(HAS_FINANCIAL_CONDITION_SUPPORTER_N.get(0))).thenReturn(Optional.of(hasFcs));
         when(bailCase.read(FCS_N_GIVEN_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsGivenName));
         when(bailCase.read(FCS_N_FAMILY_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsFamilyName));
         when(bailCase.read(FCS_N_PARTY_ID_FIELD.get(0), String.class)).thenReturn(Optional.empty());
@@ -115,7 +116,7 @@ class CreateFlagHandlerTest {
             new PartyFlagIdValue("party-id-existing", fcsCaseFlag));
 
         when(bailCase.read(FCS_LEVEL_FLAGS)).thenReturn(Optional.of(existLevelFlags));
-        when(bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(0))).thenReturn(Optional.of(listOfInterpreterLanguageCategory));
+        when(bailCase.read(HAS_FINANCIAL_CONDITION_SUPPORTER_N.get(0))).thenReturn(Optional.of(hasFcs));
         when(bailCase.read(FCS_N_GIVEN_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsGivenName));
         when(bailCase.read(FCS_N_FAMILY_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsFamilyName));
         when(bailCase.read(FCS_N_PARTY_ID_FIELD.get(0), String.class)).thenReturn(Optional.of("party-id-existing"));
@@ -177,7 +178,7 @@ class CreateFlagHandlerTest {
 
     @Test
     void should_throw_when_fcs_given_name_is_not_present() {
-        when(bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(0))).thenReturn(Optional.of(listOfInterpreterLanguageCategory));
+        when(bailCase.read(HAS_FINANCIAL_CONDITION_SUPPORTER_N.get(0))).thenReturn(Optional.of(hasFcs));
         when(bailCase.read(FCS_N_GIVEN_NAME_FIELD.get(0), String.class)).thenReturn(Optional.empty());
 
         assertThatThrownBy(
@@ -188,7 +189,7 @@ class CreateFlagHandlerTest {
 
     @Test
     void should_throw_when_fcs_family_name_is_not_present() {
-        when(bailCase.read(FCS_N_INTERPRETER_CATEGORY_FIELD.get(0))).thenReturn(Optional.of(listOfInterpreterLanguageCategory));
+        when(bailCase.read(HAS_FINANCIAL_CONDITION_SUPPORTER_N.get(0))).thenReturn(Optional.of(hasFcs));
         when(bailCase.read(FCS_N_GIVEN_NAME_FIELD.get(0), String.class)).thenReturn(Optional.of(fcsGivenName));
         when(bailCase.read(FCS_N_FAMILY_NAME_FIELD.get(0), String.class)).thenReturn(Optional.empty());
 
