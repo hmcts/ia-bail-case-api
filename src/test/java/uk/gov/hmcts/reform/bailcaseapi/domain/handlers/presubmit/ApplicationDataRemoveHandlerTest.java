@@ -415,9 +415,8 @@ public class ApplicationDataRemoveHandlerTest {
 
     @Test
     void should_clear_isDetentionLocationCorrect_if_present_for_edit_application_post_submit() {
-        when(bailCase.read(IS_DETENTION_LOCATION_CORRECT, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(callback.getEvent()).thenReturn(Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT);
-
+        when(bailCase.read(IS_DETENTION_LOCATION_CORRECT, YesOrNo.class)).thenReturn(Optional.of(NO));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).clear(IS_DETENTION_LOCATION_CORRECT);
 
