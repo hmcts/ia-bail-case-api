@@ -291,9 +291,11 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         }
 
         if (callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT
-            && optionalIsDetentionLocationCorrect.get().equals(NO)) {
+            && optionalIsDetentionLocationCorrect.isPresent()) {
+            if (optionalIsDetentionLocationCorrect.get().equals(NO)) {
 
-            bailCase.clear(IS_DETENTION_LOCATION_CORRECT);
+                bailCase.clear(IS_DETENTION_LOCATION_CORRECT);
+            }
         }
 
         return new PreSubmitCallbackResponse<>(bailCase);
