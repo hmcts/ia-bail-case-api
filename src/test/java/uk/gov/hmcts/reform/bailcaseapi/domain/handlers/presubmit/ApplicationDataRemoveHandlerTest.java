@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterBookingStatus.NOT_REQUESTED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
@@ -325,7 +326,11 @@ public class ApplicationDataRemoveHandlerTest {
         when(bailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.of(signLanguage));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, times(1)).remove(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING);
+        verify(bailCase, times(1)).remove(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS);
         verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING);
+        verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS);
     }
 
     @Test
@@ -339,7 +344,11 @@ public class ApplicationDataRemoveHandlerTest {
         when(bailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.of(signLanguage));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING);
+        verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS);
         verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING);
+        verify(bailCase, never()).remove(APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS);
     }
 
     @Test
@@ -350,15 +359,34 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_SIGN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_SPOKEN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_LANGUAGE_CATEGORY);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_1);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_1);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_1);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_1);
+
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_SIGN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_SPOKEN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_LANGUAGE_CATEGORY);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_2);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_2);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_2);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_2);
+
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_SIGN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_SPOKEN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_LANGUAGE_CATEGORY);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_3);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_3);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_3);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3);
+
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_SIGN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_SPOKEN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_LANGUAGE_CATEGORY);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_4);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_4);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_4);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4);
     }
 
     @Test
@@ -382,9 +410,17 @@ public class ApplicationDataRemoveHandlerTest {
         when(bailCase.read(FCS4_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.of(signLanguage));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_1);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_1);
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_2);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_2);
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_3);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_3);
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_SPOKEN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_4);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_4);
     }
 
     @Test
@@ -408,9 +444,17 @@ public class ApplicationDataRemoveHandlerTest {
         when(bailCase.read(FCS4_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.empty());
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_1);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_1);
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_2);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_2);
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_3);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3);
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_SIGN_LANGUAGE);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_4);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4);
     }
 
     @Test
@@ -494,6 +538,10 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_SIGN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_SPOKEN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS1_INTERPRETER_LANGUAGE_CATEGORY);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_1);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_1);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_1);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_1);
     }
 
     private void assertFinancialConditionSupporter2Removed() {
@@ -516,6 +564,10 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_SIGN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_SPOKEN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS2_INTERPRETER_LANGUAGE_CATEGORY);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_2);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_2);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_2);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_2);
     }
 
     private void assertFinancialConditionSupporter3Removed() {
@@ -538,6 +590,10 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_SIGN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_SPOKEN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS3_INTERPRETER_LANGUAGE_CATEGORY);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_3);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_3);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_3);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3);
     }
 
     private void assertFinancialConditionSupporter4Removed() {
@@ -560,6 +616,10 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_SIGN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_SPOKEN_LANGUAGE);
         verify(bailCase, times(1)).remove(FCS4_INTERPRETER_LANGUAGE_CATEGORY);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_4);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_4);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_4);
+        verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4);
     }
 
 
