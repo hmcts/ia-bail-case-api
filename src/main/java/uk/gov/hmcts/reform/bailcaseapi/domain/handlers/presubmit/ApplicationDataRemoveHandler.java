@@ -195,7 +195,11 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
                 bailCase.remove(APPLICANT_INTERPRETER_SIGN_LANGUAGE);
                 bailCase.remove(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
             } else {
-                sanitizeInterpreterLanguages(bailCase, APPLICANT_INTERPRETER_LANGUAGE_CATEGORY, APPLICANT_INTERPRETER_SIGN_LANGUAGE, APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
+                sanitizeInterpreterLanguages(bailCase, APPLICANT_INTERPRETER_LANGUAGE_CATEGORY, APPLICANT_INTERPRETER_SIGN_LANGUAGE,
+                                             APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING,
+                                             APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS,
+                                             APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING,
+                                             APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS);
             }
         }
 
@@ -272,21 +276,32 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         if (optionalFcsInterpreter.isPresent()) {
             if (optionalFcsInterpreter.get().equals(NO)) {
                 //remove all fcs language related fields
-                removeFcsLanguageFields(bailCase, FCS1_INTERPRETER_LANGUAGE_CATEGORY, FCS1_INTERPRETER_SIGN_LANGUAGE,
-                                        FCS1_INTERPRETER_SPOKEN_LANGUAGE, FCS2_INTERPRETER_LANGUAGE_CATEGORY,
-                                        FCS2_INTERPRETER_SIGN_LANGUAGE, FCS2_INTERPRETER_SPOKEN_LANGUAGE,
-                                        FCS3_INTERPRETER_LANGUAGE_CATEGORY, FCS3_INTERPRETER_SIGN_LANGUAGE,
-                                        FCS3_INTERPRETER_SPOKEN_LANGUAGE, FCS4_INTERPRETER_LANGUAGE_CATEGORY,
-                                        FCS4_INTERPRETER_SIGN_LANGUAGE, FCS4_INTERPRETER_SPOKEN_LANGUAGE);
+                removeFcsLanguageFields(bailCase);
             } else {
                 sanitizeInterpreterLanguages(bailCase, FCS1_INTERPRETER_LANGUAGE_CATEGORY,
-                                             FCS1_INTERPRETER_SIGN_LANGUAGE, FCS1_INTERPRETER_SPOKEN_LANGUAGE);
+                                             FCS1_INTERPRETER_SIGN_LANGUAGE, FCS1_INTERPRETER_SPOKEN_LANGUAGE,
+                                             FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_1,
+                                             FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_1,
+                                             FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_1,
+                                             FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_1);
                 sanitizeInterpreterLanguages(bailCase, FCS2_INTERPRETER_LANGUAGE_CATEGORY,
-                                             FCS2_INTERPRETER_SIGN_LANGUAGE, FCS2_INTERPRETER_SPOKEN_LANGUAGE);
+                                             FCS2_INTERPRETER_SIGN_LANGUAGE, FCS2_INTERPRETER_SPOKEN_LANGUAGE,
+                                             FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_2,
+                                             FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_2,
+                                             FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_2,
+                                             FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_2);
                 sanitizeInterpreterLanguages(bailCase, FCS3_INTERPRETER_LANGUAGE_CATEGORY,
-                                             FCS3_INTERPRETER_SIGN_LANGUAGE, FCS3_INTERPRETER_SPOKEN_LANGUAGE);
+                                             FCS3_INTERPRETER_SIGN_LANGUAGE, FCS3_INTERPRETER_SPOKEN_LANGUAGE,
+                                             FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_3,
+                                             FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3,
+                                             FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_3,
+                                             FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_3);
                 sanitizeInterpreterLanguages(bailCase, FCS4_INTERPRETER_LANGUAGE_CATEGORY,
-                                             FCS4_INTERPRETER_SIGN_LANGUAGE, FCS4_INTERPRETER_SPOKEN_LANGUAGE);
+                                             FCS4_INTERPRETER_SIGN_LANGUAGE, FCS4_INTERPRETER_SPOKEN_LANGUAGE,
+                                             FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_4,
+                                             FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4,
+                                             FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_4,
+                                             FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_4);
             }
         }
 
@@ -301,48 +316,67 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 
-    private static void removeFcsLanguageFields(BailCase bailCase,
-                                                BailCaseFieldDefinition fcs1InterpreterLanguageCategory,
-                                                BailCaseFieldDefinition fcs1InterpreterSignLanguage,
-                                                BailCaseFieldDefinition fcs1InterpreterSpokenLanguage,
-                                                BailCaseFieldDefinition fcs2InterpreterLanguageCategory,
-                                                BailCaseFieldDefinition fcs2InterpreterSignLanguage,
-                                                BailCaseFieldDefinition fcs2InterpreterSpokenLanguage,
-                                                BailCaseFieldDefinition fcs3InterpreterLanguageCategory,
-                                                BailCaseFieldDefinition fcs3InterpreterSignLanguage,
-                                                BailCaseFieldDefinition fcs3InterpreterSpokenLanguage,
-                                                BailCaseFieldDefinition fcs4InterpreterLanguageCategory,
-                                                BailCaseFieldDefinition fcs4InterpreterSignLanguage,
-                                                BailCaseFieldDefinition fcs4InterpreterSpokenLanguage) {
-        bailCase.remove(fcs1InterpreterLanguageCategory);
-        bailCase.remove(fcs1InterpreterSignLanguage);
-        bailCase.remove(fcs1InterpreterSpokenLanguage);
-        bailCase.remove(fcs2InterpreterLanguageCategory);
-        bailCase.remove(fcs2InterpreterSignLanguage);
-        bailCase.remove(fcs2InterpreterSpokenLanguage);
-        bailCase.remove(fcs3InterpreterLanguageCategory);
-        bailCase.remove(fcs3InterpreterSignLanguage);
-        bailCase.remove(fcs3InterpreterSpokenLanguage);
-        bailCase.remove(fcs4InterpreterLanguageCategory);
-        bailCase.remove(fcs4InterpreterSignLanguage);
-        bailCase.remove(fcs4InterpreterSpokenLanguage);
+    private void removeFcsLanguageFields(BailCase bailCase) {
+        bailCase.remove(FCS1_INTERPRETER_LANGUAGE_CATEGORY);
+        bailCase.remove(FCS1_INTERPRETER_SIGN_LANGUAGE);
+        bailCase.remove(FCS1_INTERPRETER_SPOKEN_LANGUAGE);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_1);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_1);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_1);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_1);
+
+        bailCase.remove(FCS2_INTERPRETER_LANGUAGE_CATEGORY);
+        bailCase.remove(FCS2_INTERPRETER_SIGN_LANGUAGE);
+        bailCase.remove(FCS2_INTERPRETER_SPOKEN_LANGUAGE);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_2);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_2);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_2);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_2);
+
+        bailCase.remove(FCS3_INTERPRETER_LANGUAGE_CATEGORY);
+        bailCase.remove(FCS3_INTERPRETER_SIGN_LANGUAGE);
+        bailCase.remove(FCS3_INTERPRETER_SPOKEN_LANGUAGE);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_3);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_3);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_3);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3);
+
+        bailCase.remove(FCS4_INTERPRETER_LANGUAGE_CATEGORY);
+        bailCase.remove(FCS4_INTERPRETER_SIGN_LANGUAGE);
+        bailCase.remove(FCS4_INTERPRETER_SPOKEN_LANGUAGE);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_4);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_4);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_4);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4);
     }
 
     private void sanitizeInterpreterLanguages(BailCase bailCase, BailCaseFieldDefinition interpreterLanguageCategory,
                                               BailCaseFieldDefinition interpreterSignLanguage,
-                                              BailCaseFieldDefinition interpreterSpokenLanguage) {
+                                              BailCaseFieldDefinition interpreterSpokenLanguage,
+                                              BailCaseFieldDefinition interpreterSignLanguageBooking,
+                                              BailCaseFieldDefinition interpreterSignLanguageBookingStatus,
+                                              BailCaseFieldDefinition interpreterSpokenLanguageBooking,
+                                              BailCaseFieldDefinition interpreterSpokenLanguageBookingStatus) {
         Optional<List<String>> optionalInterpreterCategory = bailCase.read(interpreterLanguageCategory);
         List<String> interpreterCategory = optionalInterpreterCategory.orElse(null);
         if (optionalInterpreterCategory.isPresent() && optionalInterpreterCategory.get().size() > 0) {
             if (!interpreterCategory.contains("spokenLanguageInterpreter")) {
                 bailCase.remove(interpreterSpokenLanguage);
+                bailCase.remove(interpreterSpokenLanguageBooking);
+                bailCase.remove(interpreterSpokenLanguageBookingStatus);
             }
             if (!interpreterCategory.contains("signLanguageInterpreter")) {
                 bailCase.remove(interpreterSignLanguage);
+                bailCase.remove(interpreterSignLanguageBooking);
+                bailCase.remove(interpreterSignLanguageBookingStatus);
             }
         } else {
             bailCase.remove(interpreterSpokenLanguage);
+            bailCase.remove(interpreterSpokenLanguageBooking);
+            bailCase.remove(interpreterSpokenLanguageBookingStatus);
             bailCase.remove(interpreterSignLanguage);
+            bailCase.remove(interpreterSignLanguageBooking);
+            bailCase.remove(interpreterSignLanguageBookingStatus);
         }
     }
 
@@ -365,6 +399,10 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(FCS1_INTERPRETER_SPOKEN_LANGUAGE);
         bailCase.remove(FCS1_INTERPRETER_SIGN_LANGUAGE);
         bailCase.remove(FCS1_INTERPRETER_LANGUAGE_CATEGORY);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_1);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_1);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_1);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_1);
     }
 
     private void clearFinancialSupporter2Details(BailCase bailCase) {
@@ -386,6 +424,10 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(FCS2_INTERPRETER_SPOKEN_LANGUAGE);
         bailCase.remove(FCS2_INTERPRETER_SIGN_LANGUAGE);
         bailCase.remove(FCS2_INTERPRETER_LANGUAGE_CATEGORY);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_2);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_2);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_2);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_2);
     }
 
     private void clearFinancialSupporter3Details(BailCase bailCase) {
@@ -407,6 +449,10 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(FCS3_INTERPRETER_SPOKEN_LANGUAGE);
         bailCase.remove(FCS3_INTERPRETER_SIGN_LANGUAGE);
         bailCase.remove(FCS3_INTERPRETER_LANGUAGE_CATEGORY);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_3);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_3);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_3);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3);
     }
 
     private void clearHasFinancialSupporter(BailCase bailcase, String index) {
@@ -432,6 +478,10 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.remove(FCS4_INTERPRETER_SPOKEN_LANGUAGE);
         bailCase.remove(FCS4_INTERPRETER_SIGN_LANGUAGE);
         bailCase.remove(FCS4_INTERPRETER_LANGUAGE_CATEGORY);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_4);
+        bailCase.remove(FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_4);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_4);
+        bailCase.remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4);
     }
 
     private void clearLegalRepDetails(BailCase bailCase) {
