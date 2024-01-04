@@ -71,7 +71,7 @@ security:
   roleEventAccess:
     caseworker-ia-system:
       - "clearLegalRepresentativeDetails"
-      - "sendUploadBailSummaryDirection"
+      - "caseListing"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
@@ -111,6 +111,7 @@ security:
       - "confirmDetentionLocation"
       - "updateInterpreterDetails"
       - "updateInterpreterBookingStatus"
+      - "caseListing"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"

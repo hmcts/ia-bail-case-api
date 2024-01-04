@@ -35,7 +35,7 @@ public class EventTest {
         assertEquals("updateInterpreterDetails", Event.UPDATE_INTERPRETER_DETAILS.toString());
         assertEquals("createFlag", Event.CREATE_FLAG.toString());
         assertEquals("confirmDetentionLocation", Event.CONFIRM_DETENTION_LOCATION.toString());
-        assertEquals("sendUploadBailSummaryDirection", Event.SEND_UPLOAD_BAIL_SUMMARY_DIRECTION.toString());
+        assertEquals("caseListing", Event.CASE_LISTING.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
     }
 
