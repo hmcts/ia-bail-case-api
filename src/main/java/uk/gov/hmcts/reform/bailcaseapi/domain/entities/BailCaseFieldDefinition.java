@@ -592,6 +592,9 @@ public enum BailCaseFieldDefinition {
     IS_DETENTION_LOCATION_CORRECT(
         "isDetentionLocationCorrect", new TypeReference<YesOrNo>(){}),
 
+    LISTING_EVENT(
+        "listingEvent", new TypeReference<String>(){}),
+
     ;
 
 

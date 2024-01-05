@@ -188,8 +188,7 @@ public class SendDirectionHandlerTest {
                 boolean canHandle = sendDirectionHandler.canHandle(callbackStage, callback);
 
                 assertThat(canHandle).isEqualTo(callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-                                                && (event.equals(Event.SEND_BAIL_DIRECTION)
-                                                    || event == Event.SEND_UPLOAD_BAIL_SUMMARY_DIRECTION));
+                                                && (event.equals(Event.SEND_BAIL_DIRECTION)));
             }
 
             reset(callback);

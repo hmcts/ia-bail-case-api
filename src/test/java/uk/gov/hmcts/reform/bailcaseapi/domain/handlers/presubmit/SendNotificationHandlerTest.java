@@ -114,8 +114,7 @@ class SendNotificationHandlerTest {
                         Event.MAKE_NEW_APPLICATION,
                         Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT,
                         Event.CREATE_BAIL_CASE_LINK,
-                        Event.MAINTAIN_BAIL_CASE_LINKS,
-                        Event.SEND_UPLOAD_BAIL_SUMMARY_DIRECTION
+                        Event.MAINTAIN_BAIL_CASE_LINKS
                     ).contains(event)) {
 
                     assertTrue(canHandle);
