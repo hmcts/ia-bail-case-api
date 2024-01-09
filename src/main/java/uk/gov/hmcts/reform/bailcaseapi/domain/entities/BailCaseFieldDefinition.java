@@ -595,6 +595,9 @@ public enum BailCaseFieldDefinition {
     LISTING_EVENT(
         "listingEvent", new TypeReference<String>(){}),
 
+    UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE(
+        "uploadBailSummaryActionAvailable", new TypeReference<YesOrNo>(){}),
+
     ;
 
 

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_DOCS;
 
 import java.util.Arrays;
@@ -124,6 +125,7 @@ public class UploadBailSummaryDocumentHandlerTest {
         verify(documentsAppender, times(1)).append(existingBailSummaryDocuments, summaryList);
 
         verify(bailCase, times(1)).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allBailSummaryDocuments);
+        verify(bailCase, times(1)).clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
     }
 
     @Test
@@ -163,6 +165,7 @@ public class UploadBailSummaryDocumentHandlerTest {
         assertEquals(0, actualExistingSummaryDocuments.size());
 
         verify(bailCase, times(1)).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allBailSummaryDocuments);
+        verify(bailCase, times(1)).clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
     }
 
     @Test

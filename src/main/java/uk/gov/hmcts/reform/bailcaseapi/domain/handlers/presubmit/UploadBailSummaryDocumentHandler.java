@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_DOCS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +82,7 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
                 documentsAppender.append(existingHomeOfficeDocuments, bailSummary);
 
             bailCase.write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allBailSummaryDocuments);
+            bailCase.clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
         }
         return new PreSubmitCallbackResponse<>(bailCase);
     }
