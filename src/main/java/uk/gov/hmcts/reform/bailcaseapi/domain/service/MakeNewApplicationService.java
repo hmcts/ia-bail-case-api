@@ -130,6 +130,7 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.CASE_NOTES.value());
 
     private static final List<String> VALID_ABOUT_TO_SUBMIT_MAKE_NEW_APPLICATION_FIELDS = List.of(
+        BailCaseFieldDefinition.CASE_NAME_HMCTS_INTERNAL.value(),
         BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER.value(),
         BailCaseFieldDefinition.PRIOR_APPLICATIONS.value(),
         BailCaseFieldDefinition.IS_ADMIN.value(),
@@ -260,5 +261,25 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.LEGAL_REP_PHONE.value(),
         BailCaseFieldDefinition.LEGAL_REP_REFERENCE.value(),
         BailCaseFieldDefinition.UPLOAD_B1_FORM_DOCS.value(),
-        BailCaseFieldDefinition.CASE_NOTES.value());
+        BailCaseFieldDefinition.CASE_NOTES.value(),
+        BailCaseFieldDefinition.APPLICANT_PARTY_ID.value(),
+        BailCaseFieldDefinition.LEGAL_REP_INDIVIDUAL_PARTY_ID.value(),
+        BailCaseFieldDefinition.LEGAL_REP_ORGANISATION_PARTY_ID.value(),
+        BailCaseFieldDefinition.SUPPORTER_1_PARTY_ID.value(),
+        BailCaseFieldDefinition.SUPPORTER_2_PARTY_ID.value(),
+        BailCaseFieldDefinition.SUPPORTER_3_PARTY_ID.value(),
+        BailCaseFieldDefinition.SUPPORTER_4_PARTY_ID.value(),
+        BailCaseFieldDefinition.IS_LEGALLY_REPRESENTED_FOR_FLAG.value(),
+        BailCaseFieldDefinition.APPLICANT_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS.value(),
+        BailCaseFieldDefinition.APPLICANT_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS.value(),
+        BailCaseFieldDefinition.FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_1.value(),
+        BailCaseFieldDefinition.FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_2.value(),
+        BailCaseFieldDefinition.FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_3.value(),
+        BailCaseFieldDefinition.FCS_INTERPRETER_SPOKEN_LANGUAGE_BOOKING_STATUS_4.value(),
+        BailCaseFieldDefinition.FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_1.value(),
+        BailCaseFieldDefinition.FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_2.value(),
+        BailCaseFieldDefinition.FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3.value(),
+        BailCaseFieldDefinition.FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4.value(),
+        BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER.value(),
+        BailCaseFieldDefinition.LOCAL_AUTHORITY_POLICY.value());
 }
