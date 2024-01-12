@@ -8,8 +8,10 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
 
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -43,6 +46,7 @@ class CaseListingHandlerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.CASE_LISTING);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.of("initialListing"));
     }
 
     @Test
@@ -57,6 +61,30 @@ class CaseListingHandlerTest {
         verify(bailCase, times(1)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
     }
 
+    @Test
+    void should_not_set_upload_bail_summary_action_available() {
+        when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.of("relisting"));
+
+        PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(
+            PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
+            callback
+        );
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+        verify(bailCase, times(0)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
+    }
+
+    @Test
+    void should_throw_for_empty_list_case_event() {
+        when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(
+            () -> caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
+            .hasMessage("listingEvent is not present")
+            .isExactlyInstanceOf(RequiredFieldMissingException.class);
+
+    }
 
     @Test
     void handling_should_throw_if_cannot_actually_handle() {
