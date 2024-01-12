@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class ListingCaseConfirmation implements PostSubmitCallbackHandler<BailCa
         PostSubmitCallbackResponse postSubmitResponse =
             new PostSubmitCallbackResponse();
 
-        if (listingEvent.equals("initialListing")) {
+        if (listingEvent.equals(INITIAL_LISTING.toString())) {
             postSubmitResponse.setConfirmationHeader("# You have listed the case");
         } else {
             postSubmitResponse.setConfirmationHeader("# You have relisted the case");
