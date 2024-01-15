@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -58,10 +59,10 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                 .getCaseDetails()
                 .getCaseData();
 
-        String listingEvent = bailCase.read(LISTING_EVENT, String.class)
+        ListingEvent listingEvent = bailCase.read(LISTING_EVENT, ListingEvent.class)
             .orElseThrow(() -> new RequiredFieldMissingException("listingEvent is not present"));
 
-        if (listingEvent.equals(INITIAL_LISTING.toString())) {
+        if (listingEvent == INITIAL_LISTING) {
             String hearingDate = bailCase.read(LIST_CASE_HEARING_DATE, String.class)
                 .orElseThrow(() -> new RequiredFieldMissingException("listingHearingDate is not present"));
 

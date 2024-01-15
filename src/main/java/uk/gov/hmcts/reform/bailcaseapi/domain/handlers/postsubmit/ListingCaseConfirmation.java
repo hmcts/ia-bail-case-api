@@ -7,6 +7,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITI
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
@@ -29,13 +30,13 @@ public class ListingCaseConfirmation implements PostSubmitCallbackHandler<BailCa
         }
 
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
-        final String listingEvent = bailCase.read(LISTING_EVENT, String.class)
+        final ListingEvent listingEvent = bailCase.read(LISTING_EVENT, ListingEvent.class)
             .orElseThrow(() -> new IllegalStateException("listingEvent is not present"));
 
         PostSubmitCallbackResponse postSubmitResponse =
             new PostSubmitCallbackResponse();
 
-        if (listingEvent.equals(INITIAL_LISTING.toString())) {
+        if (listingEvent == INITIAL_LISTING) {
             postSubmitResponse.setConfirmationHeader("# You have listed the case");
         } else {
             postSubmitResponse.setConfirmationHeader("# You have relisted the case");

@@ -36,6 +36,7 @@ import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -61,7 +62,6 @@ class CaseListingHandlerTest {
 
     private CaseListingHandler caseListingHandler;
     private final String caseListHearingDate = "2023-12-01T12:00:00";
-    private final String dueDate = "2023-11-30";
 
     @BeforeEach
     public void setUp() {
@@ -70,14 +70,15 @@ class CaseListingHandlerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.CASE_LISTING);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.of(INITIAL_LISTING.toString()));
         when(bailCase.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of(caseListHearingDate));
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(INITIAL_LISTING));
     }
 
     @Test
     void should_set_case_listing_data() {
         final ZonedDateTime hearingLocalDate =
             LocalDateTime.parse(caseListHearingDate, ISO_DATE_TIME).toLocalDate().atStartOfDay(ZoneOffset.UTC);
+        String dueDate = "2023-11-30";
         final ZonedDateTime zonedDueDateTime = LocalDate.parse(dueDate).atStartOfDay(ZoneOffset.UTC);
 
         when(dueDateService.calculateHearingDirectionDueDate(hearingLocalDate)).thenReturn(zonedDueDateTime);
@@ -106,7 +107,7 @@ class CaseListingHandlerTest {
 
     @Test
     void should_not_set_case_listing_data() {
-        when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.of(RELISTING.toString()));
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(RELISTING));
 
         PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(
             PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
@@ -123,6 +124,16 @@ class CaseListingHandlerTest {
         verify(bailCase, times(0)).write(SEND_DIRECTION_LIST, "Home Office");
     }
 
+    @Test
+    void should_throw_for_empty_list_case_event() {
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(
+            () -> caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
+            .hasMessage("listingEvent is not present")
+            .isExactlyInstanceOf(RequiredFieldMissingException.class);
+
+    }
 
     @Test
     void handling_should_throw_if_cannot_actually_handle() {
@@ -156,17 +167,6 @@ class CaseListingHandlerTest {
 
             reset(callback);
         }
-    }
-
-    @Test
-    void should_throw_for_empty_list_case_event() {
-        when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(
-            () -> caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
-            .hasMessage("listingEvent is not present")
-            .isExactlyInstanceOf(RequiredFieldMissingException.class);
-
     }
 
     @Test
