@@ -453,7 +453,10 @@ public enum BailCaseFieldDefinition {
     APPELLANT_LEVEL_FLAGS(
         "appellantLevelFlags", new TypeReference<StrategicCaseFlag>() {}),
     CASE_FLAGS(
-        "caseFlags", new TypeReference<StrategicCaseFlag>(){});
+        "caseFlags", new TypeReference<StrategicCaseFlag>(){}),
+    IS_IMA(
+        "hasImaStatus", new TypeReference<YesOrNo>(){});
+
 
 
     private final String value;
