@@ -22,7 +22,7 @@
     "caseData": {
       "template": "minimal-application-submitted-record-conditions.json",
       "replacements": {
-        "recordDecisionType": "refused",
+        "recordDecisionType": "refusedUnderIma",
         "tribunalDocumentsWithMetadata":
         [
           {
