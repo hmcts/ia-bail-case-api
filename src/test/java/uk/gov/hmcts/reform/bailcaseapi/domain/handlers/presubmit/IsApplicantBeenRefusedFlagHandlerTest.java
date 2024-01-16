@@ -72,10 +72,11 @@ public class IsApplicantBeenRefusedFlagHandlerTest {
         when(bailCaseBefore.read(DECISION_DETAILS_DATE, String.class)).thenReturn(Optional.of(finalDecisionDate));
     }
 
-    @Test
-    void should_set_applicant_refused_flag_to_yes_if_with_in_days() {
+    @ParameterizedTest
+    @EnumSource(value = DecisionType.class, names = {"REFUSED", "REFUSED_UNDER_IMA"})
+    void should_set_applicant_refused_flag_to_yes_if_with_in_days(DecisionType decisionType) {
         when(bailCaseBefore.read(RECORD_DECISION_TYPE, String.class))
-            .thenReturn(Optional.of(DecisionType.REFUSED.toString()));
+            .thenReturn(Optional.of(decisionType.toString()));
 
         when(dateProvider.now()).thenReturn(LocalDate.parse("2022-06-28"));
 
