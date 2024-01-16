@@ -218,7 +218,7 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             //Clear all the supporter 1-4 fields
             if (hasFinancialConditionSupporter1.equals(NO)) {
                 log.info("Clearing Financial Supporter details from bail application case data");
-
+                bailCase.write(FCS_INTERPRETER_YESNO, NO);
                 clearHasFinancialSupporter(bailCase, "");
                 clearHasFinancialSupporter(bailCase, "2");
                 clearHasFinancialSupporter(bailCase, "3");

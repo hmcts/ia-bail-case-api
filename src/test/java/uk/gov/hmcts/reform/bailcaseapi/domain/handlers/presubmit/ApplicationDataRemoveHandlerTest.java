@@ -293,6 +293,13 @@ public class ApplicationDataRemoveHandlerTest {
     }
 
     @Test
+    void should_set_fcsInterpreterYesNo_to_no_when_fcs_removed() {
+        setUpValuesIfValuesAreRemoved();
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, times(1)).write(FCS_INTERPRETER_YESNO, NO);
+    }
+
+    @Test
     void should_not_remove_if_values_present() {
         setUpValuesIfValuesArePresent();
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
