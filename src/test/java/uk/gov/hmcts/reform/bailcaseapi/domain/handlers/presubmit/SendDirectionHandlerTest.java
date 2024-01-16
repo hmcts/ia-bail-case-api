@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.never;
@@ -12,8 +13,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DIRECTIONS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -181,18 +184,34 @@ public class SendDirectionHandlerTest {
 
         for (Event event : Event.values()) {
 
+            when(callback.getCaseDetails()).thenReturn(caseDetails);
+            when(caseDetails.getCaseData()).thenReturn(bailCase);
             when(callback.getEvent()).thenReturn(event);
+            when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.of(INITIAL_LISTING.toString()));
 
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
 
                 boolean canHandle = sendDirectionHandler.canHandle(callbackStage, callback);
 
                 assertThat(canHandle).isEqualTo(callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-                                                && (event.equals(Event.SEND_BAIL_DIRECTION)));
+                                                    && (event.equals(Event.SEND_BAIL_DIRECTION)
+                                                        || (event == Event.CASE_LISTING)));
             }
 
             reset(callback);
         }
+    }
+
+    @Test
+    void should_not_handle_if_event_case_listing_and_not_initial_listing() {
+
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(callback.getEvent()).thenReturn(Event.CASE_LISTING);
+        when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.empty());
+
+        boolean canHandle = sendDirectionHandler.canHandle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        assertFalse(canHandle);
     }
 
     @Test

@@ -598,6 +598,9 @@ public enum BailCaseFieldDefinition {
     UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE(
         "uploadBailSummaryActionAvailable", new TypeReference<YesOrNo>(){}),
 
+    LIST_CASE_HEARING_DATE(
+        "listingHearingDate", new TypeReference<String>(){}),
+
     ;
 
 

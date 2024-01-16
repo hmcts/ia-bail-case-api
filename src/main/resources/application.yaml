@@ -224,3 +224,6 @@ ia:
 commonData:
   api:
     url: ${COMMON_DATA_API:http://localhost:8991}
+
+govUkHolidays:
+  url: https://www.gov.uk/
