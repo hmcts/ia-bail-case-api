@@ -455,7 +455,9 @@ public enum BailCaseFieldDefinition {
     CASE_FLAGS(
         "caseFlags", new TypeReference<StrategicCaseFlag>(){}),
     IS_IMA(
-        "hasImaStatus", new TypeReference<YesOrNo>(){});
+        "hasImaStatus", new TypeReference<YesOrNo>(){}),
+    IS_IMA_ENABLED(
+        "isImaEnabled", new TypeReference<YesOrNo>(){});
 
 
 

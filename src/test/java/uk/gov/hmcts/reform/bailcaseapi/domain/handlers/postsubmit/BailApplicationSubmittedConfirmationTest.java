@@ -9,10 +9,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
@@ -25,7 +27,9 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ref.OrganisationEntityResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.FeatureToggler;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdCaseAssignment;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.ProfessionalOrganisationRetriever;
 
@@ -52,6 +56,9 @@ public class BailApplicationSubmittedConfirmationTest {
 
     @Mock private UserDetailsHelper userDetailsHelper;
 
+    @Mock
+    private FeatureToggler featureToggler;
+
     private BailApplicationSubmittedConfirmation bailApplicationSubmittedConfirmation;
 
     @BeforeEach
@@ -60,7 +67,8 @@ public class BailApplicationSubmittedConfirmationTest {
             new BailApplicationSubmittedConfirmation(professionalOrganisationRetriever,
                                                      ccdCaseAssignment,
                                                      userDetails,
-                                                     userDetailsHelper);
+                                                     userDetailsHelper,
+                                                     featureToggler);
 
         when(callback.getEvent()).thenReturn(Event.SUBMIT_APPLICATION);
     }
@@ -78,6 +86,7 @@ public class BailApplicationSubmittedConfirmationTest {
             Optional.of(organisationPolicy));
         when(professionalOrganisationRetriever.retrieve()).thenReturn(organisationEntityResponse);
         when(organisationEntityResponse.getOrganisationIdentifier()).thenReturn(organisationIdentifier);
+        when(featureToggler.getValue("ima-feature-flag", false)).thenReturn(true);
 
         PostSubmitCallbackResponse response = bailApplicationSubmittedConfirmation.handle(callback);
 
@@ -86,6 +95,8 @@ public class BailApplicationSubmittedConfirmationTest {
 
         assertNotNull(response.getConfirmationHeader(), "Confirmation Header is null");
         assertThat(response.getConfirmationHeader().get()).isEqualTo("# You have submitted this application");
+
+        Mockito.verify(bailCase, times(1)).write(IS_IMA_ENABLED, YesOrNo.YES);
     }
 
     @Test
