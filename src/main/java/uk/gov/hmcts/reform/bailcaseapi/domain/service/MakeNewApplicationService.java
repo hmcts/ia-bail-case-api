@@ -155,6 +155,8 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.APPLICANT_MOBILE_NUMBER.value(),
         BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING.value(),
         BailCaseFieldDefinition.APPEAL_REFERENCE_NUMBER.value(),
+        BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING_UT.value(),
+        BailCaseFieldDefinition.UT_APPEAL_REFERENCE_NUMBER.value(),
         BailCaseFieldDefinition.HAS_PREVIOUS_BAIL_APPLICATION.value(),
         BailCaseFieldDefinition.PREV_BAIL_APPLICATION_NUMBER.value(),
         BailCaseFieldDefinition.APPLICANT_BEEN_REFUSED_BAIL.value(),
