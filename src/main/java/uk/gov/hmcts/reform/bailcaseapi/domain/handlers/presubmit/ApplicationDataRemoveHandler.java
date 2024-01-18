@@ -368,16 +368,14 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
                 bailCase.remove(interpreterSpokenLanguage);
                 bailCase.remove(interpreterSpokenLanguageBooking);
                 bailCase.remove(interpreterSpokenLanguageBookingStatus);
+            } else {
+                createInterpreterLanguage(bailCase, interpreterSpokenLanguage);
             }
             if (!interpreterCategory.contains("signLanguageInterpreter")) {
                 bailCase.remove(interpreterSignLanguage);
                 bailCase.remove(interpreterSignLanguageBooking);
                 bailCase.remove(interpreterSignLanguageBookingStatus);
-            }
-            if (interpreterCategory.contains("spokenLanguageInterpreter")) {
-                createInterpreterLanguage(bailCase, interpreterSpokenLanguage);
-            }
-            if (interpreterCategory.contains("signLanguageInterpreter")) {
+            } else {
                 createInterpreterLanguage(bailCase, interpreterSignLanguage);
             }
         } else {
@@ -509,13 +507,13 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
 
         if (optionalLanguage.isPresent()) {
             InterpreterLanguageRefData existingLanguageData = optionalLanguage.get();
-            InterpreterLanguageRefData newLanguageData = null;
+            InterpreterLanguageRefData newLanguageData;
             if (existingLanguageData.getLanguageManualEntry().equals(IS_MANUAL_ENTRY)) {
                 newLanguageData = new InterpreterLanguageRefData(
                     null,
                     IS_MANUAL_ENTRY,
                     existingLanguageData.getLanguageManualEntryDescription());
-            } else if (existingLanguageData.getLanguageManualEntry().equals(IS_NOT_MANUAL_ENTRY)) {
+            } else {
                 newLanguageData = new InterpreterLanguageRefData(
                     existingLanguageData.getLanguageRefData(),
                     IS_NOT_MANUAL_ENTRY,
