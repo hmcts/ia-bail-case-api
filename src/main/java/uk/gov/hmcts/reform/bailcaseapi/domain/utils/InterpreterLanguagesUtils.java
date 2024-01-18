@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.dto.hearingd
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.dto.hearingdetails.CommonDataResponse;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.service.RefDataUserService;
 
-import java.util.Collections;
 import java.util.List;
 
 public class InterpreterLanguagesUtils {
@@ -42,7 +41,7 @@ public class InterpreterLanguagesUtils {
 
         return new InterpreterLanguageRefData(
             dynamicListOfLanguages,
-            Collections.emptyList(),
+            "",
             "");
     }
 
