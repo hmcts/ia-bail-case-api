@@ -78,7 +78,6 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                                + "The Bail Summary must include:\n"
                                + "\n"
                                + "- the date when the current period of immigration detention started\n"
-                               + "- whether the applicant is subject to Section 2 of the Illegal Migration Act 2023\n"
                                + "- any concerns in relation to the factors listed in paragraph 3(2) of Schedule "
                                + "10 to the 2016 Act\n"
                                + "- the bail conditions being sought should bail be granted\n"
