@@ -23,7 +23,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.dto.hearingdetails.CommonDataResponse;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.service.RefDataUserService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -144,8 +143,8 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
             .thenReturn(Optional.of(spokenLanguagesSelected));
         when(asylumCaseBefore.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE))
             .thenReturn(Optional.of(signLanguagesSelected));
-        when(spokenLanguagesSelected.getLanguageManualEntry()).thenReturn(List.of("Yes"));
-        when(signLanguagesSelected.getLanguageManualEntry()).thenReturn(List.of("Yes"));
+        when(spokenLanguagesSelected.getLanguageManualEntry()).thenReturn("Yes");
+        when(signLanguagesSelected.getLanguageManualEntry()).thenReturn("Yes");
         when(spokenLanguagesSelected.getLanguageManualEntryDescription()).thenReturn("desc");
         when(signLanguagesSelected.getLanguageManualEntryDescription()).thenReturn("desc");
 
@@ -161,8 +160,8 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
 
         interpreterLanguagesDynamicListUpdater.handle(ABOUT_TO_START, callback);
 
-        verify(spokenLanguages).setLanguageManualEntry(List.of("Yes"));
-        verify(signLanguages).setLanguageManualEntry(List.of("Yes"));
+        verify(spokenLanguages).setLanguageManualEntry("Yes");
+        verify(signLanguages).setLanguageManualEntry("Yes");
         verify(spokenLanguages).setLanguageManualEntryDescription("desc");
         verify(signLanguages).setLanguageManualEntryDescription("desc");
         verify(bailCase).write(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, spokenLanguages);
@@ -182,11 +181,11 @@ public class ApplicantInterpreterLanguagesDynamicListUpdaterTest {
         when(callback.getEvent()).thenReturn(Event.EDIT_BAIL_APPLICATION);
         final DynamicList spokenLanguage = new DynamicList(new Value("1", "English"), List.of(new Value("1", "English")));
         final InterpreterLanguageRefData spokenLanguageRefData = new InterpreterLanguageRefData(spokenLanguage,
-                                                                                                Collections.emptyList(),
+                                                                                                "",
                                                                                                 "");
         final DynamicList signLanguage = new DynamicList(new Value("1", "Makaton"), List.of(new Value("1", "Makaton")));
         final InterpreterLanguageRefData signLanguageRefData = new InterpreterLanguageRefData(signLanguage,
-                                                                                                Collections.emptyList(),
+                                                                                                "",
                                                                                                 "");
 
         when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));

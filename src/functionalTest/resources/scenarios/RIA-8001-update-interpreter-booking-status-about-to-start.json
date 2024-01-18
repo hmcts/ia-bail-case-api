@@ -32,7 +32,7 @@
                 }
               ]
             },
-            "languageManualEntry": [],
+            "languageManualEntry": "No",
             "languageManualEntryDescription": ""
           },
           "applicantInterpreterSpokenLanguage": {
@@ -48,7 +48,7 @@
                 }
               ]
             },
-            "languageManualEntry": [],
+            "languageManualEntry": "No",
             "languageManualEntryDescription": ""
           },
           "fcs1InterpreterSignLanguage": {
@@ -64,7 +64,7 @@
                 }
               ]
             },
-            "languageManualEntry": [],
+            "languageManualEntry": "No",
             "languageManualEntryDescription": ""
           },
           "fcs1InterpreterSpokenLanguage": {
@@ -80,7 +80,7 @@
                 }
               ]
             },
-            "languageManualEntry": [],
+            "languageManualEntry": "No",
             "languageManualEntryDescription": ""
           },
           "fcs2InterpreterSignLanguage": {
@@ -96,7 +96,7 @@
                 }
               ]
             },
-            "languageManualEntry": [],
+            "languageManualEntry": "No",
             "languageManualEntryDescription": ""
           },
           "fcs2InterpreterSpokenLanguage": {
@@ -112,7 +112,7 @@
                 }
               ]
             },
-            "languageManualEntry": [],
+            "languageManualEntry": "No",
             "languageManualEntryDescription": ""
           }
         }

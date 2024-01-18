@@ -50,12 +50,7 @@ public class ShowPreviousApplicationServiceTest {
     Value valueSpoken1;
     @Mock
     InterpreterLanguageRefData interpreterLanguageRefDataSign1;
-    @Mock
-    DynamicList dynamicListSign1;
-    @Mock
-    Value valueSign1;
-
-
+    
     @BeforeEach
     void setUp() {
         showPreviousApplicationService = new ShowPreviousApplicationService();
@@ -223,13 +218,13 @@ public class ShowPreviousApplicationServiceTest {
 
 
         when(interpreterLanguageRefDataSpoken1.getLanguageRefData()).thenReturn(dynamicListSpoken1);
-        when(interpreterLanguageRefDataSign1.getLanguageRefData()).thenReturn(dynamicListSign1);
+        when(interpreterLanguageRefDataSign1.getLanguageRefData()).thenReturn(null);
+        when(interpreterLanguageRefDataSign1.getLanguageManualEntry()).thenReturn("Yes");
         when(bailCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.of(interpreterLanguageRefDataSpoken1));
         when(bailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.of(interpreterLanguageRefDataSign1));
         when(dynamicListSpoken1.getValue()).thenReturn(valueSpoken1);
-        when(dynamicListSign1.getValue()).thenReturn(valueSign1);
         when(valueSpoken1.getLabel()).thenReturn("lang 1");
-        when(valueSign1.getLabel()).thenReturn("lang sign 1");
+        when(interpreterLanguageRefDataSign1.getLanguageManualEntryDescription()).thenReturn("lang sign 1");
 
         when(bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(FCS1_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(List.of("spokenLanguageInterpreter")));

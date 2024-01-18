@@ -5,12 +5,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -36,6 +40,11 @@ public class ApplicationDataRemoveHandlerTest {
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
     private ApplicationDataRemoveHandler applicationDataRemoveHandler;
+
+    @Captor
+    private ArgumentCaptor<BailCaseFieldDefinition> bailExtractorCaptor;
+    @Captor
+    private ArgumentCaptor<InterpreterLanguageRefData> bailValueCaptor;
 
     @BeforeEach
     void setUp() {
@@ -628,6 +637,63 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4);
     }
 
+    @Test
+    void should_sanitize_and_create_applicant_sign_interpreter_details_if_languageManualEntry_updated_to_yes() {
+        //when sign interpreter details are present and languageManualEntry is Yes, then make sure languageRefData are removed
+        when(bailCase.read(INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
+        setUpValuesIfValuesArePresent();
+        List<String> category = List.of("signLanguageInterpreter");
+        final DynamicList signLanguage = new DynamicList(new Value("1", "Makaton"), List.of(new Value("1", "Makaton")));
+        final InterpreterLanguageRefData existingLanguage = new InterpreterLanguageRefData(
+            signLanguage,
+            "Yes",
+            "manual sign language1");
+        when(bailCase.read(APPLICANT_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE)).thenReturn(Optional.empty());
+        when(bailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE, InterpreterLanguageRefData.class)).thenReturn((Optional.of(existingLanguage)));
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        verify(bailCase, times(1)).write(
+            bailExtractorCaptor.capture(),
+            bailValueCaptor.capture());
+
+        List<BailCaseFieldDefinition> extractors = bailExtractorCaptor.getAllValues();
+        List<InterpreterLanguageRefData> bailCaseValues = bailValueCaptor.getAllValues();
+
+        assertThat(bailCaseValues.get(extractors.indexOf(APPLICANT_INTERPRETER_SIGN_LANGUAGE))
+                       .getLanguageRefData()).isEqualTo(null);
+        assertThat(bailCaseValues.get(extractors.indexOf(APPLICANT_INTERPRETER_SIGN_LANGUAGE))
+                       .getLanguageManualEntryDescription()).isEqualTo("manual sign language1");
+    }
+
+    @Test
+    void should_sanitize_and_create_applicant_spoken_interpreter_details_if_languageManualEntry_updated_to_no() {
+        //when spoken interpreter details are present and languageManualEntry is No, then make sure languageManualEntryDescription are removed
+        when(bailCase.read(INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
+        setUpValuesIfValuesArePresent();
+        List<String> category = List.of("spokenLanguageInterpreter");
+        final DynamicList spokenLanguage = new DynamicList(new Value("1", "English"), List.of(new Value("1", "English")));
+        final InterpreterLanguageRefData existingLanguage = new InterpreterLanguageRefData(
+            spokenLanguage,
+            "No",
+            "manual spoken language1");
+        when(bailCase.read(APPLICANT_INTERPRETER_LANGUAGE_CATEGORY)).thenReturn(Optional.of(category));
+        when(bailCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE, InterpreterLanguageRefData.class)).thenReturn((Optional.of(existingLanguage)));
+        when(bailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE)).thenReturn(Optional.empty());
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        verify(bailCase, times(1)).write(
+            bailExtractorCaptor.capture(),
+            bailValueCaptor.capture());
+
+        List<BailCaseFieldDefinition> extractors = bailExtractorCaptor.getAllValues();
+        List<InterpreterLanguageRefData> bailCaseValues = bailValueCaptor.getAllValues();
+
+        assertThat(bailCaseValues.get(extractors.indexOf(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE))
+                       .getLanguageManualEntryDescription()).isEqualTo(null);
+        assertThat(bailCaseValues.get(extractors.indexOf(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE))
+                       .getLanguageRefData()).isEqualTo(spokenLanguage);
+    }
 
 
 }

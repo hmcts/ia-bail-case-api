@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -22,6 +23,9 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.
 @Slf4j
 @Component
 public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<BailCase> {
+
+    private static final String IS_MANUAL_ENTRY = "Yes";
+    private static final String IS_NOT_MANUAL_ENTRY = "No";
 
     public boolean canHandle(PreSubmitCallbackStage callbackStage, Callback<BailCase> callback) {
         requireNonNull(callbackStage, "callbackStage must not be null");
@@ -364,11 +368,15 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
                 bailCase.remove(interpreterSpokenLanguage);
                 bailCase.remove(interpreterSpokenLanguageBooking);
                 bailCase.remove(interpreterSpokenLanguageBookingStatus);
+            } else {
+                createInterpreterLanguage(bailCase, interpreterSpokenLanguage);
             }
             if (!interpreterCategory.contains("signLanguageInterpreter")) {
                 bailCase.remove(interpreterSignLanguage);
                 bailCase.remove(interpreterSignLanguageBooking);
                 bailCase.remove(interpreterSignLanguageBookingStatus);
+            } else {
+                createInterpreterLanguage(bailCase, interpreterSignLanguage);
             }
         } else {
             bailCase.remove(interpreterSpokenLanguage);
@@ -494,4 +502,24 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         bailCase.write(IS_LEGALLY_REPRESENTED_FOR_FLAG, NO);
     }
 
+    private void createInterpreterLanguage(BailCase bailCase, BailCaseFieldDefinition interpreterLanguage) {
+        Optional<InterpreterLanguageRefData> optionalLanguage = bailCase.read(interpreterLanguage, InterpreterLanguageRefData.class);
+
+        if (optionalLanguage.isPresent()) {
+            InterpreterLanguageRefData existingLanguageData = optionalLanguage.get();
+            InterpreterLanguageRefData newLanguageData;
+            if (existingLanguageData.getLanguageManualEntry().equals(IS_MANUAL_ENTRY)) {
+                newLanguageData = new InterpreterLanguageRefData(
+                    null,
+                    IS_MANUAL_ENTRY,
+                    existingLanguageData.getLanguageManualEntryDescription());
+            } else {
+                newLanguageData = new InterpreterLanguageRefData(
+                    existingLanguageData.getLanguageRefData(),
+                    IS_NOT_MANUAL_ENTRY,
+                    null);
+            }
+            bailCase.write(interpreterLanguage, newLanguageData);
+        }
+    }
 }

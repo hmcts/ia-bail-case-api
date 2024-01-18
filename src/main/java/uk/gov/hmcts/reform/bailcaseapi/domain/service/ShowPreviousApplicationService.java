@@ -687,7 +687,7 @@ public class ShowPreviousApplicationService {
         interpreterLanguageRefData.ifPresent(language -> {
             if (language.getLanguageRefData() != null) {
                 interpreterLanguageString.append(language.getLanguageRefData().getValue().getLabel());
-            } else if (language.getLanguageManualEntry() != null && !language.getLanguageManualEntry().isEmpty()) {
+            } else if (language.getLanguageManualEntry() != null && language.getLanguageManualEntry().equals("Yes")) {
                 interpreterLanguageString.append(language.getLanguageManualEntryDescription());
             }
         });
