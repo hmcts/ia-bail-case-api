@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
@@ -13,10 +13,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -35,16 +36,16 @@ class ListingCaseConfirmationTest {
     @Mock
     private BailCase bailCase;
 
-    private ListingCaseConfirmation listingCaseConfirmation = new ListingCaseConfirmation();
+    private final ListingCaseConfirmation listingCaseConfirmation = new ListingCaseConfirmation();
 
     @ParameterizedTest
-    @ValueSource(strings = {"initialListing", "relisting"})
-    void should_return_confirmation(String listingEvent) {
+    @EnumSource(value = ListingEvent.class, names = {"RELISTING", "INITIAL_LISTING"})
+    void should_return_confirmation(ListingEvent listingEvent) {
 
         when(callback.getEvent()).thenReturn(Event.CASE_LISTING);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(LISTING_EVENT, String.class)).thenReturn(Optional.of(listingEvent));
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(listingEvent));
 
         PostSubmitCallbackResponse callbackResponse =
             listingCaseConfirmation.handle(callback);
@@ -53,7 +54,7 @@ class ListingCaseConfirmationTest {
         assertTrue(callbackResponse.getConfirmationHeader().isPresent());
         assertTrue(callbackResponse.getConfirmationBody().isPresent());
 
-        if (listingEvent.equals("initialListing")) {
+        if (listingEvent == ListingEvent.INITIAL_LISTING) {
             assertThat(
                 callbackResponse.getConfirmationHeader().get())
                 .contains("# You have listed the case");
