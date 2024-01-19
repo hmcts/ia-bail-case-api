@@ -78,7 +78,7 @@ public class FcsInterpreterCategoryValidator implements PreSubmitCallbackHandler
             final boolean hasFcs = bailCase.read(HAS_FINANCIAL_COND_SUPPORTER, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES;
 
             //if has4Fcs then either of fcs1 or fcs2 or fcs3 or fcs4 should be present
-            if (has4Fcs) {
+            if (has4Fcs && has3Fcs && has2Fcs && hasFcs) {
                 if (fcs1CategoryEmpty && fcs2CategoryEmpty && fcs3CategoryEmpty && fcs4CategoryEmpty) {
                     response.addError(ERROR_MESSAGE);
                 }
@@ -86,7 +86,7 @@ public class FcsInterpreterCategoryValidator implements PreSubmitCallbackHandler
             }
 
             //if has3Fcs then either of fcs1 or fcs2 or fcs3 should be present
-            if (has3Fcs) {
+            if (has3Fcs && has2Fcs && hasFcs) {
                 if (fcs1CategoryEmpty && fcs2CategoryEmpty && fcs3CategoryEmpty) {
                     response.addError(ERROR_MESSAGE);
                 }
@@ -94,7 +94,7 @@ public class FcsInterpreterCategoryValidator implements PreSubmitCallbackHandler
             }
 
             //if has2Fcs then either of fcs1 or fcs2 should be present
-            if (has2Fcs) {
+            if (has2Fcs && hasFcs) {
                 if (fcs1CategoryEmpty && fcs2CategoryEmpty) {
                     response.addError(ERROR_MESSAGE);
                 }
