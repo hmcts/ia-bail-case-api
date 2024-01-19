@@ -38,6 +38,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.FINANCIAL_COND_AMOUNT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.GROUNDS_FOR_BAIL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING_UT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_FINANCIAL_COND_SUPPORTER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_REFERENCE_NUMBER;
@@ -69,6 +70,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_TELEPHONE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UT_APPEAL_REFERENCE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
 
@@ -245,6 +247,10 @@ public class ShowPreviousApplicationServiceTest {
         when(bailCase.read(APPLICANT_ARRIVAL_IN_UK, String.class)).thenReturn(Optional.of("2020-03-02"));
         when(bailCase.read(HAS_APPEAL_HEARING_PENDING)).thenReturn(Optional.of(YesOrNo.YES.toString()));
         when(bailCase.read(APPEAL_REFERENCE_NUMBER)).thenReturn(Optional.of("REF12345"));
+
+        when(bailCase.read(HAS_APPEAL_HEARING_PENDING_UT)).thenReturn(Optional.of(YesOrNo.YES.toString()));
+        when(bailCase.read(UT_APPEAL_REFERENCE_NUMBER)).thenReturn(Optional.of("REF12345"));
+
         when(bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(APPLICANT_ADDRESS, AddressUK.class)).thenReturn(Optional.of(
             new AddressUK("Line 1", "Line 2", null, null,
@@ -427,6 +433,8 @@ public class ShowPreviousApplicationServiceTest {
                 + "|Arrival date into the UK|2 Mar 2020|\n"
                 + "|Pending appeal hearing|Yes|\n"
                 + "|Pending appeal reference|REF12345|\n"
+                + "|Pending appeal hearing in UT|Yes|\n"
+                + "|Pending appeal reference number in UT|REF12345|\n"
                 + "|Address if bail granted|Yes|\n"
                 + "|Address|Line 1<br>Line 2<br>PostCode<br>County<br>Country<br>|\n"
         ));
