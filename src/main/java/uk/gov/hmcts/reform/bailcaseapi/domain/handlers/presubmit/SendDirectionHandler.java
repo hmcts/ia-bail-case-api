@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -51,12 +52,12 @@ public class SendDirectionHandler implements PreSubmitCallbackHandler<BailCase> 
 
         BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        final String listingEvent = bailCase.read(LISTING_EVENT, String.class)
-            .orElse("");
+        final ListingEvent listingEvent = bailCase.read(LISTING_EVENT, ListingEvent.class)
+            .orElse(null);
 
         return callbackStage.equals(ABOUT_TO_SUBMIT)
             && (callback.getEvent().equals(SEND_BAIL_DIRECTION)
-            || (callback.getEvent().equals(CASE_LISTING) && listingEvent.equals(INITIAL_LISTING.toString())));
+            || (callback.getEvent().equals(CASE_LISTING) && INITIAL_LISTING == listingEvent));
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
