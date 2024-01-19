@@ -68,7 +68,8 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
             LocalDate date = LocalDateTime.parse(hearingDate, ISO_DATE_TIME).toLocalDate();
 
-            String dueDate = dueDateService.calculateHearingDirectionDueDate(date.atStartOfDay(ZoneOffset.UTC))
+            String dueDate = dueDateService.calculateHearingDirectionDueDate(date.atStartOfDay(ZoneOffset.UTC),
+                                                                             LocalDate.now())
                 .toLocalDate()
                 .toString();
 

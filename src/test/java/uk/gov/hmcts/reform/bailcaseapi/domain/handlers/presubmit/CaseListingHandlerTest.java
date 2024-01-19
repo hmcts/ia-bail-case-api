@@ -81,7 +81,9 @@ class CaseListingHandlerTest {
         String dueDate = "2023-11-30";
         final ZonedDateTime zonedDueDateTime = LocalDate.parse(dueDate).atStartOfDay(ZoneOffset.UTC);
 
-        when(dueDateService.calculateHearingDirectionDueDate(hearingLocalDate)).thenReturn(zonedDueDateTime);
+        when(dueDateService.calculateHearingDirectionDueDate(hearingLocalDate,
+                                                             LocalDate.now()
+        )).thenReturn(zonedDueDateTime);
 
         PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(
             PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
