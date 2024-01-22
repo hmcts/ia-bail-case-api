@@ -40,12 +40,14 @@ public class ShowPreviousApplicationService {
             || previousBailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA).isPresent()
             || previousBailCase.read(HOME_OFFICE_DOCUMENTS_WITH_METADATA).isPresent()
             || previousBailCase.read(SIGNED_DECISION_DOCUMENTS_WITH_METADATA).isPresent()
+            || previousBailCase.read(HEARING_DOCUMENTS).isPresent()
         ) {
             return "|Documents||\n|--------|--------|\n"
                 + getApplicantDocumentsDetails(previousBailCase)
                 + getTribunalDocumentsDetails(previousBailCase)
                 + getHODocumentsDetails(previousBailCase)
-                + getDecisionDocumentsDetails(previousBailCase);
+                + getDecisionDocumentsDetails(previousBailCase)
+                + getHearingDocumentsDetails(previousBailCase);
         }
         return null;
     }
@@ -622,6 +624,13 @@ public class ShowPreviousApplicationService {
             .read(TRIBUNAL_DOCUMENTS_WITH_METADATA);
         return mayBeTribunalDocs.isEmpty()
             ? "" : getDetailsForGivenCollection(mayBeTribunalDocs, "Tribunal") + "|\n";
+    }
+
+    private String getHearingDocumentsDetails(BailCase previousBailCase) {
+        Optional<List<IdValue<DocumentWithMetadata>>> mayBeHearingDocs = previousBailCase
+            .read(HEARING_DOCUMENTS);
+        return mayBeHearingDocs.isEmpty()
+            ? "" : getDetailsForGivenCollection(mayBeHearingDocs, "Hearing") + "|\n";
     }
 
     private String getDecisionDocumentsDetails(BailCase previousBailCase) {
