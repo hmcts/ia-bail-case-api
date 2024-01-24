@@ -454,7 +454,8 @@ public class ShowPreviousApplicationServiceTest {
                 + "|Occupation|Doctor|\n"
                 + "|Immigration status|Resident|\n"
                 + "|Nationalities|American|\n"
-                + "|Passport number|No|\n"
+                + "|Passport number|Yes|\n"
+                + "|Passport number|P12345|\n"
                 + "|Spoken language Interpreter|lang 1|\n"
                 + "|Financial condition amount (£)|3000|"
         ));

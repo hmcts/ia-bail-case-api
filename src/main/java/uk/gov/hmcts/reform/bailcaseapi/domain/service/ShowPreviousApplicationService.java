@@ -357,13 +357,16 @@ public class ShowPreviousApplicationService {
                 .append("|\n");
 
             stringBuilder.append("|Passport number|")
-                .append(previousBailCase.read(supporterHasPassport).orElse(YesOrNo.NO))
+                .append(previousBailCase.read(supporterHasPassport, YesOrNo.class).orElse(YesOrNo.NO))
                 .append("|\n");
 
-            if (previousBailCase.read(supporterHasPassport).orElse(YesOrNo.NO).equals("Yes")) {
+            Optional<String> mayBeSupporterPassportNumber = previousBailCase.read(supporterPassport);
+
+            if (previousBailCase.read(supporterHasPassport, YesOrNo.class).orElse(YesOrNo.NO).equals(YesOrNo.YES)
+                && mayBeSupporterPassportNumber.isPresent()) {
                 stringBuilder.append("|Passport number|")
                     .append(previousBailCase.read(supporterPassport)
-                                .orElseThrow(getErrorThrowable(supporterPassport)))
+                        .orElseThrow(getErrorThrowable(supporterPassport)))
                     .append("|\n");
             }
 
