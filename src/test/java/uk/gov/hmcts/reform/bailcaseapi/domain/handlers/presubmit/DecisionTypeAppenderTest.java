@@ -275,7 +275,7 @@ class DecisionTypeAppenderTest {
     }
 
     @Test
-    void set_decision_type_to_refused_under_ima_when_decision_granted_or_refused_option_selected_as_refused_under_ima() {
+    void set_decision_type_to_refused_under_ima_when_granted_or_refused_option_selected_as_refused_under_ima() {
         when(bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
         when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
 
