@@ -70,6 +70,9 @@ public class ShowPreviousApplicationServiceTest {
         List<IdValue<DocumentWithMetadata>> existingDecisionDocuments = List.of(
             new IdValue<>("1", document1WithMetadata)
         );
+        List<IdValue<DocumentWithMetadata>> existingHearingDocuments = List.of(
+            new IdValue<>("1", document2WithMetadata)
+        );
 
 
         List<IdValue<Direction>> existingDirections =
@@ -131,6 +134,8 @@ public class ShowPreviousApplicationServiceTest {
             .thenReturn(Optional.of(existingApplicantDocuments));
         when(bailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA))
             .thenReturn(Optional.of(existingTribunalDocuments));
+        when(bailCase.read(HEARING_DOCUMENTS))
+            .thenReturn(Optional.of(existingHearingDocuments));
         when(bailCase.read(HOME_OFFICE_DOCUMENTS_WITH_METADATA))
             .thenReturn(Optional.of(existingHODocuments));
         when(bailCase.read(SIGNED_DECISION_DOCUMENTS_WITH_METADATA))
@@ -292,6 +297,9 @@ public class ShowPreviousApplicationServiceTest {
         assertTrue(label.contains(
             "|Decision document 1<br>*Document:* <a href=\"/documents/document1BinaryUrl\" "
                 + "target=\"_blank\">document1FileName</a>"));
+        assertTrue(label.contains(
+            "|Hearing document 1<br>*Document:* <a href=\"/documents/document2BinaryUrl\" "
+            + "target=\"_blank\">document2FileName</a>"));
     }
 
     @Test
