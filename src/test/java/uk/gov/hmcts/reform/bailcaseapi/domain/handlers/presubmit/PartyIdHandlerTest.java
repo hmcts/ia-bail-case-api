@@ -118,7 +118,8 @@ class PartyIdHandlerTest {
     @EnumSource(value = Event.class, names = {
         "START_APPLICATION",
         "EDIT_BAIL_APPLICATION",
-        "EDIT_BAIL_APPLICATION_AFTER_SUBMIT"
+        "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+        "MAKE_NEW_APPLICATION"
     })
     void should_not_set_party_ids_if_already_set(Event event) {
         when(callback.getEvent()).thenReturn(event);
@@ -156,8 +157,10 @@ class PartyIdHandlerTest {
     })
     void should_clear_legal_rep_party_ids_for_unrep_applications(Event event) {
         when(callback.getEvent()).thenReturn(event);
-        when(bailCase.read(LEGAL_REP_INDIVIDUAL_PARTY_ID, String.class)).thenReturn(Optional.of(LEGAL_REP_INDIVIDUAL_PARTY_ID_VALUE));
-        when(bailCase.read(LEGAL_REP_ORGANISATION_PARTY_ID, String.class)).thenReturn(Optional.of(LEGAL_REP_ORGANISATION_PARTY_ID_VALUE));
+        when(bailCase.read(LEGAL_REP_INDIVIDUAL_PARTY_ID, String.class)).thenReturn(Optional.of(
+            LEGAL_REP_INDIVIDUAL_PARTY_ID_VALUE));
+        when(bailCase.read(LEGAL_REP_ORGANISATION_PARTY_ID, String.class)).thenReturn(Optional.of(
+            LEGAL_REP_ORGANISATION_PARTY_ID_VALUE));
         when(bailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =

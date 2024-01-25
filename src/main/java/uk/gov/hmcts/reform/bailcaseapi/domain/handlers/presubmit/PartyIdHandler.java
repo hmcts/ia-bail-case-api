@@ -30,7 +30,8 @@ public class PartyIdHandler implements PreSubmitCallbackHandler<BailCase> {
                && Set.of(
             START_APPLICATION,
             EDIT_BAIL_APPLICATION,
-            EDIT_BAIL_APPLICATION_AFTER_SUBMIT).contains(callback.getEvent());
+            EDIT_BAIL_APPLICATION_AFTER_SUBMIT,
+            MAKE_NEW_APPLICATION).contains(callback.getEvent());
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
@@ -46,7 +47,7 @@ public class PartyIdHandler implements PreSubmitCallbackHandler<BailCase> {
                 .getCaseDetails()
                 .getCaseData();
 
-        if (Set.of(START_APPLICATION, EDIT_BAIL_APPLICATION, EDIT_BAIL_APPLICATION_AFTER_SUBMIT).contains(callback.getEvent())) {
+        if (Set.of(START_APPLICATION, EDIT_BAIL_APPLICATION, EDIT_BAIL_APPLICATION_AFTER_SUBMIT, MAKE_NEW_APPLICATION).contains(callback.getEvent())) {
             setAppellantPartyId(bailCase);
             setLegalRepPartyId(bailCase);
             setSupporterPartyIds(bailCase);
