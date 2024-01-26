@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ADMIN_HAS_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ADMIN_SELECT_IMA_STATUS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_SELECT_IMA_STATUS;
 
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class ImaStatusHandler implements PreSubmitCallbackHandler<BailCase> {
 
         if (hoSelectedImaIsEmpty) {
             YesOrNo adminSelectedIma = bailCase.read(ADMIN_SELECT_IMA_STATUS, YesOrNo.class).orElse(YesOrNo.NO);
-            bailCase.write(HAS_IMA_STATUS, adminSelectedIma);
+            bailCase.write(ADMIN_HAS_IMA_STATUS, adminSelectedIma);
         }
 
         return response;
