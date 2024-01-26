@@ -458,8 +458,15 @@ public enum BailCaseFieldDefinition {
         "appellantLevelFlags", new TypeReference<StrategicCaseFlag>() {}),
     CASE_FLAGS(
         "caseFlags", new TypeReference<StrategicCaseFlag>(){}),
-    HAS_IMA_STATUS(
-        "hasImaStatus", new TypeReference<YesOrNo>(){}),
+    HO_HAS_IMA_STATUS(
+        "hoHasImaStatus", new TypeReference<YesOrNo>(){}),
+    ADMIN_HAS_IMA_STATUS(
+        "adminHasImaStatus", new TypeReference<YesOrNo>(){}),
+
+    /*
+        ADMIN_SELECT_IMA_STATUS and HO_SELECT_IMA_STATUS used in the journey pages.
+        HO_HAS_IMA_STATUS and ADMIN_HAS_IMA_STATUS used for representation in summary pages with different titles.
+    */
     ADMIN_SELECT_IMA_STATUS(
         "adminSelectImaStatus", new TypeReference<YesOrNo>() {}),
     HO_SELECT_IMA_STATUS(

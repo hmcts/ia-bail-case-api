@@ -7,8 +7,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ADMIN_HAS_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ADMIN_SELECT_IMA_STATUS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_SELECT_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
@@ -68,9 +68,9 @@ class ImaStatusHandlerTest {
         assertThat(response.getData()).isEqualTo(bailCase);
 
         if (hoSelectedIma.isEmpty()) {
-            verify(bailCase, times(1)).write(HAS_IMA_STATUS, adminSelectedIma.get());
+            verify(bailCase, times(1)).write(ADMIN_HAS_IMA_STATUS, adminSelectedIma.get());
         } else {
-            verify(bailCase, never()).write(HAS_IMA_STATUS, adminSelectedIma.get());
+            verify(bailCase, never()).write(ADMIN_HAS_IMA_STATUS, adminSelectedIma.get());
         }
     }
 
