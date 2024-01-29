@@ -64,7 +64,8 @@ public class IsApplicantBeenRefusedFlagHandler implements PreSubmitCallbackHandl
         String recordDecisionType =
             caseDataBefore.read(RECORD_DECISION_TYPE, String.class).orElse("");
 
-        if (recordDecisionType.equals(DecisionType.REFUSED.toString()) || recordDecisionType.equals(DecisionType.REFUSED_UNDER_IMA.toString())) {
+        if (recordDecisionType.equals(DecisionType.REFUSED.toString())
+            || recordDecisionType.equals(DecisionType.REFUSED_UNDER_IMA.toString())) {
             String maybeRecordDecisionDate =
                 caseDataBefore.read(DECISION_DETAILS_DATE, String.class).orElse("");
 
