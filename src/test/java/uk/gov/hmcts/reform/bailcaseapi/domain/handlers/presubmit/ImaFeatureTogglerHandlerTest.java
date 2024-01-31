@@ -4,14 +4,16 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.START_APPLICATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SUBMIT_APPLICATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.MID_EVENT;
 
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +60,7 @@ class ImaFeatureTogglerHandlerTest {
         when(featureToggler.getValue("ima-feature-flag", false)).thenReturn(true);
 
         PreSubmitCallbackResponse<BailCase> response =
-            imaFeatureTogglerHandler.handle(ABOUT_TO_START, callback);
+            imaFeatureTogglerHandler.handle(MID_EVENT, callback);
 
         assertThat(response).isNotNull();
         assertThat(response.getData()).isEqualTo(bailCase);
@@ -72,14 +74,14 @@ class ImaFeatureTogglerHandlerTest {
         when(callback.getEvent()).thenReturn(START_APPLICATION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.empty());
 
         PreSubmitCallbackResponse<BailCase> response =
-            imaFeatureTogglerHandler.handle(ABOUT_TO_START, callback);
+            imaFeatureTogglerHandler.handle(MID_EVENT, callback);
 
         assertThat(response).isNotNull();
         assertThat(response.getData()).isEqualTo(bailCase);
-        Mockito.verify(bailCase, times(1)).write(
-            IS_IMA_ENABLED, YesOrNo.NO);
+        Mockito.verify(bailCase, times(1)).write(IS_IMA_ENABLED, YesOrNo.NO);
     }
 
     @Test
@@ -91,8 +93,8 @@ class ImaFeatureTogglerHandlerTest {
 
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
                 boolean canHandle = imaFeatureTogglerHandler.canHandle(callbackStage, callback);
-                if (callbackStage == ABOUT_TO_SUBMIT
-                    && (callback.getEvent() == SUBMIT_APPLICATION)) {
+                if (callbackStage == MID_EVENT
+                    && (callback.getEvent() == START_APPLICATION)) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);

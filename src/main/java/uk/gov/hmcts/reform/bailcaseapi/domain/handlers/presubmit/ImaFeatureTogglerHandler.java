@@ -48,8 +48,7 @@ public class ImaFeatureTogglerHandler implements PreSubmitCallbackHandler<BailCa
 
         if (bailCase.read(IS_IMA_ENABLED, YesOrNo.class).isEmpty()) {
             YesOrNo isImaFeatureFlagEnabled = featureToggler.getValue("ima-feature-flag", false) ? YES : NO;
-            bailCase.write(IS_IMA_ENABLED, YES);
-//            bailCase.write(IS_IMA_ENABLED, isImaFeatureFlagEnabled);
+            bailCase.write(IS_IMA_ENABLED, isImaFeatureFlagEnabled);
         }
         return new PreSubmitCallbackResponse<>(bailCase);
     }
