@@ -60,6 +60,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UT_APPEAL_REFERENCE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.handlers.HandlerUtils.isImaEnabled;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -291,17 +292,19 @@ public class ShowPreviousApplicationService {
                 .append("|\n");
         }
 
-        stringBuilder.append("|Pending appeal hearing in UT|")
-            .append(previousBailCase.read(HAS_APPEAL_HEARING_PENDING_UT).orElse(YesOrNo.NO))
-            .append("|\n");
-
-        if (previousBailCase.read(HAS_APPEAL_HEARING_PENDING_UT)
-            .orElse(YesOrNo.NO.toString()).equals(YesOrNo.YES.toString())) {
-            stringBuilder
-                .append("|Pending appeal reference number in UT|")
-                .append(previousBailCase.read(UT_APPEAL_REFERENCE_NUMBER)
-                            .orElseThrow(getErrorThrowable(UT_APPEAL_REFERENCE_NUMBER)))
+        if (isImaEnabled(previousBailCase)) {
+            stringBuilder.append("|Pending appeal hearing in UT|")
+                .append(previousBailCase.read(HAS_APPEAL_HEARING_PENDING_UT).orElse(YesOrNo.NO))
                 .append("|\n");
+
+            if (previousBailCase.read(HAS_APPEAL_HEARING_PENDING_UT)
+                .orElse(YesOrNo.NO.toString()).equals(YesOrNo.YES.toString())) {
+                stringBuilder
+                    .append("|Pending appeal reference number in UT|")
+                    .append(previousBailCase.read(UT_APPEAL_REFERENCE_NUMBER)
+                                .orElseThrow(getErrorThrowable(UT_APPEAL_REFERENCE_NUMBER)))
+                    .append("|\n");
+            }
         }
 
         stringBuilder.append("|Address if bail granted|")
