@@ -1,13 +1,12 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.bailcaseapi.domain.service.MakeNewApplicationService;
-
-import java.util.stream.Stream;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.MakeNewApplicationService;
 
 public class BailCaseFieldDefinitionTest {
     /**
@@ -16,7 +15,7 @@ public class BailCaseFieldDefinitionTest {
      */
     @Test
     void fail_if_changes_needed_after_modifying_bail_case_definition() {
-        assertEquals(273, BailCaseFieldDefinition.values().length);
+        assertEquals(275, BailCaseFieldDefinition.values().length);
     }
 
     @Test
