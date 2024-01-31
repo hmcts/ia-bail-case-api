@@ -97,7 +97,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 @Service
 public class ShowPreviousApplicationService {
 
-    private static final DateTimeFormatter HEARING_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
     private static final DateTimeFormatter HEARING_DATE_DISPLAY_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm:ss a");
 
     public String getDecisionLabel(BailCase previousBailCase, Value selectedApplicationValue) {
