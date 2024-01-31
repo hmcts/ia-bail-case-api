@@ -31,8 +31,8 @@ public class ImaFeatureTogglerHandler implements PreSubmitCallbackHandler<BailCa
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
 
-        return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-            && callback.getEvent() == Event.SUBMIT_APPLICATION;
+        return callbackStage == PreSubmitCallbackStage.MID_EVENT
+            && callback.getEvent() == Event.START_APPLICATION;
     }
 
     @Override
@@ -46,9 +46,11 @@ public class ImaFeatureTogglerHandler implements PreSubmitCallbackHandler<BailCa
 
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        YesOrNo isImaFeatureFlagEnabled = featureToggler.getValue("ima-feature-flag", false) ? YES : NO;
-        bailCase.write(IS_IMA_ENABLED, isImaFeatureFlagEnabled);
-
+        if (bailCase.read(IS_IMA_ENABLED, YesOrNo.class).isEmpty()) {
+            YesOrNo isImaFeatureFlagEnabled = featureToggler.getValue("ima-feature-flag", false) ? YES : NO;
+            bailCase.write(IS_IMA_ENABLED, YES);
+//            bailCase.write(IS_IMA_ENABLED, isImaFeatureFlagEnabled);
+        }
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 }

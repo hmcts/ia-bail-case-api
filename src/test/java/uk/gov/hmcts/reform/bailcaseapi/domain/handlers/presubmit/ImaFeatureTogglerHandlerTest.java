@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.START_APPLICATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SUBMIT_APPLICATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
@@ -51,13 +52,13 @@ class ImaFeatureTogglerHandlerTest {
     @Test
     void handler_checks_age_assessment_feature_flag_set_value() {
 
-        when(callback.getEvent()).thenReturn(SUBMIT_APPLICATION);
+        when(callback.getEvent()).thenReturn(START_APPLICATION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(featureToggler.getValue("ima-feature-flag", false)).thenReturn(true);
 
         PreSubmitCallbackResponse<BailCase> response =
-            imaFeatureTogglerHandler.handle(ABOUT_TO_SUBMIT, callback);
+            imaFeatureTogglerHandler.handle(ABOUT_TO_START, callback);
 
         assertThat(response).isNotNull();
         assertThat(response.getData()).isEqualTo(bailCase);
@@ -68,12 +69,12 @@ class ImaFeatureTogglerHandlerTest {
     @Test
     void handler_checks_age_assessment_flag_not_set() {
 
-        when(callback.getEvent()).thenReturn(SUBMIT_APPLICATION);
+        when(callback.getEvent()).thenReturn(START_APPLICATION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
 
         PreSubmitCallbackResponse<BailCase> response =
-            imaFeatureTogglerHandler.handle(ABOUT_TO_SUBMIT, callback);
+            imaFeatureTogglerHandler.handle(ABOUT_TO_START, callback);
 
         assertThat(response).isNotNull();
         assertThat(response.getData()).isEqualTo(bailCase);
