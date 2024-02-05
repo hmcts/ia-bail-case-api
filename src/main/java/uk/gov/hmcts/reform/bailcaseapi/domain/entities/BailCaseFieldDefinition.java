@@ -406,6 +406,8 @@ public enum BailCaseFieldDefinition {
         "prevAppDirectionDetails", new TypeReference<String>() {}),
     PREV_APP_CASE_NOTES_DETAILS(
         "prevAppCaseNotesDetails", new TypeReference<String>() {}),
+    PREV_APP_HEARING_DETAILS(
+        "prevAppHearingDetails", new TypeReference<String>() {}),
     PREV_APP_HEARING_REQ_DETAILS(
         "prevAppHearingReqDetails", new TypeReference<String>() {}),
     PREV_APP_PERSONAL_INFO_DETAILS(
@@ -602,6 +604,9 @@ public enum BailCaseFieldDefinition {
 
     LIST_CASE_HEARING_DATE(
         "listingHearingDate", new TypeReference<String>(){}),
+
+    LISTING_LOCATION(
+        "listingLocation", new TypeReference<ListingHearingCentre>(){}),
 
     ;
 
