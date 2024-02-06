@@ -1,5 +1,19 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_BEEN_REFUSED_BAIL;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DECISION_DETAILS_DATE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
+
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,20 +36,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_BEEN_REFUSED_BAIL;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DECISION_DETAILS_DATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
-
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 public class IsApplicantBeenRefusedFlagHandlerTest {
@@ -54,6 +54,8 @@ public class IsApplicantBeenRefusedFlagHandlerTest {
     private CaseDetails<BailCase> caseDetailsBefore;
     @Mock
     private BailCase bailCaseBefore;
+    @Mock
+    private ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
     private IsApplicantBeenRefusedFlagHandler isApplicantBeenRefusedFlagHandler;
     private String finalDecisionDate = "2022-06-01";
@@ -61,7 +63,7 @@ public class IsApplicantBeenRefusedFlagHandlerTest {
     @BeforeEach
     public void setUp() {
         isApplicantBeenRefusedFlagHandler =
-            new IsApplicantBeenRefusedFlagHandler(dateProvider, BAIL_REFUSED_WITH_IN_DAYS);
+            new IsApplicantBeenRefusedFlagHandler(dateProvider, BAIL_REFUSED_WITH_IN_DAYS, imaFeatureTogglerHandler);
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
@@ -77,6 +79,8 @@ public class IsApplicantBeenRefusedFlagHandlerTest {
     void should_set_applicant_refused_flag_to_yes_if_with_in_days(DecisionType decisionType) {
         when(bailCaseBefore.read(RECORD_DECISION_TYPE, String.class))
             .thenReturn(Optional.of(decisionType.toString()));
+
+        when(imaFeatureTogglerHandler.isImaEnabled()).thenReturn(true);
 
         when(dateProvider.now()).thenReturn(LocalDate.parse("2022-06-28"));
 

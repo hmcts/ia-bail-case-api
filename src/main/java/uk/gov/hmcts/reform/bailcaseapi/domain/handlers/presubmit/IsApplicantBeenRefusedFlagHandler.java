@@ -27,11 +27,14 @@ public class IsApplicantBeenRefusedFlagHandler implements PreSubmitCallbackHandl
 
     private final DateProvider dateProvider;
     private final int bailRefusalWithInDays;
+    private final ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
     public IsApplicantBeenRefusedFlagHandler(DateProvider dateProvider,
-                                             @Value("${bailRefusalWithInDays}") int bailRefusalWithInDays) {
+                                             @Value("${bailRefusalWithInDays}") int bailRefusalWithInDays,
+                                             ImaFeatureTogglerHandler imaFeatureTogglerHandler) {
         this.dateProvider = dateProvider;
         this.bailRefusalWithInDays = bailRefusalWithInDays;
+        this.imaFeatureTogglerHandler = imaFeatureTogglerHandler;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class IsApplicantBeenRefusedFlagHandler implements PreSubmitCallbackHandl
             caseDataBefore.read(RECORD_DECISION_TYPE, String.class).orElse("");
 
         if (recordDecisionType.equals(DecisionType.REFUSED.toString())
-            || recordDecisionType.equals(DecisionType.REFUSED_UNDER_IMA.toString())) {
+            || (imaFeatureTogglerHandler.isImaEnabled() && recordDecisionType.equals(DecisionType.REFUSED_UNDER_IMA.toString()))) {
             String maybeRecordDecisionDate =
                 caseDataBefore.read(DECISION_DETAILS_DATE, String.class).orElse("");
 

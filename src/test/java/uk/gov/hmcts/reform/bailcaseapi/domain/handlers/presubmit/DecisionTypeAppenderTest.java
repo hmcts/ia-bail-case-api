@@ -54,6 +54,8 @@ class DecisionTypeAppenderTest {
     private DecisionTypeAppender decisionTypeAppender;
     @Mock
     private DateProvider dateProvider;
+    @Mock
+    private ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
     private final LocalDate now = LocalDate.now();
     private static final String REFUSED = "refused";
@@ -64,7 +66,7 @@ class DecisionTypeAppenderTest {
 
     @BeforeEach
     public void setUp() {
-        decisionTypeAppender = new DecisionTypeAppender(dateProvider);
+        decisionTypeAppender = new DecisionTypeAppender(dateProvider, imaFeatureTogglerHandler);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(callback.getEvent()).thenReturn(Event.RECORD_THE_DECISION);
@@ -257,6 +259,7 @@ class DecisionTypeAppenderTest {
     void set_decision_type_to_refused_under_ima_when_record_the_decision_option_selected_as_refused_under_ima() {
         when(bailCase.read(RECORD_THE_DECISION_LIST, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
         when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
+        when(imaFeatureTogglerHandler.isImaEnabled()).thenReturn(true);
 
         PreSubmitCallbackResponse<BailCase> response = decisionTypeAppender
             .handle(ABOUT_TO_SUBMIT, callback);
@@ -278,6 +281,7 @@ class DecisionTypeAppenderTest {
     void set_decision_type_to_refused_under_ima_when_granted_or_refused_option_selected_as_refused_under_ima() {
         when(bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
         when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
+        when(imaFeatureTogglerHandler.isImaEnabled()).thenReturn(true);
 
         PreSubmitCallbackResponse<BailCase> response = decisionTypeAppender
             .handle(ABOUT_TO_SUBMIT, callback);
