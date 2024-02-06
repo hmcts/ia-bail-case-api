@@ -60,7 +60,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UT_APPEAL_REFERENCE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.handlers.HandlerUtils.isImaEnabled;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -86,10 +85,16 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
+import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.ImaFeatureTogglerHandler;
 
 @Service
 public class ShowPreviousApplicationService {
 
+    private final ImaFeatureTogglerHandler imaFeatureTogglerHandler;
+
+    public ShowPreviousApplicationService(ImaFeatureTogglerHandler imaFeatureTogglerHandler) {
+        this.imaFeatureTogglerHandler = imaFeatureTogglerHandler;
+    }
 
     public String getDecisionLabel(BailCase previousBailCase, Value selectedApplicationValue) {
         String decisionDetails = selectedApplicationValue.getLabel().contains("Ended")
@@ -292,7 +297,7 @@ public class ShowPreviousApplicationService {
                 .append("|\n");
         }
 
-        if (isImaEnabled(previousBailCase)) {
+        if (imaFeatureTogglerHandler.isImaEnabled()) {
             stringBuilder.append("|Pending appeal hearing in UT|")
                 .append(previousBailCase.read(HAS_APPEAL_HEARING_PENDING_UT).orElse(YesOrNo.NO))
                 .append("|\n");

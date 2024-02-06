@@ -45,7 +45,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.INTERPRETER_LANGUAGES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.INTERPRETER_YESNO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_LEGALLY_REPRESENTED_FOR_FLAG;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_COMPANY;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_EMAIL_ADDRESS;
@@ -98,6 +97,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
+import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.ImaFeatureTogglerHandler;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -115,11 +115,12 @@ public class ShowPreviousApplicationServiceTest {
     private CaseNote caseNote;
     @Mock
     private CaseNote caseNoteWithoutDocument;
-
+    @Mock
+    private ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
     @BeforeEach
     void setUp() {
-        showPreviousApplicationService = new ShowPreviousApplicationService();
+        showPreviousApplicationService = new ShowPreviousApplicationService(imaFeatureTogglerHandler);
         setBailCaseDefinitions();
     }
 
@@ -163,7 +164,8 @@ public class ShowPreviousApplicationServiceTest {
         List<IdValue<InterpreterLanguage>> interpreterLanguages =
             Arrays.asList(
                 new IdValue<>("1", new InterpreterLanguage("English", "NA")),
-                new IdValue<>("2", new InterpreterLanguage("African", "NA")));
+                new IdValue<>("2", new InterpreterLanguage("African", "NA"))
+            );
 
         List<IdValue<CaseNote>> existingCaseNotes =
             List.of(new IdValue<>("1", caseNote), new IdValue<>("2", caseNoteWithoutDocument));
@@ -203,11 +205,13 @@ public class ShowPreviousApplicationServiceTest {
             .thenReturn(Optional.of(existingDecisionDocuments));
         when(document1WithMetadata.getDocument())
             .thenReturn(new Document("document1Url", "/hostname/documents/document1BinaryUrl",
-                                     "document1FileName", "document1Hash"));
+                                     "document1FileName", "document1Hash"
+            ));
         when(document1WithMetadata.getDateUploaded()).thenReturn("2022-05-25");
         when(document2WithMetadata.getDocument())
             .thenReturn(new Document("document2Url", "/hostname/documents/document2BinaryUrl",
-                                     "document2FileName", "document2Hash"));
+                                     "document2FileName", "document2Hash"
+            ));
         when(document2WithMetadata.getDateUploaded()).thenReturn("2022-05-27");
         when(bailCase.read(DIRECTIONS)).thenReturn(Optional.of(existingDirections));
         when(bailCase.read(CASE_NOTES)).thenReturn(Optional.of(existingCaseNotes));
@@ -255,7 +259,8 @@ public class ShowPreviousApplicationServiceTest {
         when(bailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(APPLICANT_ADDRESS, AddressUK.class)).thenReturn(Optional.of(
             new AddressUK("Line 1", "Line 2", null, null,
-                          "PostCode", "County", "Country")));
+                          "PostCode", "County", "Country"
+            )));
         when(bailCase.read(AGREES_TO_BOUND_BY_FINANCIAL_COND, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(FINANCIAL_COND_AMOUNT)).thenReturn(Optional.of("2000"));
 
@@ -379,21 +384,22 @@ public class ShowPreviousApplicationServiceTest {
 
         assertNull(showPreviousApplicationService.getFinancialConditionSupporterLabel(
             bailCase,
-             HAS_FINANCIAL_COND_SUPPORTER,
-             SUPPORTER_GIVEN_NAMES,
-             SUPPORTER_FAMILY_NAMES,
-             SUPPORTER_ADDRESS_DETAILS,
-             SUPPORTER_TELEPHONE_NUMBER,
-             SUPPORTER_MOBILE_NUMBER,
-             SUPPORTER_EMAIL_ADDRESS,
-             SUPPORTER_DOB,
-             SUPPORTER_RELATION,
-             SUPPORTER_OCCUPATION,
-             SUPPORTER_IMMIGRATION,
-             SUPPORTER_NATIONALITY,
-             SUPPORTER_HAS_PASSPORT,
-             SUPPORTER_PASSPORT,
-             FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES));
+            HAS_FINANCIAL_COND_SUPPORTER,
+            SUPPORTER_GIVEN_NAMES,
+            SUPPORTER_FAMILY_NAMES,
+            SUPPORTER_ADDRESS_DETAILS,
+            SUPPORTER_TELEPHONE_NUMBER,
+            SUPPORTER_MOBILE_NUMBER,
+            SUPPORTER_EMAIL_ADDRESS,
+            SUPPORTER_DOB,
+            SUPPORTER_RELATION,
+            SUPPORTER_OCCUPATION,
+            SUPPORTER_IMMIGRATION,
+            SUPPORTER_NATIONALITY,
+            SUPPORTER_HAS_PASSPORT,
+            SUPPORTER_PASSPORT,
+            FINANCIAL_AMOUNT_SUPPORTER_UNDERTAKES
+        ));
         assertTrue(showPreviousApplicationService.getLegalRepDetails(bailCase).isEmpty());
     }
 
@@ -426,7 +432,7 @@ public class ShowPreviousApplicationServiceTest {
 
     @Test
     void check_applicant_info() {
-        when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(imaFeatureTogglerHandler.isImaEnabled()).thenReturn(true);
 
         String label = showPreviousApplicationService.getApplicantInfo(bailCase);
         assertTrue(label.contains(

@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_HAS_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_SELECT_IMA_STATUS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_DOCS;
 
 import java.util.Arrays;
@@ -73,6 +72,9 @@ public class UploadBailSummaryDocumentHandlerTest {
     @Captor
     private ArgumentCaptor<List<IdValue<DocumentWithMetadata>>> existingBailSummaryDocumentsCaptor;
 
+    @Mock
+    private ImaFeatureTogglerHandler imaFeatureTogglerHandler;
+
     private UploadBailSummaryDocumentHandler uploadBailSummaryDocumentHandler;
 
     @BeforeEach
@@ -80,7 +82,8 @@ public class UploadBailSummaryDocumentHandlerTest {
         uploadBailSummaryDocumentHandler =
             new UploadBailSummaryDocumentHandler(
                 documentReceiver,
-                documentsAppender
+                documentsAppender,
+                imaFeatureTogglerHandler
             );
         when(callback.getEvent()).thenReturn(Event.UPLOAD_BAIL_SUMMARY);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
@@ -116,7 +119,7 @@ public class UploadBailSummaryDocumentHandlerTest {
 
         when(bailCase.read(HO_SELECT_IMA_STATUS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
-        when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(imaFeatureTogglerHandler.isImaEnabled()).thenReturn(true);
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             uploadBailSummaryDocumentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);

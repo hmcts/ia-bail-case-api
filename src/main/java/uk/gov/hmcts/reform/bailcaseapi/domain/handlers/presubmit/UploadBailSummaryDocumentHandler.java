@@ -5,7 +5,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_HAS_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_SELECT_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_DOCS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.handlers.HandlerUtils.isImaEnabled;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,13 +30,15 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
 
     private final DocumentReceiver documentReceiver;
     private final DocumentsAppender documentsAppender;
+    private final ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
     public UploadBailSummaryDocumentHandler(
         DocumentReceiver documentReceiver,
-        DocumentsAppender documentsAppender
+        DocumentsAppender documentsAppender, ImaFeatureTogglerHandler imaFeatureTogglerHandler
     ) {
         this.documentReceiver = documentReceiver;
         this.documentsAppender = documentsAppender;
+        this.imaFeatureTogglerHandler = imaFeatureTogglerHandler;
     }
 
     public boolean canHandle(
@@ -89,7 +90,7 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
             bailCase.write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allBailSummaryDocuments);
         }
 
-        if (isImaEnabled(bailCase)) {
+        if (imaFeatureTogglerHandler.isImaEnabled()) {
             YesOrNo hoSelectedIma = bailCase.read(HO_SELECT_IMA_STATUS, YesOrNo.class).orElse(YesOrNo.NO);
             bailCase.write(HO_HAS_IMA_STATUS, hoSelectedIma);
         }
