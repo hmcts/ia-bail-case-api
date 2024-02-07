@@ -33,6 +33,7 @@ def secrets = [
     secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
     secret('app-insights-connection-string', 'app-insights-connection-string'),
     secret('ia-config-validator-secret', 'IA_CONFIG_VALIDATOR_SECRET'),
+    secret('generic-docker-pact-broker-password', 'GENERIC_DOCKER_PACT_BROKER_YAML_PASS'),
 
     secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),
     secret('test-caseofficer-password', 'TEST_CASEOFFICER_PASSWORD'),
@@ -94,7 +95,7 @@ withNightlyPipeline(type, product, component) {
 
   loadVaultSecrets(secrets)
 
-//  enableFortifyScan()
+  enableFortifyScan()
   enableSecurityScan()
   enableMutationTest()
   enableSlackNotifications('#ia-tech')
@@ -110,8 +111,16 @@ withNightlyPipeline(type, product, component) {
       reportName           : 'Dependency Check Report'
     ])
   }
-  
-  after('fortify-scan') {
+
+  afterAlways('fortify-scan') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "Fortify Scan",
+      reportFiles          : "FortifyScanReport.html",
+      reportName           : "Fortify Scan Report"
+    ]
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
   }
 
