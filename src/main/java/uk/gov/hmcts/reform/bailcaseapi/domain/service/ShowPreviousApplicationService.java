@@ -175,7 +175,7 @@ public class ShowPreviousApplicationService {
             final String listingHearingDate = previousBailCase.read(LIST_CASE_HEARING_DATE, String.class).orElse("");
             stringBuilder.append("|Hearing details||\n|--------|--------|\n");
             stringBuilder.append("|Location|")
-                .append(maybeHearingCentre.isPresent() ? maybeHearingCentre.get().getLabel() : "")
+                .append(maybeHearingCentre.get().getLabel())
                 .append("|\n")
                 .append("|Date and time|")
                 .append(formatDateForRendering(listingHearingDate))
