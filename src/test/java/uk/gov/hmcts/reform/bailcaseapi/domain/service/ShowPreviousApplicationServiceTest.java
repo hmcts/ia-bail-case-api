@@ -465,7 +465,7 @@ public class ShowPreviousApplicationServiceTest {
         String label = showPreviousApplicationService.getHearingDetails(bailCase);
         assertTrue(label.contains(
             "|Location|Birmingham|\n"
-                + "|Date and time|04 Apr 2024, 08:00:00 AM|\n"), "Label mismatch, expected label: " + label);
+                + "|Date and time|04 Apr 2024, 08:00|\n"), "Label mismatch, expected label: " + label);
     }
 
     @Test
