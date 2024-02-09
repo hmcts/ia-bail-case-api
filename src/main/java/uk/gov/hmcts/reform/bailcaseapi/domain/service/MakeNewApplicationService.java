@@ -281,5 +281,7 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_3.value(),
         BailCaseFieldDefinition.FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4.value(),
         BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER.value(),
-        BailCaseFieldDefinition.LOCAL_AUTHORITY_POLICY.value());
+        BailCaseFieldDefinition.LOCAL_AUTHORITY_POLICY.value(),
+        BailCaseFieldDefinition.LISTING_LOCATION.value(),
+        BailCaseFieldDefinition.LIST_CASE_HEARING_DATE.value());
 }
