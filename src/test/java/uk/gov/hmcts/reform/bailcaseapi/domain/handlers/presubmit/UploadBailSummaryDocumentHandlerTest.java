@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_HAS_IMA_STATUS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_SELECT_IMA_STATUS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_DOCS;
 
 import java.util.Arrays;
@@ -21,6 +22,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -72,9 +75,6 @@ public class UploadBailSummaryDocumentHandlerTest {
     @Captor
     private ArgumentCaptor<List<IdValue<DocumentWithMetadata>>> existingBailSummaryDocumentsCaptor;
 
-    @Mock
-    private ImaFeatureTogglerHandler imaFeatureTogglerHandler;
-
     private UploadBailSummaryDocumentHandler uploadBailSummaryDocumentHandler;
 
     @BeforeEach
@@ -82,8 +82,7 @@ public class UploadBailSummaryDocumentHandlerTest {
         uploadBailSummaryDocumentHandler =
             new UploadBailSummaryDocumentHandler(
                 documentReceiver,
-                documentsAppender,
-                imaFeatureTogglerHandler
+                documentsAppender
             );
         when(callback.getEvent()).thenReturn(Event.UPLOAD_BAIL_SUMMARY);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
@@ -119,7 +118,7 @@ public class UploadBailSummaryDocumentHandlerTest {
 
         when(bailCase.read(HO_SELECT_IMA_STATUS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
-        when(imaFeatureTogglerHandler.isImaEnabled()).thenReturn(true);
+        when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             uploadBailSummaryDocumentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
@@ -220,5 +219,19 @@ public class UploadBailSummaryDocumentHandlerTest {
         assertThatThrownBy(() -> uploadBailSummaryDocumentHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"YES, YES", "NO, YES", "YES, NO", "NO, NO"})
+    void set_ima_status(YesOrNo imaStatus, YesOrNo isImaEnabled) {
+        when(bailCase.read(HO_SELECT_IMA_STATUS, YesOrNo.class)).thenReturn(Optional.of(imaStatus));
+        when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(isImaEnabled));
+        PreSubmitCallbackResponse<BailCase> response = uploadBailSummaryDocumentHandler
+            .handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        if (isImaEnabled.equals(YesOrNo.YES)) {
+            verify(bailCase, times(1)).write(HO_HAS_IMA_STATUS, imaStatus);
+        } else {
+            verify(bailCase, times(1)).write(HO_HAS_IMA_STATUS, YesOrNo.NO);
+        }
     }
 }
