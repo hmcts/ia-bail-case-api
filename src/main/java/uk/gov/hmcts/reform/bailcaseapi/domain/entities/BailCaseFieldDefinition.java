@@ -300,6 +300,8 @@ public enum BailCaseFieldDefinition {
         "uploadSignedDecisionNoticeDocument", new TypeReference<Document>(){}),
     DECISION_GRANTED_OR_REFUSED(
         "decisionGrantedOrRefused", new TypeReference<String>(){}),
+    DECISION_GRANTED_OR_REFUSED_IMA(
+        "decisionGrantedOrRefusedIma", new TypeReference<String>(){}),
     RECORD_THE_DECISION_LIST(
         "recordTheDecisionList", new TypeReference<String>(){}),
     RELEASE_STATUS_YES_OR_NO(
@@ -470,7 +472,9 @@ public enum BailCaseFieldDefinition {
     ADMIN_SELECT_IMA_STATUS(
         "adminSelectImaStatus", new TypeReference<YesOrNo>() {}),
     HO_SELECT_IMA_STATUS(
-        "hoSelectImaStatus", new TypeReference<YesOrNo>() {});
+        "hoSelectImaStatus", new TypeReference<YesOrNo>() {}),
+    IS_IMA_ENABLED(
+        "isImaEnabled", new TypeReference<YesOrNo>() {}),;
 
     private final String value;
     private final TypeReference typeReference;

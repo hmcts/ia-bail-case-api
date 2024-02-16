@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.bailcaseapi.domain.BailCaseUtils;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentTag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithDescription;
@@ -30,15 +31,13 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
 
     private final DocumentReceiver documentReceiver;
     private final DocumentsAppender documentsAppender;
-    private final ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
     public UploadBailSummaryDocumentHandler(
         DocumentReceiver documentReceiver,
-        DocumentsAppender documentsAppender, ImaFeatureTogglerHandler imaFeatureTogglerHandler
+        DocumentsAppender documentsAppender
     ) {
         this.documentReceiver = documentReceiver;
         this.documentsAppender = documentsAppender;
-        this.imaFeatureTogglerHandler = imaFeatureTogglerHandler;
     }
 
     public boolean canHandle(
@@ -90,10 +89,9 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
             bailCase.write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allBailSummaryDocuments);
         }
 
-        if (imaFeatureTogglerHandler.isImaEnabled()) {
-            YesOrNo hoSelectedIma = bailCase.read(HO_SELECT_IMA_STATUS, YesOrNo.class).orElse(YesOrNo.NO);
-            bailCase.write(HO_HAS_IMA_STATUS, hoSelectedIma);
-        }
+        // If the case is progressed past Bail summary, then default IMA selection is NO
+        YesOrNo hoSelectedIma = bailCase.read(HO_SELECT_IMA_STATUS, YesOrNo.class).orElse(YesOrNo.NO);
+        bailCase.write(HO_HAS_IMA_STATUS, BailCaseUtils.isImaEnabled(bailCase) ? hoSelectedIma : YesOrNo.NO);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

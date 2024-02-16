@@ -72,6 +72,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.bailcaseapi.domain.BailCaseUtils;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
@@ -85,15 +86,12 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
-import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.ImaFeatureTogglerHandler;
 
 @Service
 public class ShowPreviousApplicationService {
 
-    private final ImaFeatureTogglerHandler imaFeatureTogglerHandler;
-
-    public ShowPreviousApplicationService(ImaFeatureTogglerHandler imaFeatureTogglerHandler) {
-        this.imaFeatureTogglerHandler = imaFeatureTogglerHandler;
+    public ShowPreviousApplicationService() {
+        // Default constructor
     }
 
     public String getDecisionLabel(BailCase previousBailCase, Value selectedApplicationValue) {
@@ -297,7 +295,7 @@ public class ShowPreviousApplicationService {
                 .append("|\n");
         }
 
-        if (imaFeatureTogglerHandler.isImaEnabled()) {
+        if (BailCaseUtils.isImaEnabled(previousBailCase)) {
             stringBuilder.append("|Pending appeal hearing in UT|")
                 .append(previousBailCase.read(HAS_APPEAL_HEARING_PENDING_UT).orElse(YesOrNo.NO))
                 .append("|\n");

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_BEEN_REFUSED_BAIL;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DECISION_DETAILS_DATE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
@@ -54,8 +55,6 @@ public class IsApplicantBeenRefusedFlagHandlerTest {
     private CaseDetails<BailCase> caseDetailsBefore;
     @Mock
     private BailCase bailCaseBefore;
-    @Mock
-    private ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
     private IsApplicantBeenRefusedFlagHandler isApplicantBeenRefusedFlagHandler;
     private String finalDecisionDate = "2022-06-01";
@@ -63,7 +62,7 @@ public class IsApplicantBeenRefusedFlagHandlerTest {
     @BeforeEach
     public void setUp() {
         isApplicantBeenRefusedFlagHandler =
-            new IsApplicantBeenRefusedFlagHandler(dateProvider, BAIL_REFUSED_WITH_IN_DAYS, imaFeatureTogglerHandler);
+            new IsApplicantBeenRefusedFlagHandler(dateProvider, BAIL_REFUSED_WITH_IN_DAYS);
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
@@ -80,7 +79,7 @@ public class IsApplicantBeenRefusedFlagHandlerTest {
         when(bailCaseBefore.read(RECORD_DECISION_TYPE, String.class))
             .thenReturn(Optional.of(decisionType.toString()));
 
-        when(imaFeatureTogglerHandler.isImaEnabled()).thenReturn(true);
+        when(bailCaseBefore.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
         when(dateProvider.now()).thenReturn(LocalDate.parse("2022-06-28"));
 

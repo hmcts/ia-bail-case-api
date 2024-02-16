@@ -45,6 +45,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.INTERPRETER_LANGUAGES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.INTERPRETER_YESNO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_LEGALLY_REPRESENTED_FOR_FLAG;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_COMPANY;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_EMAIL_ADDRESS;
@@ -97,7 +98,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
-import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.ImaFeatureTogglerHandler;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -115,12 +115,10 @@ public class ShowPreviousApplicationServiceTest {
     private CaseNote caseNote;
     @Mock
     private CaseNote caseNoteWithoutDocument;
-    @Mock
-    private ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
     @BeforeEach
     void setUp() {
-        showPreviousApplicationService = new ShowPreviousApplicationService(imaFeatureTogglerHandler);
+        showPreviousApplicationService = new ShowPreviousApplicationService();
         setBailCaseDefinitions();
     }
 
@@ -432,7 +430,7 @@ public class ShowPreviousApplicationServiceTest {
 
     @Test
     void check_applicant_info() {
-        when(imaFeatureTogglerHandler.isImaEnabled()).thenReturn(true);
+        when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
         String label = showPreviousApplicationService.getApplicantInfo(bailCase);
         assertTrue(label.contains(

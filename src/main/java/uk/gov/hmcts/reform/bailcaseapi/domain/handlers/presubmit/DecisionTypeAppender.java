@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DECISION_DETAILS_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DECISION_GRANTED_OR_REFUSED;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DECISION_GRANTED_OR_REFUSED_IMA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DECISION_UNSIGNED_DETAILS_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST;
@@ -14,6 +15,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 import org.springframework.stereotype.Component;
+import uk.gov.hmcts.reform.bailcaseapi.domain.BailCaseUtils;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.DecisionType;
@@ -33,11 +35,9 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
     private static final String REFUSED = "refused";
     private static final String GRANTED = "granted";
     private static final String REFUSED_UNDER_IMA = "refusedUnderIma";
-    private final ImaFeatureTogglerHandler imaFeatureTogglerHandler;
 
-    public DecisionTypeAppender(DateProvider dateProvider, ImaFeatureTogglerHandler imaFeatureTogglerHandler) {
+    public DecisionTypeAppender(DateProvider dateProvider) {
         this.dateProvider = dateProvider;
-        this.imaFeatureTogglerHandler = imaFeatureTogglerHandler;
     }
 
     public boolean canHandle(
@@ -69,7 +69,9 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
                 .getCaseDetails()
                 .getCaseData();
 
-        String decisionGrantedOrRefused = bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class).orElse("");
+        String decisionGrantedOrRefused = BailCaseUtils.isImaEnabled(bailCase)
+            ? bailCase.read(DECISION_GRANTED_OR_REFUSED_IMA, String.class).orElse("")
+            : bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class).orElse("");
         String recordTheDecisionList = bailCase.read(RECORD_THE_DECISION_LIST, String.class).orElse("");
         YesOrNo releaseStatusYesOrNo = bailCase.read(RELEASE_STATUS_YES_OR_NO, YesOrNo.class).orElse(NO);
         YesOrNo ssConsentDecision = bailCase.read(SS_CONSENT_DECISION, YesOrNo.class).orElse(NO);
@@ -77,7 +79,10 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
 
         String decisionDate = dateProvider.now().toString();
 
-        if (imaFeatureTogglerHandler.isImaEnabled() && (decisionGrantedOrRefused.equals(REFUSED_UNDER_IMA) || recordTheDecisionList.equals(REFUSED_UNDER_IMA))) {
+        if (
+            BailCaseUtils.isImaEnabled(bailCase)
+                && (decisionGrantedOrRefused.equals(REFUSED_UNDER_IMA)
+                    || recordTheDecisionList.equals(REFUSED_UNDER_IMA))) {
             bailCase.write(RECORD_DECISION_TYPE, DecisionType.REFUSED_UNDER_IMA);
 
         } else if (decisionGrantedOrRefused.equals(REFUSED) || recordTheDecisionList.equals(REFUSED)
