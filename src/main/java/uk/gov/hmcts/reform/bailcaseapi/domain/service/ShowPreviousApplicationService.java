@@ -52,6 +52,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASON_FOR_REFUSAL_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST_IMA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SECRETARY_OF_STATE_REFUSAL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SIGNED_DECISION_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION;
@@ -504,8 +505,9 @@ public class ShowPreviousApplicationService {
             .equalsIgnoreCase("refused");
 
         if (isRefused) {
-            boolean isMindedToGrant = previousBailCase.read(RECORD_THE_DECISION_LIST, String.class)
-                .orElse("")
+            boolean isMindedToGrant = (BailCaseUtils.isImaEnabled(previousBailCase)
+                ? previousBailCase.read(RECORD_THE_DECISION_LIST_IMA, String.class).orElse("")
+                : previousBailCase.read(RECORD_THE_DECISION_LIST, String.class).orElse(""))
                 .equalsIgnoreCase("mindedToGrant");
 
             if (isMindedToGrant) {

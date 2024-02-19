@@ -300,10 +300,14 @@ public enum BailCaseFieldDefinition {
         "uploadSignedDecisionNoticeDocument", new TypeReference<Document>(){}),
     DECISION_GRANTED_OR_REFUSED(
         "decisionGrantedOrRefused", new TypeReference<String>(){}),
+    //Once we switch the IMA feature on, we will be using this case field instead of the one above
     DECISION_GRANTED_OR_REFUSED_IMA(
         "decisionGrantedOrRefusedIma", new TypeReference<String>(){}),
     RECORD_THE_DECISION_LIST(
         "recordTheDecisionList", new TypeReference<String>(){}),
+    //Once we switch the IMA feature on, we will be using this case field instead of the one above
+    RECORD_THE_DECISION_LIST_IMA(
+        "recordTheDecisionListIma", new TypeReference<String>(){}),
     RELEASE_STATUS_YES_OR_NO(
         "releaseStatusYesOrNo", new TypeReference<YesOrNo>(){}),
     SS_CONSENT_DECISION(
