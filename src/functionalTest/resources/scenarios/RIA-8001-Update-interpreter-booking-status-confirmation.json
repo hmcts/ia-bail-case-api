@@ -1,21 +1,21 @@
 {
-  "description": "RIA-8000 Submitted Update interpreter details",
+  "description": "RIA-8001 Submitted Update interpreter booking status",
   "request": {
     "uri": "/asylum/ccdSubmitted",
     "credentials": "AdminOfficer",
     "input": {
-      "id": 8000,
-      "eventId": "updateInterpreterDetails",
+      "id": 8001,
+      "eventId": "updateInterpreterBookingStatus",
       "state": "listing",
       "caseData": {
-        "template": "minimal-application-submitted.json",
+        "template": "minimal-application-submitted.json"
       }
     }
   },
   "expectation": {
     "status": 200,
     "confirmation": {
-      "header": "# Interpreter details have been updated",
+      "header": "# Booking statuses have been updated",
       "body": "#### What happens next\n\nEnsure the [interpreter details](/case/IA/Bail/8001/trigger/updateInterpreterDetails) are updated."
     }
   }
