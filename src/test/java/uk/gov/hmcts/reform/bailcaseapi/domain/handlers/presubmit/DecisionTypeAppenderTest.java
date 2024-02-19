@@ -15,6 +15,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST_IMA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_UNSIGNED_DECISION_TYPE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RELEASE_STATUS_YES_OR_NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SECRETARY_OF_STATE_YES_OR_NO;
@@ -257,7 +258,7 @@ class DecisionTypeAppenderTest {
 
     @Test
     void set_decision_type_to_refused_under_ima_when_record_the_decision_option_selected_as_refused_under_ima() {
-        when(bailCase.read(RECORD_THE_DECISION_LIST, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
+        when(bailCase.read(RECORD_THE_DECISION_LIST_IMA, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
         when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
         when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
@@ -279,8 +280,29 @@ class DecisionTypeAppenderTest {
 
     @Test
     void set_decision_type_to_refused_under_ima_when_granted_or_refused_option_selected_as_refused_under_ima() {
-        when(bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
         when(bailCase.read(DECISION_GRANTED_OR_REFUSED_IMA, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
+        when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
+        when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+
+        PreSubmitCallbackResponse<BailCase> response = decisionTypeAppender
+            .handle(ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(response);
+        assertThat(response.getData()).isNotEmpty();
+        assertThat(response.getData()).isEqualTo(bailCase);
+        verify(bailCase, times(1))
+            .write(RECORD_DECISION_TYPE, DecisionType.REFUSED_UNDER_IMA);
+        verify(bailCase, times(1))
+            .write(RECORD_UNSIGNED_DECISION_TYPE, REFUSED_UNDER_IMA);
+        verify(bailCase, times(1))
+            .write(DECISION_DETAILS_DATE, now.toString());
+        verify(bailCase, times(1))
+            .write(DECISION_UNSIGNED_DETAILS_DATE, now.toString());
+    }
+
+    @Test
+    void set_decision_type_to_refused_under_ima_when_refused_option_selected_as_refused_under_ima() {
+        when(bailCase.read(RECORD_THE_DECISION_LIST_IMA, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
         when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of(REFUSED_UNDER_IMA));
         when(bailCase.read(IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 

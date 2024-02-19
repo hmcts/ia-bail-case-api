@@ -47,7 +47,7 @@ public class ImaFeatureToggleHandler implements PreSubmitCallbackHandler<BailCas
             callback
                 .getCaseDetails()
                 .getCaseData();
-        YesOrNo isImaEnabled = featureToggler.getValue("ima-feature-flag", false) == true ? YesOrNo.YES : YesOrNo.NO;
+        YesOrNo isImaEnabled = featureToggler.getValue("ima-feature-flag", false) == true ? YesOrNo.NO : YesOrNo.NO;
         bailCase.write(IS_IMA_ENABLED, isImaEnabled);
 
 
