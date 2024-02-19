@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.reset;
@@ -24,15 +23,14 @@ public class UpdateInterpreterBookingStatusConfirmationTest {
     @Mock
     private CaseDetails<BailCase> caseDetails;
 
-    private static final long caseId = 1234;
-
-    private final UpdateInterpreterBookingStatusConfirmation updateInterpreterBookingStatusConfirmation = new UpdateInterpreterBookingStatusConfirmation();
+    private final UpdateInterpreterBookingStatusConfirmation updateInterpreterBookingStatusConfirmation =
+        new UpdateInterpreterBookingStatusConfirmation();
 
     @Test
     void should_return_confirmation_header_and_body() {
         when(callback.getEvent()).thenReturn(Event.UPDATE_INTERPRETER_BOOKING_STATUS);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getId()).thenReturn(caseId);
+        when(caseDetails.getId()).thenReturn(1234L);
 
         PostSubmitCallbackResponse callbackResponse =
             updateInterpreterBookingStatusConfirmation.handle(callback);
@@ -41,18 +39,15 @@ public class UpdateInterpreterBookingStatusConfirmationTest {
         assertTrue(callbackResponse.getConfirmationHeader().isPresent());
         assertTrue(callbackResponse.getConfirmationBody().isPresent());
 
-        assertThat(
-            callbackResponse.getConfirmationHeader().get())
-            .contains("# Booking statuses have been updated");
+        assertEquals("# Booking statuses have been updated",
+            callbackResponse.getConfirmationHeader().get());
 
-        assertThat(
-            callbackResponse.getConfirmationBody().get())
-            .contains("### What happens next");
+        String body = "#### What happens next\n\n"
+                      + "Ensure the "
+                      + "[interpreter details](/case/IA/Bail/1234/trigger/updateInterpreterDetails)"
+                      + " are updated.";
 
-        assertThat(
-            callbackResponse.getConfirmationBody().get())
-            .contains("If an interpreter status has been moved to booked, or has been cancelled, "
-                      + "ensure that the interpreter details are up to date before updating the hearing.");
+        assertEquals(body, callbackResponse.getConfirmationBody().get());
     }
 
     @Test
