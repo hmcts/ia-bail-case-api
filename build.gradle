@@ -274,6 +274,17 @@ dependencyManagement {
     dependencySet(group: 'com.fasterxml.jackson.module', version: '2.15.2') {
       entry 'jackson-module-parameter-names'
     }
+
+    dependencySet(group: 'org.springframework.security', version: '5.7.11') {
+      entry 'spring-security-oauth2-client'
+      entry 'spring-security-oauth2-core'
+      entry 'spring-security-oauth2-jose'
+      entry 'spring-security-oauth2-resource-server'
+      entry 'spring-security-web'
+      entry 'spring-security-crypto'
+      entry 'spring-security-core'
+      entry 'spring-security-config'
+    }
   }
 }
 
