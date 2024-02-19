@@ -1,5 +1,12 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -10,11 +17,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 class UpdateInterpreterDetailsConfirmationTest {
@@ -31,15 +33,26 @@ class UpdateInterpreterDetailsConfirmationTest {
     }
 
     @Test
-    void should_set_header_body() {
-        long caseId = 1234L;
+    void should_return_confirmation_header_and_body() {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(callback.getCaseDetails().getId()).thenReturn(caseId);
-        PostSubmitCallbackResponse response = updateInterpreterDetailsConfirmation.handle(callback);
+        when(callback.getCaseDetails().getId()).thenReturn(1234L);
 
-        assertNotNull(response.getConfirmationBody(), "Confirmation Body is null");
+        PostSubmitCallbackResponse callbackResponse =
+            updateInterpreterDetailsConfirmation.handle(callback);
 
-        assertNotNull(response.getConfirmationHeader(), "Confirmation Header is null");
+        assertNotNull(callbackResponse);
+        assertTrue(callbackResponse.getConfirmationHeader().isPresent());
+        assertTrue(callbackResponse.getConfirmationBody().isPresent());
+
+        assertEquals("# Interpreter details have been updated",
+                callbackResponse.getConfirmationHeader().get());
+
+        String body = "#### What happens next\n\n"
+                      + "Ensure the "
+                      + "[interpreter booking status](/case/IA/Bail/1234/trigger/updateInterpreterBookingStatus)"
+                      + " is updated.";
+
+        assertEquals(body, callbackResponse.getConfirmationBody().get());
     }
 
     @Test

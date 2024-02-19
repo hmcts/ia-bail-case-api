@@ -1,13 +1,13 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
+import static java.util.Objects.requireNonNull;
+
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PostSubmitCallbackHandler;
-
-import static java.util.Objects.requireNonNull;
 
 @Component
 public class UpdateInterpreterDetailsConfirmation implements PostSubmitCallbackHandler<BailCase> {
@@ -24,16 +24,12 @@ public class UpdateInterpreterDetailsConfirmation implements PostSubmitCallbackH
 
         PostSubmitCallbackResponse postSubmitResponse = new PostSubmitCallbackResponse();
 
-        String hearingsTabUrl = "/case/IA/Bail/" + callback.getCaseDetails().getId() + "#Hearing";
-
         postSubmitResponse.setConfirmationHeader("# Interpreter details have been updated");
         postSubmitResponse.setConfirmationBody(
             "#### What happens next\n\n"
-                + "You now need to update the hearing in the "
-                + "[Hearings tab](" + hearingsTabUrl + ")"
-                + " to ensure the new interpreter information is displayed in List Assist."
-                + "\n\nIf updates need to be made to the interpreter booking status this should be completed"
-                + " before updating the hearing."
+            + "Ensure the [interpreter booking status](/case/IA/Bail/"
+            + callback.getCaseDetails().getId()
+            + "/trigger/updateInterpreterBookingStatus) is updated."
         );
 
         return postSubmitResponse;
