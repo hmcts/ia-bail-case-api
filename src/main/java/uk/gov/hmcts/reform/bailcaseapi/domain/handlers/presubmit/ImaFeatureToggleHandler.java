@@ -32,7 +32,7 @@ public class ImaFeatureToggleHandler implements PreSubmitCallbackHandler<BailCas
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_START
-               && Arrays.asList(Event.START_APPLICATION).contains(callback.getEvent());
+               && Arrays.asList(Event.START_APPLICATION, Event.MAKE_NEW_APPLICATION).contains(callback.getEvent());
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(

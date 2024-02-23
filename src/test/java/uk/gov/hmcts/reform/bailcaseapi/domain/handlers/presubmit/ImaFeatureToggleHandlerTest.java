@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 
+import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ class ImaFeatureToggleHandlerTest {
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
                 boolean canHandle = imaFeatureToggleHandler.canHandle(callbackStage, callback);
                 if (callbackStage == ABOUT_TO_START
-                        && (callback.getEvent() == Event.START_APPLICATION)) {
+                        && Arrays.asList(Event.START_APPLICATION, Event.MAKE_NEW_APPLICATION).contains(callback.getEvent())) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
