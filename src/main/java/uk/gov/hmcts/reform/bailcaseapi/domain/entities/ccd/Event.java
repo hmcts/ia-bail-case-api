@@ -35,6 +35,8 @@ public enum Event {
     UPDATE_INTERPRETER_DETAILS("updateInterpreterDetails"),
     UPDATE_INTERPRETER_BOOKING_STATUS("updateInterpreterBookingStatus"),
     CASE_LISTING("caseListing"),
+    IMA_STATUS("imaStatus"),
+
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
