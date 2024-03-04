@@ -621,7 +621,7 @@ public enum BailCaseFieldDefinition {
     HO_HAS_IMA_STATUS(
         "hoHasImaStatus", new TypeReference<YesOrNo>(){}),
     ADMIN_HAS_IMA_STATUS(
-        "adminHasImaStatus", new TypeReference<YesOrNo>(){});
+        "adminHasImaStatus", new TypeReference<YesOrNo>(){}),
 
     /*
         ADMIN_SELECT_IMA_STATUS and HO_SELECT_IMA_STATUS used in the journey pages.
