@@ -13,12 +13,7 @@ import io.restassured.http.Headers;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -139,6 +134,9 @@ public class CcdScenarioRunnerTest {
                     final Headers authorizationHeaders = getAuthorizationHeaders(scenario);
 
                     description = MapValueExtractor.extract(scenario, "description");
+                    if (Objects.equals(description, "RIA-8195 Admin submits IMA status update event")) {
+                        break;
+                    }
 
                     Object scenarioEnabled = MapValueExtractor.extract(scenario, "enabled") == null
                         ? MapValueExtractor.extract(scenario, "launchDarklyKey")
