@@ -110,6 +110,7 @@ security:
       - "createBailCaseLink"
       - "maintainBailCaseLinks"
       - "createFlag"
+      - "imaStatus"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
