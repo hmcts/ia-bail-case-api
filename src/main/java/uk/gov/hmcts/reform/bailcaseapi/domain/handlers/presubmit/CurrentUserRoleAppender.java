@@ -14,15 +14,11 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
-import java.util.logging.Logger;
-
 @Component
 public class CurrentUserRoleAppender implements PreSubmitCallbackHandler<BailCase> {
 
     private final UserDetails userDetails;
     private final UserDetailsHelper userDetailsHelper;
-
-    Logger logger = Logger.getLogger(getClass().getName());
 
     public CurrentUserRoleAppender(UserDetails userDetails, UserDetailsHelper userDetailsHelper) {
         this.userDetails = userDetails;
@@ -35,11 +31,9 @@ public class CurrentUserRoleAppender implements PreSubmitCallbackHandler<BailCas
     ) {
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
-        if (callback.getEvent() == Event.UPLOAD_DOCUMENTS || callback.getEvent() == Event.VIEW_PREVIOUS_APPLICATIONS) {
-            logger.info("CurrentUserRoleAppender is being handled!");
-        }
-        return callbackStage == PreSubmitCallbackStage.ABOUT_TO_START
-               && (callback.getEvent() == Event.UPLOAD_DOCUMENTS || callback.getEvent() == Event.VIEW_PREVIOUS_APPLICATIONS);
+
+        return (callbackStage == PreSubmitCallbackStage.ABOUT_TO_START && callback.getEvent() == Event.UPLOAD_DOCUMENTS)
+            || callbackStage == PreSubmitCallbackStage.MID_EVENT && callback.getEvent() == Event.VIEW_PREVIOUS_APPLICATIONS;
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
@@ -53,26 +47,21 @@ public class CurrentUserRoleAppender implements PreSubmitCallbackHandler<BailCas
         BailCase bailCase = callback.getCaseDetails().getCaseData();
 
         UserRoleLabel userRoleLabel = userDetailsHelper.getLoggedInUserRoleLabel(userDetails);
-        logger.info(userRoleLabel.toString());
         if (userRoleLabel.equals(UserRoleLabel.ADMIN_OFFICER)) {
             bailCase.write(BailCaseFieldDefinition.CURRENT_USER,
                            UserRoleLabel.ADMIN_OFFICER.toString());
-            logger.info("Current user added as admin officer");
         }
         if (userRoleLabel.equals(UserRoleLabel.LEGAL_REPRESENTATIVE)) {
             bailCase.write(BailCaseFieldDefinition.CURRENT_USER,
                            UserRoleLabel.LEGAL_REPRESENTATIVE.toString());
-            logger.info("Current user added as legal rep");
         }
         if (userRoleLabel.equals(UserRoleLabel.HOME_OFFICE_BAIL)) {
             bailCase.write(BailCaseFieldDefinition.CURRENT_USER,
                            UserRoleLabel.HOME_OFFICE_BAIL.toString());
-            logger.info("Current user added as home officer");
         }
         if (userRoleLabel.equals(UserRoleLabel.JUDGE)) {
             bailCase.write(BailCaseFieldDefinition.CURRENT_USER,
                            UserRoleLabel.JUDGE.toString());
-            logger.info("Current user added as judge");
         }
 
         return new PreSubmitCallbackResponse<>(bailCase);

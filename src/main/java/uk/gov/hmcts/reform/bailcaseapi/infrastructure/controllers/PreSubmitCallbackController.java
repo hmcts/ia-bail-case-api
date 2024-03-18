@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -170,10 +169,6 @@ public class PreSubmitCallbackController {
                 callback.getEvent(),
                 callback.getCaseDetails().getId()
             );
-            if (callbackStage == PreSubmitCallbackStage.ABOUT_TO_START
-                && (callback.getEvent() == Event.UPLOAD_DOCUMENTS || callback.getEvent() == Event.VIEW_PREVIOUS_APPLICATIONS)) {
-                log.info("CurrentUserRoleAppender is being handled!");
-            }
         }
 
         return ok(callbackResponse);
