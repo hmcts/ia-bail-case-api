@@ -11,6 +11,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSu
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
@@ -46,10 +48,13 @@ public class CurrentUserRoleAppenderTest {
             new CurrentUserRoleAppender(userDetails, userDetailsHelper);
     }
 
-    @Test
-    void handler_writes_admin_as_current_user() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"UPLOAD_DOCUMENTS",
+            "VIEW_PREVIOUS_APPLICATIONS"})
+    void handler_writes_admin_as_current_user(Event event) {
 
-        when(callback.getEvent()).thenReturn(Event.UPLOAD_DOCUMENTS);
+        when(callback.getEvent()).thenReturn(event);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.ADMIN_OFFICER);
@@ -72,9 +77,12 @@ public class CurrentUserRoleAppenderTest {
             BailCaseFieldDefinition.CURRENT_USER, UserRoleLabel.JUDGE.toString());
     }
 
-    @Test
-    void handler_writes_home_office_as_current_user() {
-        when(callback.getEvent()).thenReturn(Event.UPLOAD_DOCUMENTS);
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"UPLOAD_DOCUMENTS",
+            "VIEW_PREVIOUS_APPLICATIONS"})
+    void handler_writes_home_office_as_current_user(Event event) {
+        when(callback.getEvent()).thenReturn(event);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.HOME_OFFICE_BAIL);
@@ -97,10 +105,13 @@ public class CurrentUserRoleAppenderTest {
             BailCaseFieldDefinition.CURRENT_USER, UserRoleLabel.JUDGE.toString());
     }
 
-    @Test
-    void handler_writes_legal_rep_as_current_user() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"UPLOAD_DOCUMENTS",
+            "VIEW_PREVIOUS_APPLICATIONS"})
+    void handler_writes_legal_rep_as_current_user(Event event) {
 
-        when(callback.getEvent()).thenReturn(Event.UPLOAD_DOCUMENTS);
+        when(callback.getEvent()).thenReturn(event);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
@@ -123,10 +134,13 @@ public class CurrentUserRoleAppenderTest {
             BailCaseFieldDefinition.CURRENT_USER, UserRoleLabel.JUDGE.toString());
     }
 
-    @Test
-    void handler_writes_judge_as_current_user() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"UPLOAD_DOCUMENTS",
+            "VIEW_PREVIOUS_APPLICATIONS"})
+    void handler_writes_judge_as_current_user(Event event) {
 
-        when(callback.getEvent()).thenReturn(Event.UPLOAD_DOCUMENTS);
+        when(callback.getEvent()).thenReturn(event);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(userDetailsHelper.getLoggedInUserRoleLabel(userDetails)).thenReturn(UserRoleLabel.JUDGE);
@@ -171,14 +185,17 @@ public class CurrentUserRoleAppenderTest {
 
     }
 
-    @Test
-    void handler_throws_error_if_cannot_actually_handle() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"UPLOAD_DOCUMENTS",
+            "VIEW_PREVIOUS_APPLICATIONS"})
+    void handler_throws_error_if_cannot_actually_handle(Event event) {
 
         assertThatThrownBy(() -> currentUserRoleAppender.handle(ABOUT_TO_START, callback))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
 
-        when(callback.getEvent()).thenReturn(Event.UPLOAD_DOCUMENTS);
+        when(callback.getEvent()).thenReturn(event);
         assertThatThrownBy(() -> currentUserRoleAppender.handle(ABOUT_TO_START, callback))
             .isExactlyInstanceOf(NullPointerException.class);
 

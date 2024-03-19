@@ -32,8 +32,8 @@ public class CurrentUserRoleAppender implements PreSubmitCallbackHandler<BailCas
         requireNonNull(callbackStage, "callbackStage must not be null");
         requireNonNull(callback, "callback must not be null");
 
-        return (callbackStage == PreSubmitCallbackStage.ABOUT_TO_START &&
-            (callback.getEvent() == Event.UPLOAD_DOCUMENTS || callback.getEvent() == Event.VIEW_PREVIOUS_APPLICATIONS));
+        return callbackStage == PreSubmitCallbackStage.ABOUT_TO_START &&
+            (callback.getEvent() == Event.UPLOAD_DOCUMENTS || callback.getEvent() == Event.VIEW_PREVIOUS_APPLICATIONS);
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(
