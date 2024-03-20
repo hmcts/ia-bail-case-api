@@ -239,9 +239,17 @@ public class CcdScenarioRunnerTest {
             }
         }
 
+        ;
+
+        int failedScenariosN = FAILED_SCENARIOS.stream().distinct().toList().size();
+        int totalScenariosN = scenarioSources.size();
+        int passedScenariosN = totalScenariosN - failedScenariosN;
+
+        System.out.println(passedScenariosN + " scenarios PASSED out of " + totalScenariosN + " scenarios in total");
+        System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
+        System.out.println((char) 27 + "[0m");
+
         if (!FAILED_SCENARIOS.isEmpty()) {
-            int failedScenariosN = FAILED_SCENARIOS.size();
-            int totalScenariosN = scenarioSources.size();
             throw new AssertionError(failedScenariosN
                                      + " scenarios out of "
                                      + totalScenariosN
