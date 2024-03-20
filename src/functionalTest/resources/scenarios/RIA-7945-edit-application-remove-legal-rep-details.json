@@ -28,7 +28,9 @@
         "isAdmin": "Yes",
         "hasLegalRep": "No",
         "legalRepName": null,
-        "legalRepFamilyName": null
+        "legalRepFamilyName": null,
+        "hasFinancialCondSupporter": null,
+        "interpreterLanguages": null
       }
     }
   }

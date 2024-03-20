@@ -29,7 +29,7 @@
         "isLegalRep": "No",
         "hasLegalRep": "No",
         "isLegallyRepresentedForFlag": "No",
-        "hasFinancialCondSupporter": "No",
+        "hasFinancialCondSupporter": null,
         "legalRepIndividualPartyId": null,
         "legalRepOrganisationPartyId": null,
         "interpreterLanguages": null
