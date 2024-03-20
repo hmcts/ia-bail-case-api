@@ -29,7 +29,7 @@
         "isLegalRep": "No",
         "hasLegalRep": "Yes",
         "isLegallyRepresentedForFlag": "Yes",
-        "hasFinancialCondSupporter": "No",
+        "hasFinancialCondSupporter": null,
         "legalRepIndividualPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
         "legalRepOrganisationPartyId": "$/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-Ff]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/",
         "interpreterLanguages": null
