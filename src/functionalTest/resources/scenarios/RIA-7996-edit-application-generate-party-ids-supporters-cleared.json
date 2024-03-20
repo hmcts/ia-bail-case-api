@@ -30,8 +30,8 @@
         "isLegalRep": "No",
         "hasLegalRep": "No",
         "isLegallyRepresentedForFlag": "No",
-        "hasFinancialCondSupporter": "No",
-        "hasFinancialCondSupporter2": "Yes",
+        "hasFinancialCondSupporter": null,
+        "hasFinancialCondSupporter2": null,
         "supporter1PartyId": null,
         "supporter2PartyId": null,
         "interpreterLanguages": null

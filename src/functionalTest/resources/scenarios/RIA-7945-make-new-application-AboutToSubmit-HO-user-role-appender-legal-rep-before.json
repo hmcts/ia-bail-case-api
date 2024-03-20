@@ -38,7 +38,9 @@
         "isHomeOffice": "Yes",
         "hasLegalRep": "No",
         "legalRepName": null,
-        "legalRepFamilyName": null
+        "legalRepFamilyName": null,
+        "isAdmin": "No",
+        "hasFinancialCondSupporter": null
       }
     }
   }

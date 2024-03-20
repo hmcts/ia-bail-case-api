@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -239,9 +240,15 @@ public class CcdScenarioRunnerTest {
             }
         }
 
+        int failedScenariosN = FAILED_SCENARIOS.size();
+        int totalScenariosN = scenarioSources.size();
+        int passedScenariosN = totalScenariosN - failedScenariosN;
+
+        System.out.println(passedScenariosN + " scenarios PASSED out of " + totalScenariosN + " scenarios in total");
+        System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
+        System.out.println((char) 27 + "[0m");
+
         if (!FAILED_SCENARIOS.isEmpty()) {
-            int failedScenariosN = FAILED_SCENARIOS.size();
-            int totalScenariosN = scenarioSources.size();
             throw new AssertionError(failedScenariosN
                                      + " scenarios out of "
                                      + totalScenariosN

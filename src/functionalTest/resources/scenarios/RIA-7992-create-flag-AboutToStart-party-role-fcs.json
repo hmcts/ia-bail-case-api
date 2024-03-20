@@ -4,7 +4,7 @@
     "uri": "/bail/ccdAboutToStart",
     "credentials": "AdminOfficer",
     "input": {
-      "id": 1111,
+      "id": 7992,
       "eventId": "createFlag",
       "state": "applicationSubmitted",
       "caseData": {
@@ -20,7 +20,8 @@
           "supporter3GivenNames" : "Fcs3FirstName",
           "supporter3FamilyNames" : "Fcs3LastName",
           "supporter1PartyId": "fcs1-12345",
-          "supporter2PartyId": "fcs2-67890"
+          "supporter2PartyId": "fcs2-67890",
+          "hasFinancialCondSupporter2": "Yes"
         }
       }
     }
