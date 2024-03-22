@@ -13,12 +13,14 @@ import io.restassured.http.Headers;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import lombok.SneakyThrows;
@@ -55,6 +57,8 @@ import uk.gov.hmcts.reform.bailcaseapi.verifiers.Verifier;
 @SpringBootTest
 @ActiveProfiles("functional")
 public class CcdScenarioRunnerTest {
+
+    private static final List<String> FAILED_SCENARIOS = new ArrayList<>();
 
     @Value("${targetInstance}")
     private String targetInstance;
@@ -128,12 +132,13 @@ public class CcdScenarioRunnerTest {
         System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
 
         for (String scenarioSource : scenarioSources) {
+            String description = "";
             for (int i = 0; i < 3; i++) {
                 try {
                     Map<String, Object> scenario = deserializeWithExpandedValues(scenarioSource);
                     final Headers authorizationHeaders = getAuthorizationHeaders(scenario);
 
-                    String description = MapValueExtractor.extract(scenario, "description");
+                    description = MapValueExtractor.extract(scenario, "description");
 
                     Object scenarioEnabled = MapValueExtractor.extract(scenario, "enabled") == null
                         ? MapValueExtractor.extract(scenario, "launchDarklyKey")
@@ -229,8 +234,30 @@ public class CcdScenarioRunnerTest {
                     break;
                 } catch (Error | RetryableException | SocketTimeoutException e) {
                     System.out.println("Scenario failed with error " + e.getMessage());
+                    FAILED_SCENARIOS.add(description);
                 }
             }
+        }
+
+        ;
+
+        int failedScenariosN = FAILED_SCENARIOS.stream().distinct().toList().size();
+        int totalScenariosN = scenarioSources.size();
+        int passedScenariosN = totalScenariosN - failedScenariosN;
+
+        System.out.println(passedScenariosN + " scenarios PASSED out of " + totalScenariosN + " scenarios in total");
+        System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
+        System.out.println((char) 27 + "[0m");
+
+        if (!FAILED_SCENARIOS.isEmpty()) {
+            throw new AssertionError(failedScenariosN
+                                     + " scenarios out of "
+                                     + totalScenariosN
+                                     + " scenarios failed:\n"
+                                     + FAILED_SCENARIOS.stream()
+                                         .distinct()
+                                         .map(Object::toString)
+                                         .collect(Collectors.joining(";\n")));
         }
 
         System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
