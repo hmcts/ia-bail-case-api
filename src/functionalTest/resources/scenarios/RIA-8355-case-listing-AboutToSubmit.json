@@ -1,5 +1,6 @@
 {
   "description": "RIA-8355 Case listing event by Admin",
+  "disabled": true,
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
@@ -13,7 +14,7 @@
           "listingEvent": "initialListing",
           "listingLocation": "newcastleCfctc",
           "listingHearingLength": "90",
-          "listingHearingDate": "{$TODAY+5}"
+          "listingHearingDate": "{$TODAY+5}T10:00:00.000"
         }
       }
     }

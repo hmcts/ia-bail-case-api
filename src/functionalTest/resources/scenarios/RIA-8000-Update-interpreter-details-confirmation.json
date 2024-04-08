@@ -1,7 +1,7 @@
 {
   "description": "RIA-8000 Submitted Update interpreter details",
   "request": {
-    "uri": "/asylum/ccdSubmitted",
+    "uri": "/bail/ccdSubmitted",
     "credentials": "AdminOfficer",
     "input": {
       "id": 8000,
