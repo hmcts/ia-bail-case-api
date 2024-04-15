@@ -18,11 +18,11 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.
 
 @Slf4j
 @Component
-public class SubmitApplicationSubmitHandler implements PreSubmitCallbackStateHandler<BailCase> {
+public class StartApplicationSubmitHandler implements PreSubmitCallbackStateHandler<BailCase> {
 
     private final FeatureToggleService featureToggleService;
 
-    public SubmitApplicationSubmitHandler(FeatureToggleService featureToggleService) {
+    public StartApplicationSubmitHandler(FeatureToggleService featureToggleService) {
         this.featureToggleService = featureToggleService;
     }
 
@@ -32,7 +32,7 @@ public class SubmitApplicationSubmitHandler implements PreSubmitCallbackStateHan
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-            && callback.getEvent() == Event.SUBMIT_APPLICATION;
+            && callback.getEvent() == Event.START_APPLICATION;
     }
 
     @Override

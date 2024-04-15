@@ -26,7 +26,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSu
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = org.mockito.quality.Strictness.LENIENT)
-class SubmitApplicationSubmitHandlerTest {
+class StartApplicationSubmitHandlerTest {
 
     @Mock
     private Callback<BailCase> callback;
@@ -38,11 +38,11 @@ class SubmitApplicationSubmitHandlerTest {
     private BailCase bailCase;
     @Mock
     private FeatureToggleService featureToggleService;
-    private SubmitApplicationSubmitHandler submitApplicationSubmitHandler;
+    private StartApplicationSubmitHandler startApplicationSubmitHandler;
 
     @BeforeEach
     public void setUp() {
-        submitApplicationSubmitHandler = new SubmitApplicationSubmitHandler(featureToggleService);
+        startApplicationSubmitHandler = new StartApplicationSubmitHandler(featureToggleService);
     }
 
     @Test
@@ -53,8 +53,8 @@ class SubmitApplicationSubmitHandlerTest {
             when(callback.getEvent()).thenReturn(event);
 
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
-                boolean canHandle = submitApplicationSubmitHandler.canHandle(callbackStage, callback);
-                if (callbackStage == ABOUT_TO_SUBMIT && callback.getEvent() == Event.SUBMIT_APPLICATION) {
+                boolean canHandle = startApplicationSubmitHandler.canHandle(callbackStage, callback);
+                if (callbackStage == ABOUT_TO_SUBMIT && callback.getEvent() == Event.START_APPLICATION) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
@@ -67,33 +67,33 @@ class SubmitApplicationSubmitHandlerTest {
     @CsvSource({"true", "false"})
     void should_set_bails_location_ref_data_field(boolean featureFlag) {
         when(featureToggleService.locationRefDataEnabled()).thenReturn(featureFlag);
-        when(callback.getEvent()).thenReturn(Event.SUBMIT_APPLICATION);
+        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
 
-        submitApplicationSubmitHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback, callbackResponse);
+        startApplicationSubmitHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback, callbackResponse);
         verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, featureFlag ? YesOrNo.YES : YesOrNo.NO);
     }
 
     @Test
     void should_not_allow_null_arguments() {
 
-        assertThatThrownBy(() -> submitApplicationSubmitHandler
+        assertThatThrownBy(() -> startApplicationSubmitHandler
             .canHandle(null, callback))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> submitApplicationSubmitHandler
+        assertThatThrownBy(() -> startApplicationSubmitHandler
             .canHandle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> submitApplicationSubmitHandler
+        assertThatThrownBy(() -> startApplicationSubmitHandler
             .handle(null, callback, callbackResponse))
             .hasMessage("callbackStage must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
 
-        assertThatThrownBy(() -> submitApplicationSubmitHandler
+        assertThatThrownBy(() -> startApplicationSubmitHandler
             .handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, null, callbackResponse))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);
@@ -102,12 +102,12 @@ class SubmitApplicationSubmitHandlerTest {
     @Test
     void handler_throws_error_if_cannot_actually_handle() {
 
-        assertThatThrownBy(() -> submitApplicationSubmitHandler.handle(ABOUT_TO_SUBMIT, callback, callbackResponse))
+        assertThatThrownBy(() -> startApplicationSubmitHandler.handle(ABOUT_TO_SUBMIT, callback, callbackResponse))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
 
-        when(callback.getEvent()).thenReturn(Event.SUBMIT_APPLICATION);
-        assertThatThrownBy(() -> submitApplicationSubmitHandler.handle(ABOUT_TO_SUBMIT, callback, callbackResponse))
+        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        assertThatThrownBy(() -> startApplicationSubmitHandler.handle(ABOUT_TO_SUBMIT, callback, callbackResponse))
             .isExactlyInstanceOf(NullPointerException.class);
 
     }
