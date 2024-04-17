@@ -634,7 +634,9 @@ public enum BailCaseFieldDefinition {
     IS_IMA_ENABLED(
         "isImaEnabled", new TypeReference<YesOrNo>() {}),
     IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED(
-        "isBailsLocationReferenceDataEnabled", new TypeReference<YesOrNo>() {});
+        "isBailsLocationReferenceDataEnabled", new TypeReference<YesOrNo>() {}),
+    IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED_FT(
+        "isBailsLocationReferenceDataEnabledFt", new TypeReference<YesOrNo>() {});
 
     private final String value;
     private final TypeReference typeReference;

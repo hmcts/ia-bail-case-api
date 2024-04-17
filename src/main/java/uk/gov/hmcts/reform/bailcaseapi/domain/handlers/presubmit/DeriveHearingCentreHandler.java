@@ -5,6 +5,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_CENTRE_REF_DATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED_FT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
@@ -22,6 +23,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.DispatchPriority;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.FeatureToggleService;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingCentreFinder;
@@ -79,7 +81,7 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
             HearingCentre hearingCentre = hearingCentreFinder.find(detentionFacilityName);
             bailCase.write(HEARING_CENTRE, hearingCentre);
 
-            if (featureToggleService.locationRefDataEnabled()) {
+            if (locationRefDataEnabled(bailCase)) {
 
                 setHearingCentreRefData(bailCase, hearingCentre);
                 bailCase.write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YES);
@@ -104,6 +106,13 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
                 currentHearingCentreValue, locationRefDataDynamicList.getListItems());
             bailCase.write(HEARING_CENTRE_REF_DATA, hearingCentreRefData);
         }
+    }
+
+    private boolean locationRefDataEnabled(BailCase bailCase) {
+
+        return bailCase.read(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED_FT, YesOrNo.class)
+            .map(enabled -> YES == enabled)
+            .orElseGet(featureToggleService::locationRefDataEnabled);
     }
 
 }
