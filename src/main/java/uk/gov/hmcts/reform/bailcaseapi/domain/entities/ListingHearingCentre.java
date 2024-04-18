@@ -65,7 +65,7 @@ public enum ListingHearingCentre {
         return epimsId;
     }
 
-    public static Map<String, ListingHearingCentre> getEpimsIdMapping(){
+    public static Map<String, ListingHearingCentre> getEpimsIdMapping() {
         return epimsIdMapping;
     }
 
