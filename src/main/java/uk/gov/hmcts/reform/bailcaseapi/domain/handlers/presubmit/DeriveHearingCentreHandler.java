@@ -95,7 +95,7 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
 
     private void setHearingCentreRefData(BailCase bailCase, HearingCentre hearingCentre) {
 
-        DynamicList locationRefDataDynamicList = locationRefDataService.getHearingLocationsDynamicList();
+        DynamicList locationRefDataDynamicList = locationRefDataService.getCaseManagementLocationsDynamicList();
         Value currentHearingCentreValue = locationRefDataDynamicList.getListItems().stream().filter(value -> Objects.equals(
             value.getCode(),
             hearingCentre.getEpimsId()
