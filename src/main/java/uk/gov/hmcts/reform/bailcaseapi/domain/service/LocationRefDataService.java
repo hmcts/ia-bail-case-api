@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
@@ -25,6 +26,15 @@ public class LocationRefDataService {
     public DynamicList getHearingLocationsDynamicList() {
 
         return new DynamicList(new Value("", ""), getCourtVenues().stream()
+            .filter(this::isHearingLocation)
+            .map(courtVenue -> new Value(courtVenue.getEpimmsId(), courtVenue.getCourtName()))
+            .toList());
+    }
+
+    public DynamicList getCaseManagementLocationsDynamicList() {
+
+        return new DynamicList(new Value("", ""), getCourtVenues().stream()
+            .filter(this::isCaseManagementLocation)
             .map(courtVenue -> new Value(courtVenue.getEpimmsId(), courtVenue.getCourtName()))
             .toList());
     }
@@ -37,5 +47,17 @@ public class LocationRefDataService {
         return locationCategory == null
             ? Collections.emptyList()
             : locationCategory.getCourtVenues();
+    }
+
+    private boolean isHearingLocation(CourtVenue courtVenue) {
+
+        return Objects.equals(courtVenue.getIsHearingLocation(), "Y")
+               && Objects.equals(courtVenue.getCourtStatus(), "Open");
+    }
+
+    private boolean isCaseManagementLocation(CourtVenue courtVenue) {
+
+        return Objects.equals(courtVenue.getIsCaseManagementLocation(), "Y")
+               && Objects.equals(courtVenue.getCourtStatus(), "Open");
     }
 }
