@@ -59,8 +59,7 @@ public class CaseListingPreparer implements PreSubmitCallbackHandler<BailCase> {
 
         if (isBailsLocationReferenceDataEnabled == YES) {
 
-            DynamicList refDataLocationDynamicList = locationRefDataService
-                .getHearingLocationsDynamicList();
+            DynamicList refDataLocationDynamicList = locationRefDataService.getHearingLocationsDynamicList();
 
             Value selectedRefDataLocation = bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class)
                 .map(dynamicList -> dynamicList.getValue()).orElse(null);

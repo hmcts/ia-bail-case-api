@@ -65,14 +65,6 @@ public enum ListingHearingCentre {
         return epimsId;
     }
 
-    public static String getEpimsIdByValue(String value) {
-        return hearingVenueIdMapping.get(value).getEpimsId();
-    }
-
-    public static String getValueByEpimsId(String epimsId) {
-        return epimsIdMapping.get(epimsId).getValue();
-    }
-
     public static Map<String, ListingHearingCentre> getEpimsIdMapping(){
         return epimsIdMapping;
     }
