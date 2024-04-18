@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.FeatureToggleService;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.LocationRefDataService;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,12 +38,14 @@ class CaseListingPreparerPreparerTest {
     private BailCase bailCase;
     @Mock
     private FeatureToggleService featureToggleService;
+    @Mock
+    private LocationRefDataService locationRefDataService;
 
     private CaseListingPreparer caseListingPreparer;
 
     @BeforeEach
     public void setUp() {
-        caseListingPreparer = new CaseListingPreparer(featureToggleService);
+        caseListingPreparer = new CaseListingPreparer(featureToggleService, locationRefDataService);
 
         when(callback.getEvent()).thenReturn(Event.CASE_LISTING);
         when(callback.getCaseDetails()).thenReturn(caseDetails);

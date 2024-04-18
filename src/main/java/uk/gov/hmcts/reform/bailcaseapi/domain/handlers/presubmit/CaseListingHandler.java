@@ -3,12 +3,17 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_LOCATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REF_DATA_LISTING_LOCATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +22,10 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -98,6 +106,28 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
             bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
         }
 
+        updateListingLocValueByUsingRefDataLocValue(bailCase);
+
         return new PreSubmitCallbackResponse<>(bailCase);
+    }
+
+    private void updateListingLocValueByUsingRefDataLocValue(BailCase bailCase) {
+        YesOrNo isBailsLocationRefDataEnabled = bailCase.read(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YesOrNo.class)
+            .orElse(NO);
+
+        if (isBailsLocationRefDataEnabled == YES) {
+            Value selectedRefDataLocation = bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class)
+                .map(dynamicList -> dynamicList.getValue()).orElse(null);
+
+            if (selectedRefDataLocation != null) {
+                ListingHearingCentre listingHearingCentre = ListingHearingCentre.getEpimsIdMapping()
+                    .get(selectedRefDataLocation.getCode());
+
+                if (listingHearingCentre != null && listingHearingCentre.getValue() != null) {
+                    bailCase.write(LISTING_LOCATION, listingHearingCentre);
+                    System.out.println("###### found it:" + listingHearingCentre.getValue() + ", " + listingHearingCentre.getValue());
+                }
+            }
+        }
     }
 }
