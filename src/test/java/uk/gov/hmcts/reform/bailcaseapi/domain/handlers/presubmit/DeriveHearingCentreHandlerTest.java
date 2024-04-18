@@ -80,7 +80,7 @@ class DeriveHearingCentreHandlerTest {
         DynamicList locationRefDataDynamicList = new DynamicList(
             new Value("", ""), List.of(hattonCross, newCastle));
 
-        when(locationRefDataService.getHearingLocationsDynamicList())
+        when(locationRefDataService.getCaseManagementLocationsDynamicList())
             .thenReturn(locationRefDataDynamicList);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
