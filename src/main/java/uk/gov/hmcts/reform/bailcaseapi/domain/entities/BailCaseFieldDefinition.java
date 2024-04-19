@@ -635,6 +635,8 @@ public enum BailCaseFieldDefinition {
         "isImaEnabled", new TypeReference<YesOrNo>() {}),
     IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED(
         "isBailsLocationReferenceDataEnabled", new TypeReference<YesOrNo>() {}),
+    REF_DATA_LISTING_LOCATION(
+        "refDataListingLocation", new TypeReference<DynamicList>() {}),
     IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED_FT(
         "isBailsLocationReferenceDataEnabledFt", new TypeReference<YesOrNo>() {});
 
