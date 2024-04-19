@@ -125,7 +125,6 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
                 if (listingHearingCentre != null && listingHearingCentre.getValue() != null) {
                     bailCase.write(LISTING_LOCATION, listingHearingCentre);
-                    System.out.println("###### found it:" + listingHearingCentre.getValue() + ", " + listingHearingCentre.getValue());
                 }
             }
         }
