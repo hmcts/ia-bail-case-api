@@ -39,7 +39,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
-class CaseListingPreparerPreparerTest {
+class CaseListingPreparerTest {
 
     @Mock
     private Callback<BailCase> callback;
