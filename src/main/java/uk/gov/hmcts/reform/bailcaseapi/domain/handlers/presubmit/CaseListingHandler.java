@@ -8,6 +8,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_LOCATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REF_DATA_LISTING_LOCATION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REF_DATA_LISTING_LOCATION_DETAIL;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
@@ -19,6 +20,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -33,14 +37,18 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.LocationRefDataService;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.CourtVenue;
 
 @Component
 public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
     private final DueDateService dueDateService;
+    private final LocationRefDataService locationRefDataService;
 
-    public CaseListingHandler(DueDateService dueDateService) {
+    public CaseListingHandler(DueDateService dueDateService, LocationRefDataService locationRefDataService) {
         this.dueDateService = dueDateService;
+        this.locationRefDataService = locationRefDataService;
     }
 
     public boolean canHandle(
@@ -120,12 +128,27 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                 .map(dynamicList -> dynamicList.getValue()).orElse(null);
 
             if (selectedRefDataLocation != null) {
+                saveRefDataListingLocationDetail(bailCase, selectedRefDataLocation.getCode());
+
                 ListingHearingCentre listingHearingCentre = ListingHearingCentre.getEpimsIdMapping()
                     .get(selectedRefDataLocation.getCode());
 
                 if (listingHearingCentre != null && listingHearingCentre.getValue() != null) {
                     bailCase.write(LISTING_LOCATION, listingHearingCentre);
                 }
+            }
+        }
+    }
+
+    /**
+     * This method is used for saving the information of reference data listing location.
+     * This location information will be used for notification API and document API.
+     */
+    private void saveRefDataListingLocationDetail(BailCase bailCase, String epimmsId) {
+        if (!StringUtils.isEmpty(epimmsId)) {
+            Optional<CourtVenue> courtVenue = locationRefDataService.getCourtVenuesByEpimmsId(epimmsId);
+            if (courtVenue.isPresent()) {
+                bailCase.write(REF_DATA_LISTING_LOCATION_DETAIL, courtVenue.get());
             }
         }
     }
