@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 import com.fasterxml.jackson.core.type.TypeReference;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.*;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.CourtVenue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -637,6 +638,8 @@ public enum BailCaseFieldDefinition {
         "isBailsLocationReferenceDataEnabled", new TypeReference<YesOrNo>() {}),
     REF_DATA_LISTING_LOCATION(
         "refDataListingLocation", new TypeReference<DynamicList>() {}),
+    REF_DATA_LISTING_LOCATION_DETAIL(
+        "refDataListingLocationDetail", new TypeReference<CourtVenue>() {}),
     IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED_FT(
         "isBailsLocationReferenceDataEnabledFt", new TypeReference<YesOrNo>() {});
 

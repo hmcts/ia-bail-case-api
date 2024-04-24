@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +43,8 @@ class LocationRefDataServiceTest {
                 .courtStatus("Open")
                 .isHearingLocation("Y")
                 .isCaseManagementLocation("N")
+                .courtAddress("Crown Square, Manchester, Greater Manchester")
+                .postcode("M60 1PR")
                 .build(),
             CourtVenue.builder()
                 .epimmsId("3344")
@@ -48,6 +52,8 @@ class LocationRefDataServiceTest {
                 .courtStatus("Open")
                 .isHearingLocation("N")
                 .isCaseManagementLocation("Y")
+                .courtAddress("Priory Courts, 33 Bull Street")
+                .postcode("B4 6DS")
                 .build(),
             CourtVenue.builder()
                 .epimmsId("1234")
@@ -55,6 +61,8 @@ class LocationRefDataServiceTest {
                 .courtStatus("Closed")
                 .isCaseManagementLocation("N")
                 .isHearingLocation("N")
+                .courtAddress("The Tyrls, PO Box 187")
+                .postcode("BD1 1JL")
                 .build()
         );
         CourtLocationCategory courtLocationCategory = CourtLocationCategory
@@ -85,6 +93,16 @@ class LocationRefDataServiceTest {
         assertEquals(1, dynamicList.getListItems().size());
         assertEquals("Birmingham", dynamicList.getListItems().get(0).getLabel());
         assertEquals("3344", dynamicList.getListItems().get(0).getCode());
+    }
+
+    @Test
+    void test_getCourtVenuesByEpimmsId() {
+
+        Optional<CourtVenue> courtVenue  = locationRefDataService.getCourtVenuesByEpimmsId("1234");
+
+        assertEquals(true, courtVenue.isPresent());
+        assertEquals("Crown Square, Manchester, Greater Manchester", courtVenue.get().getCourtAddress());
+        assertEquals("M60 1PR", courtVenue.get().getPostcode());
     }
 
 }

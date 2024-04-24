@@ -24,4 +24,6 @@ public class CourtVenue {
     private String courtStatus;
     private String isHearingLocation;
     private String isCaseManagementLocation;
+    private String courtAddress;
+    private String postcode;
 }

@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
@@ -37,6 +39,13 @@ public class LocationRefDataService {
             .filter(this::isCaseManagementLocation)
             .map(courtVenue -> new Value(courtVenue.getEpimmsId(), courtVenue.getCourtName()))
             .toList());
+    }
+
+    public Optional<CourtVenue> getCourtVenuesByEpimmsId(String epimmsId) {
+        return getCourtVenues().stream()
+            .filter(this::isHearingLocation)
+            .filter(courtVenue -> courtVenue.getEpimmsId().equals(epimmsId))
+            .findFirst();
     }
 
     private List<CourtVenue> getCourtVenues() {
