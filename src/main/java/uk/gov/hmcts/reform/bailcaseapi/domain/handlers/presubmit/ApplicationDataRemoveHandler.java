@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.TransferBailObjectionValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -72,8 +73,8 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             AGREES_TO_BOUND_BY_FINANCIAL_COND,YesOrNo.class);
         final Optional<YesOrNo> optionalTransferBailManagement = bailCase.read(
             TRANSFER_BAIL_MANAGEMENT_OPTION,YesOrNo.class);
-        final Optional<YesOrNo> optionalTransferBailManagementObjection = bailCase.read(
-            TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION,YesOrNo.class);
+        final Optional<TransferBailObjectionValue> optionalTransferBailManagementObjection = bailCase.read(
+            TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class);
 
         final Optional<YesOrNo> optionalFcsInterpreter = bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class);
         final YesOrNo hasFinancialConditionSupporter1 = bailCase.read(
@@ -107,8 +108,8 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
         }
 
         if (optionalTransferBailManagementObjection.isPresent()){
-            YesOrNo transferBailManagementObjectionValue = optionalTransferBailManagementObjection.get();
-            if (transferBailManagementObjectionValue.equals(NO)) {
+            TransferBailObjectionValue transferBailManagementObjectionValue = optionalTransferBailManagementObjection.get();
+            if (transferBailManagementObjectionValue.equals(TransferBailObjectionValue.NO)) {
                 bailCase.remove(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS);
             }
 

@@ -257,7 +257,7 @@ public enum BailCaseFieldDefinition {
     NO_TRANSFER_BAIL_MANAGEMENT_REASONS(
         "noTransferBailManagementReasons", new TypeReference<String>(){}),
     TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION(
-        "transferBailManagementObjectionYesOrNo", new TypeReference<YesOrNo>(){}),
+        "transferBailManagementObjectionYesOrNo", new TypeReference<TransferBailObjectionValue>(){}),
     OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS(
         "objectedTransferBailManagementReasons", new TypeReference<String>(){}),
     APPLICATION_SUBMITTED_BY(
