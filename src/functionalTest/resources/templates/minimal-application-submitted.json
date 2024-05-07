@@ -39,7 +39,7 @@
   "isLegallyRepresentedForFlag": "No",
   "agreesToBoundByFinancialCond": "No",
   "previousApplicationDoneViaCcd": "No",
-  "transferBailManagementObjectionYesOrNo": "No, I consent to transferring to the Home Office",
+  "transferBailManagementObjectionYesOrNo": "noObjection",
   "currentCaseStateVisibleToJudge": "applicationSubmitted",
   "previousApplicationDoneViaAria": "No",
   "currentCaseStateVisibleToAllUsers": "applicationSubmitted",
