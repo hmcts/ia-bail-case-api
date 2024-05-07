@@ -7,8 +7,8 @@ import java.util.Optional;
 import static java.util.Arrays.stream;
 
 public enum TransferBailObjectionValue {
-    YES("Yes, I object to the transfer"),
-    NO("No, I consent to transferring to the Home Office");
+    YES("yesObjection"),
+    NO("noObjection");
 
     @JsonValue
     private final String value;
