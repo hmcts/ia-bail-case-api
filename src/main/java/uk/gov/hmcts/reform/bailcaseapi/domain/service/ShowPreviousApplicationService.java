@@ -523,9 +523,10 @@ public class ShowPreviousApplicationService {
 
         if (previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class).isPresent()) {
             TransferBailObjectionValue transferBailManagementObjectionValue = previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class).orElse(TransferBailObjectionValue.NO);
+            String transferBailManagementObjectionValueText = transferBailManagementObjectionValue == TransferBailObjectionValue.YES ? "Yes, I object to the transfer": "No, I consent to transferring to the Home Office";
             stringBuilder
                 .append("|Management of bail|")
-                .append(transferBailManagementObjectionValue)
+                .append(transferBailManagementObjectionValueText)
                 .append("|\n");
 
             if (transferBailManagementObjectionValue == TransferBailObjectionValue.YES) {
