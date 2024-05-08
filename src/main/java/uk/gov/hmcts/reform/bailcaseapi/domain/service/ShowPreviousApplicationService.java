@@ -523,15 +523,15 @@ public class ShowPreviousApplicationService {
 
         if (previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class).isPresent()) {
             TransferBailObjectionValue transferBailManagementObjectionValue = previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class).orElse(TransferBailObjectionValue.NO);
-            String transferBailManagementObjectionValueText = transferBailManagementObjectionValue == TransferBailObjectionValue.YES ? "Yes, I object to the transfer": "No, I consent to transferring to the Home Office";
+            String transferBailManagementObjectionValueText = transferBailManagementObjectionValue == TransferBailObjectionValue.YES ? "The applicant objects to the management being transferred": "The applicant consents to the management being transferred";
             stringBuilder
-                .append("|Management of bail|")
+                .append("|Transfer of management to the Home Office|")
                 .append(transferBailManagementObjectionValueText)
                 .append("|\n");
 
             if (transferBailManagementObjectionValue == TransferBailObjectionValue.YES) {
                 stringBuilder
-                    .append("|Reasons applicant objects to bail transfer|")
+                    .append("|Reasons why the applicant objects to the management of bail being transferred to the Home Office|")
                     .append(previousBailCase.read(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class)
                                 .orElseThrow(getErrorThrowable(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS))
                                 .replaceAll("[\\n]", "<br>"))

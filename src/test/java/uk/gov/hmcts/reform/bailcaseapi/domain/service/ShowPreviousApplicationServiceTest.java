@@ -604,7 +604,7 @@ public class ShowPreviousApplicationServiceTest {
         String label = showPreviousApplicationService.getGroundsForBail(bailCase);
         assertTrue(label.contains(
             "|Bail Grounds|Grounds for bail reasons|\n"
-                + "|Management of bail|No, I consent to transferring to the Home Office|\n"
+                + "|Transfer of management to the Home Office|The applicant consents to the management being transferred|\n"
         ));
     }
 
@@ -615,8 +615,8 @@ public class ShowPreviousApplicationServiceTest {
         String label = showPreviousApplicationService.getGroundsForBail(bailCase);
         assertTrue(label.contains(
             "|Bail Grounds|Grounds for bail reasons|\n"
-                + "|Management of bail|Yes, I object to the transfer|\n"
-                + "|Reasons applicant objects to bail transfer|Objected transfer bail management reasons|\n"
+                + "|Transfer of management to the Home Office|The applicant objects to the management being transferred|\n"
+                + "|Reasons why the applicant objects to the management of bail being transferred to the Home Office|Objected transfer bail management reasons|\n"
         ));
     }
 
