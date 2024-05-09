@@ -7,6 +7,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED_FT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SELECTED_HEARING_CENTRE_REF_DATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
@@ -104,6 +105,10 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
         if (currentHearingCentreValue != null) {
             DynamicList hearingCentreRefData = new DynamicList(
                 currentHearingCentreValue, locationRefDataDynamicList.getListItems());
+
+            //the value of this case field is used for searching tribunal centre
+            bailCase.write(SELECTED_HEARING_CENTRE_REF_DATA, currentHearingCentreValue.getLabel());
+
             bailCase.write(HEARING_CENTRE_REF_DATA, hearingCentreRefData);
         }
     }

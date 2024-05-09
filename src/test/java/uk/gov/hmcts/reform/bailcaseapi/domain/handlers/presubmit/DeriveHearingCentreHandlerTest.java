@@ -17,6 +17,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SELECTED_HEARING_CENTRE_REF_DATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.DispatchPriority.LATEST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
@@ -68,7 +69,7 @@ class DeriveHearingCentreHandlerTest {
     @Captor
     private ArgumentCaptor<DynamicList> dynamicListArgumentCaptor;
 
-    private Value hattonCross = new Value("386417", "Hatton Cross");
+    private Value hattonCross = new Value("386417", "Hatton Cross Tribunal Hearing Centre");
     private Value newCastle = new Value("366796", "Newcastle");
     private DeriveHearingCentreHandler deriveHearingCentreHandler;
 
@@ -162,6 +163,7 @@ class DeriveHearingCentreHandlerTest {
         verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YES);
         verify(bailCase, times(1))
             .write(eq(HEARING_CENTRE_REF_DATA), dynamicListArgumentCaptor.capture());
+        verify(bailCase, times(1)).write(SELECTED_HEARING_CENTRE_REF_DATA, hattonCross.getLabel());
 
         assertEquals(hattonCross, dynamicListArgumentCaptor.getValue().getValue());
     }
@@ -180,6 +182,8 @@ class DeriveHearingCentreHandlerTest {
 
         verify(bailCase, never())
             .write(eq(HEARING_CENTRE_REF_DATA), any());
+        verify(bailCase, never())
+            .write(eq(SELECTED_HEARING_CENTRE_REF_DATA), any());
     }
 
     @Test
