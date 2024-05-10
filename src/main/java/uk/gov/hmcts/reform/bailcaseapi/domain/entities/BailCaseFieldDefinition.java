@@ -271,6 +271,8 @@ public enum BailCaseFieldDefinition {
         "hearingCentre", new TypeReference<HearingCentre>(){}),
     HEARING_CENTRE_REF_DATA(
         "hearingCentreRefData", new TypeReference<DynamicList>(){}),
+    SELECTED_HEARING_CENTRE_REF_DATA(
+        "selectedHearingCentreRefData", new TypeReference<String>(){}),
     DETENTION_FACILITY(
         "detentionFacility", new TypeReference<String>(){}),
     UPLOAD_BAIL_SUMMARY_DOCS(
