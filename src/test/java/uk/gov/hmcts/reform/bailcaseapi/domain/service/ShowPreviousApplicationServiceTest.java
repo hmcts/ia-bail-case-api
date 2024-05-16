@@ -110,7 +110,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.TransferBailObjectionValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
@@ -600,7 +599,7 @@ public class ShowPreviousApplicationServiceTest {
     @Test
     void check_grounds_for_bails_label_when_transfer_not_objected() {
         when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class)).thenReturn(Optional.of(TransferBailObjectionValue.NO));
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         String label = showPreviousApplicationService.getGroundsForBail(bailCase);
         assertTrue(label.contains(
             "|Bail Grounds|Grounds for bail reasons|\n"
@@ -611,7 +610,7 @@ public class ShowPreviousApplicationServiceTest {
     @Test
     void check_grounds_for_bails_label_when_transfer_objected() {
         when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
-        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class)).thenReturn(Optional.of(TransferBailObjectionValue.YES));
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         String label = showPreviousApplicationService.getGroundsForBail(bailCase);
         assertTrue(label.contains(
             "|Bail Grounds|Grounds for bail reasons|\n"

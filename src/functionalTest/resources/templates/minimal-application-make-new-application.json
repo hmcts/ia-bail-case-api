@@ -37,7 +37,7 @@
   "hasPreviousBailApplication": "No",
   "isLegallyRepresentedForFlag": "No",
   "agreesToBoundByFinancialCond": "No",
-  "transferBailManagementObjectionYesOrNo": "noObjection",
+  "transferBailManagementObjectionYesOrNo": "No",
   "groundsForBailProvideEvidenceOption": "No",
   "currentCaseStateVisibleToJudge": "applicationSubmitted",
   "currentCaseStateVisibleToAllUsers": "applicationSubmitted",

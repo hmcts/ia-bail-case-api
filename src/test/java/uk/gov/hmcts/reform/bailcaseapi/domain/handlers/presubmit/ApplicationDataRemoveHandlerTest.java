@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.TransferBailObjectionValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -188,7 +187,7 @@ public class ApplicationDataRemoveHandlerTest {
 
     @Test
     void should_remove_new_transfer_management_reason_if_agreed() {
-        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class)).thenReturn(Optional.of(TransferBailObjectionValue.NO));
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class)).thenReturn(Optional.of(NO));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS);
         verify(bailCase, times(0)).remove(TRANSFER_BAIL_MANAGEMENT_OPTION);
@@ -198,7 +197,7 @@ public class ApplicationDataRemoveHandlerTest {
 
     @Test
     void should_remove_old_transfer_management_values_if_new_present() {
-        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class)).thenReturn(Optional.of(TransferBailObjectionValue.YES));
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(NO));
         when(bailCase.read(NO_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class)).thenReturn(Optional.of("reason"));
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);

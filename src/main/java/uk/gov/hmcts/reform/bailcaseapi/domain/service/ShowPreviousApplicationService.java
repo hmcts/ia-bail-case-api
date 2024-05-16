@@ -93,7 +93,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.TransferBailObjectionValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
@@ -521,15 +520,15 @@ public class ShowPreviousApplicationService {
                         .replaceAll("[\\n]", "<br>"))
             .append("|\n");
 
-        if (previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class).isPresent()) {
-            TransferBailObjectionValue transferBailManagementObjectionValue = previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, TransferBailObjectionValue.class).orElse(TransferBailObjectionValue.NO);
-            String transferBailManagementObjectionValueText = transferBailManagementObjectionValue == TransferBailObjectionValue.YES ? "The applicant objects to the management being transferred": "The applicant consents to the management being transferred";
+        if (previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class).isPresent()) {
+            YesOrNo transferBailManagementObjectionValue = previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class).orElse(YesOrNo.NO);
+            String transferBailManagementObjectionValueText = transferBailManagementObjectionValue == YesOrNo.YES ? "The applicant objects to the management being transferred": "The applicant consents to the management being transferred";
             stringBuilder
                 .append("|Transfer of management to the Home Office|")
                 .append(transferBailManagementObjectionValueText)
                 .append("|\n");
 
-            if (transferBailManagementObjectionValue == TransferBailObjectionValue.YES) {
+            if (transferBailManagementObjectionValue == YesOrNo.YES) {
                 stringBuilder
                     .append("|Reasons why the applicant objects to the management of bail being transferred to the Home Office|")
                     .append(previousBailCase.read(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class)
