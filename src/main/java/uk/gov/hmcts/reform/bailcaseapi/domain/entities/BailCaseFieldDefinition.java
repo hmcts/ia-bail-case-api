@@ -620,7 +620,7 @@ public enum BailCaseFieldDefinition {
         "listingLocation", new TypeReference<ListingHearingCentre>(){}),
 
     PREVIOUS_LISTING_DETAILS(
-        "previousListingDetails", new TypeReference<List<PreviousListingDetails>>() {}),
+        "previousListingDetails", new TypeReference<List<IdValue<PreviousListingDetails>>>() {}),
 
     HO_HAS_IMA_STATUS(
         "hoHasImaStatus", new TypeReference<YesOrNo>(){}),

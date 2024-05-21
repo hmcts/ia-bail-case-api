@@ -10,14 +10,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
@@ -25,6 +24,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.PreviousListingDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
@@ -114,9 +114,10 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                 String prevListingHearingDuration = bailCaseBefore.read(LISTING_HEARING_DURATION, String.class)
                     .orElseThrow(() -> new RequiredFieldMissingException(
                         "initial listingHearingDuration must be present for relisting"));
-                Optional<List<PreviousListingDetails>> optionalPreviousListingDetailsList = bailCaseBefore.read(PREVIOUS_LISTING_DETAILS);
-                ArrayList<PreviousListingDetails> previousListingDetailsList = new ArrayList<>(optionalPreviousListingDetailsList.orElse(Collections.emptyList()));
-                PreviousListingDetails prevListingDetails = new PreviousListingDetails(prevListingEvent, prevListingLocation, prevListingHearingDate, prevListingHearingDuration);
+                Optional<List<IdValue<PreviousListingDetails>>> optionalPreviousListingDetailsList = bailCaseBefore.read(PREVIOUS_LISTING_DETAILS);
+                ArrayList<IdValue<PreviousListingDetails>> previousListingDetailsList = new ArrayList<>(optionalPreviousListingDetailsList.orElse(Collections.emptyList()));
+                String id = UUID.randomUUID().toString();
+                IdValue<PreviousListingDetails> prevListingDetails = new IdValue<>(id, new PreviousListingDetails(prevListingEvent, prevListingLocation, prevListingHearingDate, prevListingHearingDuration));
                 previousListingDetailsList.add(prevListingDetails);
                 bailCase.write(PREVIOUS_LISTING_DETAILS, previousListingDetailsList);
             }
