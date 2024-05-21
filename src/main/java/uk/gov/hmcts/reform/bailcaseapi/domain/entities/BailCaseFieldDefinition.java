@@ -413,7 +413,7 @@ public enum BailCaseFieldDefinition {
     PREV_APP_DECISION_DETAILS_LABEL(
         "prevAppDecisionDetailsLabel", new TypeReference<String>() {}),
     PREV_APP_DIRECTION_DETAILS(
-        "prevAppDirectionDetails", new TypeReference<String>() {}),    
+        "prevAppDirectionDetails", new TypeReference<String>() {}),
     PREV_APP_HEARING_DETAILS(
         "prevAppHearingDetails", new TypeReference<String>() {}),
     PREV_APP_HEARING_REQ_DETAILS(
@@ -613,8 +613,14 @@ public enum BailCaseFieldDefinition {
     LIST_CASE_HEARING_DATE(
         "listingHearingDate", new TypeReference<String>(){}),
 
+    LISTING_HEARING_DURATION(
+        "listingHearingDuration", new TypeReference<String>(){}),
+
     LISTING_LOCATION(
         "listingLocation", new TypeReference<ListingHearingCentre>(){}),
+
+    PREVIOUS_LISTING_DETAILS(
+        "previousListingDetails", new TypeReference<List<PreviousListingDetails>>() {}),
 
     HO_HAS_IMA_STATUS(
         "hoHasImaStatus", new TypeReference<YesOrNo>(){}),

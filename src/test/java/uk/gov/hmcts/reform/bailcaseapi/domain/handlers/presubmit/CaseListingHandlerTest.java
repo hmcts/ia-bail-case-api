@@ -3,18 +3,13 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.RELISTING;
 
@@ -22,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,11 +33,13 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.PreviousListingDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
 
@@ -52,7 +50,9 @@ class CaseListingHandlerTest {
 
     @Mock private Callback<BailCase> callback;
     @Mock private CaseDetails<BailCase> caseDetails;
+    @Mock private CaseDetails<BailCase> caseDetailsBefore;
     @Mock private BailCase bailCase;
+    @Mock private BailCase bailCaseBefore;
     @Mock private DueDateService dueDateService;
 
     @Captor
@@ -202,4 +202,116 @@ class CaseListingHandlerTest {
             .isExactlyInstanceOf(NullPointerException.class);
     }
 
+    @Test
+    void should_handle_relisting_without_previous_hearing_details_list() {
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+        when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.INITIAL_LISTING));
+        when(bailCaseBefore.read(LISTING_LOCATION, ListingHearingCentre.class)).thenReturn(Optional.of(ListingHearingCentre.BIRMINGHAM));
+        when(bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of(caseListHearingDate));
+        when(bailCaseBefore.read(LISTING_HEARING_DURATION, String.class)).thenReturn(Optional.of("60"));
+
+        PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+        verify(bailCaseBefore, times(1)).read(LISTING_EVENT, ListingEvent.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_LOCATION, ListingHearingCentre.class);
+        verify(bailCaseBefore, times(1)).read(LIST_CASE_HEARING_DATE, String.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_HEARING_DURATION, String.class);
+        List<PreviousListingDetails> prevListingDetails = List.of(new PreviousListingDetails(INITIAL_LISTING, ListingHearingCentre.BIRMINGHAM, caseListHearingDate, "60"));
+        verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), eq(prevListingDetails));
+    }
+
+    @Test
+    void should_handle_relisting_with_previous_hearing_details_list() {
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+        when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(RELISTING));
+        when(bailCaseBefore.read(LISTING_LOCATION, ListingHearingCentre.class))
+            .thenReturn(Optional.of(ListingHearingCentre.BELFAST));
+        when(bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of(caseListHearingDate));
+        when(bailCaseBefore.read(LISTING_HEARING_DURATION, String.class)).thenReturn(Optional.of("100"));
+        List<PreviousListingDetails> storedPrevListingDetails =
+            List.of(new PreviousListingDetails(INITIAL_LISTING,
+                                               ListingHearingCentre.BIRMINGHAM,
+                                               caseListHearingDate,
+                                               "60"));
+        when(bailCaseBefore.read(PREVIOUS_LISTING_DETAILS)).thenReturn(Optional.of(storedPrevListingDetails));
+        PreSubmitCallbackResponse<BailCase> response = caseListingHandler
+            .handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+        verify(bailCaseBefore, times(1)).read(LISTING_EVENT, ListingEvent.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_LOCATION, ListingHearingCentre.class);
+        verify(bailCaseBefore, times(1)).read(LIST_CASE_HEARING_DATE, String.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_HEARING_DURATION, String.class);
+        List<PreviousListingDetails> prevListingDetails =
+            List.of(new PreviousListingDetails(INITIAL_LISTING,
+                                               ListingHearingCentre.BIRMINGHAM,
+                                               caseListHearingDate,
+                                               "60"),
+                    new PreviousListingDetails(RELISTING,
+                                               ListingHearingCentre.BELFAST,
+                                               caseListHearingDate,
+                                               "100"));
+        verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), eq(prevListingDetails));
+    }
+
+    @Test
+    void should_throw_exception_when_initial_listing_event_is_missing() {
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+        when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.empty());
+
+        assertThrows(RequiredFieldMissingException.class, () -> {
+            caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        });
+    }
+
+    @Test
+    void should_throw_exception_when_initial_listing_location_is_missing() {
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+        when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.INITIAL_LISTING));
+        when(bailCaseBefore.read(LISTING_LOCATION, ListingHearingCentre.class)).thenReturn(Optional.empty());
+
+        assertThrows(RequiredFieldMissingException.class, () -> {
+            caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        });
+    }
+
+    @Test
+    void should_throw_exception_when_initial_listing_hearing_date_is_missing() {
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+        when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.INITIAL_LISTING));
+        when(bailCaseBefore.read(LISTING_LOCATION, ListingHearingCentre.class)).thenReturn(Optional.of(ListingHearingCentre.BIRMINGHAM));
+        when(bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.empty());
+
+        assertThrows(RequiredFieldMissingException.class, () -> {
+            caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        });
+    }
+
+    @Test
+    void should_throw_exception_when_initial_listing_hearing_duration_is_missing() {
+        when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+        when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.INITIAL_LISTING));
+        when(bailCaseBefore.read(LISTING_LOCATION, ListingHearingCentre.class)).thenReturn(Optional.of(ListingHearingCentre.BIRMINGHAM));
+        when(bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of(caseListHearingDate));
+        when(bailCaseBefore.read(LISTING_HEARING_DURATION, String.class)).thenReturn(Optional.empty());
+
+        assertThrows(RequiredFieldMissingException.class, () -> {
+            caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        });
+    }
 }
