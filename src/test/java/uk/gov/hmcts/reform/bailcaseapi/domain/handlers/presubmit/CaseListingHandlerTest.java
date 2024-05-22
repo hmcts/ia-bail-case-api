@@ -2,12 +2,13 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentCaptor.forClass;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -55,6 +56,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.PreviousListingDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -68,6 +70,7 @@ class CaseListingHandlerTest {
     @Mock private BailCase bailCase;
     @Mock private BailCase bailCaseBefore;
     @Mock private DueDateService dueDateService;
+    @Mock private Appender<PreviousListingDetails> previousListingDetailsAppender;
 
     @Captor
     private ArgumentCaptor<BailCaseFieldDefinition> bailExtractorCaptor;
@@ -79,7 +82,7 @@ class CaseListingHandlerTest {
 
     @BeforeEach
     public void setUp() {
-        caseListingHandler = new CaseListingHandler(dueDateService);
+        caseListingHandler = new CaseListingHandler(previousListingDetailsAppender, dueDateService);
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.CASE_LISTING);
@@ -233,17 +236,14 @@ class CaseListingHandlerTest {
         verify(bailCaseBefore, times(1)).read(LISTING_LOCATION, ListingHearingCentre.class);
         verify(bailCaseBefore, times(1)).read(LIST_CASE_HEARING_DATE, String.class);
         verify(bailCaseBefore, times(1)).read(LISTING_HEARING_DURATION, String.class);
-
-        ArgumentCaptor<List<IdValue<PreviousListingDetails>>> captor = forClass(List.class);
-        verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), captor.capture());
-
-        List<IdValue<PreviousListingDetails>> capturedArgument = captor.getValue();
-
-        assertNotNull(capturedArgument);
-        assertEquals(1, capturedArgument.size());
-        IdValue<PreviousListingDetails> idValue = capturedArgument.get(0);
-        assertNotNull(idValue.getId());
-        assertEquals(new PreviousListingDetails(ListingEvent.INITIAL_LISTING, ListingHearingCentre.BIRMINGHAM, caseListHearingDate, "60"), idValue.getValue());
+        verify(bailCase, times(1)).read(PREVIOUS_LISTING_DETAILS);
+        final PreviousListingDetails newPreviousListingDetails =
+            new PreviousListingDetails(ListingEvent.INITIAL_LISTING,
+                                       ListingHearingCentre.BIRMINGHAM,
+                                       caseListHearingDate,
+                                       "60");
+        verify(previousListingDetailsAppender, times(1)).append(newPreviousListingDetails, emptyList());
+        verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), any(List.class));
     }
 
     @Test
@@ -263,7 +263,7 @@ class CaseListingHandlerTest {
                                                "60"));
         List<IdValue<PreviousListingDetails>> idValueStoredPrevListingDetails = new ArrayList<>();
         idValueStoredPrevListingDetails.add(new IdValue<>("1", storedPrevListingDetails.get(0)));
-        when(bailCaseBefore.read(PREVIOUS_LISTING_DETAILS)).thenReturn(Optional.of(idValueStoredPrevListingDetails));
+        when(bailCase.read(PREVIOUS_LISTING_DETAILS)).thenReturn(Optional.of(idValueStoredPrevListingDetails));
 
         PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
@@ -273,22 +273,15 @@ class CaseListingHandlerTest {
         verify(bailCaseBefore, times(1)).read(LISTING_LOCATION, ListingHearingCentre.class);
         verify(bailCaseBefore, times(1)).read(LIST_CASE_HEARING_DATE, String.class);
         verify(bailCaseBefore, times(1)).read(LISTING_HEARING_DURATION, String.class);
-
-        ArgumentCaptor<List<IdValue<PreviousListingDetails>>> captor = forClass(List.class);
-        verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), captor.capture());
-
-        List<IdValue<PreviousListingDetails>> capturedArgument = captor.getValue();
-
-        assertNotNull(capturedArgument);
-        assertEquals(2, capturedArgument.size());
-
-        IdValue<PreviousListingDetails> firstIdValue = capturedArgument.get(0);
-        assertNotNull(firstIdValue.getId());
-        assertEquals(new PreviousListingDetails(ListingEvent.INITIAL_LISTING, ListingHearingCentre.BIRMINGHAM, caseListHearingDate, "60"), firstIdValue.getValue());
-
-        IdValue<PreviousListingDetails> secondIdValue = capturedArgument.get(1);
-        assertNotNull(secondIdValue.getId());
-        assertEquals(new PreviousListingDetails(ListingEvent.RELISTING, ListingHearingCentre.BELFAST, caseListHearingDate, "100"), secondIdValue.getValue());
+        verify(bailCase, times(1)).read(PREVIOUS_LISTING_DETAILS);
+        final PreviousListingDetails newPreviousListingDetails =
+            new PreviousListingDetails(ListingEvent.RELISTING,
+                                       ListingHearingCentre.BELFAST,
+                                       caseListHearingDate,
+                                       "100");
+        verify(previousListingDetailsAppender, times(1)).append(newPreviousListingDetails,
+                                                                idValueStoredPrevListingDetails);
+        verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), any(List.class));
     }
 
     @Test
