@@ -22,8 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
@@ -40,7 +38,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
 
 @Component
-@Slf4j
 public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
     private final Appender<PreviousListingDetails> previousListingDetailsAppender;
@@ -70,16 +67,12 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
         PreSubmitCallbackStage callbackStage,
         Callback<BailCase> callback
     ) {
-        log.info("can it handle event?");
         if (!canHandle(callbackStage, callback)) {
             throw new IllegalStateException("Cannot handle callback");
         }
-        log.info("it can handle");
         BailCase bailCase = callback.getCaseDetails().getCaseData();
-        log.info("bailcase obtained");
         ListingEvent listingEvent = bailCase.read(LISTING_EVENT, ListingEvent.class)
             .orElseThrow(() -> new RequiredFieldMissingException("listingEvent is not present"));
-        log.info("listingEvent: " + listingEvent);
         if (listingEvent == INITIAL_LISTING) {
             String hearingDate = bailCase.read(LIST_CASE_HEARING_DATE, String.class)
                 .orElseThrow(() -> new RequiredFieldMissingException("listingHearingDate is not present"));
@@ -115,33 +108,18 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
             bailCase.write(DATE_OF_COMPLIANCE, dueDate);
             bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
         } else if (listingEvent == RELISTING) {
-            log.info("Attempting to relist case");
             CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
             BailCase bailCaseBefore = caseDetailsBefore == null ? null : caseDetailsBefore.getCaseData();
-            log.info("bailCaseBefore: " + bailCaseBefore);
             if (bailCaseBefore != null) {
-                log.info("bailCaseBefore is not null");
                 ListingEvent prevListingEvent = bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)
                     .orElse(null);
-                if (prevListingEvent != null) {
-                    log.info("prevListingEvent:" + prevListingEvent);
-                }
                 ListingHearingCentre prevListingLocation = bailCaseBefore.read(LISTING_LOCATION,
                                                                                ListingHearingCentre.class)
                     .orElse(null);
-                if (prevListingLocation != null) {
-                    log.info("prevListingLocation:" + prevListingLocation);
-                }
                 String prevListingHearingDate = bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)
                     .orElse(null);
-                if (prevListingHearingDate != null) {
-                    log.info("prevListingHearingDate:" + prevListingHearingDate);
-                }
                 String prevListingHearingDuration = bailCaseBefore.read(LISTING_HEARING_DURATION, String.class)
                     .orElse(null);
-                if (prevListingHearingDuration != null) {
-                    log.info("prevListingHearingDuration:" + prevListingHearingDuration);
-                }
 
                 if (prevListingEvent == null || prevListingLocation == null || prevListingHearingDate == null || prevListingHearingDuration == null) {
                     PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
@@ -151,28 +129,14 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
                 Optional<List<IdValue<PreviousListingDetails>>> maybeExistingPreviousListingDetails =
                     bailCase.read(PREVIOUS_LISTING_DETAILS);
-                maybeExistingPreviousListingDetails.ifPresent(idValues -> log.info("maybeExistingPreviousListingDetails: " + idValues));
-                if (maybeExistingPreviousListingDetails.isEmpty()) {
-                    log.info("maybeExistingPreviousListingDetails is empty");
-                }
                 final PreviousListingDetails newPreviousListingDetails =
                     new PreviousListingDetails(prevListingEvent,
                                                prevListingLocation,
                                                prevListingHearingDate,
                                                prevListingHearingDuration);
-                log.info("newPreviousListingDetails: " + newPreviousListingDetails);
-                log.info(newPreviousListingDetails.getListingEvent().toString());
-                log.info(newPreviousListingDetails.getListingLocation().toString());
-                log.info(newPreviousListingDetails.getListingHearingDate());
-                log.info(newPreviousListingDetails.getListingHearingDuration());
                 List<IdValue<PreviousListingDetails>> allPreviousListingDetails =
                     previousListingDetailsAppender.append(newPreviousListingDetails,
                                                           maybeExistingPreviousListingDetails.orElse(emptyList()));
-                log.info("allPreviousListingDetails" + allPreviousListingDetails);
-                for (IdValue<PreviousListingDetails> element : allPreviousListingDetails) {
-                    log.info("id: " + element.getId());
-                    log.info("value: " + element.getValue());
-                }
 
                 bailCase.write(PREVIOUS_LISTING_DETAILS, allPreviousListingDetails);
 
