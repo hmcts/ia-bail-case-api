@@ -4,6 +4,7 @@ import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_BEEN_RELISTED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_HEARING_DURATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_LOCATION;
@@ -139,7 +140,7 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                                                           maybeExistingPreviousListingDetails.orElse(emptyList()));
 
                 bailCase.write(PREVIOUS_LISTING_DETAILS, allPreviousListingDetails);
-
+                bailCase.write(HAS_BEEN_RELISTED, YesOrNo.YES);
             }
         }
 

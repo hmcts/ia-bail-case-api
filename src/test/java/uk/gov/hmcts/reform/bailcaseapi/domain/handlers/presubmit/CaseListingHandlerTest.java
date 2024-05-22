@@ -13,15 +13,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_HEARING_DURATION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_LOCATION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREVIOUS_LISTING_DETAILS;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.RELISTING;
 
@@ -245,6 +237,7 @@ class CaseListingHandlerTest {
                                        "60");
         verify(previousListingDetailsAppender, times(1)).append(newPreviousListingDetails, emptyList());
         verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), any(List.class));
+        verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.YES);
     }
 
     @Test
@@ -283,6 +276,7 @@ class CaseListingHandlerTest {
         verify(previousListingDetailsAppender, times(1)).append(newPreviousListingDetails,
                                                                 idValueStoredPrevListingDetails);
         verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), any(List.class));
+        verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.YES);
     }
 
     @Test
