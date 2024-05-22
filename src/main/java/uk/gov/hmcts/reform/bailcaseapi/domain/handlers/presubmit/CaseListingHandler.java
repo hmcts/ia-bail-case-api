@@ -39,8 +39,8 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
 
-@Slf4j
 @Component
+@Slf4j
 public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
     private final Appender<PreviousListingDetails> previousListingDetailsAppender;
@@ -65,6 +65,7 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                && callback.getEvent() == Event.CASE_LISTING;
     }
 
+    @Override
     public PreSubmitCallbackResponse<BailCase> handle(
         PreSubmitCallbackStage callbackStage,
         Callback<BailCase> callback
