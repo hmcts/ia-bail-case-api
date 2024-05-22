@@ -70,15 +70,16 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
         PreSubmitCallbackStage callbackStage,
         Callback<BailCase> callback
     ) {
+        log.info("can it handle event?");
         if (!canHandle(callbackStage, callback)) {
             throw new IllegalStateException("Cannot handle callback");
         }
-
+        log.info("it can handle");
         BailCase bailCase = callback.getCaseDetails().getCaseData();
-
+        log.info("bailcase obtained");
         ListingEvent listingEvent = bailCase.read(LISTING_EVENT, ListingEvent.class)
             .orElseThrow(() -> new RequiredFieldMissingException("listingEvent is not present"));
-
+        log.info("listingEvent: " + listingEvent);
         if (listingEvent == INITIAL_LISTING) {
             String hearingDate = bailCase.read(LIST_CASE_HEARING_DATE, String.class)
                 .orElseThrow(() -> new RequiredFieldMissingException("listingHearingDate is not present"));
@@ -113,11 +114,11 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
             bailCase.write(SEND_DIRECTION_LIST, "Home Office");
             bailCase.write(DATE_OF_COMPLIANCE, dueDate);
             bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
-        }
-        if (listingEvent == RELISTING) {
+        } else if (listingEvent == RELISTING) {
             log.info("Attempting to relist case");
             CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
             BailCase bailCaseBefore = caseDetailsBefore == null ? null : caseDetailsBefore.getCaseData();
+            log.info("bailCaseBefore: " + bailCaseBefore);
             if (bailCaseBefore != null) {
                 log.info("bailCaseBefore is not null");
                 ListingEvent prevListingEvent = bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)
