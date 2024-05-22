@@ -30,9 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -291,9 +289,18 @@ class CaseListingHandlerTest {
         when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
         when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.empty());
 
-        assertThrows(RequiredFieldMissingException.class, () -> {
+        PreSubmitCallbackResponse<BailCase> response =
             caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        });
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+        verify(bailCaseBefore, times(1)).read(LISTING_EVENT, ListingEvent.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_LOCATION, ListingHearingCentre.class);
+        verify(bailCaseBefore, times(1)).read(LIST_CASE_HEARING_DATE, String.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_HEARING_DURATION, String.class);
+        Set<String> expectedErrors = new HashSet<>();
+        expectedErrors.add("Relisting is only available after an initial listing.");
+        assertEquals(response.getErrors(), expectedErrors);
     }
 
     @Test
@@ -304,9 +311,18 @@ class CaseListingHandlerTest {
         when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.INITIAL_LISTING));
         when(bailCaseBefore.read(LISTING_LOCATION, ListingHearingCentre.class)).thenReturn(Optional.empty());
 
-        assertThrows(RequiredFieldMissingException.class, () -> {
+        PreSubmitCallbackResponse<BailCase> response =
             caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        });
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+        verify(bailCaseBefore, times(1)).read(LISTING_EVENT, ListingEvent.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_LOCATION, ListingHearingCentre.class);
+        verify(bailCaseBefore, times(1)).read(LIST_CASE_HEARING_DATE, String.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_HEARING_DURATION, String.class);
+        Set<String> expectedErrors = new HashSet<>();
+        expectedErrors.add("Relisting is only available after an initial listing.");
+        assertEquals(response.getErrors(), expectedErrors);
     }
 
     @Test
@@ -318,9 +334,18 @@ class CaseListingHandlerTest {
         when(bailCaseBefore.read(LISTING_LOCATION, ListingHearingCentre.class)).thenReturn(Optional.of(ListingHearingCentre.BIRMINGHAM));
         when(bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.empty());
 
-        assertThrows(RequiredFieldMissingException.class, () -> {
+        PreSubmitCallbackResponse<BailCase> response =
             caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        });
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+        verify(bailCaseBefore, times(1)).read(LISTING_EVENT, ListingEvent.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_LOCATION, ListingHearingCentre.class);
+        verify(bailCaseBefore, times(1)).read(LIST_CASE_HEARING_DATE, String.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_HEARING_DURATION, String.class);
+        Set<String> expectedErrors = new HashSet<>();
+        expectedErrors.add("Relisting is only available after an initial listing.");
+        assertEquals(response.getErrors(), expectedErrors);
     }
 
     @Test
@@ -333,8 +358,17 @@ class CaseListingHandlerTest {
         when(bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of(caseListHearingDate));
         when(bailCaseBefore.read(LISTING_HEARING_DURATION, String.class)).thenReturn(Optional.empty());
 
-        assertThrows(RequiredFieldMissingException.class, () -> {
+        PreSubmitCallbackResponse<BailCase> response =
             caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        });
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+        verify(bailCaseBefore, times(1)).read(LISTING_EVENT, ListingEvent.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_LOCATION, ListingHearingCentre.class);
+        verify(bailCaseBefore, times(1)).read(LIST_CASE_HEARING_DATE, String.class);
+        verify(bailCaseBefore, times(1)).read(LISTING_HEARING_DURATION, String.class);
+        Set<String> expectedErrors = new HashSet<>();
+        expectedErrors.add("Relisting is only available after an initial listing.");
+        assertEquals(response.getErrors(), expectedErrors);
     }
 }

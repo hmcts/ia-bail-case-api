@@ -22,6 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
@@ -37,6 +39,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
 
+@Slf4j
 @Component
 public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
@@ -111,36 +114,66 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
             bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
         }
         if (listingEvent == RELISTING) {
+            log.info("Attempting to relist case");
             CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
             BailCase bailCaseBefore = caseDetailsBefore == null ? null : caseDetailsBefore.getCaseData();
             if (bailCaseBefore != null) {
+                log.info("bailCaseBefore is not null");
                 ListingEvent prevListingEvent = bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)
-                    .orElseThrow(() -> new RequiredFieldMissingException(
-                        "initial listingEvent must be present for relisting"));
+                    .orElse(null);
+                if (prevListingEvent != null) {
+                    log.info("prevListingEvent:" + prevListingEvent);
+                }
                 ListingHearingCentre prevListingLocation = bailCaseBefore.read(LISTING_LOCATION,
                                                                                ListingHearingCentre.class)
-                    .orElseThrow(() -> new RequiredFieldMissingException(
-                        "initial listingLocation must be present for relisting"));
+                    .orElse(null);
+                if (prevListingLocation != null) {
+                    log.info("prevListingLocation:" + prevListingLocation);
+                }
                 String prevListingHearingDate = bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)
-                    .orElseThrow(() -> new RequiredFieldMissingException(
-                        "initial listingHearingDate must be present for relisting"));
+                    .orElse(null);
+                if (prevListingHearingDate != null) {
+                    log.info("prevListingHearingDate:" + prevListingHearingDate);
+                }
                 String prevListingHearingDuration = bailCaseBefore.read(LISTING_HEARING_DURATION, String.class)
-                    .orElseThrow(() -> new RequiredFieldMissingException(
-                        "initial listingHearingDuration must be present for relisting"));
+                    .orElse(null);
+                if (prevListingHearingDuration != null) {
+                    log.info("prevListingHearingDuration:" + prevListingHearingDuration);
+                }
+
+                if (prevListingEvent == null || prevListingLocation == null || prevListingHearingDate == null || prevListingHearingDuration == null) {
+                    PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
+                    response.addError("Relisting is only available after an initial listing.");
+                    return response;
+                }
 
                 Optional<List<IdValue<PreviousListingDetails>>> maybeExistingPreviousListingDetails =
                     bailCase.read(PREVIOUS_LISTING_DETAILS);
+                maybeExistingPreviousListingDetails.ifPresent(idValues -> log.info("maybeExistingPreviousListingDetails: " + idValues));
+                if (maybeExistingPreviousListingDetails.isEmpty()) {
+                    log.info("maybeExistingPreviousListingDetails is empty");
+                }
                 final PreviousListingDetails newPreviousListingDetails =
                     new PreviousListingDetails(prevListingEvent,
                                                prevListingLocation,
                                                prevListingHearingDate,
                                                prevListingHearingDuration);
-
+                log.info("newPreviousListingDetails: " + newPreviousListingDetails);
+                log.info(newPreviousListingDetails.getListingEvent().toString());
+                log.info(newPreviousListingDetails.getListingLocation().toString());
+                log.info(newPreviousListingDetails.getListingHearingDate());
+                log.info(newPreviousListingDetails.getListingHearingDuration());
                 List<IdValue<PreviousListingDetails>> allPreviousListingDetails =
                     previousListingDetailsAppender.append(newPreviousListingDetails,
                                                           maybeExistingPreviousListingDetails.orElse(emptyList()));
+                log.info("allPreviousListingDetails" + allPreviousListingDetails);
+                for (IdValue<PreviousListingDetails> element : allPreviousListingDetails) {
+                    log.info("id: " + element.getId());
+                    log.info("value: " + element.getValue());
+                }
 
                 bailCase.write(PREVIOUS_LISTING_DETAILS, allPreviousListingDetails);
+
             }
         }
 
