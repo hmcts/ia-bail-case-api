@@ -623,6 +623,8 @@ public enum BailCaseFieldDefinition {
         "previousListingDetails", new TypeReference<List<IdValue<PreviousListingDetails>>>() {}),
     HAS_BEEN_RELISTED(
         "hasBeenRelisted", new TypeReference<YesOrNo>() {}),
+    PREVIOUS_DECISION_DETAILS(
+        "previousDecisionDetails", new TypeReference<List<IdValue<PreviousDecisionDetails>>>() {}),
     HO_HAS_IMA_STATUS(
         "hoHasImaStatus", new TypeReference<YesOrNo>(){}),
     ADMIN_HAS_IMA_STATUS(
