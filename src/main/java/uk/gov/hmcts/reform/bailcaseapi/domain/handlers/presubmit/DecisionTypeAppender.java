@@ -139,6 +139,7 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
                         maybeExistingPreviousDecisionDetails.orElseGet(Collections::emptyList)
                     );
                 bailCase.write(PREVIOUS_DECISION_DETAILS, allPreviousDecisionDetails);
+                bailCase.clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT);
             }
         }
 
