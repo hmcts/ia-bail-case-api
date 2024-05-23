@@ -459,6 +459,7 @@ class DecisionTypeAppenderTest {
             "some-date", "some-type", previousSignedDecisionDocument);
         verify(previousDecisionDetailsAppender, times(1)).append(newPreviousDecisionDetails, emptyList());
         verify(bailCase, times(1)).write(eq(PREVIOUS_DECISION_DETAILS), any(List.class));
+        verify(bailCase, times(1)).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT);
     }
 
     @Test
@@ -491,6 +492,7 @@ class DecisionTypeAppenderTest {
             "some-date", "some-type", previousSignedDecisionDocument);
         verify(previousDecisionDetailsAppender, times(1)).append(newPreviousDecisionDetails, idValueStoredPrevDecisionDetails);
         verify(bailCase, times(1)).write(eq(PREVIOUS_DECISION_DETAILS), any(List.class));
+        verify(bailCase, times(1)).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT);
     }
 
 }
