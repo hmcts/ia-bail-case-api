@@ -16,12 +16,15 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.FeatureToggleService;
+import uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,10 +41,17 @@ class StartApplicationSubmitHandlerTest {
     private BailCase bailCase;
     @Mock
     private FeatureToggleService featureToggleService;
+    @Mock
+    private InterpreterLanguagesUtils interpreterLanguagesUtils;
     private StartApplicationSubmitHandler startApplicationSubmitHandler;
 
     @BeforeEach
     public void setUp() {
+        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(bailCase.read(INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         startApplicationSubmitHandler = new StartApplicationSubmitHandler(featureToggleService);
     }
 
@@ -67,9 +77,6 @@ class StartApplicationSubmitHandlerTest {
     @CsvSource({"true", "false"})
     void should_set_bails_location_ref_data_field(boolean featureFlag) {
         when(featureToggleService.locationRefDataEnabled()).thenReturn(featureFlag);
-        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
 
         startApplicationSubmitHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback, callbackResponse);
         verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, featureFlag ? YesOrNo.YES : YesOrNo.NO);
@@ -101,12 +108,13 @@ class StartApplicationSubmitHandlerTest {
 
     @Test
     void handler_throws_error_if_cannot_actually_handle() {
-
+        when(callback.getEvent()).thenReturn(null);
         assertThatThrownBy(() -> startApplicationSubmitHandler.handle(ABOUT_TO_SUBMIT, callback, callbackResponse))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
 
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(callback.getCaseDetails()).thenReturn(null);
         assertThatThrownBy(() -> startApplicationSubmitHandler.handle(ABOUT_TO_SUBMIT, callback, callbackResponse))
             .isExactlyInstanceOf(NullPointerException.class);
 
