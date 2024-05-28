@@ -77,8 +77,7 @@ public class ApplicationDataRemoveHandlerTest {
                 boolean canHandle = applicationDataRemoveHandler.canHandle(callbackStage, callback);
                 assertThat(canHandle).isEqualTo(
                     callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-                        && (callback.getEvent() == Event.START_APPLICATION
-                            || event.equals(Event.EDIT_BAIL_APPLICATION)
+                        && (event.equals(Event.EDIT_BAIL_APPLICATION)
                             || event.equals(Event.MAKE_NEW_APPLICATION)
                             || event.equals(Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT))
                 );
