@@ -31,8 +31,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.DecisionType;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -449,8 +447,7 @@ class DecisionTypeAppenderTest {
         when(bailCaseBefore.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of("some-type"));
         when(bailCaseBefore.read(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class)).thenReturn(Optional.of(previousSignedDecisionDocument));
 
-        PreSubmitCallbackResponse<BailCase> response = decisionTypeAppender
-            .handle(ABOUT_TO_SUBMIT, callback);
+        decisionTypeAppender.handle(ABOUT_TO_SUBMIT, callback);
 
         verify(bailCase, times(1))
             .write(RECORD_DECISION_TYPE, DecisionType.GRANTED);
@@ -482,8 +479,7 @@ class DecisionTypeAppenderTest {
         idValueStoredPrevDecisionDetails.add(new IdValue<>("1", storedPrevDecisionDetails.get(0)));
         when(bailCase.read(PREVIOUS_DECISION_DETAILS)).thenReturn(Optional.of(idValueStoredPrevDecisionDetails));
 
-        PreSubmitCallbackResponse<BailCase> response = decisionTypeAppender
-            .handle(ABOUT_TO_SUBMIT, callback);
+        decisionTypeAppender.handle(ABOUT_TO_SUBMIT, callback);
 
         verify(bailCase, times(1))
             .write(RECORD_DECISION_TYPE, DecisionType.GRANTED);
