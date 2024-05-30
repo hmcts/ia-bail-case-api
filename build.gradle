@@ -41,7 +41,7 @@ def versions = [
   springDoc          : '1.6.8',
   sonarPitest        : '0.5',
   springHystrix      : '2.2.10.RELEASE',
-  pact_version       : '4.2.14',
+  pact_version       : '4.1.7',
   snakeyaml          : '2.0'
 ]
 
@@ -230,8 +230,8 @@ sonarqube {
     property "sonar.pitest.mode", "reuseReport"
     property "sonar.pitest.reportsDirectory", "build/reports/pitest"
     property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/config/**," +
-      "src/main/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/SystemDateProvider.java," +
-      "src/main/java/uk/gov/hmcts/reform/bailcaseapi/Application.java"
+                                 "src/main/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/SystemDateProvider.java," +
+                                 "src/main/java/uk/gov/hmcts/reform/bailcaseapi/Application.java"
   }
 }
 
@@ -383,7 +383,11 @@ dependencies {
 
 
   //pact contract testing
+  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
   contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: versions.pact_version
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: versions.pact_version
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: versions.pact_version
   contractTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiter
   contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiter
