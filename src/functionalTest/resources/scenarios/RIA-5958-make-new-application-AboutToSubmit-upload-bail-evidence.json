@@ -1,6 +1,5 @@
 {
   "description": "Make new application by admin - with bail evidence attached",
-  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",

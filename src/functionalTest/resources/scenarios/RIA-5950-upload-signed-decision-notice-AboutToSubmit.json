@@ -1,6 +1,5 @@
 {
   "description": "uploadSignedDecisionNotice - About to submit test",
-  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",

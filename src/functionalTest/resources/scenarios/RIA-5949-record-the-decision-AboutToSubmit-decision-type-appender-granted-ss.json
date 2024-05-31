@@ -1,6 +1,5 @@
 {
   "description": "RIA-5949 Record the decision - append decision type GRANTED (ssConsentDecision)",
-  "disabled": "true",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
