@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpackage uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +56,7 @@ class HearingCentreTest extends SpringBootIntegrationTest {
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Whitemoor"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Woodhill"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Five Wells"));
+        assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Fosse Way"));
 
         assertEquals(HearingCentre.BRADFORD, hearingCentreFinder.find("Acklington"));
         assertEquals(HearingCentre.BRADFORD, hearingCentreFinder.find("Askham Grange"));
