@@ -1,4 +1,4 @@
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpackage uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
+package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
