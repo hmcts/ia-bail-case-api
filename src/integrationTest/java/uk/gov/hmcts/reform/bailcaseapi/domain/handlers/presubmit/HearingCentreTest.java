@@ -122,6 +122,7 @@ class HearingCentreTest extends SpringBootIntegrationTest {
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Lewes"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Parkhurst"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Send"));
+        assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Thameside"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("The Mount"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Wandsworth"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Winchester"));

@@ -40,8 +40,8 @@ hearingCentreMappings:
     - "Whatton"
     - "Whitemoor"
     - "Woodhill"
-    - "Five Wells"    
-    - "Fosse Way"        
+    - "Five Wells"
+    - "Fosse Way"
   bradford:
     - "Acklington"
     - "Askham Grange"
@@ -107,6 +107,7 @@ hearingCentreMappings:
     - "Lewes"
     - "Parkhurst"
     - "Send"
+    - "Thameside"
     - "The Mount"
     - "Wandsworth"
     - "Winchester"
