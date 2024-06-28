@@ -72,6 +72,8 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             AGREES_TO_BOUND_BY_FINANCIAL_COND,YesOrNo.class);
         final Optional<YesOrNo> optionalTransferBailManagement = bailCase.read(
             TRANSFER_BAIL_MANAGEMENT_OPTION,YesOrNo.class);
+        final Optional<YesOrNo> optionalTransferBailManagementObjection = bailCase.read(
+            TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class);
 
         final Optional<YesOrNo> optionalFcsInterpreter = bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class);
         final YesOrNo hasFinancialConditionSupporter1 = bailCase.read(
@@ -100,6 +102,20 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             YesOrNo transferBailManagementValue = optionalTransferBailManagement.get();
 
             if (transferBailManagementValue.equals(YES)) {
+                bailCase.remove(NO_TRANSFER_BAIL_MANAGEMENT_REASONS);
+            }
+        }
+
+        if (optionalTransferBailManagementObjection.isPresent()){
+            YesOrNo transferBailManagementObjectionValue = optionalTransferBailManagementObjection.get();
+            if (transferBailManagementObjectionValue.equals(YesOrNo.NO)) {
+                bailCase.remove(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS);
+            }
+
+            if (bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class).isPresent()) {
+                bailCase.remove(TRANSFER_BAIL_MANAGEMENT_OPTION);
+            }
+            if (bailCase.read(NO_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class).isPresent()) {
                 bailCase.remove(NO_TRANSFER_BAIL_MANAGEMENT_REASONS);
             }
         }
@@ -223,7 +239,7 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
             if (hasFinancialConditionSupporter1.equals(NO)) {
                 log.info("Clearing Financial Supporter details from bail application case data");
                 bailCase.write(FCS_INTERPRETER_YESNO, NO);
-                clearHasFinancialSupporter(bailCase, "");
+                bailCase.write(HAS_FINANCIAL_COND_SUPPORTER, NO);
                 clearHasFinancialSupporter(bailCase, "2");
                 clearHasFinancialSupporter(bailCase, "3");
                 clearHasFinancialSupporter(bailCase, "4");

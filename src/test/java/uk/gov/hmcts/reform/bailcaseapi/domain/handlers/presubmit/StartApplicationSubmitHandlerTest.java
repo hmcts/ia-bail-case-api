@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
+
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 
@@ -38,6 +39,7 @@ class StartApplicationSubmitHandlerTest {
     private BailCase bailCase;
     @Mock
     private FeatureToggleService featureToggleService;
+  
     private StartApplicationSubmitHandler startApplicationSubmitHandler;
 
     @BeforeEach
@@ -101,7 +103,6 @@ class StartApplicationSubmitHandlerTest {
 
     @Test
     void handler_throws_error_if_cannot_actually_handle() {
-
         assertThatThrownBy(() -> startApplicationSubmitHandler.handle(ABOUT_TO_SUBMIT, callback, callbackResponse))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
