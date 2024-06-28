@@ -10,11 +10,20 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackStateHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.FeatureToggleService;
+import uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils;
+import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_INTERPRETER_SIGN_LANGUAGE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_INTERPRETER_SPOKEN_LANGUAGE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.FCS_INTERPRETER_YESNO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.INTERPRETER_YESNO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils.FCS_N_INTERPRETER_LANGUAGE_CATEGORY_FIELD;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils.FCS_N_INTERPRETER_SIGN_LANGUAGE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils.FCS_N_INTERPRETER_SPOKEN_LANGUAGE;
 
 @Slf4j
 @Component
@@ -50,6 +59,37 @@ public class StartApplicationSubmitHandler implements PreSubmitCallbackStateHand
         YesOrNo isBailsLocationReferenceDataEnabled = featureToggleService.locationRefDataEnabled() ? YES : NO;
         bailCase.write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, isBailsLocationReferenceDataEnabled);
 
+        boolean isApplicantInterpreterNeeded = bailCase.read(INTERPRETER_YESNO, YesOrNo.class)
+            .map(yesOrNo -> Objects.equals(yesOrNo, YES))
+            .orElse(false);
+
+        if (isApplicantInterpreterNeeded) {
+            InterpreterLanguagesUtils.sanitizeInterpreterLanguageRefDataComplexType(
+                bailCase,
+                APPLICANT_INTERPRETER_SPOKEN_LANGUAGE
+            );
+            InterpreterLanguagesUtils.sanitizeInterpreterLanguageRefDataComplexType(
+                bailCase,
+                APPLICANT_INTERPRETER_SIGN_LANGUAGE
+            );
+        }
+
+        boolean isFcsInterpreterNeeded = bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class)
+            .map(yesOrNo -> Objects.equals(yesOrNo, YES))
+            .orElse(false);
+
+        if (isFcsInterpreterNeeded) {
+            for (int i = 0; i < FCS_N_INTERPRETER_LANGUAGE_CATEGORY_FIELD.size(); i++) {
+                InterpreterLanguagesUtils.sanitizeInterpreterLanguageRefDataComplexType(
+                    bailCase,
+                    FCS_N_INTERPRETER_SPOKEN_LANGUAGE.get(i)
+                );
+                InterpreterLanguagesUtils.sanitizeInterpreterLanguageRefDataComplexType(
+                    bailCase,
+                    FCS_N_INTERPRETER_SIGN_LANGUAGE.get(i)
+                );
+            }
+        }
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 }
