@@ -25,6 +25,8 @@ class HearingCentreTest extends SpringBootIntegrationTest {
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Bullingdon"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Eastwood Park"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Featherstone"));
+        assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Five Wells"));
+        assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Fosse Way"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Foston Hall"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Gartree"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Glen Parva"));
@@ -55,8 +57,6 @@ class HearingCentreTest extends SpringBootIntegrationTest {
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Whatton"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Whitemoor"));
         assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Woodhill"));
-        assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Five Wells"));
-        assertEquals(HearingCentre.BIRMINGHAM, hearingCentreFinder.find("Fosse Way"));
 
         assertEquals(HearingCentre.BRADFORD, hearingCentreFinder.find("Acklington"));
         assertEquals(HearingCentre.BRADFORD, hearingCentreFinder.find("Askham Grange"));
@@ -186,11 +186,21 @@ class HearingCentreTest extends SpringBootIntegrationTest {
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Rochester"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Standford Hill"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Swaleside"));
+        assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Thameside"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Tinsley House"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Warren Hill"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Wayland"));
 
         assertEquals(HearingCentre.YARLSWOOD, hearingCentreFinder.find("Yarlswood"));
+
+        assertEquals(HearingCentre.UNKNOWN, hearingCentreFinder.find("Berwyn"));
+        assertEquals(HearingCentre.UNKNOWN, hearingCentreFinder.find("Bure"));
+        assertEquals(HearingCentre.UNKNOWN, hearingCentreFinder.find("Hatfield"));
+        assertEquals(HearingCentre.UNKNOWN, hearingCentreFinder.find("Humber"));
+        assertEquals(HearingCentre.UNKNOWN, hearingCentreFinder.find("Isle of Wight"));
+        assertEquals(HearingCentre.UNKNOWN, hearingCentreFinder.find("Northumberland"));
+        assertEquals(HearingCentre.UNKNOWN, hearingCentreFinder.find("Oakwood"));
+        assertEquals(HearingCentre.UNKNOWN, hearingCentreFinder.find("The Verne"));
 
     }
 }

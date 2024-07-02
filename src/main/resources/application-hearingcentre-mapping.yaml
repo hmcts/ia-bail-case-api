@@ -10,6 +10,8 @@ hearingCentreMappings:
     - "Bullingdon"
     - "Eastwood Park"
     - "Featherstone"
+    - "Five Wells"
+    - "Fosse Way"
     - "Foston Hall"
     - "Gartree"
     - "Glen Parva"
@@ -40,8 +42,6 @@ hearingCentreMappings:
     - "Whatton"
     - "Whitemoor"
     - "Woodhill"
-    - "Five Wells"    
-    - "Fosse Way"        
   bradford:
     - "Acklington"
     - "Askham Grange"
@@ -171,14 +171,18 @@ hearingCentreMappings:
     - "Rochester"
     - "Standford Hill"
     - "Swaleside"
+    - "Thameside"
     - "Tinsley House"
     - "Warren Hill"
     - "Wayland"
   yarlswood:
     - "Yarlswood"
-
-
-
-
-
-
+  unknown:
+    - "Berwyn"
+    - "Bure"
+    - "Hatfield"
+    - "Humber"
+    - "Isle of Wight"
+    - "Northumberland"
+    - "Oakwood"
+    - "The Verne"
