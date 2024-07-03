@@ -122,7 +122,6 @@ class HearingCentreTest extends SpringBootIntegrationTest {
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Lewes"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Parkhurst"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Send"));
-        assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Thameside"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("The Mount"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Wandsworth"));
         assertEquals(HearingCentre.HATTON_CROSS, hearingCentreFinder.find("Winchester"));
@@ -187,6 +186,7 @@ class HearingCentreTest extends SpringBootIntegrationTest {
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Rochester"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Standford Hill"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Swaleside"));
+        assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Thameside"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Tinsley House"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Warren Hill"));
         assertEquals(HearingCentre.TAYLOR_HOUSE, hearingCentreFinder.find("Wayland"));
