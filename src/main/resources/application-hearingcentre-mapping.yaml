@@ -25,6 +25,7 @@ hearingCentreMappings:
     - "Morton Hall"
     - "North Sea Camp"
     - "Nottingham"
+    - "Oakwood"
     - "Onley"
     - "Peterborough"
     - "Reading"
@@ -51,8 +52,10 @@ hearingCentreMappings:
     - "Everthorpe"
     - "Frankland"
     - "Full Sutton"
+    - "Hatfield"
     - "Holme House"
     - "Hull"
+    - "Humber"
     - "Kirklevington Grange"
     - "Leeds"
     - "Lindholme"
@@ -87,6 +90,7 @@ hearingCentreMappings:
     - "Perth"
     - "Polmont"
     - "Shotts"
+    - "Stirling"
   hattonCross:
     - "Albany"
     - "Brixton"
@@ -100,6 +104,7 @@ hearingCentreMappings:
     - "High Down"
     - "Holloway"
     - "Huntercombe"
+    - "Isle of Wight"
     - "Kingston"
     - "Latchmere House"
     - "Lewes"
@@ -111,6 +116,7 @@ hearingCentreMappings:
     - "Wormwood Scrubs"
   manchester:
     - "Altcourse"
+    - "Berwyn"
     - "Buckley Hall"
     - "Dovegate"
     - "Drake Hall"
@@ -130,6 +136,8 @@ hearingCentreMappings:
     - "Thorn Cross"
     - "Werrington"
     - "Wymott"
+  newcastle:
+    - "Northumberland"
   newport:
     - "Ashfield"
     - "Bristol"
@@ -145,6 +153,7 @@ hearingCentreMappings:
     - "Prescoed"
     - "Shepton Mallet"
     - "Swansea"
+    - "The Verne"
     - "The Weare"
     - "Usk"
   taylorHouse:
@@ -153,6 +162,7 @@ hearingCentreMappings:
     - "Blundeston"
     - "Brookhouse"
     - "Bullwood Hall"
+    - "Bure"
     - "Canterbury"
     - "Chelmsford"
     - "Cookham Wood"
