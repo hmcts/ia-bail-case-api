@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import static java.util.Objects.isNull;
+import static org.hibernate.validator.internal.util.StringHelper.isNullOrEmptyString;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.AGREES_TO_BOUND_BY_FINANCIAL_COND;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPEAL_REFERENCE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_ADDRESS;
@@ -14,6 +15,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_GIVEN_NAMES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_HAS_ADDRESS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_HAS_MOBILE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_INTERPRETER_SIGN_LANGUAGE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_INTERPRETER_SPOKEN_LANGUAGE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_MOBILE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_NATIONALITIES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_PRISON_DETAILS;
@@ -34,6 +37,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.FINANCIAL_COND_AMOUNT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.GROUNDS_FOR_BAIL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING_UT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_DOCUMENTS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_REFERENCE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.INTERPRETER_LANGUAGES;
@@ -42,24 +47,32 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_LEGALLY_REPRESENTED_FOR_FLAG;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_COMPANY;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_EMAIL_ADDRESS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_FAMILY_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_PHONE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LEGAL_REP_REFERENCE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_LOCATION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NO_TRANSFER_BAIL_MANAGEMENT_REASONS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASONS_JUDGE_IS_MINDED_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASON_FOR_REFUSAL_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST_IMA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SECRETARY_OF_STATE_REFUSAL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SIGNED_DECISION_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_REFUSAL_REASON;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UT_APPEAL_REFERENCE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.VIDEO_HEARING_YESNO;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +83,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.bailcaseapi.domain.BailCaseUtils;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
@@ -77,6 +91,8 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseNote;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Direction;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithMetadata;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.InterpreterLanguageRefData;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.AddressUK;
@@ -87,6 +103,12 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 @Service
 public class ShowPreviousApplicationService {
 
+
+    private static final DateTimeFormatter HEARING_DATE_DISPLAY_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm");
+
+    public ShowPreviousApplicationService() {
+        // Default constructor
+    }
 
     public String getDecisionLabel(BailCase previousBailCase, Value selectedApplicationValue) {
         String decisionDetails = selectedApplicationValue.getLabel().contains("Ended")
@@ -101,12 +123,14 @@ public class ShowPreviousApplicationService {
             || previousBailCase.read(TRIBUNAL_DOCUMENTS_WITH_METADATA).isPresent()
             || previousBailCase.read(HOME_OFFICE_DOCUMENTS_WITH_METADATA).isPresent()
             || previousBailCase.read(SIGNED_DECISION_DOCUMENTS_WITH_METADATA).isPresent()
+            || previousBailCase.read(HEARING_DOCUMENTS).isPresent()
         ) {
             return "|Documents||\n|--------|--------|\n"
                 + getApplicantDocumentsDetails(previousBailCase)
                 + getTribunalDocumentsDetails(previousBailCase)
                 + getHODocumentsDetails(previousBailCase)
-                + getDecisionDocumentsDetails(previousBailCase);
+                + getDecisionDocumentsDetails(previousBailCase)
+                + getHearingDocumentsDetails(previousBailCase);
         }
         return null;
     }
@@ -120,7 +144,7 @@ public class ShowPreviousApplicationService {
             String directionDetails = directions
                 .stream()
                 .map((idValue) -> "Directions " + index.incrementAndGet()
-                    + "<br>*Explanation:* " + idValue.getValue().getSendDirectionDescription()
+                    + "<br>*Explanation:* " + idValue.getValue().getSendDirectionDescription().replaceAll("\n", "<br>")
                     + "<br>*Parties:* " + idValue.getValue().getSendDirectionList()
                     + "<br>*Date due:* " + formatDate(idValue.getValue().getDateOfCompliance())
                     + "<br>*Date sent:* " + formatDate(idValue.getValue().getDateSent())
@@ -150,9 +174,25 @@ public class ShowPreviousApplicationService {
                     + "<br>*Date added:* " + formatDate(idValue.getValue().getDateAdded())
                     + "<br>")
                 .collect(Collectors.joining("<br>"));
-            return label + caseNoteDetails;
+            return label + caseNoteDetails + "|\n";
         }
         return null;
+    }
+
+    public String getHearingDetails(BailCase previousBailCase) {
+        Optional<ListingHearingCentre> maybeHearingCentre = previousBailCase.read(LISTING_LOCATION, ListingHearingCentre.class);
+        StringBuilder stringBuilder = new StringBuilder();
+        if (maybeHearingCentre.isPresent()) {
+            final String listingHearingDate = previousBailCase.read(LIST_CASE_HEARING_DATE, String.class).orElse("");
+            stringBuilder.append("|Hearing details||\n|--------|--------|\n");
+            stringBuilder.append("|Location|")
+                .append(maybeHearingCentre.get().getLabel())
+                .append("|\n")
+                .append("|Date and time|")
+                .append(formatDateForRendering(listingHearingDate))
+                .append("|\n");
+        }
+        return stringBuilder.toString();
     }
 
     public String getHearingReqDetails(BailCase previousBailCase) {
@@ -165,13 +205,31 @@ public class ShowPreviousApplicationService {
         if (previousBailCase.read(INTERPRETER_YESNO, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             Optional<List<IdValue<InterpreterLanguage>>> mayBeInterpreterLangs =
                 previousBailCase.read(INTERPRETER_LANGUAGES);
-            interpreterLang = mayBeInterpreterLangs.orElseThrow(getErrorThrowable(INTERPRETER_LANGUAGES)).stream()
-                .map(idValue -> idValue.getValue().getLanguage()
-                    + " (" + idValue.getValue().getLanguageDialect() + ")")
-                .collect(Collectors.joining("<br>"));
-            stringBuilder.append("|Language|")
-                .append(interpreterLang)
-                .append("|\n");
+
+            if (mayBeInterpreterLangs.isPresent()) {
+                // Interpreter language from prior to List Assist
+                interpreterLang = mayBeInterpreterLangs.orElseThrow(getErrorThrowable(INTERPRETER_LANGUAGES)).stream()
+                    .map(idValue -> idValue.getValue().getLanguage()
+                        + " (" + idValue.getValue().getLanguageDialect() + ")")
+                    .collect(Collectors.joining("<br>"));
+                stringBuilder.append("|Language|")
+                    .append(interpreterLang)
+                    .append("|\n");
+            } else {
+                Optional<InterpreterLanguageRefData> mayBeInterpreterLanguage =
+                    previousBailCase.read(APPLICANT_INTERPRETER_SPOKEN_LANGUAGE);
+                if (mayBeInterpreterLanguage.isPresent()) {
+                    interpreterLang = constructInterpreterLanguageString(mayBeInterpreterLanguage, "Spoken language Interpreter");
+                    stringBuilder.append(interpreterLang);
+                }
+                mayBeInterpreterLanguage =
+                    previousBailCase.read(APPLICANT_INTERPRETER_SIGN_LANGUAGE);
+                if (mayBeInterpreterLanguage.isPresent()) {
+                    interpreterLang = constructInterpreterLanguageString(mayBeInterpreterLanguage, "Sign language Interpreter");
+                    stringBuilder.append(interpreterLang);
+                }
+            }
+
         }
 
         stringBuilder.append("|Disability|")
@@ -192,6 +250,13 @@ public class ShowPreviousApplicationService {
         stringBuilder.append("|\n");
 
         return stringBuilder.toString();
+    }
+
+    private String formatDateForRendering(String date) {
+        if (isNullOrEmptyString(date)) {
+            return "";
+        }
+        return LocalDateTime.parse(date).format(HEARING_DATE_DISPLAY_FORMAT);
     }
 
     public String getSubmissionDetails(BailCase previousBailCase) {
@@ -289,6 +354,21 @@ public class ShowPreviousApplicationService {
                 .append("|\n");
         }
 
+        if (BailCaseUtils.isImaEnabled(previousBailCase)) {
+            stringBuilder.append("|Pending appeal hearing in UT|")
+                .append(previousBailCase.read(HAS_APPEAL_HEARING_PENDING_UT).orElse(YesOrNo.NO))
+                .append("|\n");
+
+            if (previousBailCase.read(HAS_APPEAL_HEARING_PENDING_UT)
+                .orElse(YesOrNo.NO.toString()).equals(YesOrNo.YES.toString())) {
+                stringBuilder
+                    .append("|Pending appeal reference number in UT|")
+                    .append(previousBailCase.read(UT_APPEAL_REFERENCE_NUMBER)
+                                .orElseThrow(getErrorThrowable(UT_APPEAL_REFERENCE_NUMBER)))
+                    .append("|\n");
+            }
+        }
+
         stringBuilder.append("|Address if bail granted|")
             .append(previousBailCase.read(APPLICANT_HAS_ADDRESS, YesOrNo.class).orElse(YesOrNo.NO))
             .append("|\n");
@@ -334,12 +414,15 @@ public class ShowPreviousApplicationService {
         BailCaseFieldDefinition supporterNationality,
         BailCaseFieldDefinition supporterHasPassport,
         BailCaseFieldDefinition supporterPassport,
-        BailCaseFieldDefinition financialAmountSupporterUndertakes
+        BailCaseFieldDefinition financialAmountSupporterUndertakes,
+        BailCaseFieldDefinition spokenLanguageInterpreter,
+        BailCaseFieldDefinition signLanguageInterpreter
     ) {
         if (previousBailCase.read(hasFinancialCondSupporter, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
-
+            String index = StringUtils.substringAfter(hasFinancialCondSupporter.toString(), "HAS_FINANCIAL_COND_SUPPORTER").replace("_", "");
+            index = index.isEmpty() ? "1" : index;
             StringBuilder stringBuilder =
-                new StringBuilder("|Financial condition supporter 1||\n|--------|--------|\n");
+                new StringBuilder("|Financial condition supporter " + index + "||\n|--------|--------|\n");
             stringBuilder.append("|Financial condition supporter|Yes|\n")
                 .append("|Given names|")
                 .append(previousBailCase.read(supporterGivenNames)
@@ -395,16 +478,29 @@ public class ShowPreviousApplicationService {
                 .append("|\n");
 
             stringBuilder.append("|Passport number|")
-                .append(previousBailCase.read(supporterHasPassport).orElse(YesOrNo.NO))
+                .append(previousBailCase.read(supporterHasPassport, YesOrNo.class).orElse(YesOrNo.NO))
                 .append("|\n");
 
-            if (previousBailCase.read(supporterHasPassport).orElse(YesOrNo.NO).equals("Yes")) {
+            Optional<String> mayBeSupporterPassportNumber = previousBailCase.read(supporterPassport);
+
+            if (previousBailCase.read(supporterHasPassport, YesOrNo.class).orElse(YesOrNo.NO).equals(YesOrNo.YES)
+                && mayBeSupporterPassportNumber.isPresent()) {
                 stringBuilder.append("|Passport number|")
                     .append(previousBailCase.read(supporterPassport)
-                                .orElseThrow(getErrorThrowable(supporterPassport)))
+                        .orElseThrow(getErrorThrowable(supporterPassport)))
                     .append("|\n");
             }
 
+            Optional<InterpreterLanguageRefData> mayBeInterpreterLanguage =
+                    previousBailCase.read(spokenLanguageInterpreter);
+            if (mayBeInterpreterLanguage.isPresent()) {
+                stringBuilder.append(constructInterpreterLanguageString(mayBeInterpreterLanguage, "Spoken language Interpreter"));
+            }
+            mayBeInterpreterLanguage =
+                    previousBailCase.read(signLanguageInterpreter);
+            if (mayBeInterpreterLanguage.isPresent()) {
+                stringBuilder.append(constructInterpreterLanguageString(mayBeInterpreterLanguage, "Sign language Interpreter"));
+            }
             stringBuilder.append("|Financial condition amount (£)|")
                 .append(previousBailCase.read(financialAmountSupporterUndertakes)
                             .orElseThrow(getErrorThrowable(financialAmountSupporterUndertakes)))
@@ -424,18 +520,37 @@ public class ShowPreviousApplicationService {
                         .replaceAll("[\\n]", "<br>"))
             .append("|\n");
 
-        stringBuilder
-            .append("|Transfer bail management|")
-            .append(previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class).orElse(YesOrNo.YES))
-            .append("|\n");
-
-        if (previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class).orElse(YesOrNo.YES) == YesOrNo.NO) {
+        if (previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class).isPresent()) {
+            YesOrNo transferBailManagementObjectionValue = previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class).orElse(YesOrNo.NO);
+            String transferBailManagementObjectionValueText = transferBailManagementObjectionValue == YesOrNo.YES ? "The applicant objects to the management being transferred": "The applicant consents to the management being transferred";
             stringBuilder
-                .append("|Reasons applicant does not consent to bail transfer|")
-                .append(previousBailCase.read(NO_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class)
-                            .orElseThrow(getErrorThrowable(NO_TRANSFER_BAIL_MANAGEMENT_REASONS))
-                            .replaceAll("[\\n]", "<br>"))
+                .append("|Transfer of management to the Home Office|")
+                .append(transferBailManagementObjectionValueText)
                 .append("|\n");
+
+            if (transferBailManagementObjectionValue == YesOrNo.YES) {
+                stringBuilder
+                    .append("|Reasons why the applicant objects to the management of bail being transferred to the Home Office|")
+                    .append(previousBailCase.read(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class)
+                                .orElseThrow(getErrorThrowable(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS))
+                                .replaceAll("[\\n]", "<br>"))
+                    .append("|\n");
+            }
+        } else {
+            YesOrNo transferBailManagementValue = previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class).orElse(YesOrNo.YES);
+            stringBuilder
+                .append("|Transfer bail management|")
+                .append(transferBailManagementValue)
+                .append("|\n");
+
+            if (transferBailManagementValue == YesOrNo.NO) {
+                stringBuilder
+                    .append("|Reasons applicant does not consent to bail transfer|")
+                    .append(previousBailCase.read(NO_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class)
+                                .orElseThrow(getErrorThrowable(NO_TRANSFER_BAIL_MANAGEMENT_REASONS))
+                                .replaceAll("[\\n]", "<br>"))
+                    .append("|\n");
+            }
         }
         return stringBuilder.toString();
     }
@@ -450,6 +565,8 @@ public class ShowPreviousApplicationService {
                 .append("|\n|Name|")
                 .append(previousBailCase.read(LEGAL_REP_NAME)
                             .orElseThrow(getErrorThrowable(LEGAL_REP_NAME)))
+                .append("|\n|Family name|")
+                .append(previousBailCase.read(LEGAL_REP_FAMILY_NAME).orElse(""))
                 .append("|\n|Email address|")
                 .append(previousBailCase.read(LEGAL_REP_EMAIL_ADDRESS)
                             .orElseThrow(getErrorThrowable(LEGAL_REP_EMAIL_ADDRESS)))
@@ -483,8 +600,9 @@ public class ShowPreviousApplicationService {
             .equalsIgnoreCase("refused");
 
         if (isRefused) {
-            boolean isMindedToGrant = previousBailCase.read(RECORD_THE_DECISION_LIST, String.class)
-                .orElse("")
+            boolean isMindedToGrant = (BailCaseUtils.isImaEnabled(previousBailCase)
+                ? previousBailCase.read(RECORD_THE_DECISION_LIST_IMA, String.class).orElse("")
+                : previousBailCase.read(RECORD_THE_DECISION_LIST, String.class).orElse(""))
                 .equalsIgnoreCase("mindedToGrant");
 
             if (isMindedToGrant) {
@@ -652,6 +770,13 @@ public class ShowPreviousApplicationService {
             ? "" : getDetailsForGivenCollection(mayBeTribunalDocs, "Tribunal") + "|\n";
     }
 
+    private String getHearingDocumentsDetails(BailCase previousBailCase) {
+        Optional<List<IdValue<DocumentWithMetadata>>> mayBeHearingDocs = previousBailCase
+            .read(HEARING_DOCUMENTS);
+        return mayBeHearingDocs.isEmpty()
+            ? "" : getDetailsForGivenCollection(mayBeHearingDocs, "Hearing") + "|\n";
+    }
+
     private String getDecisionDocumentsDetails(BailCase previousBailCase) {
         Optional<List<IdValue<DocumentWithMetadata>>> mayBeUnsignedDecisionDoc = previousBailCase
             .read(SIGNED_DECISION_DOCUMENTS_WITH_METADATA);
@@ -707,5 +832,19 @@ public class ShowPreviousApplicationService {
     private String formatDate(String date) {
         return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE)
             .format(DateTimeFormatter.ofPattern("d MMM yyyy"));
+    }
+
+    private String constructInterpreterLanguageString(Optional<InterpreterLanguageRefData> interpreterLanguageRefData, String typeOfLanguage) {
+        StringBuilder interpreterLanguageString = new StringBuilder();
+        interpreterLanguageString.append("|" + typeOfLanguage + "|");
+        interpreterLanguageRefData.ifPresent(language -> {
+            if (language.getLanguageRefData() != null) {
+                interpreterLanguageString.append(language.getLanguageRefData().getValue().getLabel());
+            } else if (language.getLanguageManualEntry() != null && language.getLanguageManualEntry().equals("Yes")) {
+                interpreterLanguageString.append(language.getLanguageManualEntryDescription());
+            }
+        });
+        interpreterLanguageString.append("|\n");
+        return interpreterLanguageString.toString();
     }
 }

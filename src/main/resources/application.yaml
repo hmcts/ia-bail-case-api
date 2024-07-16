@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8099}
+  port: ${PORT:8686}
 
 management:
   endpoint:
@@ -74,6 +74,7 @@ security:
   roleEventAccess:
     caseworker-ia-system:
       - "clearLegalRepresentativeDetails"
+      - "caseListing"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
@@ -110,6 +111,11 @@ security:
       - "createBailCaseLink"
       - "maintainBailCaseLinks"
       - "createFlag"
+      - "confirmDetentionLocation"
+      - "updateInterpreterDetails"
+      - "updateInterpreterBookingStatus"
+      - "caseListing"
+      - "imaStatus"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
@@ -118,6 +124,14 @@ security:
       - "editBailApplication"
       - "makeNewApplication"
       - "viewPreviousApplications"
+    caseworker-ia-homeofficepou:
+      - "startApplication"
+      - "uploadBailSummary"
+      - "submitApplication"
+      - "uploadDocuments"
+      - "editBailApplication"
+      - "makeNewApplication"
+      - "viewPreviousApplications"      
     caseworker-ia-iacjudge:
       - "recordTheDecision"
       - "addCaseNote"
@@ -217,3 +231,11 @@ ia:
   config:
     validator:
       secret: ${IA_CONFIG_VALIDATOR_SECRET:}
+
+
+commonData:
+  api:
+    url: ${COMMON_DATA_API:http://localhost:8991}
+
+govUkHolidays:
+  url: https://www.gov.uk/

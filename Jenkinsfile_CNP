@@ -25,6 +25,7 @@ def secrets = [
     secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
     secret('app-insights-connection-string', 'app-insights-connection-string'),
     secret('ia-config-validator-secret', 'IA_CONFIG_VALIDATOR_SECRET'),
+    secret('generic-docker-pact-broker-password', 'GENERIC_DOCKER_PACT_BROKER_YAML_PASS'),
 
     secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),
     secret('test-caseofficer-password', 'TEST_CASEOFFICER_PASSWORD'),
@@ -54,6 +55,9 @@ def secrets = [
 
     secret('test-law-firm-org-deleted-username', 'TEST_LAW_FIRM_ORG_DELETED_USERNAME'),
     secret('test-law-firm-org-deleted-password', 'TEST_LAW_FIRM_ORG_DELETED_PASSWORD'),
+
+    secret('test-homeoffice-bail-username', 'TEST_HOMEOFFICE_BAIL_USERNAME'),
+    secret('test-homeoffice-bail-password', 'TEST_HOMEOFFICE_BAIL_PASSWORD'),
 
   ]
 ]
@@ -90,10 +94,12 @@ withPipeline(type, product, component) {
 
   afterSuccess('functionalTest:preview') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/**/*'
   }
 
   afterSuccess('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/**/*'
   }
 
   enableSlackNotifications('#ia-tech')

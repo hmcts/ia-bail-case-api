@@ -15,7 +15,7 @@ public enum HearingCentre {
     NEWCASTLE("newcastle"),
     NEWPORT("newport"),
     TAYLOR_HOUSE("taylorHouse"),
-    YARLSWOOD("yarlswood");
+    YARLSWOOD("yarlsWood");
 
     @JsonValue private final String value;
 

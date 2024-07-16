@@ -13,12 +13,9 @@ import io.restassured.http.Headers;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import lombok.SneakyThrows;
@@ -71,7 +68,8 @@ public class CcdScenarioRunnerTest {
     private List<Verifier> verifiers;
     @Autowired
     private List<Fixture> fixtures;
-
+    private boolean haveAllPassed = true;
+    private final ArrayList<String> failedScenarios = new ArrayList<>();
     @Autowired
     private LaunchDarklyFunctionalTestClient launchDarklyFunctionalTestClient;
 
@@ -127,13 +125,15 @@ public class CcdScenarioRunnerTest {
         System.out.println((char) 27 + "[33m" + "RUNNING " + scenarioSources.size() + " SCENARIOS");
         System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
 
+        int maxRetries = 3;
         for (String scenarioSource : scenarioSources) {
-            for (int i = 0; i < 3; i++) {
+            String description = "";
+            for (int i = 0; i < maxRetries; i++) {
                 try {
                     Map<String, Object> scenario = deserializeWithExpandedValues(scenarioSource);
                     final Headers authorizationHeaders = getAuthorizationHeaders(scenario);
 
-                    String description = MapValueExtractor.extract(scenario, "description");
+                    description = MapValueExtractor.extract(scenario, "description");
 
                     Object scenarioEnabled = MapValueExtractor.extract(scenario, "enabled") == null
                         ? MapValueExtractor.extract(scenario, "launchDarklyKey")
@@ -165,6 +165,7 @@ public class CcdScenarioRunnerTest {
 
                     if (!((Boolean) scenarioEnabled) || ((Boolean) scenarioDisabled)) {
                         System.out.println((char) 27 + "[31m" + "SCENARIO: " + description + " **disabled**");
+                        i = 3;
                         continue;
                     }
 
@@ -229,12 +230,19 @@ public class CcdScenarioRunnerTest {
                     break;
                 } catch (Error | RetryableException | SocketTimeoutException e) {
                     System.out.println("Scenario failed with error " + e.getMessage());
+                    if (i == maxRetries - 1) {
+                        this.failedScenarios.add(description);
+                        this.haveAllPassed = false;
+                    }
                 }
             }
         }
 
         System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
         System.out.println((char) 27 + "[0m");
+        if (!haveAllPassed) {
+            throw new AssertionError("Not all scenarios passed.\nFailed scenarios are:\n" + String.join(";\n", failedScenarios) + ";");
+        }
     }
 
     private void loadPropertiesIntoMapValueExpander() {
@@ -440,6 +448,12 @@ public class CcdScenarioRunnerTest {
         if ("Citizen".equalsIgnoreCase(credentials)) {
             return authorizationHeadersProvider
                 .getCitizenAuthorization();
+        }
+
+        if ("HomeOfficeBail".equalsIgnoreCase(credentials)) {
+
+            return authorizationHeadersProvider
+                .getHomeOfficeBailAuthorization();
         }
 
         return new Headers();

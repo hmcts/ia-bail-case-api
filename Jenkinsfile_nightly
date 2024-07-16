@@ -9,6 +9,13 @@ properties([
     string(name: 'SecurityRules',
       defaultValue: 'https://raw.githubusercontent.com/hmcts/security-test-rules/master/conf/security-rules.conf',
       description: 'The URL you want to run these tests against'),
+    booleanParam(name: 'skipSmokeTest', defaultValue: false, description: 'Tick the checkbox to skip Smoke Test stage'),
+    booleanParam(name: 'skipUnitTests', defaultValue: false, description: 'Tick the checkbox to skip Unit Tests stage'),
+    booleanParam(name: 'skipIntegrationTests', defaultValue: false, description: 'Tick the checkbox to skip Integration Tests stage'),
+    booleanParam(name: 'skipFortifyScan', defaultValue: false, description: 'Tick the checkbox to skip Fortify Scan stage'),
+    booleanParam(name: 'skipSecurityScan', defaultValue: false, description: 'Tick the checkbox to skip Security Scan stage'),
+    booleanParam(name: 'skipMutationTests', defaultValue: false, description: 'Tick the checkbox to skip Mutation Tests stage'),
+    booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox to skip Full Functional Tests stage'),
   ])
 ])
 
@@ -33,6 +40,7 @@ def secrets = [
     secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
     secret('app-insights-connection-string', 'app-insights-connection-string'),
     secret('ia-config-validator-secret', 'IA_CONFIG_VALIDATOR_SECRET'),
+    secret('generic-docker-pact-broker-password', 'GENERIC_DOCKER_PACT_BROKER_YAML_PASS'),
 
     secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),
     secret('test-caseofficer-password', 'TEST_CASEOFFICER_PASSWORD'),
@@ -62,6 +70,9 @@ def secrets = [
 
     secret('test-law-firm-org-deleted-username', 'TEST_LAW_FIRM_ORG_DELETED_USERNAME'),
     secret('test-law-firm-org-deleted-password', 'TEST_LAW_FIRM_ORG_DELETED_PASSWORD'),
+
+    secret('test-homeoffice-bail-username', 'TEST_HOMEOFFICE_BAIL_USERNAME'),
+    secret('test-homeoffice-bail-password', 'TEST_HOMEOFFICE_BAIL_PASSWORD'),
 
   ]
 ]
@@ -94,11 +105,76 @@ withNightlyPipeline(type, product, component) {
 
   loadVaultSecrets(secrets)
 
-//  enableFortifyScan()
-  enableSecurityScan()
-  enableMutationTest()
+  if (!params.skipFortifyScan) {
+    enableFortifyScan()
+  }
+  if (!params.skipSecurityScan) {
+    enableSecurityScan()
+  }
+  if (!params.skipMutationTests) {
+    enableMutationTest()
+  }
+  if (!params.skipFullFunctionalTests) {
+    enableFullFunctionalTest()
+  }
   enableSlackNotifications('#ia-tech')
-  enableFullFunctionalTest()
+
+  afterAlways('build') {
+    if (!params.skipSmokeTest) {
+      stage('Smoke Test') {
+        try {
+          builder.gradle("smoke")
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable")
+        } finally {
+          publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "build/reports/tests/smoke",
+            reportFiles          : "index.html",
+            reportName           : "Smoke Test Report"
+          ]
+        }
+      }
+    }
+    if (!params.skipUnitTests) {
+      stage('Unit Tests') {
+        try {
+          builder.gradle('test')
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable")
+        } finally {
+          publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "build/reports/tests/test",
+            reportFiles          : "index.html",
+            reportName           : "Unit Test Report"
+          ]
+        }
+      }
+    }
+    if (!params.skipIntegrationTests) {
+      stage('Integration Tests') {
+        try {
+          builder.gradle('integration')
+        } catch (Error) {
+          unstable(message: "${STAGE_NAME} is unstable")
+        } finally {
+          publishHTML target: [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "build/reports/tests/integration",
+            reportFiles          : "index.html",
+            reportName           : "Integration Test Report"
+          ]
+        }
+      }
+    }
+  }
 
   afterAlways('DependencyCheckNightly') {
     publishHTML([
@@ -110,8 +186,27 @@ withNightlyPipeline(type, product, component) {
       reportName           : 'Dependency Check Report'
     ])
   }
-  
-  after('fortify-scan') {
+
+  afterAlways('securityScan') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "functional-output",
+      reportFiles          : 'api-report.html',
+      reportName           : 'Security Scan Report'
+    ])
+  }
+
+  afterAlways('fortify-scan') {
+    publishHTML target: [
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "Fortify Scan",
+      reportFiles          : "FortifyScanReport.html",
+      reportName           : "Fortify Scan Report"
+    ]
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
   }
 
@@ -124,40 +219,6 @@ withNightlyPipeline(type, product, component) {
       reportFiles          : 'index.html',
       reportName           : 'Mutation Test Report'
     ])
-  }
-
-  before('fullFunctionalTest') {
-    try {
-      builder.gradle('test')
-      builder.gradle('integration')
-      builder.gradle('smoke')
-    } finally {
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "build/reports/tests/test",
-        reportFiles          : "index.html",
-        reportName           : "Unit Test Report"
-      ]
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "build/reports/tests/smoke",
-        reportFiles          : "index.html",
-        reportName           : "Smoke Test Report"
-      ]
-      publishHTML target: [
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "build/reports/tests/integration",
-        reportFiles          : "index.html",
-        reportName           : "Integration Test Report"
-      ]
-      junit '**/test-results/**/*.xml'
-    }
   }
 
   afterAlways('fullFunctionalTest') {
