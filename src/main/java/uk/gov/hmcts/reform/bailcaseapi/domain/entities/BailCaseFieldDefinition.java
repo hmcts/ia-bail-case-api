@@ -605,6 +605,9 @@ public enum BailCaseFieldDefinition {
     FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4(
         "fcsInterpreterSignLanguageBookingStatus4", new TypeReference<InterpreterBookingStatus>(){}),
 
+    REASON_TO_FORCE_CASE_TO_HEARING(
+        "reasonToForceCaseToHearing", new TypeReference<String>(){}),
+
     IS_DETENTION_LOCATION_CORRECT(
         "isDetentionLocationCorrect", new TypeReference<YesOrNo>(){}),
 
