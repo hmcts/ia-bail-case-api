@@ -157,9 +157,9 @@ class ForceCaseProgressionToHearingHandlerTest {
                 if (callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
                     && event.equals(Event.FORCE_CASE_TO_HEARING)) {
 
-                    assertThat(canHandle).isEqualTo(true);
+                    assertThat(canHandle).isTrue();
                 } else {
-                    assertThat(canHandle).isEqualTo(false);
+                    assertThat(canHandle).isFalse();
                 }
             }
 
