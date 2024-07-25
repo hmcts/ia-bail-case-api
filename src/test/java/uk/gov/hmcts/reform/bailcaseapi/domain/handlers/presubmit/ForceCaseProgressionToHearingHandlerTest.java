@@ -9,15 +9,17 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_NOTES;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASON_TO_FORCE_CASE_TO_HEARING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -26,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseNote;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
@@ -34,6 +37,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -43,21 +47,28 @@ class ForceCaseProgressionToHearingHandlerTest {
 
     @Mock
     private Appender<CaseNote> caseNoteAppender;
-    @Mock private Callback<BailCase> callback;
-    @Mock private CaseDetails<BailCase> caseDetails;
-    @Mock private BailCase bailCase;
-    @Mock private DateProvider dateProvider;
-    @Mock private CaseNote existingCaseNote;
-    @Mock private List allAppendedCaseNotes;
-    @Mock private UserDetails userDetails;
+    @Mock
+    private Callback<BailCase> callback;
+    @Mock
+    private CaseDetails<BailCase> caseDetails;
+    @Mock
+    private BailCase bailCase;
+    @Mock
+    private DateProvider dateProvider;
+    @Mock
+    private IdValue<CaseNote> existingCaseNote;
+    @Mock
+    private List<IdValue<CaseNote>> allAppendedCaseNotes;
+    @Mock
+    private UserDetails userDetails;
 
     @Captor
     private ArgumentCaptor<List<IdValue<CaseNote>>> existingCaseNotesCaptor;
-    @Captor private ArgumentCaptor<CaseNote> newCaseNoteCaptor;
+    @Captor
+    private ArgumentCaptor<CaseNote> newCaseNoteCaptor;
 
     private final LocalDate now = LocalDate.now();
-    private final List<CaseNote> existingCaseNotes = singletonList(existingCaseNote);
-    private final String newCaseNoteSubject = "Reason for forcing case progression to hearing";
+    private final List<IdValue<CaseNote>> existingCaseNotes = singletonList(existingCaseNote);
     private final String newCaseNoteDescription = "some-reason";
     private final String forename = "Frank";
     private final String surname = "Butcher";
@@ -99,10 +110,12 @@ class ForceCaseProgressionToHearingHandlerTest {
 
         verify(caseNoteAppender, times(1)).append(
             newCaseNoteCaptor.capture(),
-            existingCaseNotesCaptor.capture());
+            existingCaseNotesCaptor.capture()
+        );
 
         CaseNote capturedCaseNote = newCaseNoteCaptor.getValue();
 
+        String newCaseNoteSubject = "Reason for forcing case progression to hearing";
         assertThat(capturedCaseNote.getCaseNoteSubject()).isEqualTo(newCaseNoteSubject);
         assertThat(capturedCaseNote.getCaseNoteDescription()).isEqualTo(newCaseNoteDescription);
         assertThat(capturedCaseNote.getUser()).isEqualTo(forename + " " + surname);
@@ -111,10 +124,22 @@ class ForceCaseProgressionToHearingHandlerTest {
         assertThat(existingCaseNotesCaptor.getValue()).isEqualTo(existingCaseNotes);
 
         verify(bailCase, times(1)).write(CASE_NOTES, allAppendedCaseNotes);
-
         verify(bailCase, times(1)).clear(REASON_TO_FORCE_CASE_TO_HEARING);
+        verify(bailCase, times(1)).clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
+        verify(bailCase, times(1)).read(HO_SELECT_IMA_STATUS, YesOrNo.class);
+        verify(bailCase, times(1)).write(HO_HAS_IMA_STATUS, YesOrNo.NO);
 
-        assertThat(callbackResponse.getData()).isEqualTo(callbackResponse.getData());
+        assertThat(callbackResponse.getData()).isEqualTo(bailCase);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = YesOrNo.class)
+    void should_set_ho_ima_status_if_ima_enabled_to_existing_case_notes(YesOrNo choice) {
+        when(bailCase.read(BailCaseFieldDefinition.IS_IMA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(HO_SELECT_IMA_STATUS, YesOrNo.class)).thenReturn(Optional.of(choice));
+        forceCaseProgressionToHearingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, times(1)).read(HO_SELECT_IMA_STATUS, YesOrNo.class);
+        verify(bailCase, times(1)).write(HO_HAS_IMA_STATUS, choice);
     }
 
     @Test
