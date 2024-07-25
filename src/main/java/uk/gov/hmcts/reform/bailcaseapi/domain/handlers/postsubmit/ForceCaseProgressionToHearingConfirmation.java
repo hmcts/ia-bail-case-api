@@ -18,11 +18,11 @@ public class ForceCaseProgressionToHearingConfirmation implements PostSubmitCall
     private static final String CONFIRMATION_BODY_LEGAL_REP = """
             #### What happens next
 
-            The respondent and legal representative will be notified by email""";
+            The respondent and legal representative will be notified by email.""";
     private static final String CONFIRMATION_BODY_NO_LEGAL_REP = """
             #### What happens next
 
-            The respondent will be notified by email""";
+            The respondent will be notified by email.""";
 
     @Override
     public boolean canHandle(Callback<BailCase> callback) {

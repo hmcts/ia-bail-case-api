@@ -24,15 +24,15 @@ import java.util.Optional;
 
 
 @ExtendWith(MockitoExtension.class)
-class ForceCaseToSubmitHearingRequirementsConfirmationTest {
+class ForceCaseProgressionToHearingConfirmationTest {
     private static final String CONFIRMATION_BODY_LEGAL_REP = """
             #### What happens next
 
-            The respondent and legal representative will be notified by email""";
+            The respondent and legal representative will be notified by email.""";
     private static final String CONFIRMATION_BODY_NO_LEGAL_REP = """
             #### What happens next
 
-            The respondent will be notified by email""";
+            The respondent will be notified by email.""";
     @Mock
     private Callback<BailCase> callback;
 
