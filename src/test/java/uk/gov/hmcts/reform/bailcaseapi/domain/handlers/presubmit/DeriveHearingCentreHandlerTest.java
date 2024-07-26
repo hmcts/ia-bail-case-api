@@ -8,9 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_CENTRE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.DispatchPriority.LATEST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
@@ -79,6 +77,7 @@ class DeriveHearingCentreHandlerTest {
 
         verify(hearingCentreFinder, times(1)).find("Garth");
         verify(bailCase, times(1)).write(HEARING_CENTRE, HearingCentre.MANCHESTER);
+        verify(bailCase, times(1)).write(DESIGNATED_TRIBUNAL_CENTRE, HearingCentre.MANCHESTER);
     }
 
     @Test
@@ -97,6 +96,7 @@ class DeriveHearingCentreHandlerTest {
 
         verify(hearingCentreFinder, times(1)).find("Harmondsworth");
         verify(bailCase, times(1)).write(HEARING_CENTRE, HearingCentre.HATTON_CROSS);
+        verify(bailCase, times(1)).write(DESIGNATED_TRIBUNAL_CENTRE, HearingCentre.HATTON_CROSS);
     }
 
     @Test
@@ -115,6 +115,7 @@ class DeriveHearingCentreHandlerTest {
         assertThat(callbackResponse.getData()).isNotEmpty();
         assertThat(callbackResponse.getData()).isEqualTo(bailCase);
         verify(bailCase, times(1)).write(HEARING_CENTRE, HearingCentre.HATTON_CROSS);
+        verify(bailCase, times(1)).write(DESIGNATED_TRIBUNAL_CENTRE, HearingCentre.HATTON_CROSS);
     }
 
     @Test

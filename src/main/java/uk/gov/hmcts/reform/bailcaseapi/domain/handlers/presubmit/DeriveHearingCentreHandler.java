@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_CENTRE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IRC_NAME;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
@@ -68,9 +66,8 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
 
             HearingCentre hearingCentre = hearingCentreFinder.find(detentionFacilityName);
             bailCase.write(HEARING_CENTRE, hearingCentre);
+            bailCase.write(DESIGNATED_TRIBUNAL_CENTRE, hearingCentre);
         }
-
-
     }
 
 }
