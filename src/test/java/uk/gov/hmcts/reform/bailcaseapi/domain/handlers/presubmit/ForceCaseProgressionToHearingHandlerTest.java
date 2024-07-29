@@ -125,7 +125,7 @@ class ForceCaseProgressionToHearingHandlerTest {
 
         verify(bailCase, times(1)).write(CASE_NOTES, allAppendedCaseNotes);
         verify(bailCase, times(1)).clear(REASON_TO_FORCE_CASE_TO_HEARING);
-        verify(bailCase, times(1)).clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
+        verify(bailCase, times(1)).write(HAS_CASE_BEEN_FORCED_TO_HEARING, YesOrNo.YES);
         verify(bailCase, times(1)).read(HO_SELECT_IMA_STATUS, YesOrNo.class);
         verify(bailCase, times(1)).write(HO_HAS_IMA_STATUS, YesOrNo.NO);
 

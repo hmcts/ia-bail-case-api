@@ -82,7 +82,7 @@ public class ForceCaseProgressionToHearingHandler implements PreSubmitCallbackHa
         bailCase.write(CASE_NOTES, allCaseNotes);
 
         bailCase.clear(REASON_TO_FORCE_CASE_TO_HEARING);
-        bailCase.clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
+        bailCase.write(HAS_CASE_BEEN_FORCED_TO_HEARING, YesOrNo.YES);
 
         // If the case is progressed past Bail summary, then default IMA selection is NO
         YesOrNo hoSelectedIma = bailCase.read(HO_SELECT_IMA_STATUS, YesOrNo.class).orElse(YesOrNo.NO);
