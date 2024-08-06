@@ -123,11 +123,6 @@ processFunctionalTestResources {
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-//lombok {
-//  config['lombok.addLombokGeneratedAnnotation'] = 'true'
-//  config['lombok.anyConstructor.addConstructorProperties'] = 'true'
-//}
-
 configurations {
   contractTestCompile.extendsFrom testCompile
   contractTestRuntime.extendsFrom testRuntime
