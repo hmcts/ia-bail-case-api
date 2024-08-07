@@ -1,12 +1,12 @@
 {
-  "description": "DIAC-528 Upload hearing recording confirmation",
+  "description": "Upload hearing recording confirmation",
   "request": {
     "uri": "/bail/ccdSubmitted",
     "credentials": "AdminOfficer",
     "input": {
+      "id": 1111,
       "eventId": "uploadHearingRecording",
       "state": "decisionDecided",
-      "id": 1234,
       "caseData": {
         "template": "minimal-application-started.json"
       }
@@ -14,6 +14,7 @@
   },
   "expectation": {
     "status": 200,
+    "errors": [],
     "confirmation": {
       "header": "# You’ve uploaded the hearing recording",
       "body": "#### What happens next\n\nThis file is now available in the Documents tab and the Hearing tab."
