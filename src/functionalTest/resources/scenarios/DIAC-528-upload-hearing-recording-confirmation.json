@@ -8,7 +8,7 @@
       "eventId": "uploadHearingRecording",
       "state": "decisionDecided",
       "caseData": {
-        "template": "minimal-application-started.json"
+        "template": "minimal-application-submitted.json"
       }
     }
   },
