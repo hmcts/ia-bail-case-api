@@ -72,7 +72,7 @@ class HearingCentreFinderTest {
             "Brookhouse",
             "Bullwood Hall",
             "Bure"
-        )).put(HearingCentre.YARLSWOOD, List.of(
+        )).put(HearingCentre.YARLS_WOOD, List.of(
             "Yarlswood"
         ))
         .build();
