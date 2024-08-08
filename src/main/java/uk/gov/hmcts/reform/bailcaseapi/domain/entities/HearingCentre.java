@@ -9,11 +9,13 @@ import java.util.Optional;
 
 public enum HearingCentre {
 
+
     BIRMINGHAM("birmingham", "231596"),
     BRADFORD("bradford", "698118"),
     GLASGOW("glasgow", "366559"),
     HATTON_CROSS("hattonCross", "386417"),
     MANCHESTER("manchester", "512401"),
+    NEWCASTLE("newcastle", "366796"),
     NEWPORT("newport", "227101"),
     TAYLOR_HOUSE("taylorHouse", "765324"),
     YARLS_WOOD("yarlsWood", "649000");
