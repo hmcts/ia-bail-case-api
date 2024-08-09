@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -40,7 +42,7 @@ class StartApplicationSubmitHandlerTest {
     private FeatureToggleService featureToggleService;
     @Mock
     private InterpreterLanguagesUtils interpreterLanguagesUtils;
-  
+
     private StartApplicationSubmitHandler startApplicationSubmitHandler;
 
     @BeforeEach
@@ -76,7 +78,7 @@ class StartApplicationSubmitHandlerTest {
 
         startApplicationSubmitHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback, callbackResponse);
     }
-    
+
     @ParameterizedTest
     @CsvSource({"true", "false"})
     void should_set_bails_location_ref_data_field(boolean featureFlag) {
