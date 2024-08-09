@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.FeatureToggleService;
 import uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils;
-
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,6 +40,7 @@ class StartApplicationSubmitHandlerTest {
     private FeatureToggleService featureToggleService;
     @Mock
     private InterpreterLanguagesUtils interpreterLanguagesUtils;
+  
     private StartApplicationSubmitHandler startApplicationSubmitHandler;
 
     @BeforeEach
@@ -75,6 +75,18 @@ class StartApplicationSubmitHandlerTest {
         when(bailCase.read(FCS_INTERPRETER_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
         startApplicationSubmitHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback, callbackResponse);
+    }
+    
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void should_set_bails_location_ref_data_field(boolean featureFlag) {
+        when(featureToggleService.locationRefDataEnabled()).thenReturn(featureFlag);
+        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+
+        startApplicationSubmitHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback, callbackResponse);
+        verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, featureFlag ? YesOrNo.YES : YesOrNo.NO);
     }
 
     @Test

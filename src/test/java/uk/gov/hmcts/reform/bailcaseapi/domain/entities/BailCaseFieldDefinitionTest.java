@@ -15,7 +15,7 @@ public class BailCaseFieldDefinitionTest {
      */
     @Test
     void fail_if_changes_needed_after_modifying_bail_case_definition() {
-        assertEquals(286, BailCaseFieldDefinition.values().length);
+        assertEquals(292, BailCaseFieldDefinition.values().length);
     }
 
     @Test
