@@ -29,7 +29,7 @@ public class ChangeTribunalCentreConfirmation implements PostSubmitCallbackHandl
 
         postSubmitResponse.setConfirmationBody(
             "### What happens next\n\n"
-                    + "The Legal Representative will be notified and the service will be updated."
+                    + "The parties will be notified and the service will be updated."
         );
 
         postSubmitResponse.setConfirmationHeader("# You've updated the designated Tribunal centre");

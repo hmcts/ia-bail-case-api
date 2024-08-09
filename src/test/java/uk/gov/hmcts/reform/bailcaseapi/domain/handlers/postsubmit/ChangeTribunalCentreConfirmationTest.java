@@ -56,7 +56,7 @@ public class ChangeTribunalCentreConfirmationTest {
 
         assertThat(
             callbackResponse.getConfirmationBody().get())
-            .contains("The Legal Representative will be notified and the service will be updated.");
+            .contains("The parties will be notified and the service will be updated.");
     }
 
     @Test
