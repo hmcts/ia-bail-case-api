@@ -16,7 +16,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCa
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class UploadHearingRecordingConfirmationTest {
+class UploadHearingRecordingConfirmationTest {
 
     @Mock private Callback<BailCase> callback;
 
@@ -24,7 +24,7 @@ public class UploadHearingRecordingConfirmationTest {
         new UploadHearingRecordingConfirmation();
 
     @Test
-    public void should_return_confirmation() {
+    void should_return_confirmation() {
 
         when(callback.getEvent()).thenReturn(Event.UPLOAD_HEARING_RECORDING);
 
@@ -47,7 +47,7 @@ public class UploadHearingRecordingConfirmationTest {
     }
 
     @Test
-    public void handling_should_throw_if_cannot_actually_handle() {
+    void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(() -> uploadHearingRecordingConfirmation.handle(callback))
             .hasMessage("Cannot handle callback")
@@ -55,7 +55,7 @@ public class UploadHearingRecordingConfirmationTest {
     }
 
     @Test
-    public void it_can_handle_callback() {
+    void it_can_handle_callback() {
 
         for (Event event : Event.values()) {
 
@@ -75,7 +75,7 @@ public class UploadHearingRecordingConfirmationTest {
     }
 
     @Test
-    public void should_not_allow_null_arguments() {
+    void should_not_allow_null_arguments() {
 
         assertThatThrownBy(() -> uploadHearingRecordingConfirmation.canHandle(null))
             .hasMessage("callback must not be null")
