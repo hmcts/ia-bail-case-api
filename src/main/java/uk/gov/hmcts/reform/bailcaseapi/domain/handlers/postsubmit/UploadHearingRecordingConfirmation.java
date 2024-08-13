@@ -32,13 +32,11 @@ public class UploadHearingRecordingConfirmation implements PostSubmitCallbackHan
 
         postSubmitResponse.setConfirmationHeader(
             """
-            # You’ve uploaded the hearing recording
-            """);
+            # You’ve uploaded the hearing recording""");
         postSubmitResponse.setConfirmationBody("""
             #### What happens next
 
-            This file is now available in the Documents tab and the Hearing tab.
-            """);
+            This file is now available in the Documents tab and the Hearing tab.""");
 
         return postSubmitResponse;
     }
