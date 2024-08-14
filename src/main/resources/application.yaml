@@ -116,6 +116,7 @@ security:
       - "updateInterpreterBookingStatus"
       - "caseListing"
       - "imaStatus"
+      - "forceCaseToHearing"
       - "changeTribunalCentre"
     caseworker-ia-homeofficebail:
       - "startApplication"
@@ -147,7 +148,7 @@ security:
       - "createBailCaseLink"
       - "maintainBailCaseLinks"
       - "createFlag"
-
+      - "forceCaseToHearing"
 
 ### dependency configuration
 ccdGatewayUrl: ${CCD_GW_URL:http://localhost:3453}

@@ -10,7 +10,7 @@ public final class BailCaseUtils {
     }
 
     // helper method to check if the feature IMA is enabled
-    public static Boolean isImaEnabled(BailCase bailCase) {
+    public static boolean isImaEnabled(BailCase bailCase) {
         return bailCase.read(BailCaseFieldDefinition.IS_IMA_ENABLED, YesOrNo.class).orElse(YesOrNo.NO)
             .equals(YesOrNo.YES);
     }
