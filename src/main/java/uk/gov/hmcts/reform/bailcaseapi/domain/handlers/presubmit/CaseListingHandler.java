@@ -3,22 +3,23 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+
+import com.microsoft.applicationinsights.boot.dependencies.apachecommons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -104,7 +105,7 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
             bailCase.write(SEND_DIRECTION_LIST, "Home Office");
             bailCase.write(DATE_OF_COMPLIANCE, dueDate);
-            bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
+            bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YES);
         } else {
             CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
             BailCase bailCaseBefore = caseDetailsBefore == null ? null : caseDetailsBefore.getCaseData();
@@ -137,7 +138,7 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                                                           maybeExistingPreviousListingDetails.orElse(emptyList()));
 
                 bailCase.write(PREVIOUS_LISTING_DETAILS, allPreviousListingDetails);
-                bailCase.write(HAS_BEEN_RELISTED, YesOrNo.YES);
+                bailCase.write(HAS_BEEN_RELISTED, YES);
             }
         }
 
@@ -152,7 +153,7 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
         if (isBailsLocationRefDataEnabled == YES) {
             Value selectedRefDataLocation = bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class)
-                .map(dynamicList -> dynamicList.getValue()).orElse(null);
+                .map(DynamicList::getValue).orElse(null);
 
             if (selectedRefDataLocation != null) {
                 saveRefDataListingLocationDetail(bailCase, selectedRefDataLocation.getCode());
@@ -174,9 +175,7 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
     private void saveRefDataListingLocationDetail(BailCase bailCase, String epimmsId) {
         if (!StringUtils.isEmpty(epimmsId)) {
             Optional<CourtVenue> courtVenue = locationRefDataService.getCourtVenuesByEpimmsId(epimmsId);
-            if (courtVenue.isPresent()) {
-                bailCase.write(REF_DATA_LISTING_LOCATION_DETAIL, courtVenue.get());
-            }
+            courtVenue.ifPresent(venue -> bailCase.write(REF_DATA_LISTING_LOCATION_DETAIL, venue));
         }
     }
 }
