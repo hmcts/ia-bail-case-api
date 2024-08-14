@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 import com.fasterxml.jackson.core.type.TypeReference;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.*;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.CourtVenue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -256,6 +257,10 @@ public enum BailCaseFieldDefinition {
         "transferBailManagementYesOrNo", new TypeReference<YesOrNo>(){}),
     NO_TRANSFER_BAIL_MANAGEMENT_REASONS(
         "noTransferBailManagementReasons", new TypeReference<String>(){}),
+    TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION(
+        "transferBailManagementObjectionYesOrNo", new TypeReference<YesOrNo>(){}),
+    OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS(
+        "objectedTransferBailManagementReasons", new TypeReference<String>(){}),
     APPLICATION_SUBMITTED_BY(
         "applicationSubmittedBy", new TypeReference<String>(){}),
     BAIL_REFERENCE_NUMBER(
@@ -268,6 +273,12 @@ public enum BailCaseFieldDefinition {
         "hasLegalRep", new TypeReference<YesOrNo>(){}),
     HEARING_CENTRE(
         "hearingCentre", new TypeReference<HearingCentre>(){}),
+    DESIGNATED_TRIBUNAL_CENTRE(
+        "designatedTribunalCentre", new TypeReference<HearingCentre>(){}),
+    HEARING_CENTRE_REF_DATA(
+        "hearingCentreRefData", new TypeReference<DynamicList>(){}),
+    SELECTED_HEARING_CENTRE_REF_DATA(
+        "selectedHearingCentreRefData", new TypeReference<String>(){}),
     DETENTION_FACILITY(
         "detentionFacility", new TypeReference<String>(){}),
     UPLOAD_BAIL_SUMMARY_DOCS(
@@ -601,6 +612,9 @@ public enum BailCaseFieldDefinition {
     FCS_INTERPRETER_SIGN_LANGUAGE_BOOKING_STATUS_4(
         "fcsInterpreterSignLanguageBookingStatus4", new TypeReference<InterpreterBookingStatus>(){}),
 
+    REASON_TO_FORCE_CASE_TO_HEARING(
+        "reasonToForceCaseToHearing", new TypeReference<String>(){}),
+
     IS_DETENTION_LOCATION_CORRECT(
         "isDetentionLocationCorrect", new TypeReference<YesOrNo>(){}),
 
@@ -639,7 +653,17 @@ public enum BailCaseFieldDefinition {
     HO_SELECT_IMA_STATUS(
         "hoSelectImaStatus", new TypeReference<YesOrNo>() {}),
     IS_IMA_ENABLED(
-        "isImaEnabled", new TypeReference<YesOrNo>() {}),;
+        "isImaEnabled", new TypeReference<YesOrNo>() {}),
+    IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED(
+        "isBailsLocationReferenceDataEnabled", new TypeReference<YesOrNo>() {}),
+    REF_DATA_LISTING_LOCATION(
+        "refDataListingLocation", new TypeReference<DynamicList>() {}),
+    REF_DATA_LISTING_LOCATION_DETAIL(
+        "refDataListingLocationDetail", new TypeReference<CourtVenue>() {}),
+    IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED_FT(
+        "isBailsLocationReferenceDataEnabledFt", new TypeReference<YesOrNo>() {}),
+    HAS_CASE_BEEN_FORCED_TO_HEARING(
+        "hasCaseBeenForcedToHearing", new TypeReference<YesOrNo>() {});
 
     private final String value;
     private final TypeReference typeReference;

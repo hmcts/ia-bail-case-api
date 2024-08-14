@@ -1,17 +1,21 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.PriorApplication;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserRoleLabel;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MakeNewApplicationService {
@@ -87,6 +91,15 @@ public class MakeNewApplicationService {
         // Clear any application that was saved as Prior Application for this Application.
         // We only want to store immediate previous casedetails, not the ones prior to it.
         bailCaseBefore.clear(BailCaseFieldDefinition.PRIOR_APPLICATIONS);
+
+        // Show only hearing centre information from reference data if available
+        if (bailCaseBefore.read(BailCaseFieldDefinition.HEARING_CENTRE_REF_DATA, DynamicList.class).isPresent()) {
+            bailCaseBefore.clear(BailCaseFieldDefinition.HEARING_CENTRE);
+        }
+        if (bailCaseBefore.read(BailCaseFieldDefinition.REF_DATA_LISTING_LOCATION, DynamicList.class).isPresent()) {
+            bailCaseBefore.clear(BailCaseFieldDefinition.LISTING_LOCATION);
+        }
+
         String previousCaseDataJson;
         try {
             previousCaseDataJson = mapper.writeValueAsString(bailCaseBefore);
@@ -245,6 +258,8 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.BAIL_EVIDENCE.value(),
         BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION.value(),
         BailCaseFieldDefinition.NO_TRANSFER_BAIL_MANAGEMENT_REASONS.value(),
+        BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION.value(),
+        BailCaseFieldDefinition.OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS.value(),
         BailCaseFieldDefinition.INTERPRETER_YESNO.value(),
         BailCaseFieldDefinition.INTERPRETER_LANGUAGES.value(),
         BailCaseFieldDefinition.APPLICANT_INTERPRETER_SPOKEN_LANGUAGE.value(),
@@ -286,5 +301,6 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.CURRENT_CASE_STATE_VISIBLE_TO_ADMIN_OFFICER.value(),
         BailCaseFieldDefinition.LOCAL_AUTHORITY_POLICY.value(),
         BailCaseFieldDefinition.LISTING_LOCATION.value(),
+        BailCaseFieldDefinition.REF_DATA_LISTING_LOCATION.value(),
         BailCaseFieldDefinition.LIST_CASE_HEARING_DATE.value());
 }

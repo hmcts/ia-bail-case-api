@@ -117,7 +117,7 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
             bailCase.read(RECORD_DECISION_TYPE, String.class)
                 .orElseThrow(() -> new IllegalStateException("Record decision type missing"))
         );
-
+        bailCase.clear(HAS_CASE_BEEN_FORCED_TO_HEARING);
         CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
         BailCase bailCaseBefore = caseDetailsBefore == null ? null : caseDetailsBefore.getCaseData();
         if (bailCaseBefore != null) {

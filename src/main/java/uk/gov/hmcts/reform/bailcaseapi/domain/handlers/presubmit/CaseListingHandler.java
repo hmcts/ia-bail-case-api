@@ -4,29 +4,21 @@ import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_BEEN_RELISTED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_HEARING_DURATION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_LOCATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREVIOUS_LISTING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.RELISTING;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.*;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
@@ -37,19 +29,24 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.LocationRefDataService;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.CourtVenue;
 
 @Component
 public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
     private final Appender<PreviousListingDetails> previousListingDetailsAppender;
     private final DueDateService dueDateService;
+    private final LocationRefDataService locationRefDataService;
 
     public CaseListingHandler(
         Appender<PreviousListingDetails> previousListingDetailsAppender,
-        DueDateService dueDateService
+        DueDateService dueDateService,
+        LocationRefDataService locationRefDataService
     ) {
-        this.previousListingDetailsAppender = previousListingDetailsAppender;
         this.dueDateService = dueDateService;
+        this.previousListingDetailsAppender = previousListingDetailsAppender;
+        this.locationRefDataService = locationRefDataService;
     }
 
     public boolean canHandle(
@@ -144,6 +141,42 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
             }
         }
 
+        updateListingLocValueByUsingRefDataLocValue(bailCase);
+
         return new PreSubmitCallbackResponse<>(bailCase);
+    }
+
+    private void updateListingLocValueByUsingRefDataLocValue(BailCase bailCase) {
+        YesOrNo isBailsLocationRefDataEnabled = bailCase.read(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YesOrNo.class)
+            .orElse(NO);
+
+        if (isBailsLocationRefDataEnabled == YES) {
+            Value selectedRefDataLocation = bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class)
+                .map(dynamicList -> dynamicList.getValue()).orElse(null);
+
+            if (selectedRefDataLocation != null) {
+                saveRefDataListingLocationDetail(bailCase, selectedRefDataLocation.getCode());
+
+                ListingHearingCentre listingHearingCentre = ListingHearingCentre.getEpimsIdMapping()
+                    .get(selectedRefDataLocation.getCode());
+
+                if (listingHearingCentre != null && listingHearingCentre.getValue() != null) {
+                    bailCase.write(LISTING_LOCATION, listingHearingCentre);
+                }
+            }
+        }
+    }
+
+    /**
+     * This method is used for saving the information of reference data listing location.
+     * This location information will be used for notification API and document API.
+     */
+    private void saveRefDataListingLocationDetail(BailCase bailCase, String epimmsId) {
+        if (!StringUtils.isEmpty(epimmsId)) {
+            Optional<CourtVenue> courtVenue = locationRefDataService.getCourtVenuesByEpimmsId(epimmsId);
+            if (courtVenue.isPresent()) {
+                bailCase.write(REF_DATA_LISTING_LOCATION_DETAIL, courtVenue.get());
+            }
+        }
     }
 }

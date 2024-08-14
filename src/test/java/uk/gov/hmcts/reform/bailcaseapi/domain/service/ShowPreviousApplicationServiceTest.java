@@ -63,10 +63,12 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_LOCATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NO_TRANSFER_BAIL_MANAGEMENT_REASONS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASONS_JUDGE_IS_MINDED_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_THE_DECISION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REF_DATA_LISTING_LOCATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SECRETARY_OF_STATE_REFUSAL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SIGNED_DECISION_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_ADDRESS_DETAILS;
@@ -82,6 +84,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_PASSPORT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_RELATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_TELEPHONE_NUMBER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRANSFER_BAIL_MANAGEMENT_OPTION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UT_APPEAL_REFERENCE_NUMBER;
@@ -310,6 +313,8 @@ public class ShowPreviousApplicationServiceTest {
         when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(NO_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class))
             .thenReturn(Optional.of("Transfer bail management reasons"));
+        when(bailCase.read(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class))
+            .thenReturn(Optional.of("Objected transfer bail management reasons"));
         when(bailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(LEGAL_REP_COMPANY)).thenReturn(Optional.of("Legal Rep Company"));
         when(bailCase.read(LEGAL_REP_NAME)).thenReturn(Optional.of("LR ABC"));
@@ -468,6 +473,18 @@ public class ShowPreviousApplicationServiceTest {
     }
 
     @Test
+    void check_hearing_details_labels_when_hearing_locations_are_from_ref_data() {
+        Value value = new Value("231596", "Birmingham Civil And Family Justice Centre");
+        when(bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class))
+            .thenReturn(Optional.of(new DynamicList(value, List.of(value))));
+
+        String label = showPreviousApplicationService.getHearingDetails(bailCase);
+        assertTrue(label.contains(
+            "|Location|Birmingham Civil And Family Justice Centre|\n"
+            + "|Date and time|04 Apr 2024, 08:00|\n"), "Label mismatch, expected label: " + label);
+    }
+
+    @Test
     void check_hearing_info_labels() {
         String label = showPreviousApplicationService.getHearingReqDetails(bailCase);
         assertTrue(label.contains(
@@ -572,12 +589,46 @@ public class ShowPreviousApplicationServiceTest {
     }
 
     @Test
-    void check_grounds_for_bails_label_when_transfer_acceptable() {
+    void check_grounds_for_bails_label_when_old_transfer_acceptable() {
         when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         String label = showPreviousApplicationService.getGroundsForBail(bailCase);
         assertTrue(label.contains(
             "|Bail Grounds|Grounds for bail reasons|\n"
                 + "|Transfer bail management|Yes|\n"
+        ));
+    }
+
+    @Test
+    void check_grounds_for_bails_label_when_old_transfer_not_acceptable() {
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        String label = showPreviousApplicationService.getGroundsForBail(bailCase);
+        assertTrue(label.contains(
+            "|Bail Grounds|Grounds for bail reasons|\n"
+                + "|Transfer bail management|No|\n"
+                + "|Reasons applicant does not consent to bail transfer|Transfer bail management reasons|\n"
+        ));
+    }
+
+    @Test
+    void check_grounds_for_bails_label_when_transfer_not_objected() {
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        String label = showPreviousApplicationService.getGroundsForBail(bailCase);
+        assertTrue(label.contains(
+            "|Bail Grounds|Grounds for bail reasons|\n"
+                + "|Transfer of management to the Home Office|The applicant consents to the management being transferred|\n"
+        ));
+    }
+
+    @Test
+    void check_grounds_for_bails_label_when_transfer_objected() {
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        String label = showPreviousApplicationService.getGroundsForBail(bailCase);
+        assertTrue(label.contains(
+            "|Bail Grounds|Grounds for bail reasons|\n"
+                + "|Transfer of management to the Home Office|The applicant objects to the management being transferred|\n"
+                + "|Reasons why the applicant objects to the management of bail being transferred to the Home Office|Objected transfer bail management reasons|\n"
         ));
     }
 

@@ -13,9 +13,15 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.DATE_OF_COMPLIANCE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_EVENT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_DESCRIPTION;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SEND_DIRECTION_LIST;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.RELISTING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre.NEWCASTLE;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,8 +45,8 @@ import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -51,6 +57,8 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.PreviousListing
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.LocationRefDataService;
+import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.CourtVenue;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
@@ -64,6 +72,7 @@ class CaseListingHandlerTest {
     @Mock private BailCase bailCaseBefore;
     @Mock private DueDateService dueDateService;
     @Mock private Appender<PreviousListingDetails> previousListingDetailsAppender;
+    @Mock private LocationRefDataService locationRefDataService;
 
     @Captor
     private ArgumentCaptor<BailCaseFieldDefinition> bailExtractorCaptor;
@@ -72,29 +81,40 @@ class CaseListingHandlerTest {
 
     private CaseListingHandler caseListingHandler;
     private final String caseListHearingDate = "2023-12-01T12:00:00";
+    private ZonedDateTime zonedDueDateTime;
+    private CourtVenue newCastle;
 
     @BeforeEach
     public void setUp() {
-        caseListingHandler = new CaseListingHandler(previousListingDetailsAppender, dueDateService);
+        caseListingHandler = new CaseListingHandler(previousListingDetailsAppender, dueDateService, locationRefDataService);
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.CASE_LISTING);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(bailCase.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of(caseListHearingDate));
         when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(INITIAL_LISTING));
-    }
 
-    @Test
-    void should_set_case_listing_data() {
         final ZonedDateTime hearingLocalDate =
             LocalDateTime.parse(caseListHearingDate, ISO_DATE_TIME).toLocalDate().atStartOfDay(ZoneOffset.UTC);
         String dueDate = "2023-11-30";
-        final ZonedDateTime zonedDueDateTime = LocalDate.parse(dueDate).atStartOfDay(ZoneOffset.UTC);
+        zonedDueDateTime = LocalDate.parse(dueDate).atStartOfDay(ZoneOffset.UTC);
 
         when(dueDateService.calculateHearingDirectionDueDate(hearingLocalDate,
                                                              LocalDate.now()
         )).thenReturn(zonedDueDateTime);
 
+        newCastle = new CourtVenue("Newcastle Civil & Family Courts and Tribunals Centre",
+                                   "Newcastle Civil And Family Courts And Tribunals Centre",
+                                   "366796",
+                                   "Open",
+                                   "Y",
+                                   "Y",
+                                   "Barras Bridge, Newcastle-Upon-Tyne",
+                                   "NE1 8QF");
+    }
+
+    @Test
+    void should_set_case_listing_data() {
         PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(
             PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
             callback
@@ -134,6 +154,30 @@ class CaseListingHandlerTest {
 
         verify(bailCase, times(0)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
         verify(bailCase, times(0)).write(SEND_DIRECTION_LIST, "Home Office");
+    }
+
+    @Test
+    void should_set_ccd_location_id_and_listing_location_detail_based_on_location_ref_data() {
+        when(bailCase.read(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class)).thenReturn(Optional.of(new DynamicList(
+            new Value("366796", "Newcastle"),
+            new DynamicList(
+                new Value("", ""),
+                List.of(new Value("386417", "Hatton Cross"),
+                        new Value("366796", "Newcastle")))
+                .getListItems()
+        )));
+        when(locationRefDataService.getCourtVenuesByEpimmsId("366796")).thenReturn(Optional.of(newCastle));
+
+        PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(
+            PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
+            callback
+        );
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+        verify(bailCase, times(1)).write(LISTING_LOCATION, NEWCASTLE);
+        verify(bailCase, times(1)).write(REF_DATA_LISTING_LOCATION_DETAIL, newCastle);
     }
 
     @Test

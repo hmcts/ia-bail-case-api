@@ -15,7 +15,6 @@ import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import lombok.SneakyThrows;
@@ -133,6 +132,8 @@ public class CcdScenarioRunnerTest {
                     Map<String, Object> scenario = deserializeWithExpandedValues(scenarioSource);
                     final Headers authorizationHeaders = getAuthorizationHeaders(scenario);
 
+                    description = MapValueExtractor.extract(scenario, "description");
+
                     Object scenarioEnabled = MapValueExtractor.extract(scenario, "enabled") == null
                         ? MapValueExtractor.extract(scenario, "launchDarklyKey")
                         : MapValueExtractor.extract(scenario, "enabled");
@@ -163,6 +164,7 @@ public class CcdScenarioRunnerTest {
 
                     if (!((Boolean) scenarioEnabled) || ((Boolean) scenarioDisabled)) {
                         System.out.println((char) 27 + "[31m" + "SCENARIO: " + description + " **disabled**");
+                        i = 3;
                         continue;
                     }
 
@@ -238,8 +240,7 @@ public class CcdScenarioRunnerTest {
         System.out.println((char) 27 + "[36m" + "-------------------------------------------------------------------");
         System.out.println((char) 27 + "[0m");
         if (!haveAllPassed) {
-            throw new AssertionError("Not all scenarios passed.\nFailed scenarios are:\n" + failedScenarios.stream().map(Object::toString).collect(
-                Collectors.joining(";\n")));
+            throw new AssertionError("Not all scenarios passed.\nFailed scenarios are:\n" + String.join(";\n", failedScenarios) + ";");
         }
     }
 
