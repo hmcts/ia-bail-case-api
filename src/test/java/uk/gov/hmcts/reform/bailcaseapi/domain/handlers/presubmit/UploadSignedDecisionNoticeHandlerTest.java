@@ -103,6 +103,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
         verify(bailCase).write(OUTCOME_DATE, nowWithTime.toString());
         verify(bailCase, times(1)).write(OUTCOME_STATE, State.DECISION_DECIDED);
         verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.NO);
+        verify(bailCase, times(1)).clear(DECISION_UNSIGNED_DOCUMENT);
     }
 
     @Test

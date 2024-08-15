@@ -1,10 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_BEEN_RELISTED;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OUTCOME_DATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OUTCOME_STATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TRIBUNAL_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,6 +82,7 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
         bailCase.write(OUTCOME_DATE, dateProvider.nowWithTime().toString());
         bailCase.write(OUTCOME_STATE, State.DECISION_DECIDED);
         bailCase.write(HAS_BEEN_RELISTED, YesOrNo.NO);
+        bailCase.clear(DECISION_UNSIGNED_DOCUMENT);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
