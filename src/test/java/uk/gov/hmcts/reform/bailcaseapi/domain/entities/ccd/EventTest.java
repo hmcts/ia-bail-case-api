@@ -12,6 +12,7 @@ public class EventTest {
         assertEquals("applyNocDecision", Event.APPLY_NOC_DECISION.toString());
         assertEquals("caseListing", Event.CASE_LISTING.toString());
         assertEquals("changeBailDirectionDueDate", Event.CHANGE_BAIL_DIRECTION_DUE_DATE.toString());
+        assertEquals("changeTribunalCentre", Event.CHANGE_TRIBUNAL_CENTRE.toString());
         assertEquals("clearLegalRepresentativeDetails", Event.CLEAR_LEGAL_REPRESENTATIVE_DETAILS.toString());
         assertEquals("confirmDetentionLocation", Event.CONFIRM_DETENTION_LOCATION.toString());
         assertEquals("createBailCaseLink", Event.CREATE_BAIL_CASE_LINK.toString());
@@ -43,6 +44,6 @@ public class EventTest {
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(33, Event.values().length);
+        assertEquals(34, Event.values().length);
     }
 }
