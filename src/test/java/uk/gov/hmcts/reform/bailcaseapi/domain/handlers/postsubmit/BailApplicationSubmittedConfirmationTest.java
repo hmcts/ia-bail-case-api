@@ -225,7 +225,7 @@ public class BailApplicationSubmittedConfirmationTest {
             Event.END_APPLICATION,
             someTimeDelayed,
             "IA",
-            "Asylum",
+            "Bail",
             callback.getCaseDetails().getId()
         );
         verify(scheduler).schedule(refEq(timedEvent));
