@@ -104,7 +104,7 @@ public class BailApplicationSubmittedConfirmation implements PostSubmitCallbackH
                     Event.END_APPLICATION,
                     scheduledDate,
                     "IA",
-                    "Asylum",
+                    "Bail",
                     callback.getCaseDetails().getId()
                 )
             );
