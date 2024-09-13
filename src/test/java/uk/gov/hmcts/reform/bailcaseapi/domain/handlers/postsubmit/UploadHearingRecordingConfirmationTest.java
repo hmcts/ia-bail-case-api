@@ -41,8 +41,8 @@ class UploadHearingRecordingConfirmationTest {
         );
 
         assertTrue(
-            callbackResponse.getConfirmationBody().orElse("").contains("This file is now available in the Documents tab and the Hearing tab."),
-            "Confirmation body should contain 'This file is now available in the Documents tab and the Hearing tab.'"
+            callbackResponse.getConfirmationBody().orElse("").contains("This file is now available in the Documents tab and the Hearing and appointment tab."),
+            "Confirmation body should contain 'This file is now available in the Documents tab and the Hearing and appointment tab.'"
         );
     }
 
