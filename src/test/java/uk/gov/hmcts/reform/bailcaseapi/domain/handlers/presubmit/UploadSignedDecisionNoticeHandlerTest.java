@@ -157,7 +157,6 @@ public class UploadSignedDecisionNoticeHandlerTest {
 
     @Test
     void handling_should_throw_if_cannot_actually_handle() {
-
         assertThatThrownBy(
             () -> uploadSignedDecisionNoticeHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
             .hasMessage("Cannot handle callback")
