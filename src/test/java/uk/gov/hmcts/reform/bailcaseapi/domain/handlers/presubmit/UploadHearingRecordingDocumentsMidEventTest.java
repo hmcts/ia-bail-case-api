@@ -71,7 +71,7 @@ class UploadHearingRecordingDocumentsMidEventTest {
         List<IdValue<HearingRecordingDocument>> hearingRecordingDocuments =
             List.of(
                 new IdValue<>("1", new HearingRecordingDocument(
-                    new Document("http://example.com/file", "document.pdf", "hash", "binaryUrl"), "Some description"))
+                    new Document("http://example.com/file", "document.mp3", "hash", "binaryUrl"), "Some description"))
             );
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
