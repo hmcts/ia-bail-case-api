@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 
@@ -18,7 +17,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 @Component
 public class UploadHearingRecordingDocumentsMidEvent implements PreSubmitCallbackHandler<BailCase> {
 
-    private static final String DIRECTION = "Direction ";
 
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
