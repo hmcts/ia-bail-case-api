@@ -17,7 +17,7 @@
     "errors": [],
     "confirmation": {
       "header": "# You’ve uploaded the hearing recording",
-      "body": "\"\"\"\n            #### What happens next\n            This file is now available in the Documents tab and the Hearing and appointment tab.\"\"\")"
+      "body": "#### What happens next\nThis file is now available in the Documents tab and the Hearing and appointment tab."
     }
   }
 }
