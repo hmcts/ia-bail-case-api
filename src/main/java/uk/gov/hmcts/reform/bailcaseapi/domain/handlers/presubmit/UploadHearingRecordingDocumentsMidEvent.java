@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 @Component
 public class UploadHearingRecordingDocumentsMidEvent implements PreSubmitCallbackHandler<BailCase> {
 
-
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
         Callback<BailCase> callback
@@ -37,19 +36,24 @@ public class UploadHearingRecordingDocumentsMidEvent implements PreSubmitCallbac
             throw new IllegalStateException("Cannot handle callback");
         }
 
-        BailCase bailCase =
-            callback
-                .getCaseDetails()
-                .getCaseData();
+        BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        Optional<List<IdValue<HearingRecordingDocument>>> maybeHearingRecordingDocument = bailCase.read(HEARING_RECORDING_DOCUMENTS);
+        // Reading the hearing recording documents
+        Optional<List<IdValue<HearingRecordingDocument>>> maybeHearingRecordingDocuments = bailCase.read(HEARING_RECORDING_DOCUMENTS);
 
-
-        if (maybeHearingRecordingDocument.isPresent()) {
-            List<IdValue<HearingRecordingDocument>> hearingRecordingDocuments = maybeHearingRecordingDocument.get();
+        // If the document list is present, proceed to validate filenames
+        if (maybeHearingRecordingDocuments.isPresent()) {
+            List<IdValue<HearingRecordingDocument>> hearingRecordingDocuments = maybeHearingRecordingDocuments.get();
 
             for (IdValue<HearingRecordingDocument> doc : hearingRecordingDocuments) {
-                if (!doc.getValue().getDocument().getDocumentFilename().endsWith(".mp3")) {
+                // Extract the filename
+                String filename = doc.getValue().getDocument().getDocumentFilename();
+
+                // Debugging: Log or print the filename for visibility
+                System.out.println("Processing file: " + filename);
+
+                // Check for null, empty or non-mp3 filenames
+                if (filename == null || filename.isEmpty() || !filename.toLowerCase().endsWith(".mp3")) {
                     PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
                     response.addError("All documents must be an mp3 file");
                     return response;
@@ -57,7 +61,7 @@ public class UploadHearingRecordingDocumentsMidEvent implements PreSubmitCallbac
             }
         }
 
+        // If all files pass the validation, return a successful response
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 }
-
