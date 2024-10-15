@@ -38,21 +38,17 @@ public class UploadHearingRecordingDocumentsMidEvent implements PreSubmitCallbac
 
         BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        // Reading the hearing recording documents
         Optional<List<IdValue<HearingRecordingDocument>>> maybeHearingRecordingDocuments = bailCase.read(HEARING_RECORDING_DOCUMENTS);
 
-        // If the document list is present, proceed to validate filenames
         if (maybeHearingRecordingDocuments.isPresent()) {
             List<IdValue<HearingRecordingDocument>> hearingRecordingDocuments = maybeHearingRecordingDocuments.get();
 
             for (IdValue<HearingRecordingDocument> doc : hearingRecordingDocuments) {
-                // Extract the filename
+
                 String filename = doc.getValue().getDocument().getDocumentFilename();
 
-                // Debugging: Log or print the filename for visibility
                 System.out.println("Processing file: " + filename);
 
-                // Check for null, empty or non-mp3 filenames
                 if (filename == null || filename.isEmpty() || !filename.toLowerCase().endsWith(".mp3")) {
                     PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
                     response.addError("All documents must be an mp3 file");
@@ -61,7 +57,6 @@ public class UploadHearingRecordingDocumentsMidEvent implements PreSubmitCallbac
             }
         }
 
-        // If all files pass the validation, return a successful response
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 }
