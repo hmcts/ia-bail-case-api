@@ -92,6 +92,7 @@ security:
       - "nocRequest"
       - "nocRequestBail"
     caseworker-ia-admofficer:
+      - "uploadHearingRecording"
       - "startApplication"
       - "submitApplication"
       - "recordTheDecision"
@@ -137,6 +138,7 @@ security:
     caseworker-ia-iacjudge:
       - "recordTheDecision"
       - "addCaseNote"
+      - "uploadHearingRecording"
       - "sendBailDirection"
       - "changeBailDirectionDueDate"
       - "uploadSignedDecisionNotice"
