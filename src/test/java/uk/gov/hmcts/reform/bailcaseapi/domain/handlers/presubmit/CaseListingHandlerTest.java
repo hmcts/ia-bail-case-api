@@ -389,7 +389,7 @@ class CaseListingHandlerTest {
 
         String newHearingId = "12567";
 
-        List<IdValue<String>> result = listedHearingService.appendToHearingIdList(existingHearingIdList, newHearingId);
+        List<IdValue<String>> result = caseListingHandler.appendToHearingIdList(existingHearingIdList, newHearingId);
 
         assertEquals(3, result.size(), "The list should contain three hearing IDs");
         assertEquals("1", result.get(0).getId());
