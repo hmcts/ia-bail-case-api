@@ -14,6 +14,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import com.microsoft.applicationinsights.boot.dependencies.apachecommons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -106,6 +107,18 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
             bailCase.write(SEND_DIRECTION_LIST, "Home Office");
             bailCase.write(DATE_OF_COMPLIANCE, dueDate);
             bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YES);
+
+            String hearingId = bailCase.read(CURRENT_HEARING_ID, String.class)
+                .orElseThrow(() -> new IllegalStateException("hearing ID can not be null"));
+
+            Optional<List<IdValue<String>>> maybeHearingIdList =
+                bailCase.read(HEARING_ID_LIST);
+
+            final List<IdValue<String>> hearingIdList =
+                maybeHearingIdList.orElse(emptyList());
+
+            appendToHearingIdList(hearingIdList, hearingId);
+
         } else {
             CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
             BailCase bailCaseBefore = caseDetailsBefore == null ? null : caseDetailsBefore.getCaseData();
@@ -139,12 +152,46 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
                 bailCase.write(PREVIOUS_LISTING_DETAILS, allPreviousListingDetails);
                 bailCase.write(HAS_BEEN_RELISTED, YES);
+
+                String previousHearingId = bailCaseBefore.read(CURRENT_HEARING_ID, String.class)
+                    .orElseThrow(() -> new IllegalStateException("hearing ID can not be null"));
+
+                String currentHearingId = bailCase.read(CURRENT_HEARING_ID, String.class)
+                    .orElseThrow(() -> new IllegalStateException("hearing ID can not be null"));
+
+                Optional<List<IdValue<String>>> maybeHearingIdList =
+                    bailCase.read(HEARING_ID_LIST);
+
+                final List<IdValue<String>> hearingIdList =
+                    maybeHearingIdList.orElse(emptyList());
+
+                if (!previousHearingId.equals(currentHearingId)) {
+                    List<IdValue<String>> newHearingIdList = appendToHearingIdList(hearingIdList, currentHearingId);
+                    bailCase.write(HEARING_ID_LIST, newHearingIdList);
+                }
             }
         }
 
         updateListingLocValueByUsingRefDataLocValue(bailCase);
 
         return new PreSubmitCallbackResponse<>(bailCase);
+    }
+
+    public List<IdValue<String>> appendToHearingIdList(
+        List<IdValue<String>> existingHearingIdList,
+        String newHearingId
+    ) {
+
+        final List<IdValue<String>> allHearingIds = new ArrayList<>();
+
+        int index = 1;
+        for (IdValue<String> existingHearingId : existingHearingIdList) {
+            allHearingIds.add(new IdValue<>(String.valueOf(index++), existingHearingId.getValue()));
+        }
+
+        allHearingIds.add(new IdValue<>(String.valueOf(index), newHearingId));
+
+        return allHearingIds;
     }
 
     private void updateListingLocValueByUsingRefDataLocValue(BailCase bailCase) {

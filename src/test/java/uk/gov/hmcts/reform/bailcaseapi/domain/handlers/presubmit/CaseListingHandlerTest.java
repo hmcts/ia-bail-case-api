@@ -382,6 +382,25 @@ class CaseListingHandlerTest {
     }
 
     @Test
+    void testAppendToHearingIdList() {
+        List<IdValue<String>> existingHearingIdList = new ArrayList<>();
+        existingHearingIdList.add(new IdValue<>("1", "12345"));
+        existingHearingIdList.add(new IdValue<>("2", "56789"));
+
+        String newHearingId = "12567";
+
+        List<IdValue<String>> result = listedHearingService.appendToHearingIdList(existingHearingIdList, newHearingId);
+
+        assertEquals(3, result.size(), "The list should contain three hearing IDs");
+        assertEquals("1", result.get(0).getId());
+        assertEquals("12345", result.get(0).getValue());
+        assertEquals("2", result.get(1).getId());
+        assertEquals("56789", result.get(1).getValue());
+        assertEquals("3", result.get(2).getId());
+        assertEquals("12567", result.get(2).getValue());
+    }
+
+    @Test
     void should_throw_exception_when_initial_listing_hearing_duration_is_missing() {
         when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
         when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
