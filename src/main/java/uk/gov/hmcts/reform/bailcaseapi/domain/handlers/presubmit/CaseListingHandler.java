@@ -117,7 +117,9 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
             final List<IdValue<String>> hearingIdList =
                 maybeHearingIdList.orElse(emptyList());
 
-            appendToHearingIdList(hearingIdList, hearingId);
+            List<IdValue<String>> newHearingIdList = appendToHearingIdList(hearingIdList, hearingId);
+
+            bailCase.write(HEARING_ID_LIST, newHearingIdList);
 
         } else {
             CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);
