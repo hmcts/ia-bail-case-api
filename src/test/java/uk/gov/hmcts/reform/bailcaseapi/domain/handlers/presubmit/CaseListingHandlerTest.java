@@ -107,6 +107,10 @@ class CaseListingHandlerTest {
 
     @Test
     void should_set_case_listing_data() {
+
+        when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
+        when(bailCaseBefore.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
+
         PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(
             PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
             callback
@@ -114,7 +118,7 @@ class CaseListingHandlerTest {
 
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
-        verify(bailCase, times(4)).write(
+        verify(bailCase, times(5)).write(
             bailExtractorCaptor.capture(),
             bailValueCaptor.capture());
 
@@ -282,6 +286,8 @@ class CaseListingHandlerTest {
     @Test
     void should_handle_relisting_with_previous_hearing_details_list() {
         when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
+        when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
+        when(bailCaseBefore.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
         when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
         when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
         when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
