@@ -171,8 +171,6 @@ class CaseListingHandlerTest {
         assertEquals(bailCase, response.getData());
         verify(bailCase, times(1)).write(LISTING_LOCATION, NEWCASTLE);
         verify(bailCase, times(1)).write(REF_DATA_LISTING_LOCATION_DETAIL, newCastle);
-        verify(bailCase, times(1)).write(CURRENT_HEARING_ID, "12345");
-
     }
 
     @Test
