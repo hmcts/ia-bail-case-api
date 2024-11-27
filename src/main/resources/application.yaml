@@ -75,6 +75,7 @@ security:
     caseworker-ia-system:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
+      - "endApplication"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
