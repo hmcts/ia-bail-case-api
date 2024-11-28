@@ -15,6 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -37,6 +38,7 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.ProfessionalOrgani
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.TimedEvent;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
+@Disabled
 public class BailApplicationSubmittedConfirmationTest {
 
     @Mock

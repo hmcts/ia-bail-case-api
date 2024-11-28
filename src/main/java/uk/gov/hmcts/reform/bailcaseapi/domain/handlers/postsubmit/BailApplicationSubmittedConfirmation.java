@@ -89,7 +89,7 @@ public class BailApplicationSubmittedConfirmation implements PostSubmitCallbackH
             );
 
             ccdCaseAssignment.assignAccessToCase(callback);
-            ccdCaseAssignment.revokeAccessToCase(callback, organisationIdentifier);
+            // ccdCaseAssignment.revokeAccessToCase(callback, organisationIdentifier);
         }
         if (timedEventServiceEnabled) {
             log.info("Triggering event to end application");
