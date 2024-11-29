@@ -169,7 +169,7 @@ public class BailApplicationSubmittedConfirmationTest {
         bailApplicationSubmittedConfirmation.handle(callback);
 
         verify(ccdCaseAssignment, times(1)).assignAccessToCase(callback);
-        // verify(ccdCaseAssignment, times(1)).revokeAccessToCase(callback, organisationIdentifier);
+        // TODO: verify(ccdCaseAssignment, times(1)).revokeAccessToCase(callback, organisationIdentifier);
     }
 
     @Test

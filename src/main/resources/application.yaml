@@ -75,7 +75,6 @@ security:
     caseworker-ia-system:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
-      - "endApplication"
       - "testTimedEventSchedule"
     caseworker-caa:
       - "nocRequest"
