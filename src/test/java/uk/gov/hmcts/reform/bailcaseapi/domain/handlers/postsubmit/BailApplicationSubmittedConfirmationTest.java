@@ -190,7 +190,7 @@ public class BailApplicationSubmittedConfirmationTest {
     }
 
     @Test
-    void testTest() {
+    void testTestTimedEventScheduleEvent() {
         bailApplicationSubmittedConfirmation =
             new BailApplicationSubmittedConfirmation(
                 professionalOrganisationRetriever,
@@ -222,7 +222,7 @@ public class BailApplicationSubmittedConfirmationTest {
         verify(dateProvider).nowWithTime();
         TimedEvent timedEvent = new TimedEvent(
             "",
-            Event.END_APPLICATION,
+            Event.TEST_TIMED_EVENT_SCHEDULE,
             someTimeDelayed,
             "IA",
             "Bail",
