@@ -92,7 +92,7 @@ public class BailApplicationSubmittedConfirmation implements PostSubmitCallbackH
             // ccdCaseAssignment.revokeAccessToCase(callback, organisationIdentifier);
         }
         if (timedEventServiceEnabled) {
-            log.info("Triggering event to end application");
+            log.info("Triggering event to test timed event service schedule feature");
             int scheduleDelayInMinutes = 1;
             ZonedDateTime scheduledDate = ZonedDateTime.of(
                 dateProvider.nowWithTime(),
@@ -101,7 +101,7 @@ public class BailApplicationSubmittedConfirmation implements PostSubmitCallbackH
             scheduler.schedule(
                 new TimedEvent(
                     "",
-                    Event.END_APPLICATION,
+                    Event.TEST_TIMED_EVENT_SCHEDULE,
                     scheduledDate,
                     "IA",
                     "Bail",

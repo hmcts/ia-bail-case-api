@@ -76,6 +76,7 @@ security:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
       - "endApplication"
+      - "testTimedEventSchedule"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
@@ -119,6 +120,7 @@ security:
       - "imaStatus"
       - "forceCaseToHearing"
       - "changeTribunalCentre"
+      - "testTimedEventSchedule"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
