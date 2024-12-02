@@ -29,7 +29,8 @@
         "currentCaseStateVisibleToAllUsers": "applicationSubmitted",
         "currentCaseStateVisibleToHomeOffice": "applicationSubmitted",
         "currentCaseStateVisibleToAdminOfficer": "applicationSubmitted",
-        "currentCaseStateVisibleToLegalRepresentative": "applicationSubmitted"
+        "currentCaseStateVisibleToLegalRepresentative": "applicationSubmitted",
+        "currentHearingId": "12345"
       }
     }
   }
