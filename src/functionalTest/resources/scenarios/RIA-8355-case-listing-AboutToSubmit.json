@@ -32,7 +32,12 @@
         "currentCaseStateVisibleToAdminOfficer": "applicationSubmitted",
         "currentCaseStateVisibleToLegalRepresentative": "applicationSubmitted",
         "currentHearingId": "12345",
-        "hearingIdList": ["12345"]
+        "hearingIdList": [
+          {
+            "id": "1",
+            "value": "12345"
+          }
+        ]
       }
     }
   }
