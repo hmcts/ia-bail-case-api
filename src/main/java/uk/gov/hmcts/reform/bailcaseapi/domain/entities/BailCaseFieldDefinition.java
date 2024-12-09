@@ -627,9 +627,18 @@ public enum BailCaseFieldDefinition {
     LIST_CASE_HEARING_DATE(
         "listingHearingDate", new TypeReference<String>(){}),
 
+    LISTING_HEARING_DURATION(
+        "listingHearingDuration", new TypeReference<String>(){}),
+
     LISTING_LOCATION(
         "listingLocation", new TypeReference<ListingHearingCentre>(){}),
 
+    PREVIOUS_LISTING_DETAILS(
+        "previousListingDetails", new TypeReference<List<IdValue<PreviousListingDetails>>>() {}),
+    HAS_BEEN_RELISTED(
+        "hasBeenRelisted", new TypeReference<YesOrNo>() {}),
+    PREVIOUS_DECISION_DETAILS(
+        "previousDecisionDetails", new TypeReference<List<IdValue<PreviousDecisionDetails>>>() {}),
     HO_HAS_IMA_STATUS(
         "hoHasImaStatus", new TypeReference<YesOrNo>(){}),
     ADMIN_HAS_IMA_STATUS(
@@ -654,7 +663,10 @@ public enum BailCaseFieldDefinition {
     IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED_FT(
         "isBailsLocationReferenceDataEnabledFt", new TypeReference<YesOrNo>() {}),
     HAS_CASE_BEEN_FORCED_TO_HEARING(
-        "hasCaseBeenForcedToHearing", new TypeReference<YesOrNo>() {});
+        "hasCaseBeenForcedToHearing", new TypeReference<YesOrNo>() {}),
+
+    HEARING_RECORDING_DOCUMENTS(
+        "hearingRecordingDocuments", new TypeReference<List<IdValue<HearingRecordingDocument>>>(){});
 
     private final String value;
     private final TypeReference typeReference;
