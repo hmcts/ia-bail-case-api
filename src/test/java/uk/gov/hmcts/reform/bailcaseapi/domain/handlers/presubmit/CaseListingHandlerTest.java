@@ -107,6 +107,10 @@ class CaseListingHandlerTest {
 
     @Test
     void should_set_case_listing_data() {
+
+        when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
+        when(bailCaseBefore.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
+
         PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(
             PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
             callback
@@ -114,7 +118,7 @@ class CaseListingHandlerTest {
 
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
-        verify(bailCase, times(4)).write(
+        verify(bailCase, times(5)).write(
             bailExtractorCaptor.capture(),
             bailValueCaptor.capture());
 
@@ -160,6 +164,7 @@ class CaseListingHandlerTest {
                 .getListItems()
         )));
         when(locationRefDataService.getCourtVenuesByEpimmsId("366796")).thenReturn(Optional.of(newCastle));
+        when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
 
         PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(
             PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
@@ -257,6 +262,8 @@ class CaseListingHandlerTest {
         when(bailCaseBefore.read(LISTING_LOCATION, ListingHearingCentre.class)).thenReturn(Optional.of(ListingHearingCentre.BIRMINGHAM));
         when(bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of(caseListHearingDate));
         when(bailCaseBefore.read(LISTING_HEARING_DURATION, String.class)).thenReturn(Optional.of("60"));
+        when(bailCaseBefore.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12346"));
+        when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
         PreSubmitCallbackResponse<BailCase> response = caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
         assertNotNull(response);
@@ -279,6 +286,8 @@ class CaseListingHandlerTest {
     @Test
     void should_handle_relisting_with_previous_hearing_details_list() {
         when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
+        when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
+        when(bailCaseBefore.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
         when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
         when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
         when(bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
@@ -379,6 +388,25 @@ class CaseListingHandlerTest {
         Set<String> expectedErrors = new HashSet<>();
         expectedErrors.add("Relisting is only available after an initial listing.");
         assertEquals(response.getErrors(), expectedErrors);
+    }
+
+    @Test
+    void testAppendToHearingIdList() {
+        List<IdValue<String>> existingHearingIdList = new ArrayList<>();
+        existingHearingIdList.add(new IdValue<>("1", "12345"));
+        existingHearingIdList.add(new IdValue<>("2", "56789"));
+
+        String newHearingId = "12567";
+
+        List<IdValue<String>> result = caseListingHandler.appendToHearingIdList(existingHearingIdList, newHearingId);
+
+        assertEquals(3, result.size(), "The list should contain three hearing IDs");
+        assertEquals("1", result.get(0).getId());
+        assertEquals("12345", result.get(0).getValue());
+        assertEquals("2", result.get(1).getId());
+        assertEquals("56789", result.get(1).getValue());
+        assertEquals("3", result.get(2).getId());
+        assertEquals("12567", result.get(2).getValue());
     }
 
     @Test
