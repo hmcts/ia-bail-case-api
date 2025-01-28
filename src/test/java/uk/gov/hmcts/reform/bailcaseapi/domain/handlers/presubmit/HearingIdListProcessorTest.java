@@ -96,7 +96,7 @@ class HearingIdListProcessorTest {
         hearingIdListProcessor.processHearingIdList(bailCase);
 
         // then
-        verify(bailCase).read(eq(CURRENT_HEARING_ID, String.class));
+        verify(bailCase).read(eq(CURRENT_HEARING_ID), eq(String.class));
         verify(bailCase).read(eq(HEARING_ID_LIST));
         verifyNoMoreInteractions(bailCase);
     }
