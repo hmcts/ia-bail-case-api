@@ -84,6 +84,24 @@ class HearingIdListProcessorTest {
     }
 
     @Test
+    void should_not_add_hearing_id_if_already_exists() {
+        // given
+        when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
+        IdValue<String> idValue1 = new IdValue<>("1", "23456");
+        IdValue<String> idValue2 = new IdValue<>("2", "12345");
+        List<IdValue<String>> existingHearingIdList = Arrays.asList(idValue1, idValue2);
+        when(bailCase.read(HEARING_ID_LIST)).thenReturn(Optional.of(existingHearingIdList));
+
+        // when
+        hearingIdListProcessor.processHearingIdList(bailCase);
+
+        // then
+        verify(bailCase).read(eq(CURRENT_HEARING_ID, String.class));
+        verify(bailCase).read(eq(HEARING_ID_LIST));
+        verifyNoMoreInteractions(bailCase);
+    }
+
+    @Test
     void should_not_add_hearing_id_if_no_current_hearing_id() {
         // given
         when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.empty());
