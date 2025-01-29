@@ -139,7 +139,7 @@ class CaseListingHandlerTest {
         verify(bailCase, times(1)).write(SEND_DIRECTION_LIST, "Home Office");
         verify(bailCase, times(1)).write(DATE_OF_COMPLIANCE,
                                          zonedDueDateTime.toLocalDate().toString());
-        verify(hearingIdListProcessor).processHearingIdList(bailCase);
+        verify(hearingIdListProcessor).processHearingId(bailCase);
     }
 
     @Test
@@ -186,7 +186,7 @@ class CaseListingHandlerTest {
         assertEquals(bailCase, response.getData());
         verify(bailCase, times(1)).write(LISTING_LOCATION, NEWCASTLE);
         verify(bailCase, times(1)).write(REF_DATA_LISTING_LOCATION_DETAIL, newCastle);
-        verify(hearingIdListProcessor).processHearingIdList(bailCase);
+        verify(hearingIdListProcessor).processHearingId(bailCase);
     }
 
     @Test
@@ -297,7 +297,7 @@ class CaseListingHandlerTest {
             .append(newPreviousListingDetails, emptyList());
         verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), any(List.class));
         verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.YES);
-        verifyNoInteractions(hearingIdListProcessor);
+        verify(hearingIdListProcessor).processPreviousHearingId(bailCaseBefore, bailCase);
     }
 
     @Test
@@ -344,7 +344,7 @@ class CaseListingHandlerTest {
                                                                 idValueStoredPrevListingDetails);
         verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), any(List.class));
         verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.YES);
-        verifyNoInteractions(hearingIdListProcessor);
+        verify(hearingIdListProcessor).processPreviousHearingId(bailCaseBefore, bailCase);
     }
 
     @Test
@@ -419,7 +419,7 @@ class CaseListingHandlerTest {
         verifyNoInteractions(hearingIdListProcessor);
     }
 
-    @org.junit.Test
+    @Test
     void should_throw_exception_when_initial_listing_hearing_duration_is_missing() {
         when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(ListingEvent.RELISTING));
         when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));

@@ -12,10 +12,13 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_HEARING_ID;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_ID_LIST;
+
 @Slf4j
 @Component
 public class HearingIdListProcessor {
-    public void processHearingIdList(BailCase bailCase) {
+    public void processHearingId(BailCase bailCase) {
         Optional<String> hearingIdOpt = bailCase.read(BailCaseFieldDefinition.CURRENT_HEARING_ID, String.class);
 
         if (hearingIdOpt.isPresent()) {
@@ -28,6 +31,25 @@ public class HearingIdListProcessor {
             if (doesNotContainHearingId(hearingIdList, hearingId)) {
                 List<IdValue<String>> newHearingIdList = appendToHearingIdList(hearingIdList, hearingId);
                 bailCase.write(BailCaseFieldDefinition.HEARING_ID_LIST, newHearingIdList);
+            }
+        }
+    }
+
+    public void processPreviousHearingId(BailCase bailCaseBefore, BailCase bailCase) {
+        Optional<String> previousHearingIdOpt = bailCaseBefore.read(CURRENT_HEARING_ID, String.class);
+        Optional<String> currentHearingIdOpt = bailCase.read(CURRENT_HEARING_ID, String.class);
+
+        if (previousHearingIdOpt.isPresent() && currentHearingIdOpt.isPresent()) {
+            String previousHearingId = previousHearingIdOpt.get();
+            String currentHearingId = currentHearingIdOpt.get();
+
+            Optional<List<IdValue<String>>> maybeHearingIdList = bailCase.read(HEARING_ID_LIST);
+
+            final List<IdValue<String>> hearingIdList = maybeHearingIdList.orElse(emptyList());
+
+            if (!previousHearingId.equals(currentHearingId)) {
+                List<IdValue<String>> newHearingIdList = appendToHearingIdList(hearingIdList, currentHearingId);
+                bailCase.write(HEARING_ID_LIST, newHearingIdList);
             }
         }
     }
