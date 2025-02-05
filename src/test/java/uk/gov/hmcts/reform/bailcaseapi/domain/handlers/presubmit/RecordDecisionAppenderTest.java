@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDecisionProcessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,12 +38,14 @@ class RecordDecisionAppenderTest {
     private CaseDetails<BailCase> caseDetails;
     @Mock
     private BailCase bailCase;
+    @Mock
+    private HearingDecisionProcessor hearingDecisionProcessor;
 
     private RecordDecisionAppender recordDecisionAppender;
 
     @BeforeEach
     public void setUp() {
-        this.recordDecisionAppender = new RecordDecisionAppender();
+        this.recordDecisionAppender = new RecordDecisionAppender(hearingDecisionProcessor);
     }
 
     @Test
@@ -127,6 +130,7 @@ class RecordDecisionAppenderTest {
         verify(bailCase, times(1)).write(BAIL_TRANSFER_DIRECTIONS, bailTransferDirections);
         verify(bailCase, times(1)).write(SECRETARY_OF_STATE_REFUSAL_REASONS,
                                          secretaryOfStateRefusalReasons);
+        verify(hearingDecisionProcessor).processHearingDecision(bailCase);
     }
 
     @Test

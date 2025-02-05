@@ -9,12 +9,18 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDecisionProcessor;
 
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Component
 public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase> {
+    private final HearingDecisionProcessor hearingDecisionProcessor;
+
+    public RecordDecisionAppender(HearingDecisionProcessor hearingDecisionProcessor) {
+        this.hearingDecisionProcessor = hearingDecisionProcessor;
+    }
 
     @Override
     public boolean canHandle(PreSubmitCallbackStage callbackStage, Callback<BailCase> callback) {
@@ -100,6 +106,8 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
         bailCase.write(BailCaseFieldDefinition.CONDITION_ELECTRONIC_MONITORING, conditionElectronicMonitoring);
         bailCase.write(BailCaseFieldDefinition.BAIL_TRANSFER_DIRECTIONS, bailTransferDirections);
         bailCase.write(BailCaseFieldDefinition.SECRETARY_OF_STATE_REFUSAL_REASONS, secretaryOfStateRefusalReasons);
+
+        hearingDecisionProcessor.processHearingDecision(bailCase);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
