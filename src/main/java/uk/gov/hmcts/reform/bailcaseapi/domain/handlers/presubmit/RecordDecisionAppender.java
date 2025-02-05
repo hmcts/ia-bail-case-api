@@ -32,13 +32,16 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
     }
 
     @Override
-    public PreSubmitCallbackResponse<BailCase> handle(PreSubmitCallbackStage callbackStage,
-                                                      Callback<BailCase> callback) {
-
+    public PreSubmitCallbackResponse<BailCase> handle(
+        PreSubmitCallbackStage callbackStage,
+        Callback<BailCase> callback
+    ) {
+        log.info("--------111");
         if (!canHandle(callbackStage, callback)) {
             throw new IllegalStateException("Cannot handle callback");
         }
 
+        log.info("--------222");
         final BailCase bailCase = callback.getCaseDetails().getCaseData();
 
         String conditionAppearance = "The applicant is to appear before an Immigration Officer at [location] between"
@@ -99,6 +102,7 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
             + " Office have refused to consent to the grant of bail so in accordance with paragraph 3(4) of Schedule 10"
             + " Immigration Act 2016 bail is refused.";
 
+        log.info("--------333");
         bailCase.write(BailCaseFieldDefinition.CONDITION_APPEARANCE, conditionAppearance);
         bailCase.write(BailCaseFieldDefinition.CONDITION_ACTIVITIES, conditionActivities);
         bailCase.write(BailCaseFieldDefinition.CONDITION_RESIDENCE, conditionResidence);
@@ -106,8 +110,10 @@ public class RecordDecisionAppender implements PreSubmitCallbackHandler<BailCase
         bailCase.write(BailCaseFieldDefinition.CONDITION_ELECTRONIC_MONITORING, conditionElectronicMonitoring);
         bailCase.write(BailCaseFieldDefinition.BAIL_TRANSFER_DIRECTIONS, bailTransferDirections);
         bailCase.write(BailCaseFieldDefinition.SECRETARY_OF_STATE_REFUSAL_REASONS, secretaryOfStateRefusalReasons);
+        log.info("--------444");
 
         hearingDecisionProcessor.processHearingDecision(bailCase);
+        log.info("--------555");
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
