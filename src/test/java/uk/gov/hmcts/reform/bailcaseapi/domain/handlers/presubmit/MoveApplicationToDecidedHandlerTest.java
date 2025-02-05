@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDecisionProcessor;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -41,18 +42,19 @@ class MoveApplicationToDecidedHandlerTest {
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
     @Mock private Document exampleDocument;
+    @Mock private HearingDecisionProcessor hearingDecisionProcessor;
     @Mock private DateProvider dateProvider;
 
     private MoveApplicationToDecidedHandler moveApplicationToDecidedHandler;
-
-    private String callbackErrorMessage =
-        "You must upload a signed decision notice before moving the application to decided.";
 
     private final LocalDateTime nowWithTime = LocalDateTime.now();
 
     @BeforeEach
     public void setUp() {
-        this.moveApplicationToDecidedHandler = new MoveApplicationToDecidedHandler(dateProvider);
+        this.moveApplicationToDecidedHandler = new MoveApplicationToDecidedHandler(
+            hearingDecisionProcessor,
+            dateProvider
+        );
         when(dateProvider.nowWithTime()).thenReturn(nowWithTime);
     }
 
@@ -69,7 +71,9 @@ class MoveApplicationToDecidedHandlerTest {
         assertNotNull(callback);
         assertEquals(bailCase, callbackResponse.getData());
         final Set<String> errors = callbackResponse.getErrors();
+        String callbackErrorMessage = "You must upload a signed decision notice before moving the application to decided.";
         assertThat(errors).hasSize(1).containsOnly(callbackErrorMessage);
+        verify(hearingDecisionProcessor).processHearingDecision(bailCase);
     }
 
     @Test
@@ -91,7 +95,7 @@ class MoveApplicationToDecidedHandlerTest {
         assertThat(errors).hasSize(0);
         verify(bailCase).write(BailCaseFieldDefinition.OUTCOME_DATE, nowWithTime.toString());
         verify(bailCase, times(1)).write(BailCaseFieldDefinition.OUTCOME_STATE, State.DECISION_DECIDED);
-
+        verify(hearingDecisionProcessor).processHearingDecision(bailCase);
     }
 
 

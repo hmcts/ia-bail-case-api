@@ -671,6 +671,9 @@ public enum BailCaseFieldDefinition {
     HEARING_ID_LIST(
         "hearingIdList", new TypeReference<List<IdValue<String>>>(){}),
 
+    HEARING_DECISION_LIST(
+            "hearingDecisionList", new TypeReference<List<IdValue<HearingDecision>>>(){}),
+
     HEARING_RECORDING_DOCUMENTS(
         "hearingRecordingDocuments", new TypeReference<List<IdValue<HearingRecordingDocument>>>(){});
 

@@ -21,15 +21,19 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDecisionProcessor;
 
 @Component
 public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandler<BailCase> {
 
+    private final HearingDecisionProcessor hearingDecisionProcessor;
     private final DateProvider dateProvider;
 
     public UploadSignedDecisionNoticeHandler(
+        HearingDecisionProcessor hearingDecisionProcessor,
         DateProvider dateProvider
     ) {
+        this.hearingDecisionProcessor = hearingDecisionProcessor;
         this.dateProvider = dateProvider;
     }
 
@@ -83,6 +87,8 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
         bailCase.write(OUTCOME_STATE, State.DECISION_DECIDED);
         bailCase.write(HAS_BEEN_RELISTED, YesOrNo.NO);
         bailCase.clear(DECISION_UNSIGNED_DOCUMENT);
+
+        hearingDecisionProcessor.processHearingDecision(bailCase);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

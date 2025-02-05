@@ -35,6 +35,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDecisionProcessor;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
@@ -47,6 +48,8 @@ public class UploadSignedDecisionNoticeHandlerTest {
     private CaseDetails<BailCase> caseDetails;
     @Mock
     private BailCase bailCase;
+    @Mock
+    private HearingDecisionProcessor hearingDecisionProcessor;
     @Mock
     private DateProvider dateProvider;
     @Mock
@@ -69,7 +72,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
     public void setUp() {
         uploadSignedDecisionNoticeHandler =
             new UploadSignedDecisionNoticeHandler(
-                dateProvider
+                    hearingDecisionProcessor, dateProvider
             );
         when(callback.getEvent()).thenReturn(Event.UPLOAD_SIGNED_DECISION_NOTICE);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
@@ -104,6 +107,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
         verify(bailCase, times(1)).write(OUTCOME_STATE, State.DECISION_DECIDED);
         verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.NO);
         verify(bailCase, times(1)).clear(DECISION_UNSIGNED_DOCUMENT);
+        verify(hearingDecisionProcessor).processHearingDecision(bailCase);
     }
 
     @Test
@@ -125,6 +129,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
         verify(bailCase).write(OUTCOME_DATE, nowWithTime.toString());
         verify(bailCase, times(1)).write(OUTCOME_STATE, State.DECISION_DECIDED);
         verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.NO);
+        verify(hearingDecisionProcessor).processHearingDecision(bailCase);
     }
 
     @Test
@@ -144,6 +149,7 @@ public class UploadSignedDecisionNoticeHandlerTest {
         verify(bailCase).write(OUTCOME_DATE, nowWithTime.toString());
         verify(bailCase, times(1)).write(OUTCOME_STATE, State.DECISION_DECIDED);
         verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.NO);
+        verify(hearingDecisionProcessor).processHearingDecision(bailCase);
     }
 
     @Test

@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDecisionProcessor;
 
 import java.util.Optional;
 
@@ -21,11 +22,14 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 @Component
 public class MoveApplicationToDecidedHandler implements PreSubmitCallbackHandler<BailCase> {
 
+    private final HearingDecisionProcessor hearingDecisionProcessor;
     private final DateProvider dateProvider;
 
     public MoveApplicationToDecidedHandler(
+        HearingDecisionProcessor hearingDecisionProcessor,
         DateProvider dateProvider
     ) {
+        this.hearingDecisionProcessor = hearingDecisionProcessor;
         this.dateProvider = dateProvider;
     }
 
@@ -64,6 +68,8 @@ public class MoveApplicationToDecidedHandler implements PreSubmitCallbackHandler
 
         bailCase.write(OUTCOME_DATE, dateProvider.nowWithTime().toString());
         bailCase.write(OUTCOME_STATE, State.DECISION_DECIDED);
+
+        hearingDecisionProcessor.processHearingDecision(bailCase);
 
         return response;
     }
