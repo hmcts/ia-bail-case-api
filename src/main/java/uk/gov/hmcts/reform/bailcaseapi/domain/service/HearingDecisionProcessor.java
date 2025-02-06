@@ -22,6 +22,7 @@ public class HearingDecisionProcessor {
     public void processHearingDecision(BailCase bailCase) {
         Optional<String> decisionOpt = bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class);
         log.info("----------------decisionOpt: {}", decisionOpt);
+        log.info("----------------bailCase: {}", bailCase);
         String decision = decisionOpt.orElse("decided");
         processHearingDecision(bailCase, decision);
     }
