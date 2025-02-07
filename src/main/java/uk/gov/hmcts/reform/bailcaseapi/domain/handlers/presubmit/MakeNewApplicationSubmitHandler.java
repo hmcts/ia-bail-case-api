@@ -2,9 +2,6 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
 
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_HEARING_ID;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_DECISION_LIST;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_ID_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_IMA_ENABLED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
@@ -12,21 +9,16 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.HearingDecision;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackStateHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.FeatureToggleService;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.MakeNewApplicationService;
-
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -51,9 +43,11 @@ public class MakeNewApplicationSubmitHandler implements PreSubmitCallbackStateHa
     }
 
     @Override
-    public PreSubmitCallbackResponse<BailCase> handle(PreSubmitCallbackStage callbackStage, Callback<BailCase> callback,
-                                                      PreSubmitCallbackResponse<BailCase> callbackResponse) {
-
+    public PreSubmitCallbackResponse<BailCase> handle(
+        PreSubmitCallbackStage callbackStage,
+        Callback<BailCase> callback,
+        PreSubmitCallbackResponse<BailCase> callbackResponse
+    ) {
         requireNonNull(callbackResponse, "callback must not be null");
 
         if (!canHandle(callbackStage, callback)) {
@@ -77,14 +71,7 @@ public class MakeNewApplicationSubmitHandler implements PreSubmitCallbackStateHa
         YesOrNo isImaEnabled = featureToggleService.imaEnabled() ? YES : NO;
         bailCase.write(IS_IMA_ENABLED, isImaEnabled);
 
-        Optional<String> currentHearingIdOpt = detailsBefore.read(CURRENT_HEARING_ID);
-        Optional<List<IdValue<String>>> hearingIdListOpt = detailsBefore.read(HEARING_ID_LIST);
-        Optional<List<IdValue<HearingDecision>>> hearingDecisionListOpt = detailsBefore.read(HEARING_DECISION_LIST);
-        currentHearingIdOpt.ifPresent(currentHearingId -> bailCase.write(CURRENT_HEARING_ID, currentHearingId));
-        hearingIdListOpt.ifPresent(hearingIdList -> bailCase.write(HEARING_ID_LIST, hearingIdList));
-        hearingDecisionListOpt.ifPresent(
-            hearingDecisionList -> bailCase.write(HEARING_DECISION_LIST, hearingDecisionList)
-        );
+        makeNewApplicationService.preserveHearingsData(bailCase, detailsBefore);
 
         return new PreSubmitCallbackResponse<>(bailCase, State.APPLICATION_SUBMITTED);
     }
