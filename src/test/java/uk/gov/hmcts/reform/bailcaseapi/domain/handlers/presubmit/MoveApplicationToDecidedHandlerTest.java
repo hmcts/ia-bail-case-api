@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
-import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDecisionProcessor;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -42,19 +41,18 @@ class MoveApplicationToDecidedHandlerTest {
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
     @Mock private Document exampleDocument;
-    @Mock private HearingDecisionProcessor hearingDecisionProcessor;
     @Mock private DateProvider dateProvider;
 
     private MoveApplicationToDecidedHandler moveApplicationToDecidedHandler;
+
+    private String callbackErrorMessage =
+            "You must upload a signed decision notice before moving the application to decided.";
 
     private final LocalDateTime nowWithTime = LocalDateTime.now();
 
     @BeforeEach
     public void setUp() {
-        this.moveApplicationToDecidedHandler = new MoveApplicationToDecidedHandler(
-            hearingDecisionProcessor,
-            dateProvider
-        );
+        this.moveApplicationToDecidedHandler = new MoveApplicationToDecidedHandler(dateProvider);
         when(dateProvider.nowWithTime()).thenReturn(nowWithTime);
     }
 
@@ -66,14 +64,12 @@ class MoveApplicationToDecidedHandlerTest {
         when(caseDetails.getCaseData()).thenReturn(bailCase);
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
-            moveApplicationToDecidedHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback);
+                moveApplicationToDecidedHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback);
 
         assertNotNull(callback);
         assertEquals(bailCase, callbackResponse.getData());
         final Set<String> errors = callbackResponse.getErrors();
-        String callbackErrorMessage = "You must upload a signed decision notice before moving the application to decided.";
         assertThat(errors).hasSize(1).containsOnly(callbackErrorMessage);
-        verify(hearingDecisionProcessor).processHearingDecision(bailCase);
     }
 
     @Test
@@ -84,10 +80,10 @@ class MoveApplicationToDecidedHandlerTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
 
         when(bailCase.read(BailCaseFieldDefinition.UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class))
-            .thenReturn(Optional.of(exampleDocument));
+                .thenReturn(Optional.of(exampleDocument));
 
         PreSubmitCallbackResponse<BailCase> callbackResponse =
-            moveApplicationToDecidedHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback);
+                moveApplicationToDecidedHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback);
 
         assertNotNull(callback);
         assertEquals(bailCase, callbackResponse.getData());
@@ -95,7 +91,7 @@ class MoveApplicationToDecidedHandlerTest {
         assertThat(errors).hasSize(0);
         verify(bailCase).write(BailCaseFieldDefinition.OUTCOME_DATE, nowWithTime.toString());
         verify(bailCase, times(1)).write(BailCaseFieldDefinition.OUTCOME_STATE, State.DECISION_DECIDED);
-        verify(hearingDecisionProcessor).processHearingDecision(bailCase);
+
     }
 
 
@@ -109,7 +105,7 @@ class MoveApplicationToDecidedHandlerTest {
             for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
                 boolean canHandle = moveApplicationToDecidedHandler.canHandle(callbackStage, callback);
                 if (callbackStage == ABOUT_TO_START
-                    && (callback.getEvent() == Event.MOVE_APPLICATION_TO_DECIDED)) {
+                        && (callback.getEvent() == Event.MOVE_APPLICATION_TO_DECIDED)) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
@@ -122,32 +118,32 @@ class MoveApplicationToDecidedHandlerTest {
     void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(
-            () -> moveApplicationToDecidedHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
-            .hasMessage("Cannot handle callback")
-            .isExactlyInstanceOf(IllegalStateException.class);
+                () -> moveApplicationToDecidedHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
+                .hasMessage("Cannot handle callback")
+                .isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void should_not_allow_null_arguments() {
 
         assertThatThrownBy(() -> moveApplicationToDecidedHandler
-            .canHandle(null, callback))
-            .hasMessage("callbackStage must not be null")
-            .isExactlyInstanceOf(NullPointerException.class);
+                .canHandle(null, callback))
+                .hasMessage("callbackStage must not be null")
+                .isExactlyInstanceOf(NullPointerException.class);
 
         assertThatThrownBy(() -> moveApplicationToDecidedHandler
-            .canHandle(PreSubmitCallbackStage.ABOUT_TO_START, null))
-            .hasMessage("callback must not be null")
-            .isExactlyInstanceOf(NullPointerException.class);
+                .canHandle(PreSubmitCallbackStage.ABOUT_TO_START, null))
+                .hasMessage("callback must not be null")
+                .isExactlyInstanceOf(NullPointerException.class);
 
         assertThatThrownBy(() -> moveApplicationToDecidedHandler
-            .handle(null, callback))
-            .hasMessage("callbackStage must not be null")
-            .isExactlyInstanceOf(NullPointerException.class);
+                .handle(null, callback))
+                .hasMessage("callbackStage must not be null")
+                .isExactlyInstanceOf(NullPointerException.class);
 
         assertThatThrownBy(() -> moveApplicationToDecidedHandler
-            .handle(PreSubmitCallbackStage.ABOUT_TO_START, null))
-            .hasMessage("callback must not be null")
-            .isExactlyInstanceOf(NullPointerException.class);
+                .handle(PreSubmitCallbackStage.ABOUT_TO_START, null))
+                .hasMessage("callback must not be null")
+                .isExactlyInstanceOf(NullPointerException.class);
     }
 }

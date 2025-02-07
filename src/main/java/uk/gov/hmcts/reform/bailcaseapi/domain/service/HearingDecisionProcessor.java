@@ -22,18 +22,17 @@ public class HearingDecisionProcessor {
     public void processHearingDecision(BailCase bailCase) {
         Optional<String> decisionOpt = bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class);
         log.info("----------------decisionOpt: {}", decisionOpt);
-        log.info("----------------bailCase: {}", bailCase);
         String decision = decisionOpt.orElse("decided");
         processHearingDecision(bailCase, decision);
     }
 
-    private void processHearingDecision(BailCase asylumCase, String decision) {
-        Optional<String> currentHearingIdOpt = asylumCase.read(CURRENT_HEARING_ID, String.class);
+    private void processHearingDecision(BailCase bailCase, String decision) {
+        Optional<String> currentHearingIdOpt = bailCase.read(CURRENT_HEARING_ID, String.class);
 
         if (currentHearingIdOpt.isPresent()) {
             String currentHearingId = currentHearingIdOpt.get();
 
-            Optional<List<IdValue<HearingDecision>>> hearingDecisionListOpt = asylumCase.read(HEARING_DECISION_LIST);
+            Optional<List<IdValue<HearingDecision>>> hearingDecisionListOpt = bailCase.read(HEARING_DECISION_LIST);
             final List<IdValue<HearingDecision>> hearingDecisionList = hearingDecisionListOpt.orElse(emptyList());
 
             Optional<IdValue<HearingDecision>> existingHearingDecisionIdValueOpt =
@@ -51,7 +50,7 @@ public class HearingDecisionProcessor {
                 HearingDecision newHearingDecision = new HearingDecision(currentHearingId, decision);
                 newHearingDecisionList = appendToHearingDecisionList(hearingDecisionList, newHearingDecision);
             }
-            asylumCase.write(HEARING_DECISION_LIST, newHearingDecisionList);
+            bailCase.write(HEARING_DECISION_LIST, newHearingDecisionList);
         }
     }
 
