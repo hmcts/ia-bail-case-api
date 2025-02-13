@@ -71,8 +71,6 @@ public class MakeNewApplicationSubmitHandler implements PreSubmitCallbackStateHa
         YesOrNo isImaEnabled = featureToggleService.imaEnabled() ? YES : NO;
         bailCase.write(IS_IMA_ENABLED, isImaEnabled);
 
-        makeNewApplicationService.preserveHearingsData(bailCase, detailsBefore);
-
         return new PreSubmitCallbackResponse<>(bailCase, State.APPLICATION_SUBMITTED);
     }
 }

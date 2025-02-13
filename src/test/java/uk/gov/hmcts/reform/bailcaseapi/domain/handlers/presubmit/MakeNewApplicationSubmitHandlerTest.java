@@ -79,7 +79,6 @@ class MakeNewApplicationSubmitHandlerTest {
 
         verify(makeNewApplicationService).clearFieldsAboutToSubmit(bailCase);
         verify(makeNewApplicationService).appendPriorApplication(bailCase, bailCaseBefore);
-        verify(makeNewApplicationService).preserveHearingsData(bailCase, bailCaseBefore);
         when(featureToggleService.imaEnabled()).thenReturn(false);
         verify(bailCase).write(IS_IMA_ENABLED, YesOrNo.NO);
     }

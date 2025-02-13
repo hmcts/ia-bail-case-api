@@ -17,10 +17,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserRoleLabel;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_HEARING_ID;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_DECISION_LIST;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_ID_LIST;
-
 @Service
 public class MakeNewApplicationService {
     private final Appender<PriorApplication> appender;
@@ -70,17 +66,6 @@ public class MakeNewApplicationService {
 
     public void clearFieldsAboutToSubmit(BailCase bailCase) {
         clearUnrelatedFields(bailCase, VALID_ABOUT_TO_SUBMIT_MAKE_NEW_APPLICATION_FIELDS);
-    }
-
-    public void preserveHearingsData(BailCase bailCase, BailCase detailsBefore) {
-        Optional<String> currentHearingIdOpt = detailsBefore.read(CURRENT_HEARING_ID, String.class);
-        Optional<List<IdValue<String>>> hearingIdListOpt = detailsBefore.read(HEARING_ID_LIST);
-        Optional<List<IdValue<HearingDecision>>> hearingDecisionListOpt = detailsBefore.read(HEARING_DECISION_LIST);
-        currentHearingIdOpt.ifPresent(currentHearingId -> bailCase.write(CURRENT_HEARING_ID, currentHearingId));
-        hearingIdListOpt.ifPresent(hearingIdList -> bailCase.write(HEARING_ID_LIST, hearingIdList));
-        hearingDecisionListOpt.ifPresent(
-                hearingDecisionList -> bailCase.write(HEARING_DECISION_LIST, hearingDecisionList)
-        );
     }
 
     private void clearRoleDependentFields(BailCase bailCase) {

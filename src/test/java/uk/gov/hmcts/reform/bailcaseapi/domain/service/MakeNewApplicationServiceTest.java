@@ -6,13 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_NOTES;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_HEARING_ID;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_USER;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_DECISION_LIST;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_ID_LIST;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LISTING_LOCATION;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LIST_CASE_HEARING_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OUTCOME_STATE;
@@ -22,7 +18,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +33,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithDescription;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.HearingDecision;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.PriorApplication;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
@@ -66,10 +60,6 @@ class MakeNewApplicationServiceTest {
     private Appender<PriorApplication> priorApplicationAppender;
     @Mock
     private DocumentWithDescription b1Document;
-    @Mock
-    private List<IdValue<String>> hearingIdList;
-    @Mock
-    private List<IdValue<HearingDecision>> hearingDecisionList;
 
     private MakeNewApplicationService makeNewApplicationService;
 
@@ -270,35 +260,5 @@ class MakeNewApplicationServiceTest {
         // then
         assertTrue(bailCase.containsKey(LISTING_LOCATION.value()));
         assertTrue(bailCase.containsKey(LIST_CASE_HEARING_DATE.value()));
-    }
-
-    @Test
-    void preserveHearingsData_should_preserve_hearing_data_if_it_exists() {
-        // given
-        when(bailCaseBefore.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
-        when(bailCaseBefore.read(HEARING_ID_LIST)).thenReturn(Optional.of(hearingIdList));
-        when(bailCaseBefore.read(HEARING_DECISION_LIST)).thenReturn(Optional.of(hearingDecisionList));
-
-        // when
-        makeNewApplicationService.preserveHearingsData(bailCase, bailCaseBefore);
-
-        // then
-        verify(bailCase).write(CURRENT_HEARING_ID, "12345");
-        verify(bailCase).write(HEARING_ID_LIST, hearingIdList);
-        verify(bailCase).write(HEARING_DECISION_LIST, hearingDecisionList);
-    }
-
-    @Test
-    void preserveHearingsData_should_not_preserve_hearing_data_if_it_does_not_exist() {
-        // given
-        when(bailCaseBefore.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.empty());
-        when(bailCaseBefore.read(HEARING_ID_LIST)).thenReturn(Optional.empty());
-        when(bailCaseBefore.read(HEARING_DECISION_LIST)).thenReturn(Optional.empty());
-
-        // when
-        makeNewApplicationService.preserveHearingsData(bailCase, bailCaseBefore);
-
-        // then
-        verifyNoInteractions(bailCase);
     }
 }
