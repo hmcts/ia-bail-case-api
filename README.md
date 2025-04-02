@@ -5,7 +5,6 @@ Immigration &amp; Asylum Bail case API
 
 ## Purpose
 
-
 Immigration &amp; Asylum case API is a Spring Boot based application  for Legal Representatives to manage bail applications.
 
 ### Prerequisites
