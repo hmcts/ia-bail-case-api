@@ -39,9 +39,7 @@ class SendNotificationHandlerTest {
 
     @BeforeEach
     public void setUp() {
-
-        sendNotificationHandler =
-            new SendNotificationHandler(notificationSender);
+        sendNotificationHandler = new SendNotificationHandler(notificationSender);
     }
 
     @Test
