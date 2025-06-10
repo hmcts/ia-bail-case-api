@@ -43,6 +43,8 @@ public class SendNotificationHandler implements PreSubmitCallbackHandler<BailCas
 
     private List<Event> getEventsToHandle() {
         return Lists.newArrayList(
+            Event.START_APPLICATION,
+            Event.EDIT_BAIL_APPLICATION,
             Event.SUBMIT_APPLICATION,
             Event.UPLOAD_BAIL_SUMMARY,
             Event.UPLOAD_SIGNED_DECISION_NOTICE,
@@ -56,7 +58,9 @@ public class SendNotificationHandler implements PreSubmitCallbackHandler<BailCas
             Event.CREATE_BAIL_CASE_LINK,
             Event.MAINTAIN_BAIL_CASE_LINKS,
             Event.CASE_LISTING,
-            Event.RECORD_THE_DECISION
+            Event.RECORD_THE_DECISION,
+            Event.FORCE_CASE_TO_HEARING,
+            Event.CHANGE_TRIBUNAL_CENTRE
         );
     }
 
