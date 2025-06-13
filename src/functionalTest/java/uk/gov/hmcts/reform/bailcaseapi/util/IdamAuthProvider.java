@@ -151,14 +151,6 @@ public class IdamAuthProvider {
         );
     }
 
-    @Cacheable(value = "systemTokenCache")
-    public String getSystemToken() {
-        return getUserToken(
-            System.getenv("IA_SYSTEM_USERNAME"),
-            System.getenv("IA_SYSTEM_PASSWORD")
-        );
-    }
-
     public String getUserId(String token) {
         try {
             UserInfo userInfo = idamApi.userInfo(token);
