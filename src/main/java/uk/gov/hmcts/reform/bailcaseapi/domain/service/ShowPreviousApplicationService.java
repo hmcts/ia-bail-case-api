@@ -532,13 +532,13 @@ public class ShowPreviousApplicationService {
         if (previousBailCase.read(hasProbationOffenderManager, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             StringBuilder stringBuilder =
                 new StringBuilder("|Financial condition supporter|Yes|\n");
-                stringBuilder.append("|Given names|")
-                .append(previousBailCase.read(probationOffenderManagerGivenName)
-                            .orElseThrow(getErrorThrowable(probationOffenderManagerGivenName)))
-                .append("|\n|Family name|")
-                .append(previousBailCase.read(probationOffenderManagerFamilyName)
-                            .orElseThrow(getErrorThrowable(probationOffenderManagerFamilyName)))
-                .append("|\n");
+            stringBuilder.append("|Given names|")
+            .append(previousBailCase.read(probationOffenderManagerGivenName)
+                        .orElseThrow(getErrorThrowable(probationOffenderManagerGivenName)))
+            .append("|\n|Family name|")
+            .append(previousBailCase.read(probationOffenderManagerFamilyName)
+                        .orElseThrow(getErrorThrowable(probationOffenderManagerFamilyName)))
+            .append("|\n");
 
             if (!previousBailCase.read(probationOffenderManagerTelephoneNumber, String.class).orElse("").isBlank()) {
                 stringBuilder.append("|Telephone number|")
