@@ -28,11 +28,19 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_FINANCIAL_COND_SUPPORTER3;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_FINANCIAL_COND_SUPPORTER4;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_GROUNDS_FOR_BAIL;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_HAS_PROBATION_OFFENDER_MANAGER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_HEARING_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_HEARING_REQ_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_ID;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_LEGAL_REP_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_PERSONAL_INFO_DETAILS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_PROBATION_OFFENDER_MANAGER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_PROBATION_OFFENDER_MANAGER_CONTACT_DETAILS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_PROBATION_OFFENDER_MANAGER_FAMILY_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_PROBATION_OFFENDER_MANAGER_GIVEN_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PREV_APP_SUBMISSION_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRIOR_APPLICATIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.SUPPORTER_2_ADDRESS_DETAILS;
@@ -208,6 +216,13 @@ public class ShowPreviousApplicationHandler implements PreSubmitCallbackHandler<
         bailCase.write(PREV_APP_FINANCIAL_COND_SUPPORTER4, financialCondSupporter4);
         bailCase.write(PREV_APP_GROUNDS_FOR_BAIL, groundsForBail);
         bailCase.write(PREV_APP_LEGAL_REP_DETAILS, legalRepDetails);
+        bailCase.write(PREV_APP_HAS_PROBATION_OFFENDER_MANAGER, hasProbationOffenderManager);
+        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_GIVEN_NAME, probationOffenderManagerGivenName);
+        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_FAMILY_NAME, probationOffenderManagerFamilyName);
+        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_CONTACT_DETAILS, probationOffenderManagerContactDetails);
+        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER, probationOffenderManagerTelephoneNumber);
+        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER, probationOffenderManagerMobileNumber);
+        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS, probationOffenderManagerEmailAddress);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
