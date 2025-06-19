@@ -518,6 +518,53 @@ public class ShowPreviousApplicationService {
         return null;
     }
 
+    @Nullable
+    public String getProbationOffenderManagerLabel(
+        BailCase previousBailCase,
+        BailCaseFieldDefinition hasProbationOffenderManager,
+        BailCaseFieldDefinition probationOffenderManagerGivenName,
+        BailCaseFieldDefinition probationOffenderManagerFamilyName,
+        BailCaseFieldDefinition probationOffenderManagerContactDetails,
+        BailCaseFieldDefinition probationOffenderManagerTelephoneNumber,
+        BailCaseFieldDefinition probationOffenderManagerMobileNumber,
+        BailCaseFieldDefinition probationOffenderManagerEmailAddress
+    ) {
+        if (previousBailCase.read(hasProbationOffenderManager, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
+            StringBuilder stringBuilder =
+                new StringBuilder("|Financial condition supporter|Yes|\n");
+                stringBuilder.append("|Given names|")
+                .append(previousBailCase.read(probationOffenderManagerGivenName)
+                            .orElseThrow(getErrorThrowable(probationOffenderManagerGivenName)))
+                .append("|\n|Family name|")
+                .append(previousBailCase.read(probationOffenderManagerFamilyName)
+                            .orElseThrow(getErrorThrowable(probationOffenderManagerFamilyName)))
+                .append("|\n");
+
+            if (!previousBailCase.read(probationOffenderManagerTelephoneNumber, String.class).orElse("").isBlank()) {
+                stringBuilder.append("|Telephone number|")
+                    .append(previousBailCase.read(probationOffenderManagerTelephoneNumber, String.class)
+                                .orElseThrow(getErrorThrowable(probationOffenderManagerTelephoneNumber)))
+                    .append("|\n");
+            }
+
+            if (!previousBailCase.read(probationOffenderManagerMobileNumber, String.class).orElse("").isBlank()) {
+                stringBuilder.append("|Mobile number|")
+                    .append(previousBailCase.read(probationOffenderManagerMobileNumber, String.class)
+                                .orElseThrow(getErrorThrowable(probationOffenderManagerMobileNumber)))
+                    .append("|\n");
+            }
+
+            if (!previousBailCase.read(probationOffenderManagerEmailAddress, String.class).orElse("").isBlank()) {
+                stringBuilder.append("|Email address|")
+                    .append(previousBailCase.read(probationOffenderManagerEmailAddress, String.class)
+                                .orElseThrow(getErrorThrowable(probationOffenderManagerEmailAddress)))
+                    .append("|\n");
+            }
+            return stringBuilder.toString();
+        }
+        return null;
+    }
+
     public String getGroundsForBail(BailCase previousBailCase) {
         StringBuilder stringBuilder = new StringBuilder("|Grounds for bail||\n|--------|--------|\n");
         stringBuilder
