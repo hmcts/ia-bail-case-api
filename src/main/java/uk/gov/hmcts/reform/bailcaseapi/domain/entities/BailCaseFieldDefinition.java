@@ -469,6 +469,20 @@ public enum BailCaseFieldDefinition {
         "prevAppProbationOffenderManagerMobileNumber", new TypeReference<String>() {}),
     PREV_APP_PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS(
         "prevAppProbationOffenderManagerEmailAddress", new TypeReference<String>() {}),
+    HAS_PROBATION_OFFENDER_MANAGER(
+        "hasProbationOffenderManager", new TypeReference<String>() {}),
+    PROBATION_OFFENDER_MANAGER_GIVEN_NAME(
+        "probationOffenderManagerGivenName", new TypeReference<String>() {}),
+    PROBATION_OFFENDER_MANAGER_FAMILY_NAME(
+        "probationOffenderManagerFamilyName", new TypeReference<String>() {}),
+    PROBATION_OFFENDER_MANAGER_CONTACT_DETAILS(
+        "probationOffenderManagerContactDetails", new TypeReference<String>() {}),
+    PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER(
+        "probationOffenderManagerTelephoneNumber", new TypeReference<String>() {}),
+    PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER(
+        "probationOffenderManagerMobileNumber", new TypeReference<String>() {}),
+    PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS(
+        "probationOffenderManagerEmailAddress", new TypeReference<String>() {}),
     UPDATE_LEGAL_REP_COMPANY(
         "updateLegalRepCompany", new TypeReference<String>(){}),
     UPDATE_LEGAL_REP_EMAIL_ADDRESS(
