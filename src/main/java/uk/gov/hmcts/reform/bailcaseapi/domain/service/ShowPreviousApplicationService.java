@@ -108,6 +108,8 @@ public class ShowPreviousApplicationService {
 
     private static final DateTimeFormatter HEARING_DATE_DISPLAY_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm");
 
+    public String givenNames = "|Given names|";
+
     public ShowPreviousApplicationService() {
         // Default constructor
     }
@@ -281,7 +283,7 @@ public class ShowPreviousApplicationService {
             "|Personal information||\n|--------|--------|\n"
         );
         stringBuilder
-            .append("|Given names|")
+            .append(givenNames)
             .append(previousBailCase.read(APPLICANT_GIVEN_NAMES)
                         .orElseThrow(getErrorThrowable(APPLICANT_GIVEN_NAMES)))
             .append("|\n|Family name|")
@@ -431,7 +433,7 @@ public class ShowPreviousApplicationService {
             StringBuilder stringBuilder =
                 new StringBuilder("|Financial condition supporter " + index + "||\n|--------|--------|\n");
             stringBuilder.append("|Financial condition supporter|Yes|\n")
-                .append("|Given names|")
+                .append(givenNames)
                 .append(previousBailCase.read(supporterGivenNames)
                             .orElseThrow(getErrorThrowable(supporterGivenNames)))
                 .append("|\n|Family name|")
@@ -524,7 +526,6 @@ public class ShowPreviousApplicationService {
         BailCaseFieldDefinition hasProbationOffenderManager,
         BailCaseFieldDefinition probationOffenderManagerGivenName,
         BailCaseFieldDefinition probationOffenderManagerFamilyName,
-        BailCaseFieldDefinition probationOffenderManagerContactDetails,
         BailCaseFieldDefinition probationOffenderManagerTelephoneNumber,
         BailCaseFieldDefinition probationOffenderManagerMobileNumber,
         BailCaseFieldDefinition probationOffenderManagerEmailAddress
@@ -532,7 +533,7 @@ public class ShowPreviousApplicationService {
         if (previousBailCase.read(hasProbationOffenderManager, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             StringBuilder stringBuilder =
                 new StringBuilder("|Financial condition supporter|Yes|\n");
-            stringBuilder.append("|Given names|")
+            stringBuilder.append(givenNames)
             .append(previousBailCase.read(probationOffenderManagerGivenName)
                         .orElseThrow(getErrorThrowable(probationOffenderManagerGivenName)))
             .append("|\n|Family name|")
