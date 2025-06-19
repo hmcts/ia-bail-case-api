@@ -455,20 +455,8 @@ public enum BailCaseFieldDefinition {
         "prevAppGroundsForBail", new TypeReference<String>() {}),
     PREV_APP_LEGAL_REP_DETAILS(
         "prevAppLegalRepDetails", new TypeReference<String>() {}),
-    PREV_APP_HAS_PROBATION_OFFENDER_MANAGER(
-        "prevAppHasProbationOffenderManager", new TypeReference<String>() {}),
-    PREV_APP_PROBATION_OFFENDER_MANAGER_GIVEN_NAME(
-        "prevAppProbationOffenderManagerGivenName", new TypeReference<String>() {}),
-    PREV_APP_PROBATION_OFFENDER_MANAGER_FAMILY_NAME(
-        "prevAppProbationOffenderManagerFamilyName", new TypeReference<String>() {}),
-    PREV_APP_PROBATION_OFFENDER_MANAGER_CONTACT_DETAILS(
-        "prevAppProbationOffenderManagerContactDetails", new TypeReference<String>() {}),
-    PREV_APP_PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER(
-        "prevAppProbationOffenderManagerTelephoneNumber", new TypeReference<String>() {}),
-    PREV_APP_PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER(
-        "prevAppProbationOffenderManagerMobileNumber", new TypeReference<String>() {}),
-    PREV_APP_PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS(
-        "prevAppProbationOffenderManagerEmailAddress", new TypeReference<String>() {}),
+    PREV_APP_PROBATION_OFFENDER_MANAGER(
+        "prevAppProbationOffenderManager", new TypeReference<String>() {}),
     HAS_PROBATION_OFFENDER_MANAGER(
         "hasProbationOffenderManager", new TypeReference<String>() {}),
     PROBATION_OFFENDER_MANAGER_GIVEN_NAME(

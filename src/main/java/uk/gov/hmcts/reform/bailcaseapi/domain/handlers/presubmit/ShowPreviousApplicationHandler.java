@@ -108,6 +108,8 @@ public class ShowPreviousApplicationHandler implements PreSubmitCallbackHandler<
 
         String legalRepDetails = showPreviousApplicationService.getLegalRepDetails(previousBailCase);
 
+        String probationOffenderManager = getProbationOffenderManager(previousBailCase);
+
         bailCase.write(PREV_APP_SUBMISSION_DETAILS, submissionDetails);
         bailCase.write(PREV_APP_HEARING_DETAILS, hearingLabel);
         bailCase.write(PREV_APP_HEARING_REQ_DETAILS, hearingReqLabel);
@@ -123,13 +125,7 @@ public class ShowPreviousApplicationHandler implements PreSubmitCallbackHandler<
         bailCase.write(PREV_APP_FINANCIAL_COND_SUPPORTER4, financialCondSupporter4);
         bailCase.write(PREV_APP_GROUNDS_FOR_BAIL, groundsForBail);
         bailCase.write(PREV_APP_LEGAL_REP_DETAILS, legalRepDetails);
-        bailCase.write(PREV_APP_HAS_PROBATION_OFFENDER_MANAGER, hasProbationOffenderManager);
-        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_GIVEN_NAME, probationOffenderManagerGivenName);
-        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_FAMILY_NAME, probationOffenderManagerFamilyName);
-        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_CONTACT_DETAILS, probationOffenderManagerContactDetails);
-        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER, probationOffenderManagerTelephoneNumber);
-        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER, probationOffenderManagerMobileNumber);
-        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS, probationOffenderManagerEmailAddress);
+        bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER, probationOffenderManager);
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
