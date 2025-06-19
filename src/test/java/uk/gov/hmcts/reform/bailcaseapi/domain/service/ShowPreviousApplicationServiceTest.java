@@ -345,6 +345,7 @@ public class ShowPreviousApplicationServiceTest {
 
         when(bailCase.read(LISTING_LOCATION, ListingHearingCentre.class)).thenReturn(Optional.of(ListingHearingCentre.BIRMINGHAM));
         when(bailCase.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of("2024-04-04T08:00:00.000"));
+        when(bailCase.read(HAS_PROBATION_OFFENDER_MANAGER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
         when(bailCase.read(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)).thenReturn(Optional.of("Jane"));
         when(bailCase.read(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)).thenReturn(Optional.of("Smith"));
         when(bailCase.read(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER, String.class)).thenReturn(Optional.of("7799885544"));
