@@ -38,6 +38,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.GROUNDS_FOR_BAIL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING_UT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_PROBATION_OFFENDER_MANAGER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_DOCUMENTS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_REFERENCE_NUMBER;
@@ -56,6 +57,11 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NO_TRANSFER_BAIL_MANAGEMENT_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_FAMILY_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_GIVEN_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASONS_JUDGE_IS_MINDED_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASON_FOR_REFUSAL_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
@@ -521,44 +527,38 @@ public class ShowPreviousApplicationService {
     }
 
     @Nullable
-    public String getProbationOffenderManagerLabel(
-        BailCase previousBailCase,
-        BailCaseFieldDefinition hasProbationOffenderManager,
-        BailCaseFieldDefinition probationOffenderManagerGivenName,
-        BailCaseFieldDefinition probationOffenderManagerFamilyName,
-        BailCaseFieldDefinition probationOffenderManagerTelephoneNumber,
-        BailCaseFieldDefinition probationOffenderManagerMobileNumber,
-        BailCaseFieldDefinition probationOffenderManagerEmailAddress
+    public String getProbationOffenderManager(
+        BailCase previousBailCase
     ) {
-        if (previousBailCase.read(hasProbationOffenderManager, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
+        if (previousBailCase.read(HAS_PROBATION_OFFENDER_MANAGER, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             StringBuilder stringBuilder =
                 new StringBuilder("|Probation offender manager|Yes|\n");
             stringBuilder.append(givenNames)
-            .append(previousBailCase.read(probationOffenderManagerGivenName)
-                        .orElseThrow(getErrorThrowable(probationOffenderManagerGivenName)))
+            .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)
+                        .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)))
             .append("|\n|Family name|")
-            .append(previousBailCase.read(probationOffenderManagerFamilyName)
-                        .orElseThrow(getErrorThrowable(probationOffenderManagerFamilyName)))
+            .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)
+                        .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)))
                 .append("|\n");
 
-            if (!previousBailCase.read(probationOffenderManagerTelephoneNumber, String.class).orElse("").isBlank()) {
+            if (!previousBailCase.read(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER, String.class).orElse("").isBlank()) {
                 stringBuilder.append("|Telephone number|")
-                    .append(previousBailCase.read(probationOffenderManagerTelephoneNumber, String.class)
-                                .orElseThrow(getErrorThrowable(probationOffenderManagerTelephoneNumber)))
+                    .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER, String.class)
+                                .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER)))
                     .append("|\n");
             }
 
-            if (!previousBailCase.read(probationOffenderManagerMobileNumber, String.class).orElse("").isBlank()) {
+            if (!previousBailCase.read(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER, String.class).orElse("").isBlank()) {
                 stringBuilder.append("|Mobile number|")
-                    .append(previousBailCase.read(probationOffenderManagerMobileNumber, String.class)
-                                .orElseThrow(getErrorThrowable(probationOffenderManagerMobileNumber)))
+                    .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER, String.class)
+                                .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER)))
                     .append("|\n");
             }
 
-            if (!previousBailCase.read(probationOffenderManagerEmailAddress, String.class).orElse("").isBlank()) {
+            if (!previousBailCase.read(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS, String.class).orElse("").isBlank()) {
                 stringBuilder.append("|Email address|")
-                    .append(previousBailCase.read(probationOffenderManagerEmailAddress, String.class)
-                                .orElseThrow(getErrorThrowable(probationOffenderManagerEmailAddress)))
+                    .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS, String.class)
+                                .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS)))
                     .append("|\n");
             }
             return stringBuilder.toString();

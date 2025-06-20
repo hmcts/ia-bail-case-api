@@ -108,7 +108,7 @@ public class ShowPreviousApplicationHandler implements PreSubmitCallbackHandler<
 
         String legalRepDetails = showPreviousApplicationService.getLegalRepDetails(previousBailCase);
 
-        String probationOffenderManager = getProbationOffenderManager(previousBailCase);
+        String probationOffenderManager = showPreviousApplicationService.getProbationOffenderManager(previousBailCase);
 
         bailCase.write(PREV_APP_SUBMISSION_DETAILS, submissionDetails);
         bailCase.write(PREV_APP_HEARING_DETAILS, hearingLabel);
