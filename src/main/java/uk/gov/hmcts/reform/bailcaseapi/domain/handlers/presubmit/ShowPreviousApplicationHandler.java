@@ -130,18 +130,6 @@ public class ShowPreviousApplicationHandler implements PreSubmitCallbackHandler<
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 
-    private String getProbationOffenderManager(BailCase previousBailCase) {
-        return showPreviousApplicationService.getProbationOffenderManagerLabel(
-            previousBailCase,
-            HAS_PROBATION_OFFENDER_MANAGER,
-            PROBATION_OFFENDER_MANAGER_GIVEN_NAME,
-            PROBATION_OFFENDER_MANAGER_FAMILY_NAME,
-            PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER,
-            PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER,
-            PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS
-        );
-    }
-
     private String getFinancialCondSupporter1(BailCase previousBailCase) {
         return showPreviousApplicationService.getFinancialConditionSupporterLabel(
             previousBailCase,
