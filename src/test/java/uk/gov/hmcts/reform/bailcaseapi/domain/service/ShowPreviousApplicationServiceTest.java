@@ -592,14 +592,8 @@ public class ShowPreviousApplicationServiceTest {
 
     @Test
     void check_probation_offender_manager() {
-        String label = showPreviousApplicationService.getProbationOffenderManagerLabel(
-            bailCase,
-            HAS_PROBATION_OFFENDER_MANAGER,
-            PROBATION_OFFENDER_MANAGER_GIVEN_NAME,
-            PROBATION_OFFENDER_MANAGER_FAMILY_NAME,
-            PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER,
-            PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER,
-            PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS
+        String label = showPreviousApplicationService.getProbationOffenderManager(
+            bailCase
         );
         assertTrue(label.contains(
             "|Probation offender manager|Yes|\n"
