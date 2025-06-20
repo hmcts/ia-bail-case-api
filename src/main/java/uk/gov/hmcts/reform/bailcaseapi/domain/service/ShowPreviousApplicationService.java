@@ -530,18 +530,21 @@ public class ShowPreviousApplicationService {
     public String getProbationOffenderManager(
         BailCase previousBailCase
     ) {
+        StringBuilder stringBuilder = new StringBuilder("|Probation offender manager||\n|--------|--------|\n");
         if (previousBailCase.read(HAS_PROBATION_OFFENDER_MANAGER, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
-            StringBuilder stringBuilder =
-                new StringBuilder("|Probation offender manager|Yes|\n");
-            stringBuilder.append(givenNames)
-            .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)
-                        .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)))
-            .append("|\n|Family name|")
-            .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)
-                        .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)))
+            stringBuilder.append("|Probation offender manager|Yes|\n")
+                .append(givenNames)
+                .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)
+                            .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)))
+                .append("|\n|Family name|")
+                .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)
+                            .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)))
                 .append("|\n");
 
-            if (!previousBailCase.read(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER, String.class).orElse("").isBlank()) {
+            if (!previousBailCase.read(
+                PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER,
+                String.class
+            ).orElse("").isBlank()) {
                 stringBuilder.append("|Telephone number|")
                     .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER, String.class)
                                 .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER)))
@@ -561,9 +564,10 @@ public class ShowPreviousApplicationService {
                                 .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS)))
                     .append("|\n");
             }
-            return stringBuilder.toString();
+        } else {
+            stringBuilder.append("|Probation offender manager|No|\n");
         }
-        return null;
+        return stringBuilder.toString();
     }
 
     public String getGroundsForBail(BailCase previousBailCase) {

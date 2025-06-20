@@ -458,7 +458,7 @@ public enum BailCaseFieldDefinition {
     PREV_APP_PROBATION_OFFENDER_MANAGER(
         "prevAppProbationOffenderManager", new TypeReference<String>() {}),
     HAS_PROBATION_OFFENDER_MANAGER(
-        "hasProbationOffenderManager", new TypeReference<String>() {}),
+        "hasProbationOffenderManager", new TypeReference<YesOrNo>() {}),
     PROBATION_OFFENDER_MANAGER_GIVEN_NAME(
         "probationOffenderManagerGivenName", new TypeReference<String>() {}),
     PROBATION_OFFENDER_MANAGER_FAMILY_NAME(
