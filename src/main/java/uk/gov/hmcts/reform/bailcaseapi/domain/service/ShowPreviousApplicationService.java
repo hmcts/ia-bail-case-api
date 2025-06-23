@@ -526,7 +526,6 @@ public class ShowPreviousApplicationService {
         return null;
     }
 
-    @Nullable
     public String getProbationOffenderManager(
         BailCase previousBailCase
     ) {
