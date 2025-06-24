@@ -532,7 +532,7 @@ public class ShowPreviousApplicationService {
         StringBuilder stringBuilder = new StringBuilder("|Probation offender manager|\n\n|--------|--------|\n");
         if (previousBailCase.read(HAS_PROBATION_OFFENDER_MANAGER, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
             stringBuilder.append("|Probation offender manager|Yes|\n")
-                .append("|Given name|")
+                .append("|Given names|")
                 .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)
                             .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)))
                 .append("|\n|Family name|")
