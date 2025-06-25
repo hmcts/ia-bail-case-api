@@ -523,7 +523,7 @@ public class ShowPreviousApplicationService {
     public String getProbationOffenderManager(
         BailCase previousBailCase
     ) {
-        StringBuilder stringBuilder = new StringBuilder("|Probation offender manager||\n\n|--------|--------|\n");
+        StringBuilder stringBuilder = new StringBuilder("|Probation offender manager||\n|--------|--------|\n");
         return stringBuilder.toString();
     }
 

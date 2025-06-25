@@ -596,7 +596,7 @@ public class ShowPreviousApplicationServiceTest {
             bailCase
         );
         assertTrue(label.contains(
-            "|Probation offender manager||\n\n|--------|--------|\n"
+            "|Probation offender manager||\n|--------|--------|\n"
         ));
     }
 
