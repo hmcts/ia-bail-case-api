@@ -596,7 +596,9 @@ public class ShowPreviousApplicationServiceTest {
             bailCase
         );
         assertTrue(label.contains(
-            "|Probation offender manager||\n|--------|--------|\n"
+            "|Bail Grounds|Grounds for bail reasons|\n"
+                + "|Transfer bail management|No|\n"
+                + "|Reasons applicant does not consent to bail transfer|Transfer bail management reasons|"
         ));
     }
 
