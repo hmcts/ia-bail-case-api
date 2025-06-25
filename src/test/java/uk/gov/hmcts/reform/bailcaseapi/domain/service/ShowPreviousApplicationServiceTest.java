@@ -600,7 +600,6 @@ public class ShowPreviousApplicationServiceTest {
         ));
     }
 
-
     @Test
     void check_grounds_for_bails_label_when_transfer_not_acceptable() {
         String label = showPreviousApplicationService.getGroundsForBail(bailCase);
