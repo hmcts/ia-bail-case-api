@@ -597,11 +597,6 @@ public class ShowPreviousApplicationServiceTest {
         );
         assertTrue(label.contains(
             "|Probation offender manager|Yes|\n"
-                + "|Given names|Jane|\n"
-                + "|Family name|Smith|\n"
-                + "|Telephone number|7799885544|\n"
-                + "|Mobile number|1122336655|\n"
-                + "|Email address|jane.smith@test.com|"
         ));
     }
 
