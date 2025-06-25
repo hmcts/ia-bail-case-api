@@ -592,13 +592,14 @@ public class ShowPreviousApplicationServiceTest {
 
     @Test
     void check_probation_offender_manager() {
-        String label = showPreviousApplicationService.getProbationOffenderManager(
-            bailCase
-        );
+        String label = showPreviousApplicationService.getProbationOffenderManager(bailCase);
         assertTrue(label.contains(
-            "|Bail Grounds|Grounds for bail reasons|\n"
-                + "|Transfer bail management|No|\n"
-                + "|Reasons applicant does not consent to bail transfer|Transfer bail management reasons|"
+            "|Company|Legal Rep Company|\n"
+                + "|Name|LR ABC|\n"
+                + "|Family name|Jones|\n"
+                + "|Email address|lr_abc@test.com|\n"
+                + "|Phone number|1122334455|\n"
+                + "|Reference|Ref78965|"
         ));
     }
 

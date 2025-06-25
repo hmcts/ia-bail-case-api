@@ -523,45 +523,27 @@ public class ShowPreviousApplicationService {
     public String getProbationOffenderManager(
         BailCase previousBailCase
     ) {
-        StringBuilder stringBuilder = new StringBuilder("|Grounds for bail||\n|--------|--------|\n");
-        stringBuilder
-            .append("|Bail Grounds|")
-            .append(previousBailCase.read(GROUNDS_FOR_BAIL_REASONS, String.class)
-                        .orElseThrow(getErrorThrowable(GROUNDS_FOR_BAIL_REASONS))
-                        .replaceAll("[\\n]", "<br>"))
-            .append("|\n");
-
-        if (previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class).isPresent()) {
-            YesOrNo transferBailManagementObjectionValue = previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OBJECTION_OPTION, YesOrNo.class).orElse(YesOrNo.NO);
-            String transferBailManagementObjectionValueText = transferBailManagementObjectionValue == YesOrNo.YES ? "The applicant objects to the management being transferred" : "The applicant consents to the management being transferred";
-            stringBuilder
-                .append("|Transfer of management to the Home Office|")
-                .append(transferBailManagementObjectionValueText)
+        StringBuilder stringBuilder = new StringBuilder();
+        if (previousBailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
+            stringBuilder.append("|Legal representative||\n|--------|--------|\n");
+            stringBuilder.append("|Company|")
+                .append(previousBailCase.read(LEGAL_REP_COMPANY)
+                            .orElseThrow(getErrorThrowable(LEGAL_REP_COMPANY)))
+                .append("|\n|Name|")
+                .append(previousBailCase.read(LEGAL_REP_NAME)
+                            .orElseThrow(getErrorThrowable(LEGAL_REP_NAME)))
+                .append("|\n|Family name|")
+                .append(previousBailCase.read(LEGAL_REP_FAMILY_NAME).orElse(""))
+                .append("|\n|Email address|")
+                .append(previousBailCase.read(LEGAL_REP_EMAIL_ADDRESS)
+                            .orElseThrow(getErrorThrowable(LEGAL_REP_EMAIL_ADDRESS)))
+                .append("|\n|Phone number|")
+                .append(previousBailCase.read(LEGAL_REP_PHONE)
+                            .orElseThrow(getErrorThrowable(LEGAL_REP_PHONE)))
+                .append("|\n|Reference|")
+                .append(previousBailCase.read(LEGAL_REP_REFERENCE)
+                            .orElseThrow(getErrorThrowable(LEGAL_REP_REFERENCE)))
                 .append("|\n");
-
-            if (transferBailManagementObjectionValue == YesOrNo.YES) {
-                stringBuilder
-                    .append("|Reasons why the applicant objects to the management of bail being transferred to the Home Office|")
-                    .append(previousBailCase.read(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class)
-                                .orElseThrow(getErrorThrowable(OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS))
-                                .replaceAll("[\\n]", "<br>"))
-                    .append("|\n");
-            }
-        } else {
-            YesOrNo transferBailManagementValue = previousBailCase.read(TRANSFER_BAIL_MANAGEMENT_OPTION, YesOrNo.class).orElse(YesOrNo.YES);
-            stringBuilder
-                .append("|Transfer bail management|")
-                .append(transferBailManagementValue)
-                .append("|\n");
-
-            if (transferBailManagementValue == YesOrNo.NO) {
-                stringBuilder
-                    .append("|Reasons applicant does not consent to bail transfer|")
-                    .append(previousBailCase.read(NO_TRANSFER_BAIL_MANAGEMENT_REASONS, String.class)
-                                .orElseThrow(getErrorThrowable(NO_TRANSFER_BAIL_MANAGEMENT_REASONS))
-                                .replaceAll("[\\n]", "<br>"))
-                    .append("|\n");
-            }
         }
         return stringBuilder.toString();
     }
