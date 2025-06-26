@@ -10,8 +10,8 @@ plugins {
   id 'au.com.dius.pact' version '4.6.17'
   id 'application'
   id 'checkstyle'
-  id 'com.github.ben-manes.versions' version '0.52.0'
-  id "info.solidsoft.pitest" version '1.15.0'
+  id 'com.github.ben-manes.versions' version '0.50.0'
+  id "info.solidsoft.pitest" version '1.9.0'
   id "io.freefair.lombok" version '6.6.3'
   id 'io.spring.dependency-management' version '1.1.7'
   id 'jacoco'
@@ -33,7 +33,7 @@ def versions = [
   jupiter            : '5.13.1',
   junitPlatform      : '1.13.1',
   pitest             : '1.9.0',
-  gradlePitest       : '1.15.0',
+  gradlePitest       : '1.9.0',
   reformLogging      : '6.1.9',
   reformHealthStarter: '0.0.5',
   restAssured        : '5.5.5',
@@ -51,7 +51,8 @@ ext.libraries = [
     "org.junit.jupiter:junit-jupiter-engine:${versions.jupiter}",
     "org.junit.jupiter:junit-jupiter-params:${versions.jupiter}",
     "org.junit.platform:junit-platform-commons:${versions.junitPlatform}",
-    "org.junit.platform:junit-platform-engine:${versions.junitPlatform}"
+    "org.junit.platform:junit-platform-engine:${versions.junitPlatform}",
+    "org.junit.platform:junit-platform-launcher:${versions.junitPlatform}"
   ]
 ]
 mainClassName = 'uk.gov.hmcts.reform.bailcaseapi.Application'
@@ -235,7 +236,9 @@ project.tasks['sonarqube'].group = "Verification"
 repositories {
   mavenLocal()
   mavenCentral()
-  maven { url 'https://jitpack.io' }
+  maven {
+    url 'https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1'
+  }
 }
 
 dependencyManagement {
@@ -301,8 +304,8 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server'
 
-  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.18'
-  implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.5.18'
+  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.13'
+  implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.13'
 
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.48'
 
@@ -342,7 +345,7 @@ dependencies {
 
   implementation group: 'net.minidev', name: 'json-smart', version: '2.5.2'
 
-  testImplementation group: 'com.github.hmcts', name: 'document-management-client', version: '7.0.1'
+  testImplementation group: 'com.github.hmcts', name: 'document-management-client', version: '7.0.0'
 
   testImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
@@ -388,7 +391,7 @@ dependencies {
 
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.12.4'
 
-  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.8', classifier: 'all', {
+  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.9', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
     exclude group: 'org.apache.commons', module: 'commons-lang3'
   }
@@ -437,9 +440,6 @@ tasks.register('runAndPublishConsumerPactTests', Test) {
 
 }
 
-runAndPublishConsumerPactTests.finalizedBy pactPublish
-
-
 pact {
   broker {
     pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
@@ -450,6 +450,12 @@ pact {
     version = project.pacticipantVersion
   }
 }
+
+pactPublish {
+  pactPublish = project.pact.publish
+}
+
+runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 dependencyCheck {
   suppressionFile = 'config/owasp/suppressions.xml'
