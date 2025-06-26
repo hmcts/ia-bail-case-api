@@ -437,9 +437,6 @@ tasks.register('runAndPublishConsumerPactTests', Test) {
 
 }
 
-runAndPublishConsumerPactTests.finalizedBy pactPublish
-
-
 pact {
   broker {
     pactBrokerUrl = System.getenv("PACT_BROKER_FULL_URL") ?: 'http://localhost:9292'
@@ -450,6 +447,12 @@ pact {
     version = project.pacticipantVersion
   }
 }
+
+pactPublish {
+  pactPublish = project.pact.publish
+}
+
+runAndPublishConsumerPactTests.finalizedBy pactPublish
 
 dependencyCheck {
   suppressionFile = 'config/owasp/suppressions.xml'
