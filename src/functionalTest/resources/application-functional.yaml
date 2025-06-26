@@ -16,7 +16,7 @@ spring:
     acceptExisting: true
     shared: false
     caffeine:
-      spec: expireAfterAccess=3600s
+      spec: expireAfterWrite=3600s
       acceptExisting: true
       shared: false
 
