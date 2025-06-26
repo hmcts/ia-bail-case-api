@@ -38,6 +38,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.GROUNDS_FOR_BAIL_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_APPEAL_HEARING_PENDING_UT;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HAS_PROBATION_OFFENDER_MANAGER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HEARING_DOCUMENTS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_REFERENCE_NUMBER;
@@ -56,6 +57,11 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NO_TRANSFER_BAIL_MANAGEMENT_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.OBJECTED_TRANSFER_BAIL_MANAGEMENT_REASONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRISON_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_FAMILY_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_GIVEN_NAME;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASONS_JUDGE_IS_MINDED_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.REASON_FOR_REFUSAL_DETAILS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.RECORD_DECISION_TYPE;
@@ -523,27 +529,42 @@ public class ShowPreviousApplicationService {
     public String getProbationOffenderManager(
         BailCase previousBailCase
     ) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (previousBailCase.read(IS_LEGALLY_REPRESENTED_FOR_FLAG, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
-            stringBuilder.append("|Legal representative||\n|--------|--------|\n");
-            stringBuilder.append("|Company|")
-                .append(previousBailCase.read(LEGAL_REP_COMPANY)
-                            .orElseThrow(getErrorThrowable(LEGAL_REP_COMPANY)))
-                .append("|\n|Name|")
-                .append(previousBailCase.read(LEGAL_REP_NAME)
-                            .orElseThrow(getErrorThrowable(LEGAL_REP_NAME)))
+        StringBuilder stringBuilder = new StringBuilder("|Probation offender manager||\n\n|--------|--------|\n");
+        if (previousBailCase.read(HAS_PROBATION_OFFENDER_MANAGER, YesOrNo.class).orElse(YesOrNo.NO) == YesOrNo.YES) {
+            stringBuilder.append("|Probation offender manager|Yes|\n")
+                .append("|Given names|")
+                .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)
+                            .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_GIVEN_NAME)))
                 .append("|\n|Family name|")
-                .append(previousBailCase.read(LEGAL_REP_FAMILY_NAME).orElse(""))
-                .append("|\n|Email address|")
-                .append(previousBailCase.read(LEGAL_REP_EMAIL_ADDRESS)
-                            .orElseThrow(getErrorThrowable(LEGAL_REP_EMAIL_ADDRESS)))
-                .append("|\n|Phone number|")
-                .append(previousBailCase.read(LEGAL_REP_PHONE)
-                            .orElseThrow(getErrorThrowable(LEGAL_REP_PHONE)))
-                .append("|\n|Reference|")
-                .append(previousBailCase.read(LEGAL_REP_REFERENCE)
-                            .orElseThrow(getErrorThrowable(LEGAL_REP_REFERENCE)))
+                .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)
+                            .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_FAMILY_NAME)))
                 .append("|\n");
+
+            if (!previousBailCase.read(
+                PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER,
+                String.class
+            ).orElse("").isBlank()) {
+                stringBuilder.append("|Telephone number|")
+                    .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER, String.class)
+                                .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER)))
+                    .append("|\n");
+            }
+
+            if (!previousBailCase.read(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER, String.class).orElse("").isBlank()) {
+                stringBuilder.append("|Mobile number|")
+                    .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER, String.class)
+                                .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER)))
+                    .append("|\n");
+            }
+
+            if (!previousBailCase.read(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS, String.class).orElse("").isBlank()) {
+                stringBuilder.append("|Email address|")
+                    .append(previousBailCase.read(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS, String.class)
+                                .orElseThrow(getErrorThrowable(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS)))
+                    .append("|\n");
+            }
+        } else {
+            stringBuilder.append("|Probation offender manager|No|\n");
         }
         return stringBuilder.toString();
     }

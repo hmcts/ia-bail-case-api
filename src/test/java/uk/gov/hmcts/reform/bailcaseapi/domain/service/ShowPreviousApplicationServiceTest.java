@@ -592,16 +592,19 @@ public class ShowPreviousApplicationServiceTest {
 
     @Test
     void check_probation_offender_manager() {
-        String label = showPreviousApplicationService.getProbationOffenderManager(bailCase);
+        String label = showPreviousApplicationService.getProbationOffenderManager(
+            bailCase
+        );
         assertTrue(label.contains(
-            "|Company|Legal Rep Company|\n"
-                + "|Name|LR ABC|\n"
-                + "|Family name|Jones|\n"
-                + "|Email address|lr_abc@test.com|\n"
-                + "|Phone number|1122334455|\n"
-                + "|Reference|Ref78965|"
+            "|Probation offender manager|Yes|\n"
+                + "|Given names|Jane|\n"
+                + "|Family name|Smith|\n"
+                + "|Telephone number|7799885544|\n"
+                + "|Mobile number|1122336655|\n"
+                + "|Email address|jane.smith@test.com|"
         ));
     }
+
 
     @Test
     void check_grounds_for_bails_label_when_transfer_not_acceptable() {
