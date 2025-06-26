@@ -32,7 +32,7 @@ apply plugin: 'idea'
 def versions = [
   jupiter            : '5.13.1',
   junitPlatform      : '1.13.1',
-  pitest             : '1.20.0',
+  pitest             : '1.9.0',
   gradlePitest       : '1.15.0',
   reformLogging      : '6.1.9',
   reformHealthStarter: '0.0.5',
@@ -383,6 +383,8 @@ dependencies {
   contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiter
   contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiter
   contractTestRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version : versions.jupiter
+
+  testImplementation group: 'org.apiguardian', name: 'apiguardian-api', version: '1.1.2'
 
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.12.4'
 
