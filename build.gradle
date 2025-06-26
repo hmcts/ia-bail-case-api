@@ -315,7 +315,7 @@ dependencies {
 
   implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 
-  implementation(group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.2') {
+  implementation(group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3') {
     exclude group: "org.bouncycastle", module: "bcprov-jdk15on"
   }
   implementation(group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.1.8') {
