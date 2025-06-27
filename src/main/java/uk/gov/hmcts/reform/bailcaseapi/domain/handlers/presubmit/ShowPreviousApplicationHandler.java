@@ -127,6 +127,9 @@ public class ShowPreviousApplicationHandler implements PreSubmitCallbackHandler<
         bailCase.write(PREV_APP_LEGAL_REP_DETAILS, legalRepDetails);
         bailCase.write(PREV_APP_PROBATION_OFFENDER_MANAGER, probationOffenderManager);
 
+        log.info(String.valueOf(PREV_APP_LEGAL_REP_DETAILS));
+        log.info(String.valueOf(PREV_APP_PROBATION_OFFENDER_MANAGER));
+
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 
