@@ -14,4 +14,4 @@ spring:
   cache:
     cache-names: userInfoCache, accessTokenCache, legalRepATokenCache, caseOfficerTokenCache, adminOfficerTokenCache, homeOfficeApcTokenCache, homeOfficeBailTokenCache, homeOfficeLartTokenCache, homeOfficePouTokenCache, homeOfficeGenericTokenCache, legalRepShareCaseATokenCache, legalRepOrgSuccessTokenCache, legalRepOrgDeletedTokenCache, judgeTokenCache, citizenTokenCache
     caffeine:
-      spec: expireAfterWrite=3600s
+      spec: expireAfterAccess=3600s
