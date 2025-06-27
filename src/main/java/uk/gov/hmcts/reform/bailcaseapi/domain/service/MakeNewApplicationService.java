@@ -300,8 +300,8 @@ public class MakeNewApplicationService {
         BailCaseFieldDefinition.HAS_PROBATION_OFFENDER_MANAGER.value(),
         BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_GIVEN_NAME.value(),
         BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_FAMILY_NAME.value(),
-        BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS.value(),
+        BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER.value(),
         BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER.value(),
-        BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER.value()
+        BailCaseFieldDefinition.PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS.value()
     );
 }
