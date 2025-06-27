@@ -87,6 +87,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -109,6 +111,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 @Service
+@Slf4j
 public class ShowPreviousApplicationService {
 
 
@@ -607,6 +610,7 @@ public class ShowPreviousApplicationService {
                     .append("|\n");
             }
         }
+        log.info("Prev app probation offender manager: " + stringBuilder.toString());
         return stringBuilder.toString();
     }
 
@@ -633,6 +637,7 @@ public class ShowPreviousApplicationService {
                             .orElseThrow(getErrorThrowable(LEGAL_REP_REFERENCE)))
                 .append("|\n");
         }
+        log.info("Prev app legal rep details: " + stringBuilder.toString());
         return stringBuilder.toString();
     }
 
