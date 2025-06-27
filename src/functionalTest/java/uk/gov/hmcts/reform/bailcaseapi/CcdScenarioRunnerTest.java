@@ -229,7 +229,7 @@ public class CcdScenarioRunnerTest {
                                           )
                     );
                     break;
-                } catch (Error | RetryableException | SocketTimeoutException e) {
+                } catch (Error | Exception e) {
                     System.out.println("Scenario failed with error " + e.getMessage());
                     if (i == maxRetries - 1) {
                         this.failedScenarios.add(description);
