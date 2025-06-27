@@ -13,13 +13,5 @@ feign:
 spring:
   cache:
     cache-names: userInfoCache, accessTokenCache, legalRepATokenCache, caseOfficerTokenCache, adminOfficerTokenCache, homeOfficeApcTokenCache, homeOfficeBailTokenCache, homeOfficeLartTokenCache, homeOfficePouTokenCache, homeOfficeGenericTokenCache, legalRepShareCaseATokenCache, legalRepOrgSuccessTokenCache, legalRepOrgDeletedTokenCache, judgeTokenCache, citizenTokenCache
-    acceptExisting: true
-    shared: false
     caffeine:
       spec: expireAfterWrite=3600s
-      acceptExisting: true
-      shared: false
-
-ehcacheManager:
-  acceptExisting: true
-  shared: false
