@@ -20,7 +20,7 @@ plugins {
   id 'org.sonarqube' version '4.4.1.3373'
   id 'org.springframework.boot' version '2.7.18'
   id 'pmd'
-  id 'uk.gov.hmcts.java' version '0.12.66'
+  id 'uk.gov.hmcts.java' version '0.12.67'
   id 'org.gradle.test-retry' version '1.6.2'
 }
 
@@ -30,8 +30,8 @@ apply plugin: 'project-report'
 apply plugin: 'idea'
 
 def versions = [
-  jupiter            : '5.13.1',
-  junitPlatform      : '1.13.1',
+  jupiter            : '5.13.3',
+  junitPlatform      : '1.13.3',
   pitest             : '1.9.0',
   gradlePitest       : '1.9.0',
   reformLogging      : '6.1.9',
@@ -334,8 +334,8 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
 
   implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine'
-  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.106'
-  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.106'
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '9.0.107'
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '9.0.107'
 
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations'
@@ -345,7 +345,7 @@ dependencies {
 
   implementation group: 'net.minidev', name: 'json-smart', version: '2.5.2'
 
-  testImplementation group: 'com.github.hmcts', name: 'document-management-client', version: '7.0.0'
+  testImplementation group: 'com.github.hmcts', name: 'document-management-client', version: '7.0.'
 
   testImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
