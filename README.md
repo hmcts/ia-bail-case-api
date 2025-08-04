@@ -24,7 +24,6 @@ To run the API quickly use the docker helper script as follows: (make sure to ha
 ./bin/run-in-docker.sh --clean --install
 ```
 
-
 Alternatively, you can start the application from the current source files using Gradle as follows:
 
 ```
