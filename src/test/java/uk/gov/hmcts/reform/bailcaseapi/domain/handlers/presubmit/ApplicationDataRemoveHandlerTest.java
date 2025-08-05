@@ -305,18 +305,6 @@ public class ApplicationDataRemoveHandlerTest {
     void should_remove_LR_details_if_not_present() {
         setUpValuesIfValuesAreRemoved();
         applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_GIVEN_NAME);
-        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_FAMILY_NAME);
-        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_CONTACT_DETAILS);
-        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS);
-        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER);
-        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER);
-    }
-
-    @Test
-    void should_remove_POM_details_if_not_present() {
-        setUpValuesIfValuesAreRemoved();
-        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(bailCase, times(1)).remove(LEGAL_REP_COMPANY);
         verify(bailCase, times(1)).remove(LEGAL_REP_EMAIL_ADDRESS);
         verify(bailCase, times(1)).remove(LEGAL_REP_NAME);
@@ -324,6 +312,18 @@ public class ApplicationDataRemoveHandlerTest {
         verify(bailCase, times(1)).remove(LEGAL_REP_PHONE);
         verify(bailCase, times(1)).remove(LEGAL_REP_REFERENCE);
         verify(bailCase, times(1)).write(IS_LEGALLY_REPRESENTED_FOR_FLAG, NO);
+    }
+
+    @Test
+    void should_remove_POM_details_if_not_present() {
+        setUpValuesIfValuesAreRemoved();
+        applicationDataRemoveHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_GIVEN_NAME);
+        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_FAMILY_NAME);
+        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_CONTACT_DETAILS);
+        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS);
+        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER);
+        verify(bailCase, times(1)).remove(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER);
     }
 
 
