@@ -530,8 +530,8 @@ public class ApplicationDataRemoveHandler implements PreSubmitCallbackHandler<Ba
     private void clearProbationOffenderManagerDetails(BailCase bailCase) {
         bailCase.remove(PROBATION_OFFENDER_MANAGER_GIVEN_NAME);
         bailCase.remove(PROBATION_OFFENDER_MANAGER_FAMILY_NAME);
-        bailCase.remove(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS);
         bailCase.remove(PROBATION_OFFENDER_MANAGER_CONTACT_DETAILS);
+        bailCase.remove(PROBATION_OFFENDER_MANAGER_EMAIL_ADDRESS);
         bailCase.remove(PROBATION_OFFENDER_MANAGER_MOBILE_NUMBER);
         bailCase.remove(PROBATION_OFFENDER_MANAGER_TELEPHONE_NUMBER);
     }
