@@ -525,6 +525,7 @@ public class ApplicationDataRemoveHandlerTest {
             YesOrNo.class
         )).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(HAS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(HAS_PROBATION_OFFENDER_MANAGER, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(DISABILITY_YESNO, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
         when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
@@ -551,6 +552,7 @@ public class ApplicationDataRemoveHandlerTest {
             YesOrNo.class
         )).thenReturn(Optional.of(YES));
         when(bailCase.read(HAS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YES));
+        when(bailCase.read(HAS_PROBATION_OFFENDER_MANAGER, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(bailCase.read(APPLICANT_HAS_MOBILE, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(bailCase.read(DISABILITY_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
         when(bailCase.read(VIDEO_HEARING_YESNO, YesOrNo.class)).thenReturn(Optional.of(YES));
