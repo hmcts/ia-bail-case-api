@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseManagementLocation;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.HearingCentre;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Region;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -46,7 +48,8 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
                && (callback.getEvent() == Event.START_APPLICATION
                    || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
                    || callback.getEvent() == Event.MAKE_NEW_APPLICATION
-                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT);
+                   || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT
+                   || callback.getEvent() == Event.MIGRATE_WA_BAIL_APPLICATION);
     }
 
     public PreSubmitCallbackResponse<BailCase> handle(PreSubmitCallbackStage callbackStage,
@@ -77,16 +80,24 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
             bailCase.write(HEARING_CENTRE, hearingCentre);
 
             if (locationRefDataEnabled(bailCase)) {
-
                 setHearingCentreRefData(bailCase, hearingCentre);
                 bailCase.write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YES);
             } else {
-
+                setBaseLocationNonRefData(bailCase, hearingCentre);
                 bailCase.write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, NO);
             }
+
             bailCase.write(DESIGNATED_TRIBUNAL_CENTRE, hearingCentre);
         }
+    }
 
+    private void setBaseLocationNonRefData(BailCase bailCase, HearingCentre hearingCentre) {
+        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
+            hearingCentre.getEpimsId(),
+            hearingCentre.getValue(),
+            Region.NATIONAL
+        );
+        bailCase.write(CASE_MANAGEMENT_LOCATION, caseManagementLocation);
     }
 
     private void setHearingCentreRefData(BailCase bailCase, HearingCentre hearingCentre) {
@@ -105,6 +116,14 @@ public class DeriveHearingCentreHandler implements PreSubmitCallbackHandler<Bail
             bailCase.write(SELECTED_HEARING_CENTRE_REF_DATA, currentHearingCentreValue.getLabel());
 
             bailCase.write(HEARING_CENTRE_REF_DATA, hearingCentreRefData);
+            CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
+                currentHearingCentreValue.getCode(),
+                currentHearingCentreValue.getLabel(),
+                Region.NATIONAL
+            );
+            bailCase.write(CASE_MANAGEMENT_LOCATION, caseManagementLocation);
+        } else {
+            setBaseLocationNonRefData(bailCase, hearingCentre);
         }
     }
 

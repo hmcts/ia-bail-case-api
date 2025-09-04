@@ -15,11 +15,11 @@ public class BailCaseFieldDefinitionTest {
      */
     @Test
     void fail_if_changes_needed_after_modifying_bail_case_definition() {
-        assertEquals(302, BailCaseFieldDefinition.values().length);
+        assertEquals(303, BailCaseFieldDefinition.values().length);
     }
 
     @Test
-    void should_find_enum_if_value_match() throws JsonProcessingException {
+    void should_find_enum_if_value_match() {
         Stream.of(
             "applicantGivenNames",
             "applicantGender",
@@ -40,7 +40,7 @@ public class BailCaseFieldDefinitionTest {
     }
 
     @Test
-    void should_throw_exception_if_enum_not_found_from_value() throws JsonProcessingException {
+    void should_throw_exception_if_enum_not_found_from_value() {
 
         String valueToFetch = "DUMMY_FAIL_VALUE";
 
