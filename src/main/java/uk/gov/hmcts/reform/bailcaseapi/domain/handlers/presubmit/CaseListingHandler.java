@@ -11,6 +11,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +61,7 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-               && callback.getEvent() == Event.CASE_LISTING;
+            && callback.getEvent() == Event.CASE_LISTING;
     }
 
     @Override
@@ -80,30 +81,32 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
             LocalDate date = LocalDateTime.parse(hearingDate, ISO_DATE_TIME).toLocalDate();
 
-            String dueDate = dueDateService.calculateHearingDirectionDueDate(date.atStartOfDay(ZoneOffset.UTC),
-                                                                             LocalDate.now())
-                .toLocalDate()
-                .toString();
+            String dueDate = dueDateService.calculateHearingDirectionDueDate(
+                date.atStartOfDay(ZoneOffset.UTC),
+                LocalDate.now()
+            ).toLocalDate().toString();
 
-            bailCase.write(SEND_DIRECTION_DESCRIPTION,
-                           "You must upload the Bail Summary by the date indicated below.\n"
-                               + "If the applicant does not have a legal representative, "
-                               + "you must also send them a copy of the Bail Summary.\n"
-                               + "The Bail Summary must include:\n"
-                               + "\n"
-                               + "- the date when the current period of immigration detention started\n"
-                               + "- any concerns in relation to the factors listed in paragraph 3(2) of Schedule "
-                               + "10 to the 2016 Act\n"
-                               + "- the bail conditions being sought should bail be granted\n"
-                               + "- whether removal directions are in place\n"
-                               + "- whether the applicant’s release is subject to licence, and if so the relevant details\n"
-                               + "- any other relevant information\n\n"
-                               + "Next steps\n"
-                               + "Sign in to your account to upload the Bail Summary.\n"
+            bailCase.write(
+                SEND_DIRECTION_DESCRIPTION,
+                "You must upload the Bail Summary by the date indicated below.\n"
+                    + "If the applicant does not have a legal representative, "
+                    + "you must also send them a copy of the Bail Summary.\n"
+                    + "The Bail Summary must include:\n"
+                    + "\n"
+                    + "- the date when the current period of immigration detention started\n"
+                    + "- any concerns in relation to the factors listed in paragraph 3(2) of Schedule "
+                    + "10 to the 2016 Act\n"
+                    + "- the bail conditions being sought should bail be granted\n"
+                    + "- whether removal directions are in place\n"
+                    + "- whether the applicant’s release is subject to licence, and if so the relevant details\n"
+                    + "- any other relevant information\n\n"
+                    + "Next steps\n"
+                    + "Sign in to your account to upload the Bail Summary.\n"
             );
 
             bailCase.write(SEND_DIRECTION_LIST, "Home Office");
             bailCase.write(DATE_OF_COMPLIANCE, dueDate);
+            bailCase.write(BAIL_SUMMARY_DUE_DATE, dueDate);
             bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YES);
 
             hearingIdListProcessor.processHearingId(bailCase);
@@ -113,8 +116,10 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
             if (bailCaseBefore != null) {
                 ListingEvent prevListingEvent = bailCaseBefore.read(LISTING_EVENT, ListingEvent.class)
                     .orElse(null);
-                ListingHearingCentre prevListingLocation = bailCaseBefore.read(LISTING_LOCATION,
-                                                                               ListingHearingCentre.class)
+                ListingHearingCentre prevListingLocation = bailCaseBefore.read(
+                        LISTING_LOCATION,
+                        ListingHearingCentre.class
+                    )
                     .orElse(null);
                 String prevListingHearingDate = bailCaseBefore.read(LIST_CASE_HEARING_DATE, String.class)
                     .orElse(null);
@@ -141,8 +146,10 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                         prevListingHearingDuration
                     );
                 List<IdValue<PreviousListingDetails>> allPreviousListingDetails =
-                    previousListingDetailsAppender.append(newPreviousListingDetails,
-                                                          maybeExistingPreviousListingDetails.orElse(emptyList()));
+                    previousListingDetailsAppender.append(
+                        newPreviousListingDetails,
+                        maybeExistingPreviousListingDetails.orElse(emptyList())
+                    );
 
                 hearingIdListProcessor.processPreviousHearingId(bailCaseBefore, bailCase);
 

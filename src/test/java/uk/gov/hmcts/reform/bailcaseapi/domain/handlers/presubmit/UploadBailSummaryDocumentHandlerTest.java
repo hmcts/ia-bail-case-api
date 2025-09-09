@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_SUMMARY_DUE_DATE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HO_HAS_IMA_STATUS;
@@ -135,8 +136,9 @@ public class UploadBailSummaryDocumentHandlerTest {
         verify(documentsAppender, times(1)).append(existingBailSummaryDocuments, summaryList);
 
         verify(bailCase, times(1)).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allBailSummaryDocuments);
-      
+
         verify(bailCase, times(1)).clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
+        verify(bailCase, times(1)).clear(BAIL_SUMMARY_DUE_DATE);
 
         verify(bailCase, times(1)).write(HO_HAS_IMA_STATUS, YesOrNo.YES);
     }
@@ -179,6 +181,7 @@ public class UploadBailSummaryDocumentHandlerTest {
 
         verify(bailCase, times(1)).write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allBailSummaryDocuments);
         verify(bailCase, times(1)).clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
+        verify(bailCase, times(1)).clear(BAIL_SUMMARY_DUE_DATE);
     }
 
     @Test

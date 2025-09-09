@@ -86,6 +86,7 @@ public class UploadBailSummaryDocumentHandler implements PreSubmitCallbackHandle
             bailCase.write(HOME_OFFICE_DOCUMENTS_WITH_METADATA, allBailSummaryDocuments);
             bailCase.clear(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE);
             bailCase.clear(HAS_CASE_BEEN_FORCED_TO_HEARING);
+            bailCase.clear(BAIL_SUMMARY_DUE_DATE);
         }
 
         // If the case is progressed past Bail summary, then default IMA selection is NO
