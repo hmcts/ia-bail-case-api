@@ -22,7 +22,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 @Slf4j
 @Component
-class CreateFlagHandler implements PreSubmitCallbackHandler<BailCase> {
+class CreateFlagPreparer implements PreSubmitCallbackHandler<BailCase> {
 
     public static final List<BailCaseFieldDefinition> FCS_N_GIVEN_NAME_FIELD = List.of(
         SUPPORTER_GIVEN_NAMES,

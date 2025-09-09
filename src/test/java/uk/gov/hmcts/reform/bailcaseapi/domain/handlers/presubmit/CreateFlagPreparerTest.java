@@ -12,7 +12,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSu
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_SUBMIT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.CreateFlagHandler.*;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit.CreateFlagPreparer.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +36,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-class CreateFlagHandlerTest {
+class CreateFlagPreparerTest {
 
     @Mock
     private Callback<BailCase> callback;
@@ -44,7 +44,7 @@ class CreateFlagHandlerTest {
     private CaseDetails<BailCase> caseDetails;
     @Mock
     private BailCase bailCase;
-    private CreateFlagHandler createFlagHandler;
+    private CreateFlagPreparer createFlagHandler;
     private final String partyId = "party-id";
     private final String appellantNameForDisplay = "some-name";
     private final String fcsGivenName = "FcsFirstName";
@@ -68,7 +68,7 @@ class CreateFlagHandlerTest {
         when(bailCase.read(FCS_LEVEL_FLAGS)).thenReturn(Optional.of(Collections.emptyList()));
         when(bailCase.read(FCS_N_PARTY_ID_FIELD.get(0), String.class)).thenReturn(Optional.of(partyId));
 
-        createFlagHandler = new CreateFlagHandler();
+        createFlagHandler = new CreateFlagPreparer();
     }
 
     @Test
