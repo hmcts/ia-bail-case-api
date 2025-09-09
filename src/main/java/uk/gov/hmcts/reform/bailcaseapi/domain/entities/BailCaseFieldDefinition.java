@@ -281,6 +281,8 @@ public enum BailCaseFieldDefinition {
         "selectedHearingCentreRefData", new TypeReference<String>(){}),
     CASE_MANAGEMENT_LOCATION(
         "caseManagementLocation", new TypeReference<CaseManagementLocation>(){}),
+    HAS_ACTIVE_INTERPRETER_FLAG(
+        "hasActiveInterpreterFlag", new TypeReference<YesOrNo>(){}),
     DETENTION_FACILITY(
         "detentionFacility", new TypeReference<String>(){}),
     UPLOAD_BAIL_SUMMARY_DOCS(

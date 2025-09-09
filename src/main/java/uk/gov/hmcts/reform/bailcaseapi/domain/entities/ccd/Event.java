@@ -21,6 +21,7 @@ public enum Event {
     IMA_STATUS("imaStatus"),
     MAKE_NEW_APPLICATION("makeNewApplication"),
     MAINTAIN_BAIL_CASE_LINKS("maintainBailCaseLinks"),
+    MANAGE_FLAGS("manageFlags"),
     MIGRATE_WA_BAIL_APPLICATION("migrateWaBailApplication"),
     MOVE_APPLICATION_TO_DECIDED("moveApplicationToDecided"),
     NOC_REQUEST("nocRequest"),

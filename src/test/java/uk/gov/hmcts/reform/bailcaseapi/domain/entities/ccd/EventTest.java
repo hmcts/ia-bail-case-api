@@ -34,6 +34,7 @@ public class EventTest {
         assertEquals("maintainBailCaseLinks", Event.MAINTAIN_BAIL_CASE_LINKS.toString());
         assertEquals("updateInterpreterDetails", Event.UPDATE_INTERPRETER_DETAILS.toString());
         assertEquals("createFlag", Event.CREATE_FLAG.toString());
+        assertEquals("manageFlags", Event.MANAGE_FLAGS.toString());
         assertEquals("confirmDetentionLocation", Event.CONFIRM_DETENTION_LOCATION.toString());
         assertEquals("migrateWaBailApplication", Event.MIGRATE_WA_BAIL_APPLICATION.toString());
         assertEquals("caseListing", Event.CASE_LISTING.toString());
@@ -46,6 +47,6 @@ public class EventTest {
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(37, Event.values().length);
+        assertEquals(38, Event.values().length);
     }
 }
