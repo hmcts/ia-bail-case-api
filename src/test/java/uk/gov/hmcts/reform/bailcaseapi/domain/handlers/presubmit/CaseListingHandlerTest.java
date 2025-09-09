@@ -139,8 +139,6 @@ class CaseListingHandlerTest {
         verify(bailCase, times(1)).write(SEND_DIRECTION_LIST, "Home Office");
         verify(bailCase, times(1)).write(DATE_OF_COMPLIANCE,
                                          zonedDueDateTime.toLocalDate().toString());
-        verify(bailCase, times(1)).write(BAIL_SUMMARY_DUE_DATE,
-                                         zonedDueDateTime.toLocalDate().toString());
         verify(hearingIdListProcessor).processHearingId(bailCase);
     }
 
@@ -161,7 +159,6 @@ class CaseListingHandlerTest {
 
         verify(bailCase, times(0)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
         verify(bailCase, times(0)).write(SEND_DIRECTION_LIST, "Home Office");
-        verify(bailCase, times(0)).write(BAIL_SUMMARY_DUE_DATE, any());
         verifyNoInteractions(hearingIdListProcessor);
     }
 

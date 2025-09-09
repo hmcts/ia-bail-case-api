@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.*;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.CourtVenue;
@@ -629,9 +627,6 @@ public enum BailCaseFieldDefinition {
 
     UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE(
         "uploadBailSummaryActionAvailable", new TypeReference<YesOrNo>(){}),
-
-    BAIL_SUMMARY_DUE_DATE(
-        "bailSummaryDueDate", new TypeReference<String>(){}),
 
     LIST_CASE_HEARING_DATE(
         "listingHearingDate", new TypeReference<String>(){}),
