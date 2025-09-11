@@ -104,8 +104,8 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
             bailCase.write(SEND_DIRECTION_LIST, "Home Office");
             bailCase.write(DATE_OF_COMPLIANCE, dueDate);
+            bailCase.write(BAIL_SUMMARY_DUE_DATE, dueDate);
             bailCase.write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YES);
-
             hearingIdListProcessor.processHearingId(bailCase);
         } else {
             CaseDetails<BailCase> caseDetailsBefore = callback.getCaseDetailsBefore().orElse(null);

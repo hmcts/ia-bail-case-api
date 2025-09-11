@@ -633,6 +633,9 @@ public enum BailCaseFieldDefinition {
     LIST_CASE_HEARING_DATE(
         "listingHearingDate", new TypeReference<String>(){}),
 
+    BAIL_SUMMARY_DUE_DATE(
+        "bailSummaryDueDate", new TypeReference<String>(){}),
+
     LISTING_HEARING_DURATION(
         "listingHearingDuration", new TypeReference<String>(){}),
 

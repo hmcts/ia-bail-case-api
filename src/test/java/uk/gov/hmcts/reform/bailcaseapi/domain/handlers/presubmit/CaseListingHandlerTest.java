@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -134,6 +135,7 @@ class CaseListingHandlerTest {
         List<String> bailCaseValues = bailValueCaptor.getAllValues();
 
         verify(bailCase, times(1)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
+        verify(bailCase, times(1)).write(BAIL_SUMMARY_DUE_DATE, anyString());
         assertThat(bailCaseValues.get(extractors.indexOf(SEND_DIRECTION_DESCRIPTION)))
             .containsSequence("You must upload the Bail Summary by the date indicated below.");
         verify(bailCase, times(1)).write(SEND_DIRECTION_LIST, "Home Office");
@@ -158,6 +160,7 @@ class CaseListingHandlerTest {
             bailValueCaptor.capture());
 
         verify(bailCase, times(0)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
+        verify(bailCase, times(0)).write(BAIL_SUMMARY_DUE_DATE, anyString());
         verify(bailCase, times(0)).write(SEND_DIRECTION_LIST, "Home Office");
         verifyNoInteractions(hearingIdListProcessor);
     }
