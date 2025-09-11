@@ -127,7 +127,7 @@ class CaseListingHandlerTest {
 
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
-        verify(bailCase, times(4)).write(
+        verify(bailCase, times(5)).write(
             bailExtractorCaptor.capture(),
             bailValueCaptor.capture());
 
@@ -135,7 +135,7 @@ class CaseListingHandlerTest {
         List<String> bailCaseValues = bailValueCaptor.getAllValues();
 
         verify(bailCase, times(1)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
-        verify(bailCase, times(1)).write(BAIL_SUMMARY_DUE_DATE, anyString());
+        verify(bailCase, times(1)).write(eq(BAIL_SUMMARY_DUE_DATE), anyString());
         assertThat(bailCaseValues.get(extractors.indexOf(SEND_DIRECTION_DESCRIPTION)))
             .containsSequence("You must upload the Bail Summary by the date indicated below.");
         verify(bailCase, times(1)).write(SEND_DIRECTION_LIST, "Home Office");
@@ -160,7 +160,7 @@ class CaseListingHandlerTest {
             bailValueCaptor.capture());
 
         verify(bailCase, times(0)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
-        verify(bailCase, times(0)).write(BAIL_SUMMARY_DUE_DATE, anyString());
+        verify(bailCase, times(0)).write(eq(BAIL_SUMMARY_DUE_DATE), anyString());
         verify(bailCase, times(0)).write(SEND_DIRECTION_LIST, "Home Office");
         verifyNoInteractions(hearingIdListProcessor);
     }
