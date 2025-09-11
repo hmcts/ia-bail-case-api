@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LAST_FILE_UPLOADED_BY;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_USER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_SUPPLIED_BY;
@@ -74,7 +75,7 @@ public class UploadDocumentsHandler implements PreSubmitCallbackHandler<BailCase
                         : currentUserIsHomeOfficer(userRole)
                 ? "Home Office"
                 : "");
-
+        bailCase.write(LAST_FILE_UPLOADED_BY, suppliedBy);
         if (maybeDocument.isPresent()) {
             List<DocumentWithMetadata> document =
                 maybeDocument
