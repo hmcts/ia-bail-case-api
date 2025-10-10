@@ -76,6 +76,7 @@ security:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
       - "testTimedEventSchedule"
+      - "migrateWaBailApplication"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
@@ -123,6 +124,7 @@ security:
       - "changeTribunalCentre"
       - "testTimedEventSchedule"
       - "uploadHearingRecording"
+      - "migrateWaBailApplication"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
