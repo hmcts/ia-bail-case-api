@@ -4,10 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,28 +25,23 @@ class HolidayServiceTest {
 
     @Test
     void testIsHolidayZoneDateTimeReturnsTrue() {
-        HOLIDAYS.stream()
-            .map(localDate -> ZonedDateTime.of(localDate.atTime(11, 30), ZoneId.systemDefault()))
-            .forEach(zonedDateTime -> assertTrue(holidayService.isHoliday(zonedDateTime)));
+        HOLIDAYS.forEach(localDate -> assertTrue(holidayService.isHoliday(localDate)));
     }
 
     @Test
     void testIsHolidayZoneDateTimeReturnsFalse() {
-        ZonedDateTime zonedDateTime =
-            ZonedDateTime.of(
-                LocalDateTime.of(2022, Month.SEPTEMBER, 8, 13, 16), ZoneId.systemDefault());
+        LocalDate zonedDateTime =
+            LocalDate.of(2022, Month.SEPTEMBER, 8);
         assertFalse(holidayService.isHoliday(zonedDateTime));
     }
 
     @Test
     void testIsWeekendZonedDateTimeReturnsTrue() {
-        ZonedDateTime saturdaySeptemberTenth =
-            ZonedDateTime.of(
-                LocalDateTime.of(2022, Month.SEPTEMBER, 10, 13, 16), ZoneId.systemDefault());
+        LocalDate saturdaySeptemberTenth =
+            LocalDate.of(2022, Month.SEPTEMBER, 10);
 
-        ZonedDateTime sundaySeptemberEleventh =
-            ZonedDateTime.of(
-                LocalDateTime.of(2022, Month.SEPTEMBER, 11, 13, 16), ZoneId.systemDefault());
+        LocalDate sundaySeptemberEleventh =
+            LocalDate.of(2022, Month.SEPTEMBER, 11);
 
         assertTrue(holidayService.isWeekend(saturdaySeptemberTenth));
         assertTrue(holidayService.isWeekend(sundaySeptemberEleventh));
@@ -57,9 +49,8 @@ class HolidayServiceTest {
 
     @Test
     void testIsWeekendZoneDateTimeReturnsFalse() {
-        ZonedDateTime fridaySeptemberNinth =
-            ZonedDateTime.of(
-                LocalDateTime.of(2022, Month.SEPTEMBER, 9, 13, 16), ZoneId.systemDefault());
+        LocalDate fridaySeptemberNinth =
+            LocalDate.of(2022, Month.SEPTEMBER, 9);
 
         assertFalse(holidayService.isWeekend(fridaySeptemberNinth));
     }

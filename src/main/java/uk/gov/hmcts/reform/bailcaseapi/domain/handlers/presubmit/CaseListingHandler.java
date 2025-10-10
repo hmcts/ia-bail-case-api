@@ -10,7 +10,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,9 +79,7 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
 
             LocalDate date = LocalDateTime.parse(hearingDate, ISO_DATE_TIME).toLocalDate();
 
-            String dueDate = dueDateService.calculateHearingDirectionDueDate(date.atStartOfDay(ZoneOffset.UTC),
-                                                                             LocalDate.now())
-                .toLocalDate()
+            String dueDate = dueDateService.calculateHearingDirectionDueDate(date, LocalDate.now())
                 .toString();
 
             bailCase.write(SEND_DIRECTION_DESCRIPTION,
