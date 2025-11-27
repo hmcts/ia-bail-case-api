@@ -19,6 +19,9 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.refdata.LocationRe
 @RequiredArgsConstructor
 public class LocationRefDataService {
 
+    private static final String OPEN = "Open";
+    private static final String COURT = "COURT";
+
     private final AuthTokenGenerator authTokenGenerator;
     private final UserDetails userDetails;
     private final LocationRefDataApi locationRefDataApi;
@@ -68,5 +71,22 @@ public class LocationRefDataService {
 
         return Objects.equals(courtVenue.getIsCaseManagementLocation(), "Y")
                && Objects.equals(courtVenue.getCourtStatus(), "Open");
+    }
+
+    public DynamicList getCaseManagementLocationDynamicList() {
+        return new DynamicList(new Value("", ""), getCourtVenues().stream()
+            .filter(courtVenue -> isOpenLocation(courtVenue)
+                && isCaseManagementLocation(courtVenue)
+                && isCourtLocation(courtVenue))
+            .map(courtVenue -> new Value(courtVenue.getEpimmsId(), courtVenue.getCourtName()))
+            .toList());
+    }
+
+    private boolean isCourtLocation(CourtVenue courtVenue) {
+        return COURT.equals(courtVenue.getLocationType());
+    }
+
+    private boolean isOpenLocation(CourtVenue courtVenue) {
+        return OPEN.equalsIgnoreCase(courtVenue.getCourtStatus());
     }
 }

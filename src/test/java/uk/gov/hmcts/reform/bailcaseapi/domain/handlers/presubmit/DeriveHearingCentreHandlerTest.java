@@ -61,6 +61,8 @@ class DeriveHearingCentreHandlerTest {
     private LocationRefDataService locationRefDataService;
     @Mock
     private FeatureToggleService featureToggleService;
+    @Mock
+    private CaseManagementLocationService caseManagementLocationService;
     @Captor
     private ArgumentCaptor<DynamicList> dynamicListArgumentCaptor;
 
@@ -71,7 +73,7 @@ class DeriveHearingCentreHandlerTest {
     @BeforeEach
     public void setUp() {
         deriveHearingCentreHandler = new DeriveHearingCentreHandler(
-            hearingCentreFinder, locationRefDataService, featureToggleService);
+            hearingCentreFinder, locationRefDataService, featureToggleService, caseManagementLocationService);
 
         DynamicList locationRefDataDynamicList = new DynamicList(
             new Value("", ""), List.of(hattonCross, newCastle));
@@ -152,7 +154,8 @@ class DeriveHearingCentreHandlerTest {
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
         when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.HATTON_CROSS);
         when(featureToggleService.locationRefDataEnabled()).thenReturn(true);
-
+        when(locationRefDataService.getCaseManagementLocationDynamicList()).thenReturn(
+            new DynamicList(new Value("", ""), List.of(hattonCross, newCastle)));
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
@@ -225,7 +228,7 @@ class DeriveHearingCentreHandlerTest {
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(
-            () -> deriveHearingCentreHandler.setHearingCentreFromDetentionFacilityName(bailCase))
+                () -> deriveHearingCentreHandler.setHearingCentreFromDetentionFacilityName(bailCase))
             .hasMessage("Prison name and IRC name missing")
             .isExactlyInstanceOf(RequiredFieldMissingException.class);
 
@@ -239,9 +242,9 @@ class DeriveHearingCentreHandlerTest {
                 boolean canHandle = deriveHearingCentreHandler.canHandle(callbackStage, callback);
                 if (callbackStage == ABOUT_TO_SUBMIT
                     && (callback.getEvent() == Event.START_APPLICATION
-                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
-                        || callback.getEvent() == Event.MAKE_NEW_APPLICATION
-                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT)) {
+                    || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
+                    || callback.getEvent() == Event.MAKE_NEW_APPLICATION
+                    || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT)) {
                     assertTrue(canHandle);
                 } else {
                     assertFalse(canHandle);
