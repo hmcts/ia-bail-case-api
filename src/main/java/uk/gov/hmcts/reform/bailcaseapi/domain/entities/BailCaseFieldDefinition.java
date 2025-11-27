@@ -692,6 +692,7 @@ public enum BailCaseFieldDefinition {
 
     HEARING_RECORDING_DOCUMENTS(
         "hearingRecordingDocuments", new TypeReference<List<IdValue<HearingRecordingDocument>>>(){});
+    TTL("TTL", new TypeReference<String>() {});
 
     private final String value;
     private final TypeReference typeReference;

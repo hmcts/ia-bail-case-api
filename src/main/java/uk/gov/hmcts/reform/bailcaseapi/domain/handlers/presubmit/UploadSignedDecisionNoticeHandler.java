@@ -84,6 +84,11 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
         bailCase.write(HAS_BEEN_RELISTED, YesOrNo.NO);
         bailCase.clear(DECISION_UNSIGNED_DOCUMENT);
 
+        String outcome = bailCase.read(RECORD_DECISION_TYPE, String.class).orElse("");
+        if (outcome.equals(DecisionType.CONDITIONAL_GRANT.toString())) {
+            bailCase.write(TTL, "730");
+        }
+
         return new PreSubmitCallbackResponse<>(bailCase);
     }
 }
