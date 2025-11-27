@@ -18,7 +18,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.DispatchPriority;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.DecisionType;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
@@ -42,7 +41,7 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-                && callback.getEvent() == Event.UPLOAD_SIGNED_DECISION_NOTICE;
+                && (callback.getEvent() == Event.UPLOAD_SIGNED_DECISION_NOTICE || Event.UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT) ;
     }
 
     @Override
@@ -84,11 +83,6 @@ public class UploadSignedDecisionNoticeHandler implements PreSubmitCallbackHandl
         bailCase.write(OUTCOME_STATE, State.DECISION_DECIDED);
         bailCase.write(HAS_BEEN_RELISTED, YesOrNo.NO);
         bailCase.clear(DECISION_UNSIGNED_DOCUMENT);
-
-        String outcome = bailCase.read(RECORD_DECISION_TYPE, String.class).orElse("");
-        if (outcome.equals(DecisionType.CONDITIONAL_GRANT.toString())) {
-            bailCase.write(TTL, "730");
-        }
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }

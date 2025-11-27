@@ -307,6 +307,8 @@ public enum BailCaseFieldDefinition {
         "secretaryOfStateRefusalReasons", new TypeReference<String>(){}),
     UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT(
         "uploadSignedDecisionNoticeDocument", new TypeReference<Document>(){}),
+    UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT(
+        "uploadSignedDecisionNoticeDocumentConditionalGrant", new TypeReference<Document>(){}),
     DECISION_GRANTED_OR_REFUSED(
         "decisionGrantedOrRefused", new TypeReference<String>(){}),
     //Once we switch the IMA feature on, we will be using this case field instead of the one above
@@ -691,8 +693,7 @@ public enum BailCaseFieldDefinition {
             "hearingDecisionList", new TypeReference<List<IdValue<HearingDecision>>>(){}),
 
     HEARING_RECORDING_DOCUMENTS(
-        "hearingRecordingDocuments", new TypeReference<List<IdValue<HearingRecordingDocument>>>(){}),
-    TTL("TTL", new TypeReference<String>() {});
+        "hearingRecordingDocuments", new TypeReference<List<IdValue<HearingRecordingDocument>>>(){});
 
     private final String value;
     private final TypeReference typeReference;
