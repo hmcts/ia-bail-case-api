@@ -14,5 +14,5 @@ public class PreviousDecisionDetails {
     private String decisionDetailsDate;
     private String recordDecisionType;
     private Document uploadSignedDecisionNoticeDocument;
-    private Document uploadSignedDecisionNoticeDocumentConditionalGrant
+    private Document uploadSignedDecisionNoticeDocumentConditionalGrant;
 }
