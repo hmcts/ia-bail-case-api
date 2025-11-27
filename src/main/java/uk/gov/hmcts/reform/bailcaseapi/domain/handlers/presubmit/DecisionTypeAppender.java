@@ -132,21 +132,31 @@ public class DecisionTypeAppender implements PreSubmitCallbackHandler<BailCase> 
             Document prevUploadSignedDecisionNoticeDocumentConditionalGrant = bailCaseBefore.read(
                     UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT, Document.class)
                 .orElse(null);
-            if (prevDecisionDetailsDate != null && prevRecordDecisionType != null && (prevUploadSignedDecisionNoticeDocument != null || prevUploadSignedDecisionNoticeDocumentConditionalGrant != null)) {
-                Optional<List<IdValue<PreviousDecisionDetails>>> maybeExistingPreviousDecisionDetails =
-                    bailCase.read(PREVIOUS_DECISION_DETAILS);
-                final PreviousDecisionDetails newPreviousDecisionDetails = new PreviousDecisionDetails(
-                    prevDecisionDetailsDate, prevRecordDecisionType, prevUploadSignedDecisionNoticeDocument);
-                List<IdValue<PreviousDecisionDetails>> allPreviousDecisionDetails = previousDecisionDetailsAppender
-                    .append(
-                        newPreviousDecisionDetails,
-                        maybeExistingPreviousDecisionDetails.orElseGet(Collections::emptyList)
-                    );
-                bailCase.write(PREVIOUS_DECISION_DETAILS, allPreviousDecisionDetails);
+            if (prevDecisionDetailsDate != null && prevRecordDecisionType != null && prevUploadSignedDecisionNoticeDocument != null ) {
                 if (prevUploadSignedDecisionNoticeDocument != null) {
+                    Optional<List<IdValue<PreviousDecisionDetails>>> maybeExistingPreviousDecisionDetails =
+                        bailCase.read(PREVIOUS_DECISION_DETAILS);
+                    final PreviousDecisionDetails newPreviousDecisionDetails = new PreviousDecisionDetails(
+                        prevDecisionDetailsDate, prevRecordDecisionType, prevUploadSignedDecisionNoticeDocument);
+                    List<IdValue<PreviousDecisionDetails>> allPreviousDecisionDetails = previousDecisionDetailsAppender
+                        .append(
+                            newPreviousDecisionDetails,
+                            maybeExistingPreviousDecisionDetails.orElseGet(Collections::emptyList)
+                        );
+                    bailCase.write(PREVIOUS_DECISION_DETAILS, allPreviousDecisionDetails);
                     bailCase.clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT);
-                } else{
-                    bailCase.clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT);
+                } else if (prevUploadSignedDecisionNoticeDocumentConditionalGrant != null) {
+                    Optional<List<IdValue<PreviousDecisionDetails>>> maybeExistingPreviousDecisionDetails =
+                        bailCase.read(PREVIOUS_DECISION_DETAILS);
+                    final PreviousDecisionDetails newPreviousDecisionDetails = new PreviousDecisionDetails(
+                        prevDecisionDetailsDate, prevRecordDecisionType, prevUploadSignedDecisionNoticeDocumentConditionalGrant);
+                    List<IdValue<PreviousDecisionDetails>> allPreviousDecisionDetails = previousDecisionDetailsAppender
+                        .append(
+                            newPreviousDecisionDetails,
+                            maybeExistingPreviousDecisionDetails.orElseGet(Collections::emptyList)
+                        );
+                    bailCase.write(PREVIOUS_DECISION_DETAILS, allPreviousDecisionDetails);
+                    bailCase.clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONALGRANT);
                 }
             }
         }
