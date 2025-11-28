@@ -508,4 +508,126 @@ class DecisionTypeAppenderTest {
         verify(bailCase, times(1)).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT);
     }
 
+    @Test
+    void should_append_previous_decision_when_prev_conditional_grant_document_exists() {
+
+        when(callback.getEvent()).thenReturn(Event.RECORD_THE_DECISION);
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+
+        // Previous decision fields
+        when(bailCaseBefore.read(DECISION_DETAILS_DATE, String.class)).thenReturn(Optional.of("2024-10-10"));
+        when(bailCaseBefore.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of("conditionalGrant"));
+
+        // NEW branch — conditional grant doc is present
+        when(bailCaseBefore.read(
+            UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT, Document.class
+        )).thenReturn(Optional.of(previousConditionalGrantDocument));
+
+        // Normal doc not present
+        when(bailCaseBefore.read(
+            UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class
+        )).thenReturn(Optional.empty());
+
+        // Required decision input to reach main logic
+        when(bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class)).thenReturn(Optional.of("refused"));
+
+        when(bailCase.read(PREVIOUS_DECISION_DETAILS))
+            .thenReturn(Optional.empty());
+
+        when(previousDecisionDetailsAppender.append(any(), anyList()))
+            .thenReturn(Collections.singletonList(previousDecisionDetailsIdValue));
+
+        PreSubmitCallbackResponse<BailCase> response =
+            decisionTypeAppender.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(response);
+
+        // Verify new previous decision was appended
+        verify(previousDecisionDetailsAppender).append(
+            argThat(details ->
+                        details.getDecisionDate().equals("2024-10-10")
+                            && details.getDecisionType().equals("conditionalGrant")
+                            && details.getSignedDecisionNoticeDocument().equals(previousConditionalGrantDocument)
+            ),
+            eq(Collections.emptyList())
+        );
+
+        // New doc must be cleared
+        verify(bailCase).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT);
+        verify(bailCase, never()).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT);
+    }
+
+    @Test
+    void should_not_append_previous_decision_when_conditional_grant_document_not_present() {
+
+        when(callback.getEvent()).thenReturn(Event.RECORD_THE_DECISION);
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+
+        when(bailCaseBefore.read(DECISION_DETAILS_DATE, String.class)).thenReturn(Optional.of("2024-10-10"));
+        when(bailCaseBefore.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of("conditionalGrant"));
+
+        // No docs → should not append anything
+        when(bailCaseBefore.read(
+            UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT, Document.class
+        )).thenReturn(Optional.empty());
+        when(bailCaseBefore.read(
+            UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class
+        )).thenReturn(Optional.empty());
+
+        // Required to reach main logic
+        when(bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class)).thenReturn(Optional.of("refused"));
+
+        decisionTypeAppender.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        verify(previousDecisionDetailsAppender, never()).append(any(), anyList());
+        verify(bailCase, never()).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT);
+        verify(bailCase, never()).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT);
+    }
+
+    // ----------------------------------------------------------------------
+    // 3. BOTH DOCS PRESENT → NORMAL DOC WINS (existing behaviour)
+    // ----------------------------------------------------------------------
+    @Test
+    void should_use_normal_signed_document_when_both_documents_present() {
+
+        when(callback.getEvent()).thenReturn(Event.RECORD_THE_DECISION);
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+
+        when(bailCaseBefore.read(DECISION_DETAILS_DATE, String.class)).thenReturn(Optional.of("2024-10-10"));
+        when(bailCaseBefore.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of("refused"));
+
+        // BOTH documents present → normal doc must win
+        when(bailCaseBefore.read(
+            UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, Document.class
+        )).thenReturn(Optional.of(previousSignedDecisionDocument));
+
+        when(bailCaseBefore.read(
+            UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT, Document.class
+        )).thenReturn(Optional.of(previousConditionalGrantDocument));
+
+        when(previousDecisionDetailsAppender.append(any(), anyList()))
+            .thenReturn(Collections.singletonList(previousDecisionDetailsIdValue));
+        when(bailCase.read(PREVIOUS_DECISION_DETAILS)).thenReturn(Optional.empty());
+
+        when(bailCase.read(DECISION_GRANTED_OR_REFUSED, String.class)).thenReturn(Optional.of("refused"));
+
+        decisionTypeAppender.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        // Normal doc must be used
+        verify(previousDecisionDetailsAppender).append(
+            argThat(details ->
+                        details.getSignedDecisionNoticeDocument().equals(previousSignedDecisionDocument)
+            ),
+            anyList()
+        );
+
+        // Normal document cleared
+        verify(bailCase).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT);
+
+        // Conditional grant document ignored → must NOT be cleared
+        verify(bailCase, never()).clear(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT_CONDITIONAL_GRANT);
+    }
 }
