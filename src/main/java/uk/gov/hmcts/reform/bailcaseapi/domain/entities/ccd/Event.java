@@ -40,7 +40,7 @@ public enum Event {
     UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT("uploadSignedDecisionNoticeConditionalGrant"),
     VIEW_PREVIOUS_APPLICATIONS("viewPreviousApplications"),
     TEST_TIMED_EVENT_SCHEDULE("testTimedEventSchedule"),
-    UPLOAD_HEARING_RECORDING("uploadHearingRecording");
+    UPLOAD_HEARING_RECORDING("uploadHearingRecording"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
