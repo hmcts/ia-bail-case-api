@@ -67,6 +67,12 @@ class DecisionTypeAppenderTest {
     private Document previousSignedDecisionDocument;
     @Mock
     private Document previousOldSignedDecisionDocument;
+    @Mock
+    private Document previousConditionalGrantDocument;
+    @Mock
+    private IdValue<PreviousDecisionDetails> previousDecisionDetailsIdValue;
+    @Mock
+    private PreviousDecisionDetails previousDecisionDetails;
 
     private final LocalDate now = LocalDate.now();
     private static final String REFUSED = "refused";
