@@ -5,7 +5,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -25,6 +24,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -33,8 +34,10 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseManagementLocation;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.HearingCentre;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Region;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -64,8 +67,8 @@ class DeriveHearingCentreHandlerTest {
     @Captor
     private ArgumentCaptor<DynamicList> dynamicListArgumentCaptor;
 
-    private Value hattonCross = new Value("386417", "Hatton Cross Tribunal Hearing Centre");
-    private Value newCastle = new Value("366796", "Newcastle");
+    private final Value hattonCross = new Value("386417", "Hatton Cross Tribunal Hearing Centre");
+    private final Value newCastle = new Value("366796", "Newcastle");
     private DeriveHearingCentreHandler deriveHearingCentreHandler;
 
     @BeforeEach
@@ -146,7 +149,7 @@ class DeriveHearingCentreHandlerTest {
     }
 
     @Test
-    void should_set_hearing_centre_ref_data() {
+    void should_set_hearing_centre_ref_data_and_caseManagementLocation() {
 
         when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
@@ -162,48 +165,38 @@ class DeriveHearingCentreHandlerTest {
         verify(bailCase, times(1))
             .write(eq(HEARING_CENTRE_REF_DATA), dynamicListArgumentCaptor.capture());
         verify(bailCase, times(1)).write(SELECTED_HEARING_CENTRE_REF_DATA, hattonCross.getLabel());
-
+        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
+            hattonCross.getCode(),
+            hattonCross.getLabel(),
+            Region.NATIONAL
+        );
+        verify(bailCase, times(1)).write(CASE_MANAGEMENT_LOCATION, caseManagementLocation);
         assertEquals(hattonCross, dynamicListArgumentCaptor.getValue().getValue());
     }
 
     @Test
+    void should_still_set_caseManagementLocation_if_hearing_centre_not_found_in_ref_data() {
+        when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
+        when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
+        when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.BIRMINGHAM);
+        when(featureToggleService.locationRefDataEnabled()).thenReturn(true);
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+
+        verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YES);
+        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
+            HearingCentre.BIRMINGHAM.getEpimsId(),
+            HearingCentre.BIRMINGHAM.getValue(),
+            Region.NATIONAL
+        );
+        verify(bailCase, times(1)).write(CASE_MANAGEMENT_LOCATION, caseManagementLocation);
+    }
+
+    @Test
     void should_not_set_hearing_centre_ref_data_when_location_ref_data_not_enabled() {
-
-        when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
-        when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
-        when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.HATTON_CROSS);
-
-        PreSubmitCallbackResponse<BailCase> callbackResponse =
-            deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-
-        assertNotNull(callbackResponse);
-
-        verify(bailCase, never())
-            .write(eq(HEARING_CENTRE_REF_DATA), any());
-        verify(bailCase, never())
-            .write(eq(SELECTED_HEARING_CENTRE_REF_DATA), any());
-    }
-
-    @Test
-    void should_not_set_hearing_centre_ref_data_when_selected_hearing_centre_not_in_location_reference_data() {
-
-        when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
-        when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
-        when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.HATTON_CROSS);
-        DynamicList locationRefDataDynamicList = new DynamicList(
-            new Value("", ""), List.of(newCastle));
-
-        PreSubmitCallbackResponse<BailCase> callbackResponse =
-            deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-
-        assertNotNull(callbackResponse);
-
-        verify(bailCase, never())
-            .write(eq(HEARING_CENTRE_REF_DATA), any());
-    }
-
-    @Test
-    void should_set_location_reference_data_flag_to_no() {
 
         when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
@@ -215,7 +208,33 @@ class DeriveHearingCentreHandlerTest {
 
         assertNotNull(callbackResponse);
 
+        verify(bailCase, never())
+            .write(eq(HEARING_CENTRE_REF_DATA), any());
+        verify(bailCase, never())
+            .write(eq(SELECTED_HEARING_CENTRE_REF_DATA), any());
         verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, NO);
+        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
+            HearingCentre.HATTON_CROSS.getEpimsId(),
+            HearingCentre.HATTON_CROSS.getValue(),
+            Region.NATIONAL
+        );
+        verify(bailCase, times(1)).write(CASE_MANAGEMENT_LOCATION, caseManagementLocation);
+    }
+
+    @Test
+    void should_not_set_hearing_centre_ref_data_when_selected_hearing_centre_not_in_location_reference_data() {
+
+        when(bailCase.read(PRISON_NAME, String.class)).thenReturn(Optional.empty());
+        when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
+        when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.HATTON_CROSS);
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+
+        assertNotNull(callbackResponse);
+
+        verify(bailCase, never())
+            .write(eq(HEARING_CENTRE_REF_DATA), any());
     }
 
     @Test
@@ -225,28 +244,41 @@ class DeriveHearingCentreHandlerTest {
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(
-            () -> deriveHearingCentreHandler.setHearingCentreFromDetentionFacilityName(bailCase))
+                () -> deriveHearingCentreHandler.setHearingCentreFromDetentionFacilityName(bailCase))
             .hasMessage("Prison name and IRC name missing")
             .isExactlyInstanceOf(RequiredFieldMissingException.class);
 
     }
 
-    @Test
-    void handler_can_handle_callback() {
-        for (Event event : Event.values()) {
-            when(callback.getEvent()).thenReturn(event);
-            for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
-                boolean canHandle = deriveHearingCentreHandler.canHandle(callbackStage, callback);
-                if (callbackStage == ABOUT_TO_SUBMIT
-                    && (callback.getEvent() == Event.START_APPLICATION
-                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION
-                        || callback.getEvent() == Event.MAKE_NEW_APPLICATION
-                        || callback.getEvent() == Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT)) {
-                    assertTrue(canHandle);
-                } else {
-                    assertFalse(canHandle);
-                }
-            }
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {
+        "START_APPLICATION",
+        "EDIT_BAIL_APPLICATION",
+        "MAKE_NEW_APPLICATION",
+        "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+        "MIGRATE_WA_BAIL_APPLICATION"
+    }, mode = EnumSource.Mode.INCLUDE)
+    void handler_can_handle_callback(Event event) {
+        when(callback.getEvent()).thenReturn(event);
+        for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
+            boolean canHandle = deriveHearingCentreHandler.canHandle(callbackStage, callback);
+            assertEquals(callbackStage == ABOUT_TO_SUBMIT, canHandle);
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {
+        "START_APPLICATION",
+        "EDIT_BAIL_APPLICATION",
+        "MAKE_NEW_APPLICATION",
+        "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+        "MIGRATE_WA_BAIL_APPLICATION"
+    }, mode = EnumSource.Mode.EXCLUDE)
+    void handler_cannot_handle_callback(Event event) {
+        when(callback.getEvent()).thenReturn(event);
+        for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
+            boolean canHandle = deriveHearingCentreHandler.canHandle(callbackStage, callback);
+            assertFalse(canHandle);
         }
     }
 

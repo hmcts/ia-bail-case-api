@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -19,9 +20,6 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.RELIS
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingHearingCentre.NEWCASTLE;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +72,7 @@ class CaseListingHandlerTest {
 
     private CaseListingHandler caseListingHandler;
     private final String caseListHearingDate = "2023-12-01T12:00:00";
-    private ZonedDateTime zonedDueDateTime;
+    private LocalDate localDueDate;
     private CourtVenue newCastle;
 
     @BeforeEach
@@ -92,14 +90,13 @@ class CaseListingHandlerTest {
         when(bailCase.read(LIST_CASE_HEARING_DATE, String.class)).thenReturn(Optional.of(caseListHearingDate));
         when(bailCase.read(LISTING_EVENT, ListingEvent.class)).thenReturn(Optional.of(INITIAL_LISTING));
 
-        final ZonedDateTime hearingLocalDate =
-            LocalDateTime.parse(caseListHearingDate, ISO_DATE_TIME).toLocalDate().atStartOfDay(ZoneOffset.UTC);
+        final LocalDate hearingLocalDate = LocalDate.parse(caseListHearingDate, ISO_DATE_TIME);
         String dueDate = "2023-11-30";
-        zonedDueDateTime = LocalDate.parse(dueDate).atStartOfDay(ZoneOffset.UTC);
+        localDueDate = LocalDate.parse(dueDate);
 
         when(dueDateService.calculateHearingDirectionDueDate(hearingLocalDate,
                                                              LocalDate.now()
-        )).thenReturn(zonedDueDateTime);
+        )).thenReturn(localDueDate);
 
         newCastle = new CourtVenue(
             "Newcastle Civil & Family Courts and Tribunals Centre",
@@ -126,7 +123,7 @@ class CaseListingHandlerTest {
 
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
-        verify(bailCase, times(4)).write(
+        verify(bailCase, times(5)).write(
             bailExtractorCaptor.capture(),
             bailValueCaptor.capture());
 
@@ -134,11 +131,11 @@ class CaseListingHandlerTest {
         List<String> bailCaseValues = bailValueCaptor.getAllValues();
 
         verify(bailCase, times(1)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
+        verify(bailCase, times(1)).write(eq(BAIL_SUMMARY_DUE_DATE), anyString());
         assertThat(bailCaseValues.get(extractors.indexOf(SEND_DIRECTION_DESCRIPTION)))
             .containsSequence("You must upload the Bail Summary by the date indicated below.");
         verify(bailCase, times(1)).write(SEND_DIRECTION_LIST, "Home Office");
-        verify(bailCase, times(1)).write(DATE_OF_COMPLIANCE,
-                                         zonedDueDateTime.toLocalDate().toString());
+        verify(bailCase, times(1)).write(DATE_OF_COMPLIANCE, localDueDate.toString());
         verify(hearingIdListProcessor).processHearingId(bailCase);
     }
 
@@ -158,6 +155,7 @@ class CaseListingHandlerTest {
             bailValueCaptor.capture());
 
         verify(bailCase, times(0)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
+        verify(bailCase, times(0)).write(eq(BAIL_SUMMARY_DUE_DATE), anyString());
         verify(bailCase, times(0)).write(SEND_DIRECTION_LIST, "Home Office");
         verifyNoInteractions(hearingIdListProcessor);
     }
