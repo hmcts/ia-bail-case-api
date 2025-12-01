@@ -43,10 +43,11 @@ public class EventTest {
         assertEquals("testTimedEventSchedule", Event.TEST_TIMED_EVENT_SCHEDULE.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
         assertEquals("uploadHearingRecording", Event.UPLOAD_HEARING_RECORDING.toString());
+        assertEquals("updateInterpreterWaTask", Event.UPDATE_INTERPRETER_WA_TASK.toString());
     }
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(38, Event.values().length);
+        assertEquals(39, Event.values().length);
     }
 }
