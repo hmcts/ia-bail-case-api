@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -101,9 +102,10 @@ class LocationRefDataServiceTest {
 
         Optional<CourtVenue> courtVenue  = locationRefDataService.getCourtVenuesByEpimmsId("1234");
 
-        assertEquals(true, courtVenue.isPresent());
+        assertTrue(courtVenue.isPresent());
         assertEquals("Crown Square, Manchester, Greater Manchester", courtVenue.get().getCourtAddress());
         assertEquals("M60 1PR", courtVenue.get().getPostcode());
+        assertNull(courtVenue.get().getLocationType());
     }
 
     @Test

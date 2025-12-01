@@ -30,25 +30,31 @@ public class LocationRefDataService {
 
     public DynamicList getHearingLocationsDynamicList() {
 
-        return new DynamicList(new Value("", ""), getCourtVenues().stream()
+        return new DynamicList(
+            new Value("", ""), getCourtVenues().stream()
             .filter(this::isHearingLocation)
             .map(courtVenue -> new Value(courtVenue.getEpimmsId(), courtVenue.getCourtName()))
-            .toList());
+            .toList()
+        );
     }
 
     public DynamicList getCaseManagementLocationsDynamicList() {
 
-        return new DynamicList(new Value("", ""), getCourtVenues().stream()
+        return new DynamicList(
+            new Value("", ""), getCourtVenues().stream()
             .filter(this::isCaseManagementLocation)
             .map(courtVenue -> new Value(courtVenue.getEpimmsId(), courtVenue.getCourtName()))
-            .toList());
+            .toList()
+        );
     }
 
     public Optional<CourtVenue> getCourtVenuesByEpimmsId(String epimmsId) {
-        return getCourtVenues().stream()
+        Optional<CourtVenue> venue = getCourtVenues().stream()
             .filter(this::isHearingLocation)
             .filter(courtVenue -> courtVenue.getEpimmsId().equals(epimmsId))
             .findFirst();
+        venue.ifPresent((courtVenue -> courtVenue.setLocationType(null)));
+        return venue;
     }
 
     private List<CourtVenue> getCourtVenues() {
@@ -64,22 +70,24 @@ public class LocationRefDataService {
     private boolean isHearingLocation(CourtVenue courtVenue) {
 
         return Objects.equals(courtVenue.getIsHearingLocation(), "Y")
-               && Objects.equals(courtVenue.getCourtStatus(), "Open");
+            && Objects.equals(courtVenue.getCourtStatus(), "Open");
     }
 
     private boolean isCaseManagementLocation(CourtVenue courtVenue) {
 
         return Objects.equals(courtVenue.getIsCaseManagementLocation(), "Y")
-               && Objects.equals(courtVenue.getCourtStatus(), "Open");
+            && Objects.equals(courtVenue.getCourtStatus(), "Open");
     }
 
     public DynamicList getCaseManagementLocationDynamicList() {
-        return new DynamicList(new Value("", ""), getCourtVenues().stream()
+        return new DynamicList(
+            new Value("", ""), getCourtVenues().stream()
             .filter(courtVenue -> isOpenLocation(courtVenue)
                 && isCaseManagementLocation(courtVenue)
                 && isCourtLocation(courtVenue))
             .map(courtVenue -> new Value(courtVenue.getEpimmsId(), courtVenue.getCourtName()))
-            .toList());
+            .toList()
+        );
     }
 
     private boolean isCourtLocation(CourtVenue courtVenue) {
