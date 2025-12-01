@@ -1,10 +1,15 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPELLANT_LEVEL_FLAGS;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseFlagDetail;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.StrategicCaseFlag;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
@@ -38,8 +43,45 @@ class InterpreterFlagConfirmation implements PostSubmitCallbackHandler<BailCase>
         if (!canHandle(callback)) {
             throw new IllegalStateException("Cannot handle callback");
         }
-        PostSubmitCallbackResponse postSubmitResponse = new PostSubmitCallbackResponse();
+        BailCase bailCase = callback.getCaseDetails().getCaseData();
+        BailCase bailCaseBefore = callback.getCaseDetailsBefore().orElse(callback.getCaseDetails()).getCaseData();
+        Optional<StrategicCaseFlag> appellantLevelFlagsNow = bailCase.read(
+            APPELLANT_LEVEL_FLAGS,
+            StrategicCaseFlag.class
+        );
+        Optional<StrategicCaseFlag> appellantLevelFlagsBefore = bailCaseBefore.read(
+            APPELLANT_LEVEL_FLAGS,
+            StrategicCaseFlag.class
+        );
 
+        if (appellantLevelFlagsNow.isPresent() && appellantLevelFlagsBefore.isEmpty()) {
+            return trySetActiveInterpreterFlag(callback);
+        }
+
+        if (appellantLevelFlagsNow.isPresent()) {
+            List<CaseFlagDetail> flagsNow = appellantLevelFlagsNow.get().getDetails();
+            List<CaseFlagDetail> flagsBefore = appellantLevelFlagsBefore.get().getDetails();
+
+            boolean hasInterpreterFlagNow = flagsNow.stream()
+                .anyMatch(flag ->
+                              flag.getCaseFlagValue().getName().toLowerCase().contains("interpreter")
+                                  && flag.getCaseFlagValue().getStatus().equals("Active"));
+
+            boolean hasInterpreterFlagBefore = flagsBefore.stream()
+                .anyMatch(flag ->
+                              flag.getCaseFlagValue().getName().toLowerCase().contains("interpreter")
+                                  && flag.getCaseFlagValue().getStatus().equals("Active"));
+
+            if (hasInterpreterFlagNow != hasInterpreterFlagBefore) {
+                return trySetActiveInterpreterFlag(callback);
+            }
+        }
+
+        return new PostSubmitCallbackResponse();
+    }
+
+    private PostSubmitCallbackResponse trySetActiveInterpreterFlag(Callback<BailCase> callback) {
+        PostSubmitCallbackResponse postSubmitResponse = new PostSubmitCallbackResponse();
         try {
             ccdDataService.setActiveInterpreterFlag(callback);
         } catch (Exception e) {
@@ -52,7 +94,6 @@ class InterpreterFlagConfirmation implements PostSubmitCallbackHandler<BailCase>
                 "### Something went wrong\n\n"
             );
         }
-
         return postSubmitResponse;
     }
 }
