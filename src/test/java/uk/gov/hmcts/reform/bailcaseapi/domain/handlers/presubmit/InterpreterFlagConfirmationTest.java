@@ -12,10 +12,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -48,6 +50,22 @@ class InterpreterFlagConfirmationTest {
     private BailCase bailCaseBefore;
     @Mock
     private CcdDataService ccdDataService;
+    @Mock
+    private StrategicCaseFlag strategicCaseFlagsNow;
+    @Mock
+    private StrategicCaseFlag strategicCaseFlagsBefore;
+    @Mock
+    private List<CaseFlagDetail> caseFlagDetailsNow;
+    @Mock
+    private List<CaseFlagDetail> caseFlagDetailsBefore;
+    @Mock
+    private Stream<CaseFlagDetail> caseFlagDetailStreamNow;
+    @Mock
+    private Stream<CaseFlagDetail> caseFlagDetailStreamBefore;
+    @Mock
+    private Stream<CaseFlagDetail> caseFlagDetailFilteredNow;
+    @Mock
+    private Stream<CaseFlagDetail> caseFlagDetailFilteredBefore;
     private InterpreterFlagConfirmation interpreterFlagConfirmation;
 
     private final CaseFlagValue activeInterpreterFlag = CaseFlagValue.builder().name("Interpreter").status("Active").build();
@@ -58,34 +76,6 @@ class InterpreterFlagConfirmationTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         interpreterFlagConfirmation = new InterpreterFlagConfirmation(ccdDataService);
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = Event.class, names = {"CREATE_FLAG", "MANAGE_FLAGS"})
-    void should_handle_event(Event event) {
-        when(callback.getEvent()).thenReturn(event);
-        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
-        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
-
-        // Simulate flags added
-        StrategicCaseFlag now = new StrategicCaseFlag("Applicant", "Applicant", List.of());
-        when(bailCase.read(any(), eq(StrategicCaseFlag.class))).thenReturn(Optional.of(now));
-        when(bailCaseBefore.read(any(), eq(StrategicCaseFlag.class))).thenReturn(Optional.empty());
-
-        interpreterFlagConfirmation.handle(callback);
-
-        verify(ccdDataService, times(1)).setActiveInterpreterFlag(callback);
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = Event.class, names = {"CREATE_FLAG", "MANAGE_FLAGS"}, mode = EnumSource.Mode.EXCLUDE)
-    void should_not_handle_event(Event event) {
-        when(callback.getEvent()).thenReturn(event);
-
-        assertFalse(interpreterFlagConfirmation.canHandle(callback));
-        assertThatThrownBy(() -> interpreterFlagConfirmation.handle(callback))
-            .hasMessage("Cannot handle callback")
-            .isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -124,6 +114,70 @@ class InterpreterFlagConfirmationTest {
 
         verify(ccdDataService, times(0)).setActiveInterpreterFlag(callback);
         assertTrue(response.getConfirmationBody().isEmpty());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {"CREATE_FLAG", "MANAGE_FLAGS"})
+    void should_handle_event(Event event) {
+        when(callback.getEvent()).thenReturn(event);
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+
+        // Simulate flags added
+        StrategicCaseFlag now = new StrategicCaseFlag("Applicant", "Applicant", List.of());
+        when(bailCase.read(any(), eq(StrategicCaseFlag.class))).thenReturn(Optional.of(now));
+        when(bailCaseBefore.read(any(), eq(StrategicCaseFlag.class))).thenReturn(Optional.empty());
+
+        interpreterFlagConfirmation.handle(callback);
+
+        verify(ccdDataService, times(1)).setActiveInterpreterFlag(callback);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {"CREATE_FLAG", "MANAGE_FLAGS"}, mode = EnumSource.Mode.EXCLUDE)
+    void should_not_handle_event(Event event) {
+        when(callback.getEvent()).thenReturn(event);
+
+        assertFalse(interpreterFlagConfirmation.canHandle(callback));
+        assertThatThrownBy(() -> interpreterFlagConfirmation.handle(callback))
+            .hasMessage("Cannot handle callback")
+            .isExactlyInstanceOf(IllegalStateException.class);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0,0",
+        "1,1",
+        "2,1",
+        "2,2"
+    })
+    void should_not_trigger_setActiveInterpreterFlag(int beforeCount, int nowCount) {
+        when(callback.getEvent()).thenReturn(Event.CREATE_FLAG);
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+        setupFlagMocks(beforeCount, nowCount);
+
+        PostSubmitCallbackResponse response = interpreterFlagConfirmation.handle(callback);
+
+        verify(ccdDataService, times(0)).setActiveInterpreterFlag(callback);
+        assertTrue(response.getConfirmationBody().isEmpty());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0,1",
+        "1,0",
+        "1,2"
+    })
+    void should_trigger_setActiveInterpreterFlag(int beforeCount, int nowCount) {
+        when(callback.getEvent()).thenReturn(Event.CREATE_FLAG);
+        when(callback.getCaseDetailsBefore()).thenReturn(Optional.of(caseDetailsBefore));
+        when(caseDetailsBefore.getCaseData()).thenReturn(bailCaseBefore);
+        setupFlagMocks(beforeCount, nowCount);
+
+        interpreterFlagConfirmation.handle(callback);
+
+        verify(ccdDataService, times(1)).setActiveInterpreterFlag(callback);
     }
 
     @Test
@@ -175,5 +229,18 @@ class InterpreterFlagConfirmationTest {
         PostSubmitCallbackResponse response = interpreterFlagConfirmation.handle(callback);
         verify(ccdDataService, times(1)).setActiveInterpreterFlag(callback);
         assertTrue(response.getConfirmationBody().isEmpty());
+    }
+
+    private void setupFlagMocks(int beforeCount, int nowCount) {
+        when(strategicCaseFlagsNow.getDetails()).thenReturn(caseFlagDetailsNow);
+        when(strategicCaseFlagsBefore.getDetails()).thenReturn(caseFlagDetailsBefore);
+        when(caseFlagDetailsNow.stream()).thenReturn(caseFlagDetailStreamNow);
+        when(caseFlagDetailsBefore.stream()).thenReturn(caseFlagDetailStreamBefore);
+        when(caseFlagDetailStreamNow.filter(any())).thenReturn(caseFlagDetailFilteredNow);
+        when(caseFlagDetailStreamBefore.filter(any())).thenReturn(caseFlagDetailFilteredBefore);
+        when(caseFlagDetailFilteredNow.count()).thenReturn(Long.valueOf(nowCount));
+        when(caseFlagDetailFilteredBefore.count()).thenReturn(Long.valueOf(beforeCount));
+        when(bailCase.read(any(), eq(StrategicCaseFlag.class))).thenReturn(Optional.of(strategicCaseFlagsNow));
+        when(bailCaseBefore.read(any(), eq(StrategicCaseFlag.class))).thenReturn(Optional.of(strategicCaseFlagsBefore));
     }
 }

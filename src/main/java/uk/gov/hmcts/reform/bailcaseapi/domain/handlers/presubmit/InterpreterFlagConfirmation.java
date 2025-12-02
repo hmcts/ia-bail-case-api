@@ -62,22 +62,31 @@ class InterpreterFlagConfirmation implements PostSubmitCallbackHandler<BailCase>
             List<CaseFlagDetail> flagsNow = appellantLevelFlagsNow.get().getDetails();
             List<CaseFlagDetail> flagsBefore = appellantLevelFlagsBefore.get().getDetails();
 
-            boolean hasInterpreterFlagNow = flagsNow.stream()
-                .anyMatch(flag ->
-                              flag.getCaseFlagValue().getName().toLowerCase().contains("interpreter")
-                                  && flag.getCaseFlagValue().getStatus().equals("Active"));
+            long activeInterpreterFlagCountNow = flagsNow.stream()
+                .filter(flag ->
+                            flag.getCaseFlagValue().getName().toLowerCase().contains("interpreter")
+                                && flag.getCaseFlagValue().getStatus().equals("Active"))
+                .count();
 
-            boolean hasInterpreterFlagBefore = flagsBefore.stream()
-                .anyMatch(flag ->
-                              flag.getCaseFlagValue().getName().toLowerCase().contains("interpreter")
-                                  && flag.getCaseFlagValue().getStatus().equals("Active"));
+            long activeInterpreterFlagCountBefore = flagsBefore.stream()
+                .filter(flag ->
+                            flag.getCaseFlagValue().getName().toLowerCase().contains("interpreter")
+                                && flag.getCaseFlagValue().getStatus().equals("Active"))
+                .count();
 
-            if (hasInterpreterFlagNow != hasInterpreterFlagBefore) {
+            if (shouldTrySetActiveInterpreterFlag(activeInterpreterFlagCountNow, activeInterpreterFlagCountBefore)) {
                 return trySetActiveInterpreterFlag(callback);
             }
         }
 
         return new PostSubmitCallbackResponse();
+    }
+
+    private boolean shouldTrySetActiveInterpreterFlag(long activeInterpreterFlagCountNow, long activeInterpreterFlagCountBefore) {
+        if (activeInterpreterFlagCountNow > activeInterpreterFlagCountBefore) {
+            return true;
+        }
+        return activeInterpreterFlagCountNow == 0 && activeInterpreterFlagCountNow < activeInterpreterFlagCountBefore;
     }
 
     private PostSubmitCallbackResponse trySetActiveInterpreterFlag(Callback<BailCase> callback) {
