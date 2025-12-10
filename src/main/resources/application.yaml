@@ -76,6 +76,8 @@ security:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
       - "testTimedEventSchedule"
+      - "migrateWaBailApplication"
+      - "updateInterpreterWaTask"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
@@ -115,6 +117,7 @@ security:
       - "createBailCaseLink"
       - "maintainBailCaseLinks"
       - "createFlag"
+      - "manageFlags"
       - "confirmDetentionLocation"
       - "updateInterpreterDetails"
       - "updateInterpreterBookingStatus"
@@ -124,6 +127,7 @@ security:
       - "changeTribunalCentre"
       - "testTimedEventSchedule"
       - "uploadHearingRecording"
+      - "migrateWaBailApplication"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
@@ -155,6 +159,7 @@ security:
       - "createBailCaseLink"
       - "maintainBailCaseLinks"
       - "createFlag"
+      - "manageFlags"
       - "forceCaseToHearing"
       - "uploadHearingRecording"
 
