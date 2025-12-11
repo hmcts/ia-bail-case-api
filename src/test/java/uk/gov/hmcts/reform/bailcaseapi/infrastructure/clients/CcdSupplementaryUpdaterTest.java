@@ -1,7 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -82,8 +83,8 @@ class CcdSupplementaryUpdaterTest {
 
         when(responseEntity.getStatusCodeValue()).thenReturn(HttpStatus.CREATED.value());
 
-        ccdSupplementaryUpdater.setHmctsServiceIdSupplementary(callback);
-
+        boolean response = ccdSupplementaryUpdater.setHmctsServiceIdSupplementary(callback);
+        assertTrue(response);
         verify(restTemplate)
             .exchange(
                 anyString(),
@@ -110,8 +111,8 @@ class CcdSupplementaryUpdaterTest {
                 eq(Object.class)
             )
         ).thenThrow(restClientResponseEx);
-
-        assertThatNoException().isThrownBy(() -> ccdSupplementaryUpdater.setHmctsServiceIdSupplementary(callback));
+        boolean response = ccdSupplementaryUpdater.setHmctsServiceIdSupplementary(callback);
+        assertFalse(response);
 
         verify(restTemplate)
             .exchange(

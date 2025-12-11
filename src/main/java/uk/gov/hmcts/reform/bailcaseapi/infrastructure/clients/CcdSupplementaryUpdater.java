@@ -50,7 +50,7 @@ public class CcdSupplementaryUpdater {
         this.hmctsServiceId = hmctsServiceId;
     }
 
-    public void setHmctsServiceIdSupplementary(
+    public boolean setHmctsServiceIdSupplementary(
         final Callback<BailCase> callback
     ) {
         requireNonNull(callback, "callback must not be null");
@@ -89,8 +89,10 @@ public class CcdSupplementaryUpdater {
                     Object.class
                 );
             log.info("Http status received from CCD supplementary update API; {}", response.getStatusCodeValue());
+            return true;
         } catch (RestClientResponseException e) {
             log.info("Couldn't update CCD case supplementary data using API: [{}]", url, e);
+            return false;
         }
     }
 }
