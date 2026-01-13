@@ -12,6 +12,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.HOME_OFFICE_DOCUMENTS_WITH_METADATA;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_ADMIN;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_HOME_OFFICE;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.LAST_FILE_UPLOADED_BY;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CURRENT_USER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_DOCUMENTS_SUPPLIED_BY;
@@ -255,7 +256,7 @@ public class UploadDocumentsHandlerTest {
                                                    applicantDocumentsWithMetadataList);
 
         verify(bailCase, times(1)).write(APPLICANT_DOCUMENTS_WITH_METADATA, allApplicantDocuments);
-
+        verify(bailCase, times(1)).write(LAST_FILE_UPLOADED_BY, suppliedBy);
         verify(bailCase, times(1)).clear(UPLOAD_DOCUMENTS);
         verify(bailCase, times(1)).clear(UPLOAD_DOCUMENTS_SUPPLIED_BY);
     }
