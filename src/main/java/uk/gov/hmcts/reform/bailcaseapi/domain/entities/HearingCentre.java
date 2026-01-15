@@ -63,6 +63,10 @@ public enum HearingCentre {
         return epimsIdMapping.get(epimsId).getValue();
     }
 
+    public static HearingCentre getHearingCentreByEpimsId(String epimsId) {
+        return epimsIdMapping.get(epimsId);
+    }
+
     @Override
     public String toString() {
         return getValue();

@@ -20,6 +20,8 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 
 import java.util.Optional;
 import java.util.Set;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.FeatureToggleService;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.LocationRefDataService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,12 +40,21 @@ class ChangeTribunalCentreHandlerTest {
     private CaseDetails<BailCase> caseDetails;
     @Mock
     private BailCase bailCase;
-
+    @Mock
+    private LocationRefDataService locationRefDataService;
+    @Mock
+    private FeatureToggleService featureToggleService;
+    @Mock
+    private CaseManagementLocationService caseManagementLocationService;
     private ChangeTribunalCentreHandler changeTribunalCentreHandler;
 
     @BeforeEach
     public void setUp() {
-        changeTribunalCentreHandler = new ChangeTribunalCentreHandler();
+        changeTribunalCentreHandler = new ChangeTribunalCentreHandler(
+            locationRefDataService,
+            featureToggleService,
+            caseManagementLocationService
+        );
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.CHANGE_TRIBUNAL_CENTRE);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
@@ -55,7 +66,7 @@ class ChangeTribunalCentreHandlerTest {
         when(bailCase.read(DESIGNATED_TRIBUNAL_CENTRE, HearingCentre.class))
             .thenReturn(Optional.of(hearingCentre));
         PreSubmitCallbackResponse<BailCase> response = changeTribunalCentreHandler.handle(ABOUT_TO_SUBMIT, callback);
-        verify(bailCase).write(HEARING_CENTRE, Optional.of(hearingCentre));
+        verify(bailCase).write(HEARING_CENTRE, hearingCentre);
         assertTrue(response.getErrors().isEmpty());
     }
 
@@ -64,7 +75,7 @@ class ChangeTribunalCentreHandlerTest {
         PreSubmitCallbackResponse<BailCase> response = changeTribunalCentreHandler.handle(ABOUT_TO_SUBMIT, callback);
         verify(bailCase, never()).write(eq(HEARING_CENTRE), any(HearingCentre.class));
         Set<String> errors = Set.of("designatedTribunalCentre cannot be empty");
-        assertEquals(response.getErrors(), errors);
+        assertEquals(errors, response.getErrors());
     }
 
     @ParameterizedTest
