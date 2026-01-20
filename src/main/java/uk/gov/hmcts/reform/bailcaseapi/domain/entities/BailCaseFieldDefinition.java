@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import java.time.LocalDate;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.*;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.CourtVenue;
@@ -407,6 +408,10 @@ public enum BailCaseFieldDefinition {
         "outcomeDate", new TypeReference<String>(){}),
     PRIOR_APPLICATIONS(
         "priorApplications1", new TypeReference<List<IdValue<PriorApplication>>>(){}),
+    NOTIFICATIONS(
+        "notifications", new TypeReference<List<IdValue<StoredNotification>>>(){}),
+    NOTIFICATION_STORE_SCHEDULE_DATE(
+        "notificationStoreScheduleDate", new TypeReference<LocalDate>(){}),
     NOTIFICATIONS_SENT(
         "notificationsSent", new TypeReference<List<IdValue<String>>>() {}),
     DECLARATION_ON_SUBMIT(
