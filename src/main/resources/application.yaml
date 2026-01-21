@@ -75,7 +75,7 @@ security:
     caseworker-ia-system:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
-      - "testTimedEventSchedule"
+      - "saveNotificationsToData"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
@@ -122,7 +122,7 @@ security:
       - "imaStatus"
       - "forceCaseToHearing"
       - "changeTribunalCentre"
-      - "testTimedEventSchedule"
+      - "saveNotificationsToData"
       - "uploadHearingRecording"
     caseworker-ia-homeofficebail:
       - "startApplication"
