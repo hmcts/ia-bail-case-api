@@ -257,3 +257,8 @@ commonData:
 
 govUkHolidays:
   url: https://www.gov.uk/
+
+govnotify:
+  baseUrl: "https://api.notifications.service.gov.uk"
+  bail:
+    key: ${IA_BAIL_GOV_NOTIFY_KEY:gov-bail-key}
