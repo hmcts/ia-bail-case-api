@@ -124,6 +124,7 @@ security:
       - "changeTribunalCentre"
       - "saveNotificationsToData"
       - "uploadHearingRecording"
+      - "saveNotificationsToData"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
