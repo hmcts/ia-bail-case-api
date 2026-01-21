@@ -58,7 +58,8 @@ public class BailCaseNotificationApiSender implements NotificationSender<BailCas
     ) {
         requireNonNull(callback, "callback must not be null");
         BailCase bailCase = callback.getCaseDetails().getCaseData();
-        LocalDate notificationScheduleDate = bailCase.read(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.class)
+        LocalDate notificationScheduleDate = bailCase.read(NOTIFICATION_STORE_SCHEDULE_DATE, String.class)
+            .map(LocalDate::parse)
             .orElse(LocalDate.of(1999, 10, 2));
 
         if (timedEventServiceEnabled && !notificationScheduleDate.isEqual(LocalDate.now())) {
@@ -87,7 +88,7 @@ public class BailCaseNotificationApiSender implements NotificationSender<BailCas
                     callback.getCaseDetails().getId()
                 )
             );
-            bailCase.write(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.now());
+            bailCase.write(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.now().toString());
         } catch (BailCaseServiceResponseException e) {
             log.error("Scheduling SAVE_NOTIFICATIONS_TO_DATA event failed: ", e);
         }

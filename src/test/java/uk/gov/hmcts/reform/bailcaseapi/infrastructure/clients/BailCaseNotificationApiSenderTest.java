@@ -151,8 +151,8 @@ class BailCaseNotificationApiSenderTest {
     void should_skip_save_notification_to_data_schedule_when_already_scheduled() {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.class))
-            .thenReturn(Optional.of(LocalDate.now()));
+        when(bailCase.read(NOTIFICATION_STORE_SCHEDULE_DATE, String.class))
+            .thenReturn(Optional.of(LocalDate.now().toString()));
         when(bailCaseCallbackApiDelegator.delegate(callback, ENDPOINT + CCD_SUBMITTED_PATH))
             .thenReturn(bailCase);
 
@@ -180,8 +180,8 @@ class BailCaseNotificationApiSenderTest {
     void should_schedule_save_notification_to_data_today_if_before_time() {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.class))
-            .thenReturn(Optional.of(LocalDate.now().minusDays(1)));
+        when(bailCase.read(NOTIFICATION_STORE_SCHEDULE_DATE, String.class))
+            .thenReturn(Optional.of(LocalDate.now().minusDays(1).toString()));
         when(bailCaseCallbackApiDelegator.delegate(callback, ENDPOINT + CCD_SUBMITTED_PATH))
             .thenReturn(bailCase);
         LocalDateTime today = LocalDateTime.of(2024, 6, 1, 10, 0);
@@ -210,15 +210,15 @@ class BailCaseNotificationApiSenderTest {
             .atZone(ZoneId.systemDefault());
         verifyTimedEventSchedule(callback.getCaseDetails().getId(), timedEventCaptor.getValue(), zonedDateTime);
         verify(bailCase, times(1))
-            .write(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.now());
+            .write(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.now().toString());
     }
 
     @Test
     void should_schedule_save_notification_to_data_tomorrow_if_after_time() {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(bailCase.read(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.class))
-            .thenReturn(Optional.of(LocalDate.now().minusDays(1)));
+        when(bailCase.read(NOTIFICATION_STORE_SCHEDULE_DATE, String.class))
+            .thenReturn(Optional.of(LocalDate.now().minusDays(1).toString()));
         when(bailCaseCallbackApiDelegator.delegate(callback, ENDPOINT + CCD_SUBMITTED_PATH))
             .thenReturn(bailCase);
         LocalDateTime today = LocalDateTime.of(2024, 6, 1, 23, 5);
@@ -247,7 +247,7 @@ class BailCaseNotificationApiSenderTest {
             .atZone(ZoneId.systemDefault());
         verifyTimedEventSchedule(callback.getCaseDetails().getId(), timedEventCaptor.getValue(), zonedDateTime);
         verify(bailCase, times(1))
-            .write(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.now());
+            .write(NOTIFICATION_STORE_SCHEDULE_DATE, LocalDate.now().toString());
     }
 
     private static void verifyTimedEventSchedule(long caseId, TimedEvent timedEventCaptorValue, ZonedDateTime scheduledFor) {
@@ -260,5 +260,4 @@ class BailCaseNotificationApiSenderTest {
         assertEquals(scheduledFor.getMonth(), timedEventCaptorValue.getScheduledDateTime().getMonth());
         assertEquals(scheduledFor.getHour(), timedEventCaptorValue.getScheduledDateTime().getHour());
     }
-
 }

@@ -411,7 +411,7 @@ public enum BailCaseFieldDefinition {
     NOTIFICATIONS(
         "notifications", new TypeReference<List<IdValue<StoredNotification>>>(){}),
     NOTIFICATION_STORE_SCHEDULE_DATE(
-        "notificationStoreScheduleDate", new TypeReference<LocalDate>(){}),
+        "notificationStoreScheduleDate", new TypeReference<String>(){}),
     NOTIFICATIONS_SENT(
         "notificationsSent", new TypeReference<List<IdValue<String>>>() {}),
     DECLARATION_ON_SUBMIT(
