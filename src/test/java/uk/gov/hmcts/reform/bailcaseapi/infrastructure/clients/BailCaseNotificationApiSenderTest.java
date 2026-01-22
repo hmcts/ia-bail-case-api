@@ -8,7 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NOTIFICATION_STORE_SCHEDULE_DATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SAVE_NOTIFICATIONS_TO_DATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SAVE_NOTIFICATIONS_TO_DATA_BAIL;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -251,7 +251,7 @@ class BailCaseNotificationApiSenderTest {
     }
 
     private static void verifyTimedEventSchedule(long caseId, TimedEvent timedEventCaptorValue, ZonedDateTime scheduledFor) {
-        assertEquals(SAVE_NOTIFICATIONS_TO_DATA, timedEventCaptorValue.getEvent());
+        assertEquals(SAVE_NOTIFICATIONS_TO_DATA_BAIL, timedEventCaptorValue.getEvent());
         assertEquals("IA", timedEventCaptorValue.getJurisdiction());
         assertEquals("Bail", timedEventCaptorValue.getCaseType());
         assertEquals(caseId, timedEventCaptorValue.getCaseId());

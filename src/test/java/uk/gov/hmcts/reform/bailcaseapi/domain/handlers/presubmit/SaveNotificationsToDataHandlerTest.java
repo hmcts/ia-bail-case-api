@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NOTIFICATIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NOTIFICATIONS_SENT;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SAVE_NOTIFICATIONS_TO_DATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SAVE_NOTIFICATIONS_TO_DATA_BAIL;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
@@ -72,7 +72,7 @@ class SaveNotificationsToDataHandlerTest {
 
     @BeforeEach
     void setUp() {
-        when(callback.getEvent()).thenReturn(SAVE_NOTIFICATIONS_TO_DATA);
+        when(callback.getEvent()).thenReturn(SAVE_NOTIFICATIONS_TO_DATA_BAIL);
         saveNotificationsToDataHandler = new SaveNotificationsToDataHandler(
             notificationClient,
             storedNotificationAppender);
@@ -392,7 +392,7 @@ class SaveNotificationsToDataHandlerTest {
             boolean canHandle = saveNotificationsToDataHandler.canHandle(callbackStage, callback);
 
             if (callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-                && SAVE_NOTIFICATIONS_TO_DATA == callback.getEvent()) {
+                && SAVE_NOTIFICATIONS_TO_DATA_BAIL == callback.getEvent()) {
 
                 assertTrue(canHandle);
             } else {

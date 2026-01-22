@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients;
 
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.NOTIFICATION_STORE_SCHEDULE_DATE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SAVE_NOTIFICATIONS_TO_DATA;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.SAVE_NOTIFICATIONS_TO_DATA_BAIL;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -81,7 +81,7 @@ public class BailCaseNotificationApiSender implements NotificationSender<BailCas
             scheduler.schedule(
                 new TimedEvent(
                     "",
-                    SAVE_NOTIFICATIONS_TO_DATA,
+                    SAVE_NOTIFICATIONS_TO_DATA_BAIL,
                     determineScheduleTime(),
                     "IA",
                     "Bail",
