@@ -55,15 +55,24 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.Cour
 @SuppressWarnings("unchecked")
 class CaseListingHandlerTest {
 
-    @Mock private Callback<BailCase> callback;
-    @Mock private CaseDetails<BailCase> caseDetails;
-    @Mock private CaseDetails<BailCase> caseDetailsBefore;
-    @Mock private BailCase bailCase;
-    @Mock private BailCase bailCaseBefore;
-    @Mock private DueDateService dueDateService;
-    @Mock private Appender<PreviousListingDetails> previousListingDetailsAppender;
-    @Mock private LocationRefDataService locationRefDataService;
-    @Mock private HearingIdListProcessor hearingIdListProcessor;
+    @Mock
+    private Callback<BailCase> callback;
+    @Mock
+    private CaseDetails<BailCase> caseDetails;
+    @Mock
+    private CaseDetails<BailCase> caseDetailsBefore;
+    @Mock
+    private BailCase bailCase;
+    @Mock
+    private BailCase bailCaseBefore;
+    @Mock
+    private DueDateService dueDateService;
+    @Mock
+    private Appender<PreviousListingDetails> previousListingDetailsAppender;
+    @Mock
+    private LocationRefDataService locationRefDataService;
+    @Mock
+    private HearingIdListProcessor hearingIdListProcessor;
 
     @Captor
     private ArgumentCaptor<BailCaseFieldDefinition> bailExtractorCaptor;
@@ -94,20 +103,22 @@ class CaseListingHandlerTest {
         String dueDate = "2023-11-30";
         localDueDate = LocalDate.parse(dueDate);
 
-        when(dueDateService.calculateHearingDirectionDueDate(hearingLocalDate,
-                                                             LocalDate.now()
-        )).thenReturn(localDueDate);
+        when(dueDateService.calculateHearingDirectionDueDate(
+            hearingLocalDate,
+            LocalDate.now()
+        )).thenReturn(zonedDueDateTime);
 
-        newCastle = new CourtVenue(
-            "Newcastle Civil & Family Courts and Tribunals Centre",
-            "Newcastle Civil And Family Courts And Tribunals Centre",
-            "366796",
-            "Open",
-            "Y",
-            "Y",
-            "Barras Bridge, Newcastle-Upon-Tyne",
-            "NE1 8QF"
-        );
+        newCastle =
+            CourtVenue.builder()
+                .epimmsId("366796")
+                .courtName("Newcastle Civil And Family Courts And Tribunals Centre")
+                .siteName("Newcastle Civil & Family Courts and Tribunals Centre")
+                .courtStatus("Open")
+                .isHearingLocation("Y")
+                .isCaseManagementLocation("N")
+                .courtAddress("Barras Bridge, Newcastle-Upon-Tyne")
+                .postcode("NE1 8QF")
+                .build();
     }
 
     @Test
@@ -125,7 +136,8 @@ class CaseListingHandlerTest {
         assertEquals(bailCase, response.getData());
         verify(bailCase, times(5)).write(
             bailExtractorCaptor.capture(),
-            bailValueCaptor.capture());
+            bailValueCaptor.capture()
+        );
 
         List<BailCaseFieldDefinition> extractors = bailExtractorCaptor.getAllValues();
         List<String> bailCaseValues = bailValueCaptor.getAllValues();
@@ -136,6 +148,10 @@ class CaseListingHandlerTest {
             .containsSequence("You must upload the Bail Summary by the date indicated below.");
         verify(bailCase, times(1)).write(SEND_DIRECTION_LIST, "Home Office");
         verify(bailCase, times(1)).write(DATE_OF_COMPLIANCE, localDueDate.toString());
+        verify(bailCase, times(1)).write(
+            DATE_OF_COMPLIANCE,
+            zonedDueDateTime.toLocalDate().toString()
+        );
         verify(hearingIdListProcessor).processHearingId(bailCase);
     }
 
@@ -152,7 +168,8 @@ class CaseListingHandlerTest {
         assertEquals(bailCase, response.getData());
         verify(bailCase, times(0)).write(
             bailExtractorCaptor.capture(),
-            bailValueCaptor.capture());
+            bailValueCaptor.capture()
+        );
 
         verify(bailCase, times(0)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
         verify(bailCase, times(0)).write(eq(BAIL_SUMMARY_DUE_DATE), anyString());
@@ -168,8 +185,11 @@ class CaseListingHandlerTest {
             new Value("366796", "Newcastle"),
             new DynamicList(
                 new Value("", ""),
-                List.of(new Value("386417", "Hatton Cross"),
-                        new Value("366796", "Newcastle")))
+                List.of(
+                    new Value("386417", "Hatton Cross"),
+                    new Value("366796", "Newcastle")
+                )
+            )
                 .getListItems()
         )));
         when(locationRefDataService.getCourtVenuesByEpimmsId("366796")).thenReturn(Optional.of(newCastle));
@@ -275,7 +295,7 @@ class CaseListingHandlerTest {
         when(bailCaseBefore.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12346"));
         when(bailCase.read(CURRENT_HEARING_ID, String.class)).thenReturn(Optional.of("12345"));
         PreSubmitCallbackResponse<BailCase> response =
-                caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+            caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
@@ -322,7 +342,7 @@ class CaseListingHandlerTest {
         when(bailCase.read(PREVIOUS_LISTING_DETAILS)).thenReturn(Optional.of(idValueStoredPrevListingDetails));
 
         PreSubmitCallbackResponse<BailCase> response =
-                caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+            caseListingHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
@@ -338,8 +358,10 @@ class CaseListingHandlerTest {
                 caseListHearingDate,
                 "100"
             );
-        verify(previousListingDetailsAppender, times(1)).append(newPreviousListingDetails,
-                                                                idValueStoredPrevListingDetails);
+        verify(previousListingDetailsAppender, times(1)).append(
+            newPreviousListingDetails,
+            idValueStoredPrevListingDetails
+        );
         verify(bailCase, times(1)).write(eq(PREVIOUS_LISTING_DETAILS), any(List.class));
         verify(bailCase, times(1)).write(HAS_BEEN_RELISTED, YesOrNo.YES);
         verify(hearingIdListProcessor).processPreviousHearingId(bailCaseBefore, bailCase);

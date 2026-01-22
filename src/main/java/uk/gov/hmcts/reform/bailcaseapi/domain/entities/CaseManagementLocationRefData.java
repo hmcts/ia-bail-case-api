@@ -9,7 +9,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 @AllArgsConstructor
-public class CaseManagementLocation {
+public class CaseManagementLocationRefData {
     Region region;
-    BaseLocation baseLocation;
+    DynamicList baseLocation;
 }

@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -100,9 +102,82 @@ class LocationRefDataServiceTest {
 
         Optional<CourtVenue> courtVenue  = locationRefDataService.getCourtVenuesByEpimmsId("1234");
 
-        assertEquals(true, courtVenue.isPresent());
+        assertTrue(courtVenue.isPresent());
         assertEquals("Crown Square, Manchester, Greater Manchester", courtVenue.get().getCourtAddress());
         assertEquals("M60 1PR", courtVenue.get().getPostcode());
+        assertNull(courtVenue.get().getLocationType());
     }
 
+    @Test
+    void should_return_case_management_locations_dynamic_list_with_open_court_locations() {
+        List<CourtVenue> venues = List.of(
+            CourtVenue.builder()
+                .epimmsId("1111")
+                .courtName("London")
+                .courtStatus("Open")
+                .isCaseManagementLocation("Y")
+                .locationType("COURT")
+                .build(),
+            CourtVenue.builder()
+                .epimmsId("2222")
+                .courtName("Leeds")
+                .courtStatus("Closed")
+                .isCaseManagementLocation("Y")
+                .locationType("COURT")
+                .build(),
+            CourtVenue.builder()
+                .epimmsId("3333")
+                .courtName("Liverpool")
+                .courtStatus("Open")
+                .isCaseManagementLocation("N")
+                .locationType("COURT")
+                .build(),
+            CourtVenue.builder()
+                .epimmsId("4444")
+                .courtName("Sheffield")
+                .courtStatus("Open")
+                .isCaseManagementLocation("Y")
+                .locationType("OTHER")
+                .build()
+        );
+        CourtLocationCategory category = CourtLocationCategory.builder()
+            .courtTypeId("typeId")
+            .courtType("type")
+            .serviceCode("code")
+            .courtVenues(venues)
+            .build();
+
+        when(locationRefDataApi.getCourtVenues(any(), any(), any())).thenReturn(category);
+
+        DynamicList result = locationRefDataService.getCaseManagementLocationDynamicList();
+
+        assertEquals(1, result.getListItems().size());
+        assertEquals("London", result.getListItems().get(0).getLabel());
+        assertEquals("1111", result.getListItems().get(0).getCode());
+    }
+
+    @Test
+    void should_return_empty_dynamic_list_when_no_matching_locations() {
+        List<CourtVenue> venues = List.of(
+            CourtVenue.builder()
+                .epimmsId("5555")
+                .courtName("Oxford")
+                .courtStatus("Closed")
+                .isCaseManagementLocation("N")
+                .locationType("OTHER")
+                .build()
+        );
+        CourtLocationCategory category = CourtLocationCategory.builder()
+            .courtTypeId("typeId")
+            .courtType("type")
+            .serviceCode("code")
+            .courtVenues(venues)
+            .build();
+
+        when(locationRefDataApi.getCourtVenues(any(), any(), any())).thenReturn(category);
+
+        DynamicList result = locationRefDataService.getCaseManagementLocationDynamicList();
+
+        assertTrue(result.getListItems().isEmpty());
+    }
 }

@@ -6,7 +6,7 @@ public enum Region {
     NATIONAL("1");
 
     @JsonValue
-    private final String id;
+    private String id;
 
     Region(String id) {
         this.id = id;

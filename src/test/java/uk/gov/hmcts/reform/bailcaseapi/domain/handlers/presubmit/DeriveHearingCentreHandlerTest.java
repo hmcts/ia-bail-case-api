@@ -64,6 +64,8 @@ class DeriveHearingCentreHandlerTest {
     private LocationRefDataService locationRefDataService;
     @Mock
     private FeatureToggleService featureToggleService;
+    @Mock
+    private CaseManagementLocationService caseManagementLocationService;
     @Captor
     private ArgumentCaptor<DynamicList> dynamicListArgumentCaptor;
 
@@ -74,7 +76,7 @@ class DeriveHearingCentreHandlerTest {
     @BeforeEach
     public void setUp() {
         deriveHearingCentreHandler = new DeriveHearingCentreHandler(
-            hearingCentreFinder, locationRefDataService, featureToggleService);
+            hearingCentreFinder, locationRefDataService, featureToggleService, caseManagementLocationService);
 
         DynamicList locationRefDataDynamicList = new DynamicList(
             new Value("", ""), List.of(hattonCross, newCastle));
@@ -155,7 +157,8 @@ class DeriveHearingCentreHandlerTest {
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
         when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.HATTON_CROSS);
         when(featureToggleService.locationRefDataEnabled()).thenReturn(true);
-
+        when(locationRefDataService.getCaseManagementLocationDynamicList()).thenReturn(
+            new DynamicList(new Value("", ""), List.of(hattonCross, newCastle)));
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
