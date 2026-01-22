@@ -76,6 +76,7 @@ security:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
       - "testTimedEventSchedule"
+      - "rollbackMigration"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
