@@ -965,6 +965,15 @@ public enum BailCaseFieldDefinition {
 
     HEARING_RECORDING_DOCUMENTS(
         "hearingRecordingDocuments", new TypeReference<List<IdValue<HearingRecordingDocument>>>() {}),
+
+    SEARCH_CRITERIA(
+        "SearchCriteria", new TypeReference<>(){}),
+
+    SEARCH_PARTIES(
+        "searchParties", new TypeReference<>(){}),
+
+    STAFF_LOCATION_ID(
+        "staffLocationId", new TypeReference<String>(){}),
     ;
 
     private final String value;

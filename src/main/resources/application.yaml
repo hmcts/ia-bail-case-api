@@ -78,6 +78,7 @@ security:
       - "testTimedEventSchedule"
       - "migrateWaBailApplication"
       - "updateInterpreterWaTask"
+      - "rollbackMigration"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"

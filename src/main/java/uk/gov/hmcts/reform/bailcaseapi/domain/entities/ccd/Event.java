@@ -44,6 +44,7 @@ public enum Event {
     TEST_TIMED_EVENT_SCHEDULE("testTimedEventSchedule"),
     UPLOAD_HEARING_RECORDING("uploadHearingRecording"),
     UPDATE_INTERPRETER_WA_TASK("updateInterpreterWaTask"),
+    ROLLBACK_MIGRATION("rollbackMigration"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
