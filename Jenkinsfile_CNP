@@ -59,6 +59,7 @@ def secrets = [
     secret('test-homeoffice-bail-username', 'TEST_HOMEOFFICE_BAIL_USERNAME'),
     secret('test-homeoffice-bail-password', 'TEST_HOMEOFFICE_BAIL_PASSWORD'),
 
+    secret('ia-bail-gov-notify-key', 'IA_BAIL_GOV_NOTIFY_KEY'),
   ]
 ]
 
