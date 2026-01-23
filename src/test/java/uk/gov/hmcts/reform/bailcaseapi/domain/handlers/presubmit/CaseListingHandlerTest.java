@@ -106,7 +106,7 @@ class CaseListingHandlerTest {
         when(dueDateService.calculateHearingDirectionDueDate(
             hearingLocalDate,
             LocalDate.now()
-        )).thenReturn(zonedDueDateTime);
+        )).thenReturn(localDueDate);
 
         newCastle =
             CourtVenue.builder()
@@ -150,7 +150,7 @@ class CaseListingHandlerTest {
         verify(bailCase, times(1)).write(DATE_OF_COMPLIANCE, localDueDate.toString());
         verify(bailCase, times(1)).write(
             DATE_OF_COMPLIANCE,
-            zonedDueDateTime.toLocalDate().toString()
+            localDueDate.toString()
         );
         verify(hearingIdListProcessor).processHearingId(bailCase);
     }

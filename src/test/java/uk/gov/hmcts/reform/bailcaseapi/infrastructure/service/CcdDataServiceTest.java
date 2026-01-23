@@ -52,16 +52,25 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.idam.IdentityMana
 @SuppressWarnings("unchecked")
 class CcdDataServiceTest {
 
-    @Mock private CcdDataApi ccdDataApi;
-    @Mock private SystemTokenGenerator systemTokenGenerator;
-    @Mock private SystemUserProvider systemUserProvider;
-    @Mock private AuthTokenGenerator serviceAuthorization;
+    @Mock
+    private CcdDataApi ccdDataApi;
+    @Mock
+    private SystemTokenGenerator systemTokenGenerator;
+    @Mock
+    private SystemUserProvider systemUserProvider;
+    @Mock
+    private AuthTokenGenerator serviceAuthorization;
 
-    @Mock private CaseDetails<BailCase> caseDetails;
-    @Mock private Callback<BailCase> callback;
-    @Mock private CaseDetails<BailCase> startEventCaseDetails;
-    @Mock private BailCase startEventBailCase;
-    @Mock private BailCase caseData;
+    @Mock
+    private CaseDetails<BailCase> caseDetails;
+    @Mock
+    private Callback<BailCase> callback;
+    @Mock
+    private CaseDetails<BailCase> startEventCaseDetails;
+    @Mock
+    private BailCase startEventBailCase;
+    @Mock
+    private BailCase caseData;
 
     private String token = "token";
     private String serviceToken = "Bearer serviceToken";
@@ -120,13 +129,16 @@ class CcdDataServiceTest {
     void service_should_clear_the_lr_details_for_the_case_id() {
         StartEventDetails startEventResponse = getStartEventResponse();
         when(ccdDataApi.startEvent(
-            "Bearer " + token, serviceToken, userId, jurisdiction,  caseType,
-                                   String.valueOf(caseId), eventId)).thenReturn(startEventResponse);
+            "Bearer " + token, serviceToken, userId, jurisdiction, caseType,
+            String.valueOf(caseId), eventId
+        )).thenReturn(startEventResponse);
 
         // set CaseData for the subEvent request
         CaseDataContent caseDataContent = getCaseDataContent();
-        when(ccdDataApi.submitEvent("Bearer " + token, serviceToken, String.valueOf(caseId),
-                                    caseDataContent)).thenReturn(getSubmitEventResponse());
+        when(ccdDataApi.submitEvent(
+            "Bearer " + token, serviceToken, String.valueOf(caseId),
+            caseDataContent
+        )).thenReturn(getSubmitEventResponse());
 
         SubmitEventDetails submitEventDetails =
             ccdDataService.clearLegalRepDetails(callback);
@@ -138,8 +150,10 @@ class CcdDataServiceTest {
         assertEquals("CALLBACK_COMPLETED", submitEventDetails.getCallbackResponseStatus());
 
         verify(ccdDataApi, times(1))
-            .startEvent("Bearer " + token, serviceToken, userId,
-                         jurisdiction,  caseType, String.valueOf(caseId), eventId);
+            .startEvent(
+                "Bearer " + token, serviceToken, userId,
+                jurisdiction, caseType, String.valueOf(caseId), eventId
+            );
         verify(ccdDataApi, times(1))
             .submitEvent("Bearer " + token, serviceToken, String.valueOf(caseId), caseDataContent);
     }
@@ -163,7 +177,15 @@ class CcdDataServiceTest {
         when(startEventBailCase.read(LEGAL_REP_REFERENCE, String.class)).thenReturn(Optional.empty());
         if (bailCaseFieldDefinition.equals(LEGAL_REP_COMPANY_ADDRESS)) {
             when(startEventBailCase.read(bailCaseFieldDefinition, AddressUK.class))
-                .thenReturn(Optional.of(new AddressUK("Line1", "Line2", "Line3", "Town", "County", "Postcode", "Country")));
+                .thenReturn(Optional.of(new AddressUK(
+                    "Line1",
+                    "Line2",
+                    "Line3",
+                    "Town",
+                    "County",
+                    "Postcode",
+                    "Country"
+                )));
         } else {
             when(startEventBailCase.read(bailCaseFieldDefinition, String.class))
                 .thenReturn(Optional.of("Some Value"));
@@ -173,13 +195,16 @@ class CcdDataServiceTest {
         when(
             ccdDataApi.startEvent(
                 "Bearer " + token, serviceToken, userId,
-                jurisdiction,  caseType, String.valueOf(caseId), eventId)).thenReturn(startEventResponse);
+                jurisdiction, caseType, String.valueOf(caseId), eventId
+            )).thenReturn(startEventResponse);
 
         assertDoesNotThrow(() -> ccdDataService.clearLegalRepDetails(callback));
 
         verify(ccdDataApi, times(1))
-            .startEvent("Bearer " + token, serviceToken, userId,
-                         jurisdiction,  caseType, String.valueOf(caseId), eventId);
+            .startEvent(
+                "Bearer " + token, serviceToken, userId,
+                jurisdiction, caseType, String.valueOf(caseId), eventId
+            );
     }
 
     @Test
@@ -196,17 +221,21 @@ class CcdDataServiceTest {
         when(
             ccdDataApi.startEvent(
                 "Bearer " + token, serviceToken, userId,
-                jurisdiction,  caseType, String.valueOf(caseId), eventId)).thenReturn(startEventResponse);
+                jurisdiction, caseType, String.valueOf(caseId), eventId
+            )).thenReturn(startEventResponse);
 
         ResponseStatusException rse = assertThrows(
             ResponseStatusException.class, () ->
-                ccdDataService.clearLegalRepDetails(callback));
+                ccdDataService.clearLegalRepDetails(callback)
+        );
 
         assertThat(rse.getMessage()).contains("400 BAD_REQUEST \"Legal Rep Details not found for the caseId: 1234\"");
 
         verify(ccdDataApi, times(1))
-            .startEvent("Bearer " + token, serviceToken, userId,
-                        jurisdiction,  caseType, String.valueOf(caseId), eventId);
+            .startEvent(
+                "Bearer " + token, serviceToken, userId,
+                jurisdiction, caseType, String.valueOf(caseId), eventId
+            );
     }
 
     @Test
@@ -214,7 +243,8 @@ class CcdDataServiceTest {
         when(
             ccdDataApi.startEvent(
                 "Bearer " + token, serviceToken, userId,
-                jurisdiction,  caseType, String.valueOf(caseId), eventId)).thenThrow(FeignException.class);
+                jurisdiction, caseType, String.valueOf(caseId), eventId
+            )).thenThrow(FeignException.class);
 
         assertThatThrownBy(() -> ccdDataService.clearLegalRepDetails(callback))
             .isExactlyInstanceOf(FeignException.class);
@@ -237,16 +267,20 @@ class CcdDataServiceTest {
     }
 
     private SubmitEventDetails getSubmitEventResponse() {
-        return new SubmitEventDetails(caseId, jurisdiction, State.DECISION_DECIDED, getDataWithEmptyLegalRepDetails(),
-                                      200, "CALLBACK_COMPLETED");
+        return new SubmitEventDetails(
+            caseId, jurisdiction, State.DECISION_DECIDED, getDataWithEmptyLegalRepDetails(),
+            200, "CALLBACK_COMPLETED"
+        );
     }
 
     private CaseDataContent getCaseDataContent() {
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("id", Event.CLEAR_LEGAL_REPRESENTATIVE_DETAILS.toString());
 
-        return new CaseDataContent(String.valueOf(caseId), getDataWithEmptyLegalRepDetails(),
-                                   eventData, eventToken, true);
+        return new CaseDataContent(
+            String.valueOf(caseId), getDataWithEmptyLegalRepDetails(),
+            eventData, eventToken, true
+        );
     }
 
     private Map<String, Object> getDataWithEmptyLegalRepDetails() {
@@ -262,20 +296,41 @@ class CcdDataServiceTest {
         return data;
     }
 
-    // src/test/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/service/CcdDataServiceTest.java
-
     @Test
     void should_set_active_interpreter_flag_to_yes_when_active_flag_present() {
-        CaseFlagValue caseFlagValue = CaseFlagValue.builder().name("Interpreter").status( "Active").build();
+        CaseFlagValue caseFlagValue = CaseFlagValue.builder().name("Interpreter").status("Active").build();
         CaseFlagDetail caseFlagDetail = new CaseFlagDetail("someId", caseFlagValue);
-        StrategicCaseFlag strategicCaseFlag = new StrategicCaseFlag("someFullName", "someRole", List.of(caseFlagDetail));
+        StrategicCaseFlag strategicCaseFlag = new StrategicCaseFlag(
+            "someFullName",
+            "someRole",
+            List.of(caseFlagDetail)
+        );
         when(caseDetails.getCaseData()).thenReturn(caseData);
         when(caseData.read(BailCaseFieldDefinition.APPELLANT_LEVEL_FLAGS, StrategicCaseFlag.class))
             .thenReturn(Optional.of(strategicCaseFlag));
-        StartEventDetails startEventDetails = new StartEventDetails(Event.UPDATE_INTERPRETER_WA_TASK, eventToken, caseDetails);
-        when(ccdDataApi.startEvent("Bearer " + token, serviceToken, userId, jurisdiction, "Bail", String.valueOf(caseId), Event.UPDATE_INTERPRETER_WA_TASK.toString()))
+        StartEventDetails startEventDetails = new StartEventDetails(
+            Event.UPDATE_INTERPRETER_WA_TASK,
+            eventToken,
+            caseDetails
+        );
+        when(ccdDataApi.startEvent(
+            "Bearer " + token,
+            serviceToken,
+            userId,
+            jurisdiction,
+            "Bail",
+            String.valueOf(caseId),
+            Event.UPDATE_INTERPRETER_WA_TASK.toString()
+        ))
             .thenReturn(startEventDetails);
-        SubmitEventDetails submitEventDetails = new SubmitEventDetails(caseId, jurisdiction, State.DECISION_DECIDED, Map.of("hasActiveInterpreterFlag", "Yes"), 200, "CALLBACK_COMPLETED");
+        SubmitEventDetails submitEventDetails = new SubmitEventDetails(
+            caseId,
+            jurisdiction,
+            State.DECISION_DECIDED,
+            Map.of("hasActiveInterpreterFlag", "Yes"),
+            200,
+            "CALLBACK_COMPLETED"
+        );
         when(ccdDataApi.submitEvent(any(), any(), any(), any())).thenReturn(submitEventDetails);
 
         SubmitEventDetails result = ccdDataService.setActiveInterpreterFlag(callback);
@@ -285,17 +340,32 @@ class CcdDataServiceTest {
 
     @Test
     void should_set_active_interpreter_flag_to_no_when_flag_present_but_inactive() {
-        CaseFlagValue caseFlagValue = CaseFlagValue.builder().name("Interpreter").status( "Inactive").build();
+        CaseFlagValue caseFlagValue = CaseFlagValue.builder().name("Interpreter").status("Inactive").build();
         CaseFlagDetail caseFlagDetail = new CaseFlagDetail("someId", caseFlagValue);
-        StrategicCaseFlag strategicCaseFlag = new StrategicCaseFlag("someFullName", "someRole", List.of(caseFlagDetail));
+        StrategicCaseFlag strategicCaseFlag = new StrategicCaseFlag(
+            "someFullName",
+            "someRole",
+            List.of(caseFlagDetail)
+        );
         when(caseDetails.getCaseData()).thenReturn(caseData);
 
         when(caseData.read(BailCaseFieldDefinition.APPELLANT_LEVEL_FLAGS, StrategicCaseFlag.class))
             .thenReturn(Optional.of(strategicCaseFlag));
-        StartEventDetails startEventDetails = new StartEventDetails(Event.UPDATE_INTERPRETER_WA_TASK, eventToken, caseDetails);
+        StartEventDetails startEventDetails = new StartEventDetails(
+            Event.UPDATE_INTERPRETER_WA_TASK,
+            eventToken,
+            caseDetails
+        );
         when(ccdDataApi.startEvent(any(), any(), any(), any(), any(), any(), any()))
             .thenReturn(startEventDetails);
-        SubmitEventDetails submitEventDetails = new SubmitEventDetails(caseId, jurisdiction, State.DECISION_DECIDED, Map.of("hasActiveInterpreterFlag", "No"), 200, "CALLBACK_COMPLETED");
+        SubmitEventDetails submitEventDetails = new SubmitEventDetails(
+            caseId,
+            jurisdiction,
+            State.DECISION_DECIDED,
+            Map.of("hasActiveInterpreterFlag", "No"),
+            200,
+            "CALLBACK_COMPLETED"
+        );
         when(ccdDataApi.submitEvent(any(), any(), any(), any())).thenReturn(submitEventDetails);
 
         SubmitEventDetails result = ccdDataService.setActiveInterpreterFlag(callback);
@@ -305,17 +375,32 @@ class CcdDataServiceTest {
 
     @Test
     void should_set_active_interpreter_flag_to_no_when_no_interpreter_flag_present() {
-        CaseFlagValue caseFlagValue = CaseFlagValue.builder().name("OtherFlag").status( "Active").build();
+        CaseFlagValue caseFlagValue = CaseFlagValue.builder().name("OtherFlag").status("Active").build();
         CaseFlagDetail caseFlagDetail = new CaseFlagDetail("someId", caseFlagValue);
-        StrategicCaseFlag strategicCaseFlag = new StrategicCaseFlag("someFullName", "someRole", List.of(caseFlagDetail));
+        StrategicCaseFlag strategicCaseFlag = new StrategicCaseFlag(
+            "someFullName",
+            "someRole",
+            List.of(caseFlagDetail)
+        );
         when(caseDetails.getCaseData()).thenReturn(caseData);
 
         when(caseData.read(BailCaseFieldDefinition.APPELLANT_LEVEL_FLAGS, StrategicCaseFlag.class))
             .thenReturn(Optional.of(strategicCaseFlag));
-        StartEventDetails startEventDetails = new StartEventDetails(Event.UPDATE_INTERPRETER_WA_TASK, eventToken, caseDetails);
+        StartEventDetails startEventDetails = new StartEventDetails(
+            Event.UPDATE_INTERPRETER_WA_TASK,
+            eventToken,
+            caseDetails
+        );
         when(ccdDataApi.startEvent(any(), any(), any(), any(), any(), any(), any()))
             .thenReturn(startEventDetails);
-        SubmitEventDetails submitEventDetails = new SubmitEventDetails(caseId, jurisdiction, State.DECISION_DECIDED, Map.of("hasActiveInterpreterFlag", "No"), 200, "CALLBACK_COMPLETED");
+        SubmitEventDetails submitEventDetails = new SubmitEventDetails(
+            caseId,
+            jurisdiction,
+            State.DECISION_DECIDED,
+            Map.of("hasActiveInterpreterFlag", "No"),
+            200,
+            "CALLBACK_COMPLETED"
+        );
         when(ccdDataApi.submitEvent(any(), any(), any(), any())).thenReturn(submitEventDetails);
 
         SubmitEventDetails result = ccdDataService.setActiveInterpreterFlag(callback);
@@ -328,10 +413,21 @@ class CcdDataServiceTest {
         when(caseDetails.getCaseData()).thenReturn(caseData);
         when(caseData.read(BailCaseFieldDefinition.APPELLANT_LEVEL_FLAGS, StrategicCaseFlag.class))
             .thenReturn(Optional.empty());
-        StartEventDetails startEventDetails = new StartEventDetails(Event.UPDATE_INTERPRETER_WA_TASK, eventToken, caseDetails);
+        StartEventDetails startEventDetails = new StartEventDetails(
+            Event.UPDATE_INTERPRETER_WA_TASK,
+            eventToken,
+            caseDetails
+        );
         when(ccdDataApi.startEvent(any(), any(), any(), any(), any(), any(), any()))
             .thenReturn(startEventDetails);
-        SubmitEventDetails submitEventDetails = new SubmitEventDetails(caseId, jurisdiction, State.DECISION_DECIDED, Map.of("hasActiveInterpreterFlag", "No"), 200, "CALLBACK_COMPLETED");
+        SubmitEventDetails submitEventDetails = new SubmitEventDetails(
+            caseId,
+            jurisdiction,
+            State.DECISION_DECIDED,
+            Map.of("hasActiveInterpreterFlag", "No"),
+            200,
+            "CALLBACK_COMPLETED"
+        );
         when(ccdDataApi.submitEvent(any(), any(), any(), any())).thenReturn(submitEventDetails);
 
         SubmitEventDetails result = ccdDataService.setActiveInterpreterFlag(callback);

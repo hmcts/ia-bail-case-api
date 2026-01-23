@@ -34,6 +34,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import uk.gov.hmcts.reform.bailcaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BaseLocation;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseManagementLocation;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.HearingCentre;
@@ -159,6 +160,11 @@ class DeriveHearingCentreHandlerTest {
         when(featureToggleService.locationRefDataEnabled()).thenReturn(true);
         when(locationRefDataService.getCaseManagementLocationDynamicList()).thenReturn(
             new DynamicList(new Value("", ""), List.of(hattonCross, newCastle)));
+        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
+            Region.NATIONAL,
+            BaseLocation.HATTON_CROSS
+        );
+        when(caseManagementLocationService.getCaseManagementLocation(any())).thenReturn(caseManagementLocation);
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
@@ -168,11 +174,6 @@ class DeriveHearingCentreHandlerTest {
         verify(bailCase, times(1))
             .write(eq(HEARING_CENTRE_REF_DATA), dynamicListArgumentCaptor.capture());
         verify(bailCase, times(1)).write(SELECTED_HEARING_CENTRE_REF_DATA, hattonCross.getLabel());
-        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
-            hattonCross.getCode(),
-            hattonCross.getLabel(),
-            Region.NATIONAL
-        );
         verify(bailCase, times(1)).write(CASE_MANAGEMENT_LOCATION, caseManagementLocation);
         assertEquals(hattonCross, dynamicListArgumentCaptor.getValue().getValue());
     }
@@ -183,18 +184,17 @@ class DeriveHearingCentreHandlerTest {
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
         when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.BIRMINGHAM);
         when(featureToggleService.locationRefDataEnabled()).thenReturn(true);
-
+        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
+            Region.NATIONAL,
+            BaseLocation.BIRMINGHAM
+        );
+        when(caseManagementLocationService.getCaseManagementLocation(any())).thenReturn(caseManagementLocation);
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
         assertNotNull(callbackResponse);
 
         verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YES);
-        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
-            HearingCentre.BIRMINGHAM.getEpimsId(),
-            HearingCentre.BIRMINGHAM.getValue(),
-            Region.NATIONAL
-        );
         verify(bailCase, times(1)).write(CASE_MANAGEMENT_LOCATION, caseManagementLocation);
     }
 
@@ -205,7 +205,11 @@ class DeriveHearingCentreHandlerTest {
         when(bailCase.read(IRC_NAME, String.class)).thenReturn(Optional.of("Harmondsworth"));
         when(hearingCentreFinder.find("Harmondsworth")).thenReturn(HearingCentre.HATTON_CROSS);
         when(featureToggleService.locationRefDataEnabled()).thenReturn(false);
-
+        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
+            Region.NATIONAL,
+            BaseLocation.HATTON_CROSS
+        );
+        when(caseManagementLocationService.getCaseManagementLocation(any())).thenReturn(caseManagementLocation);
         PreSubmitCallbackResponse<BailCase> callbackResponse =
             deriveHearingCentreHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
 
@@ -216,11 +220,7 @@ class DeriveHearingCentreHandlerTest {
         verify(bailCase, never())
             .write(eq(SELECTED_HEARING_CENTRE_REF_DATA), any());
         verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, NO);
-        CaseManagementLocation caseManagementLocation = new CaseManagementLocation(
-            HearingCentre.HATTON_CROSS.getEpimsId(),
-            HearingCentre.HATTON_CROSS.getValue(),
-            Region.NATIONAL
-        );
+
         verify(bailCase, times(1)).write(CASE_MANAGEMENT_LOCATION, caseManagementLocation);
     }
 
