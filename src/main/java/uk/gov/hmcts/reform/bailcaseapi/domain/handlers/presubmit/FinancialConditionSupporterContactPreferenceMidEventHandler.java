@@ -72,10 +72,11 @@ public class FinancialConditionSupporterContactPreferenceMidEventHandler impleme
             }
         }
 
-        if (supporterContactPreferences.isPresent()) {
-            if (supporterContactPreferences.stream().noneMatch(list -> list.contains(EMAIL) || list.contains(MOBILE) || list.contains(TELEPHONE))) {
+        if (supporterContactPreferences.isPresent()
+            && supporterContactPreferences.stream().noneMatch(list -> list.contains(EMAIL)
+                || list.contains(MOBILE)
+                || list.contains(TELEPHONE))) {
                 error = FIELD_REQUIRED_ERROR;
-            }
         }
 
         if (!error.isEmpty()) {
