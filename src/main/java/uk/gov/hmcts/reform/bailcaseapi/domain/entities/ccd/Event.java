@@ -21,6 +21,8 @@ public enum Event {
     IMA_STATUS("imaStatus"),
     MAKE_NEW_APPLICATION("makeNewApplication"),
     MAINTAIN_BAIL_CASE_LINKS("maintainBailCaseLinks"),
+    MANAGE_FLAGS("manageFlags"),
+    MIGRATE_WA_BAIL_APPLICATION("migrateWaBailApplication"),
     MOVE_APPLICATION_TO_DECIDED("moveApplicationToDecided"),
     NOC_REQUEST("nocRequest"),
     NOC_REQUEST_BAIL("nocRequestBail"),
@@ -41,6 +43,7 @@ public enum Event {
     VIEW_PREVIOUS_APPLICATIONS("viewPreviousApplications"),
     TEST_TIMED_EVENT_SCHEDULE("testTimedEventSchedule"),
     UPLOAD_HEARING_RECORDING("uploadHearingRecording"),
+    UPDATE_INTERPRETER_WA_TASK("updateInterpreterWaTask"),
     ROLLBACK_MIGRATION("rollbackMigration"),
 
     @JsonEnumDefaultValue
