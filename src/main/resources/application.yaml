@@ -54,9 +54,9 @@ spring:
     include:
       - hearingcentre-mapping
   cache:
-    cache-names: userInfoCache, accessTokenCache
+    cache-names: userInfoCache, accessTokenCache, systemTokenCache
     caffeine:
-      spec: expireAfterAccess=3600s
+      spec: expireAfterWrite=3600s
 
 security:
   anonymousPaths:
@@ -76,6 +76,7 @@ security:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
       - "testTimedEventSchedule"
+      - "rollbackMigration"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
@@ -102,6 +103,7 @@ security:
       - "sendBailDirection"
       - "changeBailDirectionDueDate"
       - "uploadSignedDecisionNotice"
+      - "uploadSignedDecisionNoticeConditionalGrant"
       - "moveApplicationToDecided"
       - "endApplication"
       - "uploadDocuments"
@@ -145,6 +147,7 @@ security:
       - "sendBailDirection"
       - "changeBailDirectionDueDate"
       - "uploadSignedDecisionNotice"
+      - "uploadSignedDecisionNoticeConditionalGrant"
       - "moveApplicationToDecided"
       - "endApplication"
       - "uploadDocuments"

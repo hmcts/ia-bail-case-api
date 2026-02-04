@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 class HearingCentreTest {
 
@@ -35,6 +37,13 @@ class HearingCentreTest {
     @Test
     void if_this_test_fails_it_is_because_it_needs_updating_with_your_changes() {
         assertEquals(9, HearingCentre.values().length);
+    }
+
+    @ParameterizedTest
+    @EnumSource(HearingCentre.class)
+    void epims_id_mappings_are_correct(HearingCentre centre) {
+        assertEquals(centre, HearingCentre.epimsIdMapping.get(centre.getEpimsId()));
+        assertEquals(centre, HearingCentre.getHearingCentreByEpimsId(centre.getEpimsId()));
     }
 
 }
