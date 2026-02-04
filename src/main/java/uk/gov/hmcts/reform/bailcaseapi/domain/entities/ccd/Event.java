@@ -40,6 +40,7 @@ public enum Event {
     UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT("uploadSignedDecisionNoticeConditionalGrant"),
     VIEW_PREVIOUS_APPLICATIONS("viewPreviousApplications"),
     TEST_TIMED_EVENT_SCHEDULE("testTimedEventSchedule"),
+    REGENERATE_BAIL_SUBMISSION_DOCUMENT("regenerateBailSubmissionDocument"),
     UPLOAD_HEARING_RECORDING("uploadHearingRecording"),
     ROLLBACK_MIGRATION("rollbackMigration"),
 
