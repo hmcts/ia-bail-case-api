@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.NationalityFieldValue;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.TtlCcdObject;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.*;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.refdata.CourtVenue;
 
@@ -675,7 +676,10 @@ public enum BailCaseFieldDefinition {
             "hearingDecisionList", new TypeReference<List<IdValue<HearingDecision>>>(){}),
 
     HEARING_RECORDING_DOCUMENTS(
-        "hearingRecordingDocuments", new TypeReference<List<IdValue<HearingRecordingDocument>>>(){});
+        "hearingRecordingDocuments", new TypeReference<List<IdValue<HearingRecordingDocument>>>(){}),
+
+    TTL(
+        "TTL", new TypeReference<TtlCcdObject>(){});
 
     private final String value;
     private final TypeReference typeReference;
