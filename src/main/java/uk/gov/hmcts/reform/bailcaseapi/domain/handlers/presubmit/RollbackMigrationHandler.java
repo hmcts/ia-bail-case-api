@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.ROLLBACK_MIGRATION;
 
 @Slf4j
@@ -30,7 +31,8 @@ public class RollbackMigrationHandler implements PreSubmitCallbackHandler<BailCa
     @Override
     public PreSubmitCallbackResponse<BailCase> handle(
         PreSubmitCallbackStage callbackStage,
-        Callback<BailCase> callback) {
+        Callback<BailCase> callback
+    ) {
 
         if (!canHandle(callbackStage, callback)) {
             throw new IllegalStateException("Cannot handle callback");
@@ -38,15 +40,12 @@ public class RollbackMigrationHandler implements PreSubmitCallbackHandler<BailCa
 
         BailCase bailCase = callback.getCaseDetails().getCaseData();
 
-        bailCase.remove(BailCaseFieldDefinition.SEARCH_CRITERIA);
-        bailCase.remove(BailCaseFieldDefinition.SEARCH_PARTIES);
-        bailCase.remove(BailCaseFieldDefinition.CASE_MANAGEMENT_LOCATION);
-        bailCase.remove(BailCaseFieldDefinition.CASE_MANAGEMENT_LOCATION_REF_DATA);
-        bailCase.remove(BailCaseFieldDefinition.CASE_MANAGEMENT_CATEGORY);
-        bailCase.remove(BailCaseFieldDefinition.STAFF_LOCATION);
-        bailCase.remove(BailCaseFieldDefinition.STAFF_LOCATION_ID);
+        log.info("Removing TTL for case: {}", bailCase.read(BAIL_REFERENCE_NUMBER));
+        bailCase.remove(TTL);
+        bailCase.remove(BAIL_EVIDENCE);
+        bailCase.remove(VIDEO_HEARING_YESNO);
+        log.info("Removed TTL for case: {}", bailCase.read(BAIL_REFERENCE_NUMBER));
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
-
 }
