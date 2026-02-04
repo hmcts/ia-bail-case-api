@@ -41,6 +41,7 @@ public enum Event {
     VIEW_PREVIOUS_APPLICATIONS("viewPreviousApplications"),
     TEST_TIMED_EVENT_SCHEDULE("testTimedEventSchedule"),
     UPLOAD_HEARING_RECORDING("uploadHearingRecording"),
+    ROLLBACK_MIGRATION("rollbackMigration"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");
