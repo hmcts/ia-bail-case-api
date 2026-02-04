@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 
 import static java.util.Objects.requireNonNull;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.BAIL_REFERENCE_NUMBER;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.TTL;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.ROLLBACK_MIGRATION;
 
@@ -31,7 +32,8 @@ public class RollbackMigrationHandler implements PreSubmitCallbackHandler<BailCa
     @Override
     public PreSubmitCallbackResponse<BailCase> handle(
         PreSubmitCallbackStage callbackStage,
-        Callback<BailCase> callback) {
+        Callback<BailCase> callback
+    ) {
 
         if (!canHandle(callbackStage, callback)) {
             throw new IllegalStateException("Cannot handle callback");
@@ -39,7 +41,9 @@ public class RollbackMigrationHandler implements PreSubmitCallbackHandler<BailCa
 
         BailCase bailCase = callback.getCaseDetails().getCaseData();
 
+        log.info("Removing TTL for case: {}", bailCase.read(BAIL_REFERENCE_NUMBER));
         bailCase.remove(TTL);
+        log.info("Removed TTL for case: {}", bailCase.read(BAIL_REFERENCE_NUMBER));
 
         return new PreSubmitCallbackResponse<>(bailCase);
     }
