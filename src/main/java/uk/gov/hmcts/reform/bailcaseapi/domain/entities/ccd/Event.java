@@ -41,6 +41,7 @@ public enum Event {
     VIEW_PREVIOUS_APPLICATIONS("viewPreviousApplications"),
     SAVE_NOTIFICATIONS_TO_DATA_BAIL("saveNotificationsToDataBail"),
     UPLOAD_HEARING_RECORDING("uploadHearingRecording"),
+    ROLLBACK_MIGRATION("rollbackMigration"),
 
     @JsonEnumDefaultValue
     UNKNOWN("unknown");

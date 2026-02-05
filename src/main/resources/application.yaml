@@ -76,6 +76,8 @@ security:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
       - "saveNotificationsToDataBail"
+      - "testTimedEventSchedule"
+      - "rollbackMigration"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
