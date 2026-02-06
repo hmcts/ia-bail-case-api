@@ -147,7 +147,6 @@ class CaseListingHandlerTest {
         assertThat(bailCaseValues.get(extractors.indexOf(SEND_DIRECTION_DESCRIPTION)))
             .containsSequence("You must upload the Bail Summary by the date indicated below.");
         verify(bailCase, times(1)).write(SEND_DIRECTION_LIST, "Home Office");
-        verify(bailCase, times(1)).write(DATE_OF_COMPLIANCE, localDueDate.toString());
         verify(bailCase, times(1)).write(
             DATE_OF_COMPLIANCE,
             localDueDate.toString()
