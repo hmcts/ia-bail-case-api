@@ -75,7 +75,7 @@ security:
     caseworker-ia-system:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
-      - "testTimedEventSchedule"
+      - "saveNotificationsToDataBail"
       - "rollbackMigration"
     caseworker-caa:
       - "nocRequest"
@@ -123,7 +123,7 @@ security:
       - "imaStatus"
       - "forceCaseToHearing"
       - "changeTribunalCentre"
-      - "testTimedEventSchedule"
+      - "saveNotificationsToDataBail"
       - "uploadHearingRecording"
     caseworker-ia-homeofficebail:
       - "startApplication"
@@ -227,6 +227,9 @@ featureFlag:
   isDocumentGenerationEnabled: ${IA_DOCUMENT_GENERATION_ENABLED:true}
   timedEventServiceEnabled: ${IA_TIMED_EVENT_SERVICE_ENABLED:false}
 
+saveNotificationsDataJob:
+  scheduleAtHour: ${SAVE_NOTIFICATIONS_DATA_SCHEDULE_HOUR:23}
+  scheduleMaxMinutes: ${SAVE_NOTIFICATIONS_DATA_SCHEDULE_MAX_MINUTES:50}
 launchDarkly:
   sdkKey: ${LAUNCH_DARKLY_SDK_KEY:sdk-key}
   connectionTimeout: 5000
@@ -255,3 +258,8 @@ commonData:
 
 govUkHolidays:
   url: https://www.gov.uk/
+
+govnotify:
+  baseUrl: "https://api.notifications.service.gov.uk"
+  bail:
+    key: "gov-bail-key"
