@@ -414,6 +414,9 @@ public enum BailCaseFieldDefinition {
     SELECTED_HEARING_CENTRE_REF_DATA(
         "selectedHearingCentreRefData", new TypeReference<String>(){}),
 
+    HAS_ACTIVE_INTERPRETER_FLAG(
+        "hasActiveInterpreterFlag", new TypeReference<YesOrNo>(){}),
+
     DETENTION_FACILITY(
         "detentionFacility", new TypeReference<String>(){}),
 
@@ -592,6 +595,9 @@ public enum BailCaseFieldDefinition {
 
     CURRENT_USER(
         "currentUser", new TypeReference<String>(){}),
+
+    LAST_FILE_UPLOADED_BY(
+        "lastFileUploadedBy", new TypeReference<String>(){}),
 
     EDIT_DOCUMENTS_REASON(
         "editDocumentsReason", new TypeReference<String>(){}),
@@ -895,6 +901,9 @@ public enum BailCaseFieldDefinition {
 
     LIST_CASE_HEARING_DATE(
         "listingHearingDate", new TypeReference<String>(){}),
+
+    BAIL_SUMMARY_DUE_DATE(
+        "bailSummaryDueDate", new TypeReference<String>(){}),
 
     LISTING_HEARING_DURATION(
         "listingHearingDuration", new TypeReference<String>(){}),

@@ -35,17 +35,20 @@ public class EventTest {
         assertEquals("maintainBailCaseLinks", Event.MAINTAIN_BAIL_CASE_LINKS.toString());
         assertEquals("updateInterpreterDetails", Event.UPDATE_INTERPRETER_DETAILS.toString());
         assertEquals("createFlag", Event.CREATE_FLAG.toString());
+        assertEquals("manageFlags", Event.MANAGE_FLAGS.toString());
         assertEquals("confirmDetentionLocation", Event.CONFIRM_DETENTION_LOCATION.toString());
+        assertEquals("migrateWaBailApplication", Event.MIGRATE_WA_BAIL_APPLICATION.toString());
         assertEquals("caseListing", Event.CASE_LISTING.toString());
         assertEquals("imaStatus", Event.IMA_STATUS.toString());
         assertEquals("changeTribunalCentre", Event.CHANGE_TRIBUNAL_CENTRE.toString());
         assertEquals("testTimedEventSchedule", Event.TEST_TIMED_EVENT_SCHEDULE.toString());
         assertEquals("unknown", Event.UNKNOWN.toString());
         assertEquals("uploadHearingRecording", Event.UPLOAD_HEARING_RECORDING.toString());
+        assertEquals("updateInterpreterWaTask", Event.UPDATE_INTERPRETER_WA_TASK.toString());
     }
 
     @Test
     void fail_if_changes_needed_after_modifying_class() {
-        assertEquals(38, Event.values().length);
+        assertEquals(41, Event.values().length);
     }
 }
