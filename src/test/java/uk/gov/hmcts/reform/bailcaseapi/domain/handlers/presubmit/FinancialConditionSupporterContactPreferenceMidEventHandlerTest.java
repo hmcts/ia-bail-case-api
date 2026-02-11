@@ -45,8 +45,7 @@ class FinancialConditionSupporterContactPreferenceMidEventHandlerTest {
     private static final String SUPPORTER_2_CONTACT_PREF_PAGE_ID = "supporter2ContactDetails";
     private static final String SUPPORTER_3_CONTACT_PREF_PAGE_ID = "supporter3ContactDetails";
     private static final String SUPPORTER_4_CONTACT_PREF_PAGE_ID = "supporter4ContactDetails";
-    private static final String EMAIL_REQUIRED_ERROR = "Email is required.";
-    private static final String PHONE_REQUIRED_ERROR = "At least one phone type is required.";
+    private static final String FIELD_REQUIRED_ERROR = "At least one contact detail is required.";
 
     @BeforeEach
     public void setUp() {
@@ -60,10 +59,10 @@ class FinancialConditionSupporterContactPreferenceMidEventHandlerTest {
             "EDIT_BAIL_APPLICATION",
             "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
             "MAKE_NEW_APPLICATION"})
-    void should_add_email_error_message_when_only_telephone_selected(Event event) {
+    void should_add_field_error_message_when_no_contact_selected(Event event) {
 
         List<ContactPreference> listOfContactPreferences =
-            List.of(TELEPHONE);
+            List.of();
 
         when(callback.getEvent()).thenReturn(event);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
@@ -78,88 +77,7 @@ class FinancialConditionSupporterContactPreferenceMidEventHandlerTest {
 
         final Set<String> errors = callbackResponse.getErrors();
         assertThat(errors).hasSize(1);
-        assertThat(errors).contains(EMAIL_REQUIRED_ERROR);
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = Event.class,
-        names = {"START_APPLICATION",
-            "EDIT_BAIL_APPLICATION",
-            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
-            "MAKE_NEW_APPLICATION"})
-    void should_add_email_error_message_when_only_mobile_selected(Event event) {
-
-        List<ContactPreference> listOfContactPreferences =
-            List.of(MOBILE);
-
-        when(callback.getEvent()).thenReturn(event);
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(callback.getPageId()).thenReturn(SUPPORTER_2_CONTACT_PREF_PAGE_ID);
-        when(bailCase.read(SUPPORTER_2_CONTACT_DETAILS))
-            .thenReturn(Optional.of(listOfContactPreferences));
-
-        PreSubmitCallbackResponse<BailCase> callbackResponse =
-            financialConditionSupporterContactPreferenceMidEventHandler
-                .handle(PreSubmitCallbackStage.MID_EVENT, callback);
-
-        final Set<String> errors = callbackResponse.getErrors();
-        assertThat(errors).hasSize(1);
-        assertThat(errors).contains(EMAIL_REQUIRED_ERROR);
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = Event.class,
-        names = {"START_APPLICATION",
-            "EDIT_BAIL_APPLICATION",
-            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
-            "MAKE_NEW_APPLICATION"})
-    void should_add_email_error_message_when_telephone_and_mobile_selected(Event event) {
-
-        List<ContactPreference> listOfContactPreferences =
-            List.of(TELEPHONE, MOBILE);
-
-        when(callback.getEvent()).thenReturn(event);
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(callback.getPageId()).thenReturn(SUPPORTER_3_CONTACT_PREF_PAGE_ID);
-        when(bailCase.read(SUPPORTER_3_CONTACT_DETAILS))
-            .thenReturn(Optional.of(listOfContactPreferences));
-
-        PreSubmitCallbackResponse<BailCase> callbackResponse =
-            financialConditionSupporterContactPreferenceMidEventHandler
-                .handle(PreSubmitCallbackStage.MID_EVENT, callback);
-
-        final Set<String> errors = callbackResponse.getErrors();
-        assertThat(errors).hasSize(1);
-        assertThat(errors).contains(EMAIL_REQUIRED_ERROR);
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = Event.class,
-        names = {"START_APPLICATION",
-            "EDIT_BAIL_APPLICATION",
-            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
-            "MAKE_NEW_APPLICATION"})
-    void should_add_email_error_message_when_only_email_selected(Event event) {
-
-        List<ContactPreference> listOfContactPreferences =
-            List.of(EMAIL);
-
-        when(callback.getEvent()).thenReturn(event);
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(callback.getPageId()).thenReturn(SUPPORTER_4_CONTACT_PREF_PAGE_ID);
-        when(bailCase.read(SUPPORTER_4_CONTACT_DETAILS))
-            .thenReturn(Optional.of(listOfContactPreferences));
-
-        PreSubmitCallbackResponse<BailCase> callbackResponse =
-            financialConditionSupporterContactPreferenceMidEventHandler
-                .handle(PreSubmitCallbackStage.MID_EVENT, callback);
-
-        final Set<String> errors = callbackResponse.getErrors();
-        assertThat(errors).hasSize(1);
-        assertThat(errors).contains(PHONE_REQUIRED_ERROR);
+        assertThat(errors).contains(FIELD_REQUIRED_ERROR);
     }
 
     @ParameterizedTest
@@ -224,6 +142,109 @@ class FinancialConditionSupporterContactPreferenceMidEventHandlerTest {
 
         List<ContactPreference> listOfContactPreferences =
             List.of(EMAIL, TELEPHONE, MOBILE);
+
+        when(callback.getEvent()).thenReturn(event);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(callback.getPageId()).thenReturn(SUPPORTER_3_CONTACT_PREF_PAGE_ID);
+        when(bailCase.read(SUPPORTER_3_CONTACT_DETAILS))
+            .thenReturn(Optional.of(listOfContactPreferences));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            financialConditionSupporterContactPreferenceMidEventHandler
+                .handle(PreSubmitCallbackStage.MID_EVENT, callback);
+
+        final Set<String> errors = callbackResponse.getErrors();
+        assertThat(errors).hasSize(0);
+    }
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"START_APPLICATION",
+            "EDIT_BAIL_APPLICATION",
+            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+            "MAKE_NEW_APPLICATION"})
+    void should_add_no_errors_when_telephone_and_mobile_selected(Event event) {
+
+        List<ContactPreference> listOfContactPreferences =
+            List.of(TELEPHONE, MOBILE);
+
+        when(callback.getEvent()).thenReturn(event);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(callback.getPageId()).thenReturn(SUPPORTER_3_CONTACT_PREF_PAGE_ID);
+        when(bailCase.read(SUPPORTER_3_CONTACT_DETAILS))
+            .thenReturn(Optional.of(listOfContactPreferences));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            financialConditionSupporterContactPreferenceMidEventHandler
+                .handle(PreSubmitCallbackStage.MID_EVENT, callback);
+
+        final Set<String> errors = callbackResponse.getErrors();
+        assertThat(errors).hasSize(0);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"START_APPLICATION",
+            "EDIT_BAIL_APPLICATION",
+            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+            "MAKE_NEW_APPLICATION"})
+    void should_add_no_errors_when_email_selected(Event event) {
+
+        List<ContactPreference> listOfContactPreferences =
+            List.of(EMAIL);
+
+        when(callback.getEvent()).thenReturn(event);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(callback.getPageId()).thenReturn(SUPPORTER_3_CONTACT_PREF_PAGE_ID);
+        when(bailCase.read(SUPPORTER_3_CONTACT_DETAILS))
+            .thenReturn(Optional.of(listOfContactPreferences));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            financialConditionSupporterContactPreferenceMidEventHandler
+                .handle(PreSubmitCallbackStage.MID_EVENT, callback);
+
+        final Set<String> errors = callbackResponse.getErrors();
+        assertThat(errors).hasSize(0);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"START_APPLICATION",
+            "EDIT_BAIL_APPLICATION",
+            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+            "MAKE_NEW_APPLICATION"})
+    void should_add_no_errors_when_mobile_selected(Event event) {
+
+        List<ContactPreference> listOfContactPreferences =
+            List.of(MOBILE);
+
+        when(callback.getEvent()).thenReturn(event);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(callback.getPageId()).thenReturn(SUPPORTER_3_CONTACT_PREF_PAGE_ID);
+        when(bailCase.read(SUPPORTER_3_CONTACT_DETAILS))
+            .thenReturn(Optional.of(listOfContactPreferences));
+
+        PreSubmitCallbackResponse<BailCase> callbackResponse =
+            financialConditionSupporterContactPreferenceMidEventHandler
+                .handle(PreSubmitCallbackStage.MID_EVENT, callback);
+
+        final Set<String> errors = callbackResponse.getErrors();
+        assertThat(errors).hasSize(0);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Event.class,
+        names = {"START_APPLICATION",
+            "EDIT_BAIL_APPLICATION",
+            "EDIT_BAIL_APPLICATION_AFTER_SUBMIT",
+            "MAKE_NEW_APPLICATION"})
+    void should_add_no_errors_when_telephone_selected(Event event) {
+
+        List<ContactPreference> listOfContactPreferences =
+            List.of(TELEPHONE);
 
         when(callback.getEvent()).thenReturn(event);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
