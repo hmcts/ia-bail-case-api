@@ -59,7 +59,6 @@ public class FinancialConditionSupporterContactPreferenceMidEventHandler impleme
         PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
 
         String pageId = callback.getPageId();
-        String error = "";
         Optional<List<ContactPreference>> supporterContactPreferences = Optional.empty();
 
         switch (pageId) {
@@ -76,12 +75,9 @@ public class FinancialConditionSupporterContactPreferenceMidEventHandler impleme
             && supporterContactPreferences.stream().noneMatch(list -> list.contains(EMAIL)
                 || list.contains(MOBILE)
                 || list.contains(TELEPHONE))) {
-                error = FIELD_REQUIRED_ERROR;
+                response.addError(FIELD_REQUIRED_ERROR);
         }
 
-        if (!error.isEmpty()) {
-            response.addError(error);
-        }
         return response;
     }
 }
