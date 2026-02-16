@@ -97,7 +97,13 @@ public class BailCaseNotificationApiSender implements NotificationSender<BailCas
     private ZonedDateTime determineScheduleTime() {
         ZonedDateTime now = ZonedDateTime.of(dateProvider.nowWithTime(), ZoneId.systemDefault());
         // Define saveNotificationScheduleAtHour eg:11:00 PM as the base time
-        LocalTime baseTime = LocalTime.of(saveNotificationScheduleAtHour, 0);
+        // TODO uncomment 106 and remove 101-105 after testing
+        int scheduleHour = dateProvider.nowWithTime().getHour() + 1;
+        if (scheduleHour == 24) {
+            scheduleHour = 23;
+        }
+        LocalTime baseTime = LocalTime.of(scheduleHour, 0);
+        // LocalTime baseTime = LocalTime.of(saveNotificationScheduleAtHour, 0);
 
         // Randomize minutes and seconds between 0-saveNotificationScheduleMaxMinutes minutes and 0-59 seconds
         int randomMinutes = random.nextInt(0, saveNotificationScheduleMaxMinutes);
