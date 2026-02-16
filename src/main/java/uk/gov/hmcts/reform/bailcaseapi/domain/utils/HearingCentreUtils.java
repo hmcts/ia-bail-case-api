@@ -50,16 +50,18 @@ public class HearingCentreUtils {
 
     private static void setHearingCentreRefData(BailCase bailCase, HearingCentre hearingCentre, LocationRefDataService locationRefDataService, CaseManagementLocationService caseManagementLocationService) {
         DynamicList hearingCentreDynamicList = locationRefDataService.getCaseManagementLocationDynamicList();
-        hearingCentreDynamicList.getListItems().stream()
-            .filter(value -> Objects.equals(value.getCode(), hearingCentre.getEpimsId()))
-            .findFirst().ifPresent((value) -> {
-                hearingCentreDynamicList.setValue(value);
-                bailCase.write(SELECTED_HEARING_CENTRE_REF_DATA, value.getLabel());
-            });
-        bailCase.write(HEARING_CENTRE_REF_DATA, hearingCentreDynamicList);
-        bailCase.write(
-            CASE_MANAGEMENT_LOCATION_REF_DATA,
-            caseManagementLocationService.getRefDataCaseManagementLocation(hearingCentre)
-        );
+        if (hearingCentreDynamicList != null) {
+            hearingCentreDynamicList.getListItems().stream()
+                .filter(value -> Objects.equals(value.getCode(), hearingCentre.getEpimsId()))
+                .findFirst().ifPresent((value) -> {
+                    hearingCentreDynamicList.setValue(value);
+                    bailCase.write(SELECTED_HEARING_CENTRE_REF_DATA, value.getLabel());
+                });
+            bailCase.write(HEARING_CENTRE_REF_DATA, hearingCentreDynamicList);
+            bailCase.write(
+                CASE_MANAGEMENT_LOCATION_REF_DATA,
+                caseManagementLocationService.getRefDataCaseManagementLocation(hearingCentre)
+            );
+        }
     }
 }
