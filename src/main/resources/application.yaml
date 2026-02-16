@@ -267,4 +267,4 @@ govUkHolidays:
 govnotify:
   baseUrl: "https://api.notifications.service.gov.uk"
   bail:
-    key: "gov-bail-key"
+    key: ${IA_BAIL_GOV_NOTIFY_KEY:gov-bail-key}
