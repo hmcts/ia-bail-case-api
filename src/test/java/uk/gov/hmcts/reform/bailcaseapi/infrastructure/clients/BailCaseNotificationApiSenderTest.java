@@ -206,7 +206,7 @@ class BailCaseNotificationApiSenderTest {
         assertEquals(bailCase, bailCaseResponse);
 
         verify(scheduler, times(1)).schedule(timedEventCaptor.capture());
-        ZonedDateTime zonedDateTime = LocalDateTime.of(2024, 6, 1, 11, 0)
+        ZonedDateTime zonedDateTime = LocalDateTime.of(2024, 6, 1, 23, 0)
             .atZone(ZoneId.systemDefault());
         verifyTimedEventSchedule(callback.getCaseDetails().getId(), timedEventCaptor.getValue(), zonedDateTime);
         verify(bailCase, times(1))
@@ -221,7 +221,7 @@ class BailCaseNotificationApiSenderTest {
             .thenReturn(Optional.of(LocalDate.now().minusDays(1).toString()));
         when(bailCaseCallbackApiDelegator.delegate(callback, ENDPOINT + CCD_SUBMITTED_PATH))
             .thenReturn(bailCase);
-        LocalDateTime today = LocalDateTime.of(2024, 6, 1, 23, 0);
+        LocalDateTime today = LocalDateTime.of(2024, 6, 1, 23, 5);
         when(dateProvider.nowWithTime()).thenReturn(today);
 
         bailCaseNotificationApiSender =
