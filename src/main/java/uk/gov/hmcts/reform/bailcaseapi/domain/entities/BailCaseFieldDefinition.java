@@ -611,6 +611,12 @@ public enum BailCaseFieldDefinition {
     PRIOR_APPLICATIONS(
         "priorApplications1", new TypeReference<List<IdValue<PriorApplication>>>(){}),
 
+    NOTIFICATIONS(
+        "notifications", new TypeReference<List<IdValue<StoredNotification>>>(){}),
+
+    NOTIFICATION_STORE_SCHEDULE_DATE(
+        "notificationStoreScheduleDate", new TypeReference<String>(){}),
+
     NOTIFICATIONS_SENT(
         "notificationsSent", new TypeReference<List<IdValue<String>>>(){}),
 
