@@ -24,8 +24,7 @@ public class FinancialConditionSupporterContactPreferenceMidEventHandler impleme
     private static final String SUPPORTER_2_CONTACT_PREF_PAGE_ID = "supporter2ContactDetails";
     private static final String SUPPORTER_3_CONTACT_PREF_PAGE_ID = "supporter3ContactDetails";
     private static final String SUPPORTER_4_CONTACT_PREF_PAGE_ID = "supporter4ContactDetails";
-    private static final String EMAIL_REQUIRED_ERROR = "Email is required.";
-    private static final String PHONE_REQUIRED_ERROR = "At least one phone type is required.";
+    private static final String FIELD_REQUIRED_ERROR = "At least one contact detail is required.";
 
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
@@ -60,7 +59,6 @@ public class FinancialConditionSupporterContactPreferenceMidEventHandler impleme
         PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
 
         String pageId = callback.getPageId();
-        String error = "";
         Optional<List<ContactPreference>> supporterContactPreferences = Optional.empty();
 
         switch (pageId) {
@@ -73,18 +71,13 @@ public class FinancialConditionSupporterContactPreferenceMidEventHandler impleme
             }
         }
 
-        if (supporterContactPreferences.isPresent()) {
-            if (supporterContactPreferences.stream().noneMatch(list -> list.contains(EMAIL))) {
-                error = EMAIL_REQUIRED_ERROR;
-            } else if (supporterContactPreferences.stream().noneMatch(list -> list.contains(MOBILE)
-                                                                              || list.contains(TELEPHONE))) {
-                error = PHONE_REQUIRED_ERROR;
-            }
+        if (supporterContactPreferences.isPresent()
+            && supporterContactPreferences.stream().noneMatch(list -> list.contains(EMAIL)
+                || list.contains(MOBILE)
+                || list.contains(TELEPHONE))) {
+                response.addError(FIELD_REQUIRED_ERROR);
         }
 
-        if (!error.isEmpty()) {
-            response.addError(error);
-        }
         return response;
     }
 }
