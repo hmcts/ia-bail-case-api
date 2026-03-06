@@ -52,6 +52,7 @@ public class GenerateDocumentHandler implements PreSubmitCallbackHandler<BailCas
             Event.MAKE_NEW_APPLICATION,
             Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT,
             Event.UPLOAD_SIGNED_DECISION_NOTICE,
+            Event.UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT,
             Event.SAVE_NOTIFICATIONS_TO_DATA_BAIL,
             Event.CASE_LISTING
         );

@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -27,11 +29,12 @@ public class SignedDecisionNoticeUploadedConfirmationTest {
     @BeforeEach
     public void setUp() {
         signedDecisionNoticeUploadedConfirmation = new SignedDecisionNoticeUploadedConfirmation();
-        when(callback.getEvent()).thenReturn(Event.UPLOAD_SIGNED_DECISION_NOTICE);
     }
 
-    @Test
-    void should_set_header_body() {
+    @ParameterizedTest
+    @EnumSource(value = Event.class, names = {"UPLOAD_SIGNED_DECISION_NOTICE", "UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT"})
+    void should_set_header_body(Event event) {
+        when(callback.getEvent()).thenReturn(event);
         long caseId = 1234L;
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getCaseDetails().getId()).thenReturn(caseId);
