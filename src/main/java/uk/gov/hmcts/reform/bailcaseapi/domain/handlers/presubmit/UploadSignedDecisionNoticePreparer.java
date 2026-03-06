@@ -47,15 +47,15 @@ public class UploadSignedDecisionNoticePreparer implements PreSubmitCallbackHand
                 .getCaseData();
         PreSubmitCallbackResponse<BailCase> response = new PreSubmitCallbackResponse<>(bailCase);
 
-        Optional<DecisionType> optionalDecisionType =
-            bailCase.read(RECORD_DECISION_TYPE, DecisionType.class);
+        Optional<String> optionalDecisionType =
+            bailCase.read(RECORD_DECISION_TYPE, String.class);
 
         if (optionalDecisionType.isEmpty()) {
             response.addError(MISSING_DECISION_ERROR_MESSAGE);
             return response;
         }
 
-        DecisionType decisionType = optionalDecisionType.get();
+        DecisionType decisionType = DecisionType.getEnum(optionalDecisionType.get());
         if (!decisionType.isValidFor(callback.getEvent())) {
             response.addError(INVALID_EVENT_ERROR_MESSAGE);
         }

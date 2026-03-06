@@ -104,8 +104,8 @@ public class UploadSignedDecisionNoticePreparerTest {
     void should_add_error_if_decision_type_is_invalid_for_event() {
         when(bailCase.read(
             RECORD_DECISION_TYPE,
-            DecisionType.class
-        )).thenReturn(Optional.of(DecisionType.CONDITIONAL_GRANT));
+            String.class
+        )).thenReturn(Optional.of(DecisionType.CONDITIONAL_GRANT.toString()));
         PreSubmitCallbackResponse<BailCase> response = uploadSignedDecisionNoticePreparer.handle(
             PreSubmitCallbackStage.ABOUT_TO_START,
             callback
@@ -117,7 +117,7 @@ public class UploadSignedDecisionNoticePreparerTest {
 
     @Test
     void should_not_add_error_if_decision_type_is_valid_for_event() {
-        when(bailCase.read(RECORD_DECISION_TYPE, DecisionType.class)).thenReturn(Optional.of(DecisionType.GRANTED));
+        when(bailCase.read(RECORD_DECISION_TYPE, String.class)).thenReturn(Optional.of(DecisionType.GRANTED.toString()));
         PreSubmitCallbackResponse<BailCase> response = uploadSignedDecisionNoticePreparer.handle(
             PreSubmitCallbackStage.ABOUT_TO_START,
             callback

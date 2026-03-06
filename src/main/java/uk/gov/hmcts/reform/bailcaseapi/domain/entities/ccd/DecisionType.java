@@ -30,4 +30,10 @@ public enum DecisionType {
         }
         return event == Event.UPLOAD_SIGNED_DECISION_NOTICE;
     }
+
+    public static DecisionType getEnum(String value) {
+        for (DecisionType v : values())
+            if (v.id.equalsIgnoreCase(value)) return v;
+        return UNKNOWN;
+    }
 }
