@@ -38,7 +38,7 @@ public class IdamService {
         this.idamApi = idamApi;
     }
 
-    @Cacheable(value = "systemTokenCache")
+    @Cacheable(value = "systemUserTokenCache", key = "'systemUserTokenCache'")
     public Token getServiceUserToken() {
         Map<String, String> idamAuthDetails = new ConcurrentHashMap<>();
 
@@ -53,7 +53,7 @@ public class IdamService {
         return idamApi.token(idamAuthDetails);
     }
 
-    @Cacheable(value = "userInfoCache")
+    @Cacheable(value = "userInfoCache", key = "#accessToken")
     public UserInfo getUserInfo(String accessToken) {
         return idamApi.userInfo(accessToken);
     }

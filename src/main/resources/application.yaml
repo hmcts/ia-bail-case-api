@@ -12,9 +12,18 @@ management:
   endpoints:
     web:
       base-path: "/"
+      exposure:
+        include: health, info, ping
   health:
+    redis:
+      enabled: false  # don't let Redis affect pod health
     probes:
       enabled: true
+    group:
+      readiness:
+        include: ping
+      liveness:
+        include: ping
   services:
     idam:
       uri: ${IDAM_URL:http://127.0.0.1:4501}/health
@@ -53,10 +62,12 @@ spring:
   profiles:
     include:
       - hearingcentre-mapping
-  cache:
-    cache-names: userInfoCache, accessTokenCache, systemTokenCache
-    caffeine:
-      spec: expireAfterWrite=3600s
+  data:
+    redis:
+      url: ${IA_REDIS_CONNECTION_STRING:}
+      secret: ${IA_REDIS_ACCESS_KEY:}
+      ssl:
+        enabled: true
 
 security:
   anonymousPaths:
