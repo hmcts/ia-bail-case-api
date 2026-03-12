@@ -163,6 +163,8 @@ security:
       - "manageFlags"
       - "forceCaseToHearing"
       - "uploadHearingRecording"
+    caseworker-ia-internal:
+      - "regenerateBailSubmissionDocument"
 
 ### dependency configuration
 ccdGatewayUrl: ${CCD_GW_URL:http://localhost:3453}
