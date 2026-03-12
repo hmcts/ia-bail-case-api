@@ -75,7 +75,10 @@ security:
     caseworker-ia-system:
       - "clearLegalRepresentativeDetails"
       - "caseListing"
-      - "testTimedEventSchedule"
+      - "saveNotificationsToDataBail"
+      - "migrateWaBailApplication"
+      - "updateInterpreterWaTask"
+      - "rollbackMigration"
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
@@ -115,6 +118,7 @@ security:
       - "createBailCaseLink"
       - "maintainBailCaseLinks"
       - "createFlag"
+      - "manageFlags"
       - "confirmDetentionLocation"
       - "updateInterpreterDetails"
       - "updateInterpreterBookingStatus"
@@ -122,8 +126,9 @@ security:
       - "imaStatus"
       - "forceCaseToHearing"
       - "changeTribunalCentre"
-      - "testTimedEventSchedule"
+      - "saveNotificationsToDataBail"
       - "uploadHearingRecording"
+      - "migrateWaBailApplication"
     caseworker-ia-homeofficebail:
       - "startApplication"
       - "uploadBailSummary"
@@ -155,6 +160,7 @@ security:
       - "createBailCaseLink"
       - "maintainBailCaseLinks"
       - "createFlag"
+      - "manageFlags"
       - "forceCaseToHearing"
       - "uploadHearingRecording"
     caseworker-ia-internal:
@@ -228,6 +234,9 @@ featureFlag:
   isDocumentGenerationEnabled: ${IA_DOCUMENT_GENERATION_ENABLED:true}
   timedEventServiceEnabled: ${IA_TIMED_EVENT_SERVICE_ENABLED:false}
 
+saveNotificationsDataJob:
+  scheduleAtHour: ${SAVE_NOTIFICATIONS_DATA_SCHEDULE_HOUR:23}
+  scheduleMaxMinutes: ${SAVE_NOTIFICATIONS_DATA_SCHEDULE_MAX_MINUTES:50}
 launchDarkly:
   sdkKey: ${LAUNCH_DARKLY_SDK_KEY:sdk-key}
   connectionTimeout: 5000
@@ -256,3 +265,8 @@ commonData:
 
 govUkHolidays:
   url: https://www.gov.uk/
+
+govnotify:
+  baseUrl: "https://api.notifications.service.gov.uk"
+  bail:
+    key: ${IA_BAIL_GOV_NOTIFY_KEY:gov-bail-key}
