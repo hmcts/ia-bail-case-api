@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -10,6 +12,7 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.idam.Token;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.idam.UserInfo;
 
 @Component
+@Slf4j
 public class IdamService {
 
     private final String systemUserName;
@@ -50,6 +53,7 @@ public class IdamService {
         idamAuthDetails.put("password", systemUserPass);
         idamAuthDetails.put("scope", systemUserScope);
 
+        log.info("System user token expired. Getting a new token in ia-bail-case-api");
         return idamApi.token(idamAuthDetails);
     }
 

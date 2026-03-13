@@ -93,8 +93,10 @@ security:
     caseworker-caa:
       - "nocRequest"
       - "clearLegalRepresentativeDetails"
+      - "saveNotificationsToDataBail"
     caseworker-approver:
       - "applyNocDecision"
+      - "saveNotificationsToDataBail"
     caseworker-ia-rparobot:
       - "addCaseNote"
     caseworker-ia-legalrep-solicitor:
@@ -108,6 +110,7 @@ security:
       - "updateBailLegalRepDetails"
       - "nocRequest"
       - "nocRequestBail"
+      - "saveNotificationsToDataBail"
     caseworker-ia-admofficer:
       - "startApplication"
       - "submitApplication"
@@ -148,6 +151,7 @@ security:
       - "editBailApplication"
       - "makeNewApplication"
       - "viewPreviousApplications"
+      - "saveNotificationsToDataBail"
     caseworker-ia-homeofficepou:
       - "startApplication"
       - "uploadBailSummary"
@@ -156,6 +160,7 @@ security:
       - "editBailApplication"
       - "makeNewApplication"
       - "viewPreviousApplications"
+      - "saveNotificationsToDataBail"
     caseworker-ia-iacjudge:
       - "recordTheDecision"
       - "addCaseNote"
@@ -174,6 +179,7 @@ security:
       - "manageFlags"
       - "forceCaseToHearing"
       - "uploadHearingRecording"
+      - "saveNotificationsToDataBail"
 
 ### dependency configuration
 ccdGatewayUrl: ${CCD_GW_URL:http://localhost:3453}
