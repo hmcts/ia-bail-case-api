@@ -42,6 +42,8 @@ public enum Event {
     UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT("uploadSignedDecisionNoticeConditionalGrant"),
     VIEW_PREVIOUS_APPLICATIONS("viewPreviousApplications"),
     SAVE_NOTIFICATIONS_TO_DATA_BAIL("saveNotificationsToDataBail"),
+    TEST_TIMED_EVENT_SCHEDULE("testTimedEventSchedule"),
+    REGENERATE_BAIL_SUBMISSION_DOCUMENT("regenerateBailSubmissionDocument"),
     UPLOAD_HEARING_RECORDING("uploadHearingRecording"),
     UPDATE_INTERPRETER_WA_TASK("updateInterpreterWaTask"),
     ROLLBACK_MIGRATION("rollbackMigration"),

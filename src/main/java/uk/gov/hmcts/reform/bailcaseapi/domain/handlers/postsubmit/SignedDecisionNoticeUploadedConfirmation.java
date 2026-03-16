@@ -12,7 +12,7 @@ public class SignedDecisionNoticeUploadedConfirmation implements PostSubmitCallb
 
     @Override
     public boolean canHandle(Callback<BailCase> callback) {
-        return (callback.getEvent() == Event.UPLOAD_SIGNED_DECISION_NOTICE);
+        return (callback.getEvent() == Event.UPLOAD_SIGNED_DECISION_NOTICE || callback.getEvent() == Event.UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT);
     }
 
     @Override

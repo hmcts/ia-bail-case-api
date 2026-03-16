@@ -23,4 +23,17 @@ public enum DecisionType {
     public String toString() {
         return id;
     }
+
+    public boolean isValidFor(Event event) {
+        if (this == CONDITIONAL_GRANT) {
+            return event == Event.UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT;
+        }
+        return event == Event.UPLOAD_SIGNED_DECISION_NOTICE;
+    }
+
+    public static DecisionType getEnum(String value) {
+        for (DecisionType v : values())
+            if (v.id.equalsIgnoreCase(value)) return v;
+        return UNKNOWN;
+    }
 }

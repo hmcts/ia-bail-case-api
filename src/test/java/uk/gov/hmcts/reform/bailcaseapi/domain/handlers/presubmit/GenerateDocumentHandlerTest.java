@@ -56,11 +56,13 @@ public class GenerateDocumentHandlerTest {
                 boolean canHandle = generateDocumentHandler.canHandle(stage, callback);
                 if (stage.equals(PreSubmitCallbackStage.ABOUT_TO_SUBMIT) && Arrays.asList(
                     Event.SUBMIT_APPLICATION,
+                    Event.REGENERATE_BAIL_SUBMISSION_DOCUMENT,
                     Event.RECORD_THE_DECISION,
                     Event.END_APPLICATION,
                     Event.MAKE_NEW_APPLICATION,
                     Event.EDIT_BAIL_APPLICATION_AFTER_SUBMIT,
                     Event.UPLOAD_SIGNED_DECISION_NOTICE,
+                    Event.UPLOAD_SIGNED_DECISION_NOTICE_CONDITIONAL_GRANT,
                     Event.SAVE_NOTIFICATIONS_TO_DATA_BAIL,
                     Event.CASE_LISTING
                 ).contains(event)) {
@@ -124,6 +126,22 @@ public class GenerateDocumentHandlerTest {
     public void should_handle_generate_document_update_bailcase() {
         BailCase expectedBailCase = mock(BailCase.class);
         when(callback.getEvent()).thenReturn(Event.SUBMIT_APPLICATION);
+        when(documentGenerator.generate(callback)).thenReturn(expectedBailCase);
+
+        PreSubmitCallbackResponse response = generateDocumentHandler.handle(
+            PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
+            callback
+        );
+
+        assertNotNull(response);
+        assertEquals(expectedBailCase, response.getData());
+        verify(documentGenerator, times(1)).generate(callback);
+    }
+
+    @Test
+    public void should_handle_generate_document_regenerate_bail_submission() {
+        BailCase expectedBailCase = mock(BailCase.class);
+        when(callback.getEvent()).thenReturn(Event.REGENERATE_BAIL_SUBMISSION_DOCUMENT);
         when(documentGenerator.generate(callback)).thenReturn(expectedBailCase);
 
         PreSubmitCallbackResponse response = generateDocumentHandler.handle(
