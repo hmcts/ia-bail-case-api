@@ -21,3 +21,4 @@ bin/main/application.yaml
 *.ipr
 
 .DS_Store
+.mirrord
