@@ -138,7 +138,7 @@ public class CcdDataService {
         CaseDetails<BailCase> caseDetails = callback.getCaseDetails();
         String caseId = String.valueOf(caseDetails.getId());
         try {
-            String userToken = "Bearer " + systemTokenGenerator.generate();
+            String userToken = systemTokenGenerator.generate();
             tokens.setUserToken(userToken);
             log.info("System user token has been generated for event: {}, caseId: {}.", event, caseId);
 

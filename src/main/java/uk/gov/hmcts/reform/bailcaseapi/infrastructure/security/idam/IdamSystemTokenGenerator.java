@@ -19,7 +19,7 @@ public class IdamSystemTokenGenerator implements SystemTokenGenerator {
     public String generate() {
         try {
             Token tokenResponse = idamService.getServiceUserToken();
-            return tokenResponse.getAccessToken();
+            return "Bearer " + tokenResponse.getAccessToken();
         } catch (FeignException ex) {
             throw new IdentityManagerResponseException("Could not get system user token from IDAM", ex);
         }
