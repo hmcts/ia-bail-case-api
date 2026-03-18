@@ -88,13 +88,12 @@ class IdamServiceTest {
         Token expectedToken = new Token(expectedAccessToken, expectedScope);
         when(idamApi.token(anyMap())).thenReturn(expectedToken);
 
-        Token actualUserToken = idamService.getServiceUserToken();
+        String actualUserToken = idamService.getServiceUserToken();
         ArgumentCaptor<ConcurrentHashMap<String, String>> requestFormCaptor =
             ArgumentCaptor.forClass(ConcurrentHashMap.class);
         verify(idamApi).token(requestFormCaptor.capture());
 
-        assertEquals(expectedAccessToken, actualUserToken.getAccessToken());
-        assertEquals(expectedScope, actualUserToken.getScope());
+        assertEquals("Bearer " + expectedAccessToken, actualUserToken);
 
         Map<String, ?> actualRequestEntity = requestFormCaptor.getValue();
 
