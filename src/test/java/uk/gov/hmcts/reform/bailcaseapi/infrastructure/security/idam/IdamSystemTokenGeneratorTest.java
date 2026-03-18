@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.IdamService;
-import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.idam.Token;
 
 @ExtendWith(MockitoExtension.class)
 class IdamSystemTokenGeneratorTest {
@@ -19,21 +18,17 @@ class IdamSystemTokenGeneratorTest {
     @Mock
     private IdamService idamService;
 
-    @Mock
-    private Token token;
-
     @Test
     void should_return_correct_token_from_idam() {
-        String expectedToken = "systemUserTokenHash";
-        when(token.getAccessToken()).thenReturn(expectedToken);
-        when(idamService.getServiceUserToken()).thenReturn(token);
+        String expectedToken = "Bearer systemUserTokenHash";
+        when(idamService.getServiceUserToken()).thenReturn(expectedToken);
 
         IdamSystemTokenGenerator idamSystemTokenGenerator =
             new IdamSystemTokenGenerator(idamService);
         String idamToken = idamSystemTokenGenerator.generate();
 
         verify(idamService).getServiceUserToken();
-        assertEquals("Bearer " + expectedToken, idamToken);
+        assertEquals(expectedToken, idamToken);
     }
 
     @Test

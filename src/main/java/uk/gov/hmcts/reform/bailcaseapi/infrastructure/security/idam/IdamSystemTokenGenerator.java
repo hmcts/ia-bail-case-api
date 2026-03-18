@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.idam;
 import feign.FeignException;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.IdamService;
-import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.idam.Token;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.SystemTokenGenerator;
 
 @Component
@@ -18,8 +17,7 @@ public class IdamSystemTokenGenerator implements SystemTokenGenerator {
     @Override
     public String generate() {
         try {
-            Token tokenResponse = idamService.getServiceUserToken();
-            return "Bearer " + tokenResponse.getAccessToken();
+            return idamService.getServiceUserToken();
         } catch (FeignException ex) {
             throw new IdentityManagerResponseException("Could not get system user token from IDAM", ex);
         }

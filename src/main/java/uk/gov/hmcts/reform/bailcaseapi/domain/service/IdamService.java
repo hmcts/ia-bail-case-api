@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.IdamApi;
-import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.idam.Token;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.idam.UserInfo;
 
 @Component
@@ -42,7 +41,7 @@ public class IdamService {
     }
 
     @Cacheable(value = "systemUserTokenCache", key = "'systemUserTokenCache'")
-    public Token getServiceUserToken() {
+    public String getServiceUserToken() {
         Map<String, String> idamAuthDetails = new ConcurrentHashMap<>();
 
         idamAuthDetails.put("grant_type", "password");
@@ -54,7 +53,7 @@ public class IdamService {
         idamAuthDetails.put("scope", systemUserScope);
 
         log.info("System user token expired. Getting a new token in ia-bail-case-api");
-        return idamApi.token(idamAuthDetails);
+        return idamApi.token(idamAuthDetails).getAccessToken();
     }
 
     @Cacheable(value = "userInfoCache", key = "#accessToken")
