@@ -93,7 +93,7 @@ class IdamServiceTest {
             ArgumentCaptor.forClass(ConcurrentHashMap.class);
         verify(idamApi).token(requestFormCaptor.capture());
 
-        assertEquals(expectedAccessToken, actualUserToken);
+        assertEquals("Bearer " + expectedAccessToken, actualUserToken);
 
         Map<String, ?> actualRequestEntity = requestFormCaptor.getValue();
 
