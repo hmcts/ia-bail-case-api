@@ -33,7 +33,7 @@ class IdamSystemTokenGeneratorTest {
         String idamToken = idamSystemTokenGenerator.generate();
 
         verify(idamService).getServiceUserToken();
-        assertEquals(expectedToken, idamToken);
+        assertEquals("Bearer " + expectedToken, idamToken);
     }
 
     @Test

@@ -72,7 +72,7 @@ class CcdDataServiceTest {
     @Mock
     private BailCase caseData;
 
-    private String token = "token";
+    private String token = "Bearer token";
     private String serviceToken = "Bearer serviceToken";
     private String userId = "userId";
     private String eventToken = "eventToken";
@@ -109,7 +109,7 @@ class CcdDataServiceTest {
 
         when(systemTokenGenerator.generate()).thenReturn(token);
         when(serviceAuthorization.generate()).thenReturn(serviceToken);
-        when(systemUserProvider.getSystemUserId("Bearer " + token)).thenReturn(userId);
+        when(systemUserProvider.getSystemUserId(token)).thenReturn(userId);
     }
 
     @Test
@@ -129,14 +129,14 @@ class CcdDataServiceTest {
     void service_should_clear_the_lr_details_for_the_case_id() {
         StartEventDetails startEventResponse = getStartEventResponse();
         when(ccdDataApi.startEvent(
-            "Bearer " + token, serviceToken, userId, jurisdiction, caseType,
+            token, serviceToken, userId, jurisdiction, caseType,
             String.valueOf(caseId), eventId
         )).thenReturn(startEventResponse);
 
         // set CaseData for the subEvent request
         CaseDataContent caseDataContent = getCaseDataContent();
         when(ccdDataApi.submitEvent(
-            "Bearer " + token, serviceToken, String.valueOf(caseId),
+            token, serviceToken, String.valueOf(caseId),
             caseDataContent
         )).thenReturn(getSubmitEventResponse());
 
@@ -151,11 +151,11 @@ class CcdDataServiceTest {
 
         verify(ccdDataApi, times(1))
             .startEvent(
-                "Bearer " + token, serviceToken, userId,
+                token, serviceToken, userId,
                 jurisdiction, caseType, String.valueOf(caseId), eventId
             );
         verify(ccdDataApi, times(1))
-            .submitEvent("Bearer " + token, serviceToken, String.valueOf(caseId), caseDataContent);
+            .submitEvent(token, serviceToken, String.valueOf(caseId), caseDataContent);
     }
 
     @ParameterizedTest
@@ -194,7 +194,7 @@ class CcdDataServiceTest {
         StartEventDetails startEventResponse = getStartEventResponse();
         when(
             ccdDataApi.startEvent(
-                "Bearer " + token, serviceToken, userId,
+                token, serviceToken, userId,
                 jurisdiction, caseType, String.valueOf(caseId), eventId
             )).thenReturn(startEventResponse);
 
@@ -202,7 +202,7 @@ class CcdDataServiceTest {
 
         verify(ccdDataApi, times(1))
             .startEvent(
-                "Bearer " + token, serviceToken, userId,
+                token, serviceToken, userId,
                 jurisdiction, caseType, String.valueOf(caseId), eventId
             );
     }
@@ -220,7 +220,7 @@ class CcdDataServiceTest {
         StartEventDetails startEventResponse = getStartEventResponse();
         when(
             ccdDataApi.startEvent(
-                "Bearer " + token, serviceToken, userId,
+                token, serviceToken, userId,
                 jurisdiction, caseType, String.valueOf(caseId), eventId
             )).thenReturn(startEventResponse);
 
@@ -233,7 +233,7 @@ class CcdDataServiceTest {
 
         verify(ccdDataApi, times(1))
             .startEvent(
-                "Bearer " + token, serviceToken, userId,
+                token, serviceToken, userId,
                 jurisdiction, caseType, String.valueOf(caseId), eventId
             );
     }
@@ -242,7 +242,7 @@ class CcdDataServiceTest {
     void service_should_error_on_invalid_ccd_case_reference() {
         when(
             ccdDataApi.startEvent(
-                "Bearer " + token, serviceToken, userId,
+                token, serviceToken, userId,
                 jurisdiction, caseType, String.valueOf(caseId), eventId
             )).thenThrow(FeignException.class);
 
@@ -314,7 +314,7 @@ class CcdDataServiceTest {
             caseDetails
         );
         when(ccdDataApi.startEvent(
-            "Bearer " + token,
+            token,
             serviceToken,
             userId,
             jurisdiction,
