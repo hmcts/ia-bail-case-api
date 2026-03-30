@@ -43,6 +43,7 @@ def secrets = [
     secret('generic-docker-pact-broker-password', 'GENERIC_DOCKER_PACT_BROKER_YAML_PASS'),
     secret('ia-redis-access-key', 'IA_REDIS_ACCESS_KEY'),
     secret('ia-redis-connection-string', 'IA_REDIS_CONNECTION_STRING'),
+    secret('ia-redis-encryption-key', 'IA_REDIS_ENCRYPTION_KEY'),
 
     secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),
     secret('test-caseofficer-password', 'TEST_CASEOFFICER_PASSWORD'),
