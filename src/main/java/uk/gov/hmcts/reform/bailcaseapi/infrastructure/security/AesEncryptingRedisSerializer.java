@@ -30,7 +30,7 @@ public class AesEncryptingRedisSerializer<T> implements RedisSerializer<T> {
 
     @Override
     public byte[] serialize(T value) throws SerializationException {
-        log.info("VALUE TO SERIALIZE: " + Arrays.toString(value));
+        log.info("VALUE TO SERIALIZE: " + value);
 
         if (value == null) {
             return null;
