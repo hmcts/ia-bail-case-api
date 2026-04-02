@@ -23,11 +23,7 @@ public class SystemDocumentManagementUploader {
 
 
     public Document upload(Resource resource, String contentType) {
-        if (getValue("use-ccd-document-am", false)) {
-            return cdamSystemDocumentManagementUploader.upload(resource, contentType);
-        } else {
-            return dmSystemDocumentManagementUploader.upload(resource, contentType);
-        }
+        return cdamSystemDocumentManagementUploader.upload(resource, contentType);
 
     }
 
