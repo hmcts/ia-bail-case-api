@@ -19,8 +19,15 @@ public class SystemDocumentManagementUploader {
 
     private final CdamSystemDocumentManagementUploader cdamSystemDocumentManagementUploader;
 
+    private final DMSystemDocumentManagementUploader dmSystemDocumentManagementUploader;
+
+
     public Document upload(Resource resource, String contentType) {
-        return cdamSystemDocumentManagementUploader.upload(resource, contentType);
+        if (getValue("use-ccd-document-am", false)) {
+            return cdamSystemDocumentManagementUploader.upload(resource, contentType);
+        } else {
+            return dmSystemDocumentManagementUploader.upload(resource, contentType);
+        }
 
     }
 
