@@ -52,7 +52,6 @@ public class IdamService {
         idamAuthDetails.put("password", systemUserPass);
         idamAuthDetails.put("scope", systemUserScope);
 
-        log.info("System user token expired. Getting a new token in ia-bail-case-api");
         return "Bearer " + idamApi.token(idamAuthDetails).getAccessToken();
     }
 
