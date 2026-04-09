@@ -62,10 +62,6 @@ spring:
   profiles:
     include:
       - hearingcentre-mapping
-  cache:
-    cache-names: userInfoCache, accessTokenCache, systemTokenCache
-    caffeine:
-      spec: expireAfterWrite=1800s
   data:
     redis:
       url: ${IA_REDIS_CONNECTION_STRING:}
