@@ -2,14 +2,16 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.IdamApi;
-import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.idam.Token;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.idam.UserInfo;
 
 @Component
+@Slf4j
 public class IdamService {
 
     private final String systemUserName;
@@ -38,8 +40,8 @@ public class IdamService {
         this.idamApi = idamApi;
     }
 
-    @Cacheable(value = "systemTokenCache")
-    public Token getServiceUserToken() {
+    @Cacheable(value = "systemUserTokenCache", key = "'systemUserTokenCache'")
+    public String getServiceUserToken() {
         Map<String, String> idamAuthDetails = new ConcurrentHashMap<>();
 
         idamAuthDetails.put("grant_type", "password");
@@ -50,10 +52,10 @@ public class IdamService {
         idamAuthDetails.put("password", systemUserPass);
         idamAuthDetails.put("scope", systemUserScope);
 
-        return idamApi.token(idamAuthDetails);
+        return "Bearer " + idamApi.token(idamAuthDetails).getAccessToken();
     }
 
-    @Cacheable(value = "userInfoCache")
+    @Cacheable(value = "userInfoCache", key = "#accessToken")
     public UserInfo getUserInfo(String accessToken) {
         return idamApi.userInfo(accessToken);
     }
