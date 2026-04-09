@@ -22,7 +22,7 @@
       "template": "minimal-application-started.json",
       "replacements": {
         "applicationSubmittedBy": "Legal Representative",
-        "legalRepEmail":"ialegalreporgcreator12@mailnesia.com",
+        "legalRepEmail":"ia.legalrep.a.ccd@gmail.com",
         "isAdmin": "No",
         "isLegalRep": "Yes"
       }
