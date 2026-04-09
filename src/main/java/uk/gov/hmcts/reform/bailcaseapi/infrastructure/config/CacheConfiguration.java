@@ -84,6 +84,7 @@ public class CacheConfiguration {
             return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(tokenCacheConfig)
                 .withCacheConfiguration("systemUserTokenCache", tokenCacheConfig)
+                .withCacheConfiguration("legalRepATokenCache", userInfoCacheConfig)
                 .withCacheConfiguration("userInfoCache", userInfoCacheConfig)
                 .build();
 
