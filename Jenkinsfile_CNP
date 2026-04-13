@@ -33,6 +33,9 @@ def secrets = [
     secret('test-law-firm-a-password', 'TEST_LAW_FIRM_A_PASSWORD'),
     secret('test-adminofficer-username', 'TEST_ADMINOFFICER_USERNAME'),
     secret('test-adminofficer-password', 'TEST_ADMINOFFICER_PASSWORD'),
+    secret('ia-redis-access-key', 'IA_REDIS_ACCESS_KEY'),
+    secret('ia-redis-connection-string', 'IA_REDIS_CONNECTION_STRING'),
+    secret('ia-redis-encryption-key', 'IA_REDIS_ENCRYPTION_KEY'),
 
     secret('test-homeoffice-apc-username', 'TEST_HOMEOFFICE_APC_USERNAME'),
     secret('test-homeoffice-apc-password', 'TEST_HOMEOFFICE_APC_PASSWORD'),

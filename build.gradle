@@ -304,6 +304,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
 
   implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.13'
   implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.13'
@@ -358,6 +359,8 @@ dependencies {
   testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
 
   testImplementation group: 'org.springframework.security', name: 'spring-security-test'
+  testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '2.0.2'
+  testImplementation group: 'org.testcontainers', name: 'testcontainers-junit-jupiter', version: '2.0.2'
 
   testImplementation libraries.junit5
   testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
