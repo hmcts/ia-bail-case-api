@@ -153,8 +153,6 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
     }
 
     private void updateListingLocValueByUsingRefDataLocValue(BailCase bailCase) {
-        bailCase.read(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED);
-
         Value selectedRefDataLocation = bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class)
             .map(DynamicList::getValue).orElse(null);
 
