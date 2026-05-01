@@ -9,6 +9,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,6 +18,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.IdamService;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
@@ -24,13 +26,19 @@ class ImaStatusConfirmationTest {
 
     @Mock
     private Callback<BailCase> callback;
+    @Mock
+    private IdamService idamService;
 
-    private final ImaStatusConfirmation imaStatusConfirmation =
-        new ImaStatusConfirmation();
+    private ImaStatusConfirmation imaStatusConfirmation;
+
+    @BeforeEach
+    void setUp() {
+        imaStatusConfirmation = new ImaStatusConfirmation(idamService);
+    }
 
     @Test
     void should_return_confirmation() {
-
+        when(idamService.getAdminOfficerToken()).thenReturn("none");
         when(callback.getEvent()).thenReturn(Event.IMA_STATUS);
 
         PostSubmitCallbackResponse callbackResponse =
@@ -49,6 +57,30 @@ class ImaStatusConfirmationTest {
             .contains(
                 "## What happens next\n\n"
                 + "No further action is required.\n\n");
+
+    }
+
+    @Test
+    void should_return_confirmation_two() {
+        when(idamService.getAdminOfficerToken()).thenReturn("not set");
+        when(callback.getEvent()).thenReturn(Event.IMA_STATUS);
+
+        PostSubmitCallbackResponse callbackResponse =
+            imaStatusConfirmation.handle(callback);
+
+        assertNotNull(callbackResponse);
+        assertTrue(callbackResponse.getConfirmationHeader().isPresent());
+        assertTrue(callbackResponse.getConfirmationBody().isPresent());
+
+        assertThat(
+            callbackResponse.getConfirmationHeader().get())
+            .contains("IMA status updated");
+
+        assertThat(
+            callbackResponse.getConfirmationBody().get())
+            .contains(
+                "## What happens next\n\n"
+                    + "No further action is required.\n\n");
 
     }
 

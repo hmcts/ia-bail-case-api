@@ -8,9 +8,16 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PostSubmitCallbackHandler;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.IdamService;
 
 @Component
 public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase> {
+
+    private final IdamService idamService;
+
+    public ImaStatusConfirmation(IdamService idamService) {
+        this.idamService = idamService;
+    }
 
     @Override
     public boolean canHandle(
@@ -30,7 +37,11 @@ public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase
 
         PostSubmitCallbackResponse postSubmitResponse =
             new PostSubmitCallbackResponse();
-
+        String adminOfficerToken = idamService.getAdminOfficerToken();
+        System.out.println(adminOfficerToken);
+        if (adminOfficerToken.equals("not set")) {
+            // noop
+        }
         String confirmationHeader = "# IMA status updated";
         String confirmationBody =
             "## What happens next\n\n"
