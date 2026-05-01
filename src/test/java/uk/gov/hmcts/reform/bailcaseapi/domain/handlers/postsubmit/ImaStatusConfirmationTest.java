@@ -61,6 +61,30 @@ class ImaStatusConfirmationTest {
     }
 
     @Test
+    void should_return_confirmation_two() {
+        when(idamService.getAdminOfficerToken()).thenReturn("not set");
+        when(callback.getEvent()).thenReturn(Event.IMA_STATUS);
+
+        PostSubmitCallbackResponse callbackResponse =
+            imaStatusConfirmation.handle(callback);
+
+        assertNotNull(callbackResponse);
+        assertTrue(callbackResponse.getConfirmationHeader().isPresent());
+        assertTrue(callbackResponse.getConfirmationBody().isPresent());
+
+        assertThat(
+            callbackResponse.getConfirmationHeader().get())
+            .contains("IMA status updated");
+
+        assertThat(
+            callbackResponse.getConfirmationBody().get())
+            .contains(
+                "## What happens next\n\n"
+                    + "No further action is required.\n\n");
+
+    }
+
+    @Test
     void should_not_handle_invalid_event() {
         when(callback.getEvent()).thenReturn(Event.SUBMIT_APPLICATION);
         AssertionsForClassTypes.assertThatThrownBy(() -> imaStatusConfirmation.handle(callback))
