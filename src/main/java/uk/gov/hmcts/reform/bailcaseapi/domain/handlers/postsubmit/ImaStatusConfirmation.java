@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
 import static java.util.Objects.requireNonNull;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
@@ -30,7 +31,7 @@ public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase
 
         PostSubmitCallbackResponse postSubmitResponse =
             new PostSubmitCallbackResponse();
-
+        String adminOfficerToken = getAdminOfficerToken();
         String confirmationHeader = "# IMA status updated";
         String confirmationBody =
             "## What happens next\n\n"
@@ -41,5 +42,10 @@ public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase
         postSubmitResponse.setConfirmationBody(confirmationBody);
 
         return postSubmitResponse;
+    }
+
+    @Cacheable(value = "adminOfficerTokenCache", key = "'adminOfficerTokenCache'")
+    private String getAdminOfficerToken() {
+        return "not set";
     }
 }
