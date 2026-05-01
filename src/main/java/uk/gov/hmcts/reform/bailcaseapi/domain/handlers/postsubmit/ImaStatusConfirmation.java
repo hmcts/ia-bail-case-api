@@ -32,6 +32,9 @@ public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase
         PostSubmitCallbackResponse postSubmitResponse =
             new PostSubmitCallbackResponse();
         String adminOfficerToken = getAdminOfficerToken();
+        if (adminOfficerToken.equals("not set")) {
+            System.out.println("Admin officer token is not set. Please set the admin officer token in the cache.");
+        }
         String confirmationHeader = "# IMA status updated";
         String confirmationBody =
             "## What happens next\n\n"
