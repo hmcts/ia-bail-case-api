@@ -5,7 +5,7 @@ properties([
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 
-@Library("Infrastructure")
+@Library("Infrastructure@preview01") _
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 
