@@ -38,6 +38,7 @@ public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase
         PostSubmitCallbackResponse postSubmitResponse =
             new PostSubmitCallbackResponse();
         String adminOfficerToken = idamService.getAdminOfficerToken();
+        System.out.println(adminOfficerToken);
         if (adminOfficerToken.equals("not set")) {
             // noop
         }
