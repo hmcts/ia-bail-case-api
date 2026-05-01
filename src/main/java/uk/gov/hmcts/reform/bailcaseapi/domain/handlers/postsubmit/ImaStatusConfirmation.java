@@ -2,16 +2,22 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.postsubmit;
 
 import static java.util.Objects.requireNonNull;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PostSubmitCallbackHandler;
+import uk.gov.hmcts.reform.bailcaseapi.domain.service.IdamService;
 
 @Component
 public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase> {
+
+    private final IdamService idamService;
+
+    public ImaStatusConfirmation(IdamService idamService) {
+        this.idamService = idamService;
+    }
 
     @Override
     public boolean canHandle(
@@ -31,7 +37,7 @@ public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase
 
         PostSubmitCallbackResponse postSubmitResponse =
             new PostSubmitCallbackResponse();
-        String adminOfficerToken = getAdminOfficerToken();
+        String adminOfficerToken = idamService.getAdminOfficerToken();
         if (adminOfficerToken.equals("not set")) {
             System.out.println("Admin officer token is not set. Please set the admin officer token in the cache.");
         }
@@ -45,10 +51,5 @@ public class ImaStatusConfirmation implements PostSubmitCallbackHandler<BailCase
         postSubmitResponse.setConfirmationBody(confirmationBody);
 
         return postSubmitResponse;
-    }
-
-    @Cacheable(value = "adminOfficerTokenCache", key = "'adminOfficerTokenCache'")
-    private String getAdminOfficerToken() {
-        return "not set";
     }
 }
