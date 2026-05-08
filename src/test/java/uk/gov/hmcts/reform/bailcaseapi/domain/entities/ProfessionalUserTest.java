@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProfessionalUserTest {
+class ProfessionalUserTest {
 
     private final String userIdentifier = "someUserId1";
     private final String firstName = "someFirstName";
@@ -32,7 +32,7 @@ public class ProfessionalUserTest {
     );
 
     @Test
-    public void should_hold_onto_values() {
+    void should_hold_onto_values() {
 
         assertEquals(userIdentifier, professionalUser.getUserIdentifier());
         assertEquals(firstName, professionalUser.getFirstName());
