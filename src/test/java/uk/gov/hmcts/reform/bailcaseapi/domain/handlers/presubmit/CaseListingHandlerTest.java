@@ -341,7 +341,7 @@ class CaseListingHandlerTest {
                 "60"
             ));
         List<IdValue<PreviousListingDetails>> idValueStoredPrevListingDetails = new ArrayList<>();
-        idValueStoredPrevListingDetails.add(new IdValue<>("1", storedPrevListingDetails.get(0)));
+        idValueStoredPrevListingDetails.add(new IdValue<>("1", storedPrevListingDetails.getFirst()));
         when(bailCase.read(PREVIOUS_LISTING_DETAILS)).thenReturn(Optional.of(idValueStoredPrevListingDetails));
 
         PreSubmitCallbackResponse<BailCase> response =

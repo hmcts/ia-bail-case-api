@@ -50,7 +50,7 @@ class OrganisationEntityResponseTest {
         assertEquals("John", organisationEntityResponse.getSuperUser().getFirstName());
         assertEquals("Doe", organisationEntityResponse.getSuperUser().getLastName());
         assertEquals("john.doe@example.com", organisationEntityResponse.getSuperUser().getEmail());
-        assertEquals("NUM1", organisationEntityResponse.getPaymentAccount().get(0));
+        assertEquals("NUM1", organisationEntityResponse.getPaymentAccount().getFirst());
         assertEquals("NUM2", organisationEntityResponse.getPaymentAccount().get(1));
     }
 

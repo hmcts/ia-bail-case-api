@@ -58,7 +58,7 @@ class EditDocsCaseNoteServiceTest extends SpringBootIntegrationTest {
         Optional<List<IdValue<CaseNote>>> idCaseNoteValues =
             bailCaseAfterWithDocumentDeleted.read(BailCaseFieldDefinition.CASE_NOTES);
         if (idCaseNoteValues.isPresent()) {
-            IdValue<CaseNote> caseNoteIdValue = idCaseNoteValues.get().get(0);
+            IdValue<CaseNote> caseNoteIdValue = idCaseNoteValues.get().getFirst();
             CaseNote caseNote = caseNoteIdValue.getValue();
             assertCaseNote(caseNote);
         } else {

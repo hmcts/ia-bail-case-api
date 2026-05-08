@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.util;
 
-import com.launchdarkly.sdk.LDUser;
+import com.launchdarkly.sdk.LDContext;
 import com.launchdarkly.sdk.server.interfaces.LDClientInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -34,13 +34,11 @@ public class SystemDocumentManagementUploader {
     public boolean getValue(String key, boolean defaultValue) {
 
         UserDetails userDetails = userDetailsProvider.getUserDetails();
-
-        LDUser ldUser =  new LDUser.Builder(userDetails.getId())
-            .firstName(userDetails.getForename())
-            .lastName(userDetails.getSurname())
-            .email(userDetails.getEmailAddress())
+        LDContext ldContext = LDContext.builder(userDetails.getId())
+            .set("firstName", userDetails.getForename())
+            .set("lastName", userDetails.getSurname())
+            .set("email", userDetails.getEmailAddress())
             .build();
-
-        return ldClient.boolVariation(key, ldUser, defaultValue);
+        return ldClient.boolVariation(key, ldContext, defaultValue);
     }
 }

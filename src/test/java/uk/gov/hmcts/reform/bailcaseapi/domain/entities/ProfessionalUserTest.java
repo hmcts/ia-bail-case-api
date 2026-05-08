@@ -39,7 +39,7 @@ public class ProfessionalUserTest {
         assertEquals(lastName, professionalUser.getLastName());
         assertEquals(email, professionalUser.getEmail());
         assertThat(professionalUser.getRoles()).hasSize(1);
-        assertThat(professionalUser.getRoles().get(0)).isEqualTo(userRole);
+        assertThat(professionalUser.getRoles().getFirst()).isEqualTo(userRole);
         assertEquals(idamStatus, professionalUser.getIdamStatus());
         assertEquals(idamStatusCode, professionalUser.getIdamStatusCode());
         assertEquals(idamMessage, professionalUser.getIdamMessage());
