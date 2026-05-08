@@ -10,7 +10,7 @@ plugins {
   id 'org.flywaydb.flyway' version '5.2.4'
   id 'org.owasp.dependencycheck' version '10.0.4'
   id 'org.sonarqube' version '4.4.1.3373'
-  id 'org.springframework.boot' version '3.4.13'
+  id 'org.springframework.boot' version '3.5.14'
   id 'pmd'
   id 'uk.gov.hmcts.java' version '0.12.68'
   id 'org.gradle.test-retry' version '1.6.4'
@@ -130,9 +130,11 @@ configurations {
   contractTestRuntime.extendsFrom testRuntime
 }
 
-checkstyle.toolVersion = '10.12.0'
-checkstyle.configFile = new File(rootDir, 'config/checkstyle/checkstyle.xml')
-checkstyle.maxWarnings(5)
+checkstyle {
+  toolVersion = '10.12.0'
+  configFile = new File(rootDir, 'config/checkstyle/checkstyle.xml')
+  maxWarnings(0)
+}
 
 pmd {
   toolVersion = '6.55.0'
@@ -243,7 +245,7 @@ repositories {
 
 dependencyManagement {
   imports {
-    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2024.0.3'
+    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2025.0.2'
     mavenBom 'com.fasterxml.jackson:jackson-bom:2.19.1'
   }
   dependencies {
@@ -275,7 +277,7 @@ dependencyManagement {
       entry 'jackson-module-parameter-names'
     }
 
-    dependencySet(group: 'org.springframework.security', version: '6.4.13') {
+    dependencySet(group: 'org.springframework.security', version: '6.5.10') {
       entry 'spring-security-oauth2-client'
       entry 'spring-security-oauth2-core'
       entry 'spring-security-oauth2-jose'
