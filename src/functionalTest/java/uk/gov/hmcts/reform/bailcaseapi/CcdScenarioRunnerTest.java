@@ -212,7 +212,6 @@ public class CcdScenarioRunnerTest {
                         .body(requestBody)
                         .when()
                         .post(requestUri)
-                        .peek()
                         .then()
                         .statusCode(expectedStatus)
                         .and()
