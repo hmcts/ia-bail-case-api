@@ -1,7 +1,5 @@
 buildscript {
   dependencies {
-    classpath("org.yaml:snakeyaml:2.4")
-    classpath("net.serenity-bdd:serenity-gradle-plugin:3.6.22")
     classpath("au.com.dius.pact:au.com.dius.pact.gradle.plugin:4.4.0-beta.1")
   }
 }
@@ -10,7 +8,7 @@ plugins {
   id 'au.com.dius.pact' version '4.6.17'
   id 'application'
   id 'checkstyle'
-  id 'com.github.ben-manes.versions' version '0.50.0'
+  id 'com.github.ben-manes.versions' version '0.51.0'
   id "info.solidsoft.pitest" version '1.9.0'
   id "io.freefair.lombok" version '6.6.3'
   id 'io.spring.dependency-management' version '1.1.7'
@@ -20,40 +18,24 @@ plugins {
   id 'org.sonarqube' version '4.4.1.3373'
   id 'org.springframework.boot' version '2.7.18'
   id 'pmd'
-  id 'uk.gov.hmcts.java' version '0.12.67'
-  id 'org.gradle.test-retry' version '1.6.2'
+  id 'uk.gov.hmcts.java' version '0.12.68'
+  id 'org.gradle.test-retry' version '1.6.4'
+  id 'net.serenity-bdd.serenity-gradle-plugin' version '3.6.22'
 }
 
 apply plugin: 'java'
-apply plugin: 'net.serenity-bdd.serenity-gradle-plugin'
 apply plugin: 'project-report'
 apply plugin: 'idea'
 
-def versions = [
-  jupiter            : '5.13.3',
-  junitPlatform      : '1.13.3',
-  pitest             : '1.9.0',
-  gradlePitest       : '1.9.0',
-  reformLogging      : '6.1.9',
-  reformHealthStarter: '0.0.5',
-  restAssured        : '5.5.5',
-  serenity           : '3.9.8',
-  springDoc          : '1.8.0',
-  sonarPitest        : '0.5',
-  springHystrix      : '2.2.10.RELEASE',
-  pact_version       : '4.1.43',
-  snakeyaml          : '2.4'
-]
-
 ext.libraries = [
   junit5: [
-    "org.junit.jupiter:junit-jupiter:${versions.jupiter}",
-    "org.junit.jupiter:junit-jupiter-api:${versions.jupiter}",
-    "org.junit.jupiter:junit-jupiter-engine:${versions.jupiter}",
-    "org.junit.jupiter:junit-jupiter-params:${versions.jupiter}",
-    "org.junit.platform:junit-platform-commons:${versions.junitPlatform}",
-    "org.junit.platform:junit-platform-engine:${versions.junitPlatform}",
-    "org.junit.platform:junit-platform-launcher:${versions.junitPlatform}"
+    "org.junit.jupiter:junit-jupiter:5.13.3",
+    "org.junit.jupiter:junit-jupiter-api:5.13.3",
+    "org.junit.jupiter:junit-jupiter-engine:5.13.3",
+    "org.junit.jupiter:junit-jupiter-params:5.13.3",
+    "org.junit.platform:junit-platform-commons:1.13.3",
+    "org.junit.platform:junit-platform-engine:1.13.3",
+    "org.junit.platform:junit-platform-launcher:1.13.3"
   ]
 ]
 mainClassName = 'uk.gov.hmcts.reform.bailcaseapi.Application'
@@ -245,7 +227,7 @@ repositories {
 dependencyManagement {
   dependencies {
 
-    dependencySet(group: 'org.yaml', version: versions.snakeyaml) {
+    dependencySet(group: 'org.yaml', version: '2.4') {
       entry 'snakeyaml'
     }
 
@@ -311,9 +293,9 @@ dependencies {
 
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.48'
 
-  implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: '6.1.9'
 
-  implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
+  implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.8.0'
 
   implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
 
@@ -349,22 +331,21 @@ dependencies {
 
   testImplementation group: 'com.github.hmcts', name: 'document-management-client', version: '7.0.1'
 
-  testImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
-  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
-  testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-  testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
-  testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
-  testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
+  testImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: '5.5.5'
+  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.5.5'
+  testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: '3.9.8'
+  testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: '3.9.8'
+  testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: '3.9.8'
+  testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: '3.9.8'
   testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
 
   testImplementation group: 'org.springframework.security', name: 'spring-security-test'
-  testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '2.0.2'
-  testImplementation group: 'org.testcontainers', name: 'testcontainers-junit-jupiter', version: '2.0.2'
+  testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '2.0.5'
+  testImplementation group: 'org.testcontainers', name: 'testcontainers-junit-jupiter', version: '2.0.5'
 
   testImplementation libraries.junit5
-  testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
-  testImplementation "info.solidsoft.gradle.pitest:gradle-pitest-plugin:${versions.pitest}"
-  testImplementation "org.codehaus.sonar-plugins:sonar-pitest-plugin:${versions.sonarPitest}"
+  testImplementation group: 'org.pitest', name: 'pitest', version: '1.9.0'
+  testImplementation "info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.9.0"
 
   testImplementation group: 'com.github.hmcts', name: 'ccd-case-document-am-client', version: '1.59.2'
 
@@ -381,46 +362,46 @@ dependencies {
 
 
   //pact contract testing
-  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: versions.pact_version
-  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
-  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: versions.pact_version
-  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: versions.pact_version
-  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: versions.pact_version
+  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'java8', version: '4.1.43'
+  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: '4.1.43'
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: '4.1.43'
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: '4.1.43'
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: '4.1.43'
   contractTestImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-  contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiter
-  contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.jupiter
-  contractTestRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version : versions.jupiter
+  contractTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.13.3'
+  contractTestCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.13.3'
+  contractTestRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version : '5.13.3'
 
   testImplementation group: 'org.apiguardian', name: 'apiguardian-api', version: '1.1.2'
 
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.12.4'
 
-  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.9', classifier: 'all', {
+  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.10', classifier: 'all', {
     exclude group: 'commons-io', module: 'commons-io'
     exclude group: 'org.apache.commons', module: 'commons-lang3'
   }
 
-  testImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
+  testImplementation(group: 'org.yaml', name: 'snakeyaml', version: '2.4') {
     version {
-      strictly(versions.snakeyaml)
+      strictly('2.4')
     }
   }
 
-  integrationTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
+  integrationTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: '2.4') {
     version {
-      strictly(versions.snakeyaml)
+      strictly('2.4')
     }
   }
 
-  functionalTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
+  functionalTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: '2.4') {
     version {
-      strictly(versions.snakeyaml)
+      strictly('2.4')
     }
   }
 
-  contractTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: versions.snakeyaml) {
+  contractTestImplementation(group: 'org.yaml', name: 'snakeyaml', version: '2.4') {
     version {
-      strictly(versions.snakeyaml)
+      strictly('2.4')
     }
   }
 
