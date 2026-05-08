@@ -77,7 +77,7 @@ class CaseListingHandlerTest {
     @Captor
     private ArgumentCaptor<BailCaseFieldDefinition> bailExtractorCaptor;
     @Captor
-    private ArgumentCaptor<String> bailValueCaptor;
+    private ArgumentCaptor<Object> bailValueCaptor;
 
     private CaseListingHandler caseListingHandler;
     private final String caseListHearingDate = "2023-12-01T12:00:00";
@@ -140,15 +140,19 @@ class CaseListingHandlerTest {
         );
 
         List<BailCaseFieldDefinition> extractors = bailExtractorCaptor.getAllValues();
-        List<String> bailCaseValues = bailValueCaptor.getAllValues();
+        List<Object> bailCaseValues = bailValueCaptor.getAllValues();
 
         verify(bailCase, times(1)).write(UPLOAD_BAIL_SUMMARY_ACTION_AVAILABLE, YesOrNo.YES);
         verify(bailCase, times(1)).write(eq(BAIL_SUMMARY_DUE_DATE), anyString());
-        assertThat(bailCaseValues.get(extractors.indexOf(SEND_DIRECTION_DESCRIPTION)))
+        assertThat(bailCaseValues.get(extractors.indexOf(SEND_DIRECTION_DESCRIPTION)).toString())
             .containsSequence("You must upload the Bail Summary by the date indicated below.");
         verify(bailCase, times(1)).write(SEND_DIRECTION_LIST, "Home Office");
         verify(bailCase, times(1)).write(
             DATE_OF_COMPLIANCE,
+            localDueDate.toString()
+        );
+        verify(bailCase, times(1)).write(
+            BAIL_SUMMARY_DUE_DATE,
             localDueDate.toString()
         );
         verify(hearingIdListProcessor).processHearingId(bailCase);

@@ -2,11 +2,10 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.Test;
 
 public class ProfessionalUserTest {
 
