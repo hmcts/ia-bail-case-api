@@ -1,5 +1,11 @@
 package uk.gov.hmcts.reform.bailcaseapi.consumer.refdata;
 
+import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
@@ -15,8 +21,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
@@ -24,12 +30,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ref.OrganisationEntityResponse;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.ProfessionalOrganisationRetriever;
-
-import static au.com.dius.pact.consumer.dsl.LambdaDsl.newJsonBody;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -46,9 +46,9 @@ public class ProfessionalOrganisationConsumerTest {
     static final String SERVICE_AUTH_TOKEN = "someServiceAuthToken";
     static final String IDAM_ID_OF_USER_CREATING_CASE = "0a5874a4-3f38-4bbd-ba4c";
 
-    @MockBean
+    @MockitoBean
     AuthTokenGenerator serviceAuthTokenGenerator;
-    @MockBean
+    @MockitoBean
     UserDetailsProvider userDetailsProvider;
     @Mock
     UserDetails userDetails;
