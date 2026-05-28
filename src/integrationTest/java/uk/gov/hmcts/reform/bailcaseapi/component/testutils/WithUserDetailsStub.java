@@ -19,7 +19,7 @@ public interface WithUserDetailsStub {
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody("{\"sub\":\"someone@somewhere.com\","
-                        + "\"uid\":\"admin-officer-uid-999\",\"roles\":[\"caseworker-ia\",\"caseworker-ia-admofficer\"],"
+                        + "\"uid\":\"admin-officer-uid-123\",\"roles\":[\"caseworker-ia\",\"caseworker-ia-admofficer\"],"
                         + "\"name\":null,\"given_name\":\"Admin\",\"family_name\":\"Officer\"}")
                     .build()));
 
