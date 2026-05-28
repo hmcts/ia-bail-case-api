@@ -233,6 +233,7 @@ public class CcdScenarioRunnerTest {
                                           actualResponse
                                       )
                 );
+                break;
             } catch (Error | RetryableException | NullPointerException e) {
                 System.out.println("Scenario failed with error " + e.getMessage());
                 if (responseForError != null) {
