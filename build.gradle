@@ -99,6 +99,10 @@ processContractTestResources {
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+processIntegrationTestResources {
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 configurations {
   integrationTestImplementation.extendsFrom testImplementation
   integrationTestCompile.extendsFrom testCompile
