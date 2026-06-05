@@ -15,9 +15,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.bailcaseapi.Application;
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.wiremock.DocumentsApiCallbackTransformer;
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.wiremock.NotificationsApiCallbackTransformer;
+
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
 @SpringBootTest(classes = {
@@ -46,7 +49,10 @@ public abstract class SpringBootIntegrationTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
-    protected static WireMockServer server;
+    @Autowired
+    private WebApplicationContext wac;
+
+    protected WireMockServer server;
 
     @BeforeAll
     public void spinUp() {
@@ -56,6 +62,11 @@ public abstract class SpringBootIntegrationTest {
                                                     new NotificationsApiCallbackTransformer())
                                         .port(8990));
         server.start();
+    }
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = webAppContextSetup(wac).build();
     }
 
     protected IaBailCaseApiClient iaBailCaseApiClient;
