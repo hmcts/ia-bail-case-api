@@ -5,7 +5,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ListingEvent.INITIAL_LISTING;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.NO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
 import java.time.LocalDate;
@@ -24,7 +23,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.PreviousListingDetails;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.DueDateService;
@@ -83,20 +81,23 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
                 .toString();
 
             bailCase.write(SEND_DIRECTION_DESCRIPTION,
-                           "You must upload the Bail Summary by the date indicated below.\n"
-                               + "If the applicant does not have a legal representative, "
-                               + "you must also send them a copy of the Bail Summary.\n"
-                               + "The Bail Summary must include:\n"
-                               + "\n"
-                               + "- the date when the current period of immigration detention started\n"
-                               + "- any concerns in relation to the factors listed in paragraph 3(2) of Schedule "
-                               + "10 to the 2016 Act\n"
-                               + "- the bail conditions being sought should bail be granted\n"
-                               + "- whether removal directions are in place\n"
-                               + "- whether the applicant’s release is subject to licence, and if so the relevant details\n"
-                               + "- any other relevant information\n\n"
-                               + "Next steps\n"
-                               + "Sign in to your account to upload the Bail Summary.\n"
+                           """
+                           You must upload the Bail Summary by the date indicated below.
+                           If the applicant does not have a legal representative, \
+                           you must also send them a copy of the Bail Summary.
+                           The Bail Summary must include:
+
+                           - the date when the current period of immigration detention started
+                           - any concerns in relation to the factors listed in paragraph 3(2) of Schedule \
+                           10 to the 2016 Act
+                           - the bail conditions being sought should bail be granted
+                           - whether removal directions are in place
+                           - whether the applicant’s release is subject to licence, and if so the relevant details
+                           - any other relevant information
+
+                           Next steps
+                           Sign in to your account to upload the Bail Summary.
+                           """
             );
 
             bailCase.write(SEND_DIRECTION_LIST, "Home Office");
@@ -155,22 +156,17 @@ public class CaseListingHandler implements PreSubmitCallbackHandler<BailCase> {
     }
 
     private void updateListingLocValueByUsingRefDataLocValue(BailCase bailCase) {
-        YesOrNo isBailsLocationRefDataEnabled = bailCase.read(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YesOrNo.class)
-            .orElse(NO);
+        Value selectedRefDataLocation = bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class)
+            .map(DynamicList::getValue).orElse(null);
 
-        if (isBailsLocationRefDataEnabled == YES) {
-            Value selectedRefDataLocation = bailCase.read(REF_DATA_LISTING_LOCATION, DynamicList.class)
-                .map(DynamicList::getValue).orElse(null);
+        if (selectedRefDataLocation != null) {
+            saveRefDataListingLocationDetail(bailCase, selectedRefDataLocation.getCode());
 
-            if (selectedRefDataLocation != null) {
-                saveRefDataListingLocationDetail(bailCase, selectedRefDataLocation.getCode());
+            ListingHearingCentre listingHearingCentre = ListingHearingCentre.getEpimsIdMapping()
+                .get(selectedRefDataLocation.getCode());
 
-                ListingHearingCentre listingHearingCentre = ListingHearingCentre.getEpimsIdMapping()
-                    .get(selectedRefDataLocation.getCode());
-
-                if (listingHearingCentre != null && listingHearingCentre.getValue() != null) {
-                    bailCase.write(LISTING_LOCATION, listingHearingCentre);
-                }
+            if (listingHearingCentre != null && listingHearingCentre.getValue() != null) {
+                bailCase.write(LISTING_LOCATION, listingHearingCentre);
             }
         }
     }
