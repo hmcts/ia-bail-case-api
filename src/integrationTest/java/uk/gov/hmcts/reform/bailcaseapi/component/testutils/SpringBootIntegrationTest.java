@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,16 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.bailcaseapi.Application;
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.wiremock.DocumentsApiCallbackTransformer;
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.wiremock.NotificationsApiCallbackTransformer;
-
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
 @SpringBootTest(classes = {
@@ -51,9 +46,6 @@ public abstract class SpringBootIntegrationTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
-    @Autowired
-    private WebApplicationContext wac;
-
     protected static WireMockServer server;
 
     @BeforeAll
@@ -64,14 +56,6 @@ public abstract class SpringBootIntegrationTest {
                                                     new NotificationsApiCallbackTransformer())
                                         .port(8990));
         server.start();
-    }
-
-    @BeforeEach
-    void setUp() {
-        WebRequestTrackingFilter filter;
-        filter = new WebRequestTrackingFilter();
-        filter.init(new MockFilterConfig());
-        mockMvc = webAppContextSetup(wac).addFilters(filter).build();
     }
 
     protected IaBailCaseApiClient iaBailCaseApiClient;
