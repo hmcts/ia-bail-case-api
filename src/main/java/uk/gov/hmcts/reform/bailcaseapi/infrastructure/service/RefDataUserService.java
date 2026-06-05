@@ -24,6 +24,8 @@ public class RefDataUserService {
     public static final String SERVICE_ID = "BFA1";
     public static final String IS_ACTIVE_FLAG = "Y";
 
+    private CommonDataResponse commonDataResponse;
+
     public RefDataUserService(AuthTokenGenerator authTokenGenerator,
                               CommonDataRefApi commonDataRefApi,
                               UserDetails userDetails) {
@@ -34,7 +36,6 @@ public class RefDataUserService {
 
     public CommonDataResponse retrieveCategoryValues(String categoryId, String isChildRequired) {
         log.info("retrieveCategoryValues {}", categoryId);
-        CommonDataResponse commonDataResponse = null;
         try {
             commonDataResponse = commonDataRefApi.getAllCategoryValuesByCategoryId(
                 userDetails.getAccessToken(),
@@ -55,8 +56,8 @@ public class RefDataUserService {
 
         if (null != commonDataResponse) {
             filteredCategoryValues = commonDataResponse.getCategoryValues().stream()
-                    .filter(response -> response.getCategoryKey().equalsIgnoreCase(categoryId))
-                    .collect(Collectors.toList());
+                .filter(response -> response.getCategoryKey().equalsIgnoreCase(categoryId))
+                .collect(Collectors.toList());
 
             filteredCategoryValues.sort((a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
         }
@@ -76,9 +77,9 @@ public class RefDataUserService {
 
         if (null != commonDataResponse) {
             filteredCategoryValues = commonDataResponse.getCategoryValues().stream()
-                    .filter(response -> response.getCategoryKey().equalsIgnoreCase(categoryId))
-                    .filter(response -> IS_ACTIVE_FLAG.equals(response.getActiveFlag()))
-                    .collect(Collectors.toList());
+                .filter(response -> response.getCategoryKey().equalsIgnoreCase(categoryId))
+                .filter(response -> IS_ACTIVE_FLAG.equals(response.getActiveFlag()))
+                .collect(Collectors.toList());
 
             filteredCategoryValues.sort((a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
         }
@@ -87,6 +88,3 @@ public class RefDataUserService {
     }
 
 }
-
-
-
