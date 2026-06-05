@@ -134,7 +134,7 @@ class CaseListingHandlerTest {
 
         assertNotNull(response);
         assertEquals(bailCase, response.getData());
-        verify(bailCase, times(5)).write(
+        verify(bailCase, times(4)).write(
             bailExtractorCaptor.capture(),
             bailValueCaptor.capture()
         );
