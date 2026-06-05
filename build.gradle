@@ -316,7 +316,7 @@ dependencies {
 
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.48'
 
-  implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.reformLogging
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: '6.1.9'
 
   implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: versions.springDoc
 
