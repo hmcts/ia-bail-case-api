@@ -76,6 +76,8 @@ public class LegalRepOrganisationFormatter implements PreSubmitCallbackHandler<B
 
             setupCaseCreation(callback, organisationEntityResponse.getOrganisationIdentifier());
             setupLegalRepCompanyAddress(callback, organisationEntityResponse);
+        } else {
+            setupCaseCreation(callback, null);
         }
 
         return new PreSubmitCallbackResponse<>(callback.getCaseDetails().getCaseData());
