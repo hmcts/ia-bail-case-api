@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProfessionalUserTest {
@@ -46,4 +47,34 @@ class ProfessionalUserTest {
 
     }
 
+    @Test
+    void should_return_immutable_roles_list() {
+        assertThatThrownBy(() -> professionalUser.getRoles().add("new-role"))
+            .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void should_not_be_affected_by_modifications_to_original_roles_list() {
+        List<String> mutableRoles = new ArrayList<>(List.of("role1"));
+
+        ProfessionalUser user = new ProfessionalUser(
+            userIdentifier, firstName, lastName, email,
+            mutableRoles, idamStatus, idamStatusCode, idamMessage
+        );
+
+        mutableRoles.add("role2");
+
+        assertThat(user.getRoles()).hasSize(1);
+        assertThat(user.getRoles().getFirst()).isEqualTo("role1");
+    }
+
+    @Test
+    void should_return_empty_list_when_roles_is_null() {
+        ProfessionalUser user = new ProfessionalUser(
+            userIdentifier, firstName, lastName, email,
+            null, idamStatus, idamStatusCode, idamMessage
+        );
+
+        assertThat(user.getRoles()).isEmpty();
+    }
 }

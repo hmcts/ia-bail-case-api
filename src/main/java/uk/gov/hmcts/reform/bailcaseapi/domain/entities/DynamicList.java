@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import java.util.Collections;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
@@ -24,12 +25,12 @@ public class DynamicList {
     }
 
     public List<Value> getListItems() {
-        return listItems;
+        return listItems == null ? null : Collections.unmodifiableList(listItems);
     }
 
     public DynamicList(Value value, List<Value> listItems) {
         this.value = value;
-        this.listItems = listItems;
+        this.listItems = listItems == null ? null : List.copyOf(listItems);
     }
 
     public Value getValue() {
