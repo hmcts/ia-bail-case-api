@@ -95,7 +95,6 @@ public class LegalRepOrganisationFormatterTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
-        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
         when(callback.getCaseDetails().getId()).thenReturn(ccdCaseId);
 
         when(professionalOrganisationRetriever.retrieve()).thenReturn(organisationEntityResponse);
@@ -145,7 +144,6 @@ public class LegalRepOrganisationFormatterTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
-        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
         when(callback.getCaseDetails().getId()).thenReturn(ccdCaseId);
 
         when(professionalOrganisationRetriever.retrieve()).thenReturn(organisationEntityResponse);
@@ -184,7 +182,6 @@ public class LegalRepOrganisationFormatterTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
-        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
         when(professionalOrganisationRetriever.retrieve()).thenReturn(null);
 
         PreSubmitCallbackResponse<BailCase> response =
@@ -196,49 +193,6 @@ public class LegalRepOrganisationFormatterTest {
         assertEquals(bailCase, response.getData());
 
         verify(bailCase, times(0)).write(LOCAL_AUTHORITY_POLICY, organisationPolicy);
-    }
-
-    @Test
-    void it_can_handle_callback_when_user_is_LR() {
-
-        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
-
-        for (Event event : Event.values()) {
-
-            when(callback.getEvent()).thenReturn(event);
-
-            for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
-
-                boolean canHandle = legalRepOrganisationFormatter.canHandle(callbackStage, callback);
-
-                if (event == Event.START_APPLICATION
-                    && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT) {
-
-                    assertTrue(canHandle);
-                } else {
-                    assertFalse(canHandle);
-                }
-            }
-            reset(callback);
-        }
-    }
-
-    @Test
-    void it_can_not_handle_callback_if_user_not_LR() {
-
-        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.ADMIN_OFFICER);
-
-        for (Event event : Event.values()) {
-
-            when(callback.getEvent()).thenReturn(event);
-
-            for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
-
-                assertFalse(legalRepOrganisationFormatter.canHandle(callbackStage, callback));
-
-            }
-            reset(callback);
-        }
     }
 
     @Test
