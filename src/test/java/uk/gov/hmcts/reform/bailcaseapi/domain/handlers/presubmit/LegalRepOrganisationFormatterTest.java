@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -188,6 +189,34 @@ public class LegalRepOrganisationFormatterTest {
         assertEquals(bailCase, response.getData());
 
         verify(bailCase, times(0)).write(LOCAL_AUTHORITY_POLICY, organisationPolicy);
+    }
+
+
+    @Test
+    void should_write_skeleton_local_authority_policy() {
+
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+
+        PreSubmitCallbackResponse<BailCase> response =
+            legalRepOrganisationFormatter.handle(
+                PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
+                callback
+            );
+
+        assertNotNull(response);
+        assertEquals(bailCase, response.getData());
+
+        OrganisationPolicy skeletonPolicy = OrganisationPolicy.builder()
+            .organisation(Organisation.builder()
+                              .organisationID(null)
+                              .build()
+            )
+            .orgPolicyCaseAssignedRole("[LEGALREPRESENTATIVE]")
+            .build();
+
+        verify(bailCase, times(1)).write(LOCAL_AUTHORITY_POLICY, skeletonPolicy);
     }
 
     @Test
