@@ -48,8 +48,7 @@ public class LegalRepOrganisationFormatter implements PreSubmitCallbackHandler<B
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-               && callback.getEvent() == Event.START_APPLICATION
-               && isLegalRep(userDetails, userDetailsHelper);
+               && callback.getEvent() == Event.START_APPLICATION;
     }
 
     @Override
@@ -77,6 +76,8 @@ public class LegalRepOrganisationFormatter implements PreSubmitCallbackHandler<B
             setupCaseCreation(callback, organisationEntityResponse.getOrganisationIdentifier());
             setupLegalRepCompanyAddress(callback, organisationEntityResponse);
         } else {
+            log.info("PRD endpoint called for caseId [{}], organisation is null",
+                     callback.getCaseDetails().getId());
             setupCaseCreation(callback, null);
         }
 
