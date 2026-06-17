@@ -13,12 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.LegRepAddressUk;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Organisation;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.OrganisationPolicy;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -54,14 +52,12 @@ public class LegalRepOrganisationFormatterTest {
     @Mock private Callback<BailCase> callback;
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
-    @Mock private UserDetails userDetails;
-    @Mock private UserDetailsHelper userDetailsHelper;
 
     @BeforeEach
     public void setUp() throws Exception {
 
         legalRepOrganisationFormatter = new LegalRepOrganisationFormatter(
-            professionalOrganisationRetriever,userDetails, userDetailsHelper
+            professionalOrganisationRetriever
         );
 
         organisationPolicy =
@@ -189,34 +185,6 @@ public class LegalRepOrganisationFormatterTest {
         assertEquals(bailCase, response.getData());
 
         verify(bailCase, times(0)).write(LOCAL_AUTHORITY_POLICY, organisationPolicy);
-    }
-
-
-    @Test
-    void should_write_skeleton_local_authority_policy() {
-
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(bailCase);
-        when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
-
-        PreSubmitCallbackResponse<BailCase> response =
-            legalRepOrganisationFormatter.handle(
-                PreSubmitCallbackStage.ABOUT_TO_SUBMIT,
-                callback
-            );
-
-        assertNotNull(response);
-        assertEquals(bailCase, response.getData());
-
-        OrganisationPolicy skeletonPolicy = OrganisationPolicy.builder()
-            .organisation(Organisation.builder()
-                              .organisationID(null)
-                              .build()
-            )
-            .orgPolicyCaseAssignedRole("[LEGALREPRESENTATIVE]")
-            .build();
-
-        verify(bailCase, times(1)).write(LOCAL_AUTHORITY_POLICY, skeletonPolicy);
     }
 
     @Test

@@ -29,17 +29,11 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.ProfessionalOrgani
 public class LegalRepOrganisationFormatter implements PreSubmitCallbackHandler<BailCase> {
 
     private final ProfessionalOrganisationRetriever professionalOrganisationRetriever;
-    private UserDetails userDetails;
-    private UserDetailsHelper userDetailsHelper;
 
     public LegalRepOrganisationFormatter(
-        ProfessionalOrganisationRetriever professionalOrganisationRetriever,
-        UserDetails userDetails,
-        UserDetailsHelper userDetailsHelper
+        ProfessionalOrganisationRetriever professionalOrganisationRetriever
     ) {
         this.professionalOrganisationRetriever = professionalOrganisationRetriever;
-        this.userDetails = userDetails;
-        this.userDetailsHelper = userDetailsHelper;
     }
 
     @Override
