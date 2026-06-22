@@ -3,8 +3,6 @@ package uk.gov.hmcts.reform.bailcaseapi.infrastructure.controllers.advice;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,7 +15,6 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.BailCaseServiceRes
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdDataIntegrationException;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.idam.IdentityManagerResponseException;
 
-@Slf4j
 @ControllerAdvice(basePackages = "uk.gov.hmcts.reform.bailcaseapi.infrastructure.controllers")
 @RequestMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 public class CallbackControllerAdvice extends ResponseEntityExceptionHandler {
@@ -38,7 +35,6 @@ public class CallbackControllerAdvice extends ResponseEntityExceptionHandler {
         HttpServletRequest request,
         RequiredFieldMissingException ex
     ) {
-        logAbbreviatedStackTrace(ex);
         errorResponseBuilder.logError(ex, ErrorCode.REQUIRED_FIELD_MISSING, request);
         ErrorResponse response = errorResponseBuilder.build(
             ErrorCode.REQUIRED_FIELD_MISSING, request, ex.getMessage());
@@ -50,7 +46,6 @@ public class CallbackControllerAdvice extends ResponseEntityExceptionHandler {
         HttpServletRequest request,
         IllegalStateException ex
     ) {
-        logAbbreviatedStackTrace(ex);
         errorResponseBuilder.logError(ex, ErrorCode.INVALID_STATE, request);
         ErrorResponse response = errorResponseBuilder.build(ErrorCode.INVALID_STATE, request, null);
         return new ResponseEntity<>(response, ErrorCode.INVALID_STATE.getHttpStatus());
@@ -61,7 +56,6 @@ public class CallbackControllerAdvice extends ResponseEntityExceptionHandler {
         HttpServletRequest request,
         IllegalArgumentException ex
     ) {
-        logAbbreviatedStackTrace(ex);
         errorResponseBuilder.logError(ex, ErrorCode.INVALID_ARGUMENT, request);
         ErrorResponse response = errorResponseBuilder.build(ErrorCode.INVALID_ARGUMENT, request, null);
         return new ResponseEntity<>(response, ErrorCode.INVALID_ARGUMENT.getHttpStatus());
@@ -86,7 +80,6 @@ public class CallbackControllerAdvice extends ResponseEntityExceptionHandler {
         HttpServletRequest request,
         BailCaseServiceResponseException ex
     ) {
-        logAbbreviatedStackTrace(ex);
         errorResponseBuilder.logError(ex, ErrorCode.BAIL_CASE_SERVICE_ERROR, request);
         errorResponseLogger.maybeLogException(ex.getCause());
         ErrorResponse response = errorResponseBuilder.build(ErrorCode.BAIL_CASE_SERVICE_ERROR, request, null);
@@ -98,7 +91,6 @@ public class CallbackControllerAdvice extends ResponseEntityExceptionHandler {
         HttpServletRequest request,
         AsylumCaseServiceResponseException ex
     ) {
-        logAbbreviatedStackTrace(ex);
         errorResponseBuilder.logError(ex, ErrorCode.ASYLUM_CASE_SERVICE_ERROR, request);
         errorResponseLogger.maybeLogException(ex.getCause());
         ErrorResponse response = errorResponseBuilder.build(ErrorCode.ASYLUM_CASE_SERVICE_ERROR, request, null);
@@ -123,7 +115,6 @@ public class CallbackControllerAdvice extends ResponseEntityExceptionHandler {
         HttpServletRequest request,
         IdentityManagerResponseException ex
     ) {
-        logAbbreviatedStackTrace(ex);
         errorResponseBuilder.logError(ex, ErrorCode.IDENTITY_SERVICE_ERROR, request);
         errorResponseLogger.maybeLogException(ex.getCause());
         ErrorResponse response = errorResponseBuilder.build(ErrorCode.IDENTITY_SERVICE_ERROR, request, null);
@@ -137,31 +128,9 @@ public class CallbackControllerAdvice extends ResponseEntityExceptionHandler {
         HttpServletRequest request,
         Exception ex
     ) {
-        logAbbreviatedStackTrace(ex);
         errorResponseBuilder.logError(ex, ErrorCode.INTERNAL_ERROR, request);
         errorResponseLogger.maybeLogException(ex.getCause());
         ErrorResponse response = errorResponseBuilder.build(ErrorCode.INTERNAL_ERROR, request, null);
         return new ResponseEntity<>(response, ErrorCode.INTERNAL_ERROR.getHttpStatus());
-    }
-
-    private void logAbbreviatedStackTrace(Exception ex) {
-        log.error(getAbbreviatedStackTrace(ex, 5));
-    }
-
-    private String getAbbreviatedStackTrace(Exception ex, int numInitialLines) {
-        String[] trace = ExceptionUtils.getRootCauseStackTrace(ex);
-        StringBuilder sb = new StringBuilder();
-        String lastLine = "";
-        String continuationLine = "        ...";
-        for (int i = 0; i < trace.length; i++) {
-            if (i < numInitialLines || trace[i].contains("uk.gov.hmcts.reform")) {
-                lastLine = trace[i];
-                sb.append(lastLine).append("\r\n");
-            } else if (!lastLine.equals(continuationLine)) {
-                lastLine = continuationLine;
-                sb.append(lastLine).append("\r\n");
-            }
-        }
-        return sb.toString();
     }
 }
