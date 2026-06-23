@@ -29,11 +29,17 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.ProfessionalOrgani
 public class LegalRepOrganisationFormatter implements PreSubmitCallbackHandler<BailCase> {
 
     private final ProfessionalOrganisationRetriever professionalOrganisationRetriever;
+    private UserDetails userDetails;
+    private UserDetailsHelper userDetailsHelper;
 
     public LegalRepOrganisationFormatter(
-        ProfessionalOrganisationRetriever professionalOrganisationRetriever
+        ProfessionalOrganisationRetriever professionalOrganisationRetriever,
+        UserDetails userDetails,
+        UserDetailsHelper userDetailsHelper
     ) {
         this.professionalOrganisationRetriever = professionalOrganisationRetriever;
+        this.userDetails = userDetails;
+        this.userDetailsHelper = userDetailsHelper;
     }
 
     @Override
@@ -61,7 +67,7 @@ public class LegalRepOrganisationFormatter implements PreSubmitCallbackHandler<B
                      callback.getCaseDetails().getId());
         }
 
-        if (organisationEntityResponse != null
+        if (isLegalRep(userDetails, userDetailsHelper) && organisationEntityResponse != null
             && StringUtils.isNotBlank(organisationEntityResponse.getOrganisationIdentifier())) {
 
             log.info("PRD endpoint called for caseId [{}] orgId[{}]",

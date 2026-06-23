@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,10 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.LegRepAddressUk;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Organisation;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.OrganisationPolicy;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserRoleLabel;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
@@ -51,12 +55,14 @@ public class LegalRepOrganisationFormatterTest {
     @Mock private Callback<BailCase> callback;
     @Mock private CaseDetails<BailCase> caseDetails;
     @Mock private BailCase bailCase;
+    @Mock private UserDetails userDetails;
+    @Mock private UserDetailsHelper userDetailsHelper;
 
     @BeforeEach
     public void setUp() throws Exception {
 
         legalRepOrganisationFormatter = new LegalRepOrganisationFormatter(
-            professionalOrganisationRetriever
+            professionalOrganisationRetriever,userDetails, userDetailsHelper
         );
 
         organisationPolicy =
@@ -86,6 +92,7 @@ public class LegalRepOrganisationFormatterTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
         when(callback.getCaseDetails().getId()).thenReturn(ccdCaseId);
 
         when(professionalOrganisationRetriever.retrieve()).thenReturn(organisationEntityResponse);
@@ -135,6 +142,7 @@ public class LegalRepOrganisationFormatterTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
         when(callback.getCaseDetails().getId()).thenReturn(ccdCaseId);
 
         when(professionalOrganisationRetriever.retrieve()).thenReturn(organisationEntityResponse);
@@ -173,6 +181,7 @@ public class LegalRepOrganisationFormatterTest {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(bailCase);
         when(callback.getEvent()).thenReturn(Event.START_APPLICATION);
+        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
         when(professionalOrganisationRetriever.retrieve()).thenReturn(null);
 
         PreSubmitCallbackResponse<BailCase> response =
