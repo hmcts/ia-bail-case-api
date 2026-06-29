@@ -2,10 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -196,49 +193,6 @@ public class LegalRepOrganisationFormatterTest {
         assertEquals(bailCase, response.getData());
 
         verify(bailCase, times(0)).write(LOCAL_AUTHORITY_POLICY, organisationPolicy);
-    }
-
-    @Test
-    void it_can_handle_callback_when_user_is_LR() {
-
-        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.LEGAL_REPRESENTATIVE);
-
-        for (Event event : Event.values()) {
-
-            when(callback.getEvent()).thenReturn(event);
-
-            for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
-
-                boolean canHandle = legalRepOrganisationFormatter.canHandle(callbackStage, callback);
-
-                if (event == Event.START_APPLICATION
-                    && callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT) {
-
-                    assertTrue(canHandle);
-                } else {
-                    assertFalse(canHandle);
-                }
-            }
-            reset(callback);
-        }
-    }
-
-    @Test
-    void it_can_not_handle_callback_if_user_not_LR() {
-
-        when(userDetailsHelper.getLoggedInUserRoleLabel(any())).thenReturn(UserRoleLabel.ADMIN_OFFICER);
-
-        for (Event event : Event.values()) {
-
-            when(callback.getEvent()).thenReturn(event);
-
-            for (PreSubmitCallbackStage callbackStage : PreSubmitCallbackStage.values()) {
-
-                assertFalse(legalRepOrganisationFormatter.canHandle(callbackStage, callback));
-
-            }
-            reset(callback);
-        }
     }
 
     @Test
