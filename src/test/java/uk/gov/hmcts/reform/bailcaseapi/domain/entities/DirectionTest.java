@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -75,4 +76,43 @@ class DirectionTest {
             .isExactlyInstanceOf(NullPointerException.class);
     }
 
+    @Test
+    void should_return_immutable_previous_dates_list() {
+        List<IdValue<PreviousDates>> mutableList = new ArrayList<>();
+        mutableList.add(new IdValue<>("1", new PreviousDates("2022-05-20", "2022-05-21")));
+
+        Direction directionWithDates = new Direction(
+            sendDirectionDescription,
+            sendDirectionList,
+            dateOfCompliance,
+            dateSent,
+            dateTimeDirectionCreated,
+            dateTimeDirectionModified,
+            mutableList
+        );
+
+        assertThatThrownBy(() -> directionWithDates.getPreviousDates().add(
+            new IdValue<>("2", new PreviousDates("2022-05-22", "2022-05-23"))))
+            .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void should_not_be_affected_by_modifications_to_original_list() {
+        List<IdValue<PreviousDates>> mutableList = new ArrayList<>();
+        mutableList.add(new IdValue<>("1", new PreviousDates("2022-05-20", "2022-05-21")));
+
+        Direction directionWithDates = new Direction(
+            sendDirectionDescription,
+            sendDirectionList,
+            dateOfCompliance,
+            dateSent,
+            dateTimeDirectionCreated,
+            dateTimeDirectionModified,
+            mutableList
+        );
+
+        mutableList.add(new IdValue<>("2", new PreviousDates("2022-05-22", "2022-05-23")));
+
+        assertThat(directionWithDates.getPreviousDates()).hasSize(1);
+    }
 }

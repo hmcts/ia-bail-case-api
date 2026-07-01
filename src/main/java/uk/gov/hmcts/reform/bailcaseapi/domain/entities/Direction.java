@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -40,7 +41,7 @@ public class Direction {
         this.dateSent = requireNonNull(dateSent);
         this.dateTimeDirectionCreated = requireNonNull(dateTimeDirectionCreated);
         this.dateTimeDirectionModified = dateTimeDirectionModified;
-        this.previousDates = requireNonNull(previousDates);
+        this.previousDates = List.copyOf(requireNonNull(previousDates));
 
     }
 
@@ -66,7 +67,7 @@ public class Direction {
     }
 
     public List<IdValue<PreviousDates>> getPreviousDates() {
-        return requireNonNull(previousDates);
+        return Collections.unmodifiableList(requireNonNull(previousDates));
     }
 
     public String getDateTimeDirectionModified() {

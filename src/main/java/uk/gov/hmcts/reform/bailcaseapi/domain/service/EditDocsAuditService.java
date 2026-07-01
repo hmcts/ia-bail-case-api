@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -20,10 +21,13 @@ public class EditDocsAuditService {
                                                                 BailCaseFieldDefinition field) {
         List<IdValue<DocumentWithMetadata>> doc = getDocField(bailCase, field);
         List<IdValue<DocumentWithMetadata>> docBefore = getDocField(bailCaseBefore, field);
-        docBefore.removeAll(doc);
-        List<String> docIds = new ArrayList<>();
-        docBefore.forEach(d -> docIds.add(getIdFromDocUrl(d.getValue().getDocument().getDocumentUrl())));
-        return docIds;
+
+        List<IdValue<DocumentWithMetadata>> removedDocs = new ArrayList<>(docBefore);
+        removedDocs.removeAll(doc);
+
+        return removedDocs.stream()
+            .map(d -> getIdFromDocUrl(d.getValue().getDocument().getDocumentUrl()))
+            .collect(Collectors.toList());
     }
 
     public List<String> getUpdatedAndDeletedDocNamesForGivenField(BailCase bailCase, BailCase bailCaseBefore,
@@ -31,17 +35,36 @@ public class EditDocsAuditService {
         List<IdValue<DocumentWithMetadata>> doc = getDocField(bailCase, field);
         List<IdValue<DocumentWithMetadata>> docBefore = getDocField(bailCaseBefore, field);
 
-        for (IdValue<DocumentWithMetadata> doc1 : docBefore) {
-            if (StringUtils.isBlank(doc1.getValue().getSuppliedBy())) {
-                doc1.getValue().setSuppliedBy(null);
-            }
+        List<IdValue<DocumentWithMetadata>> removedDocs = docBefore.stream()
+            .filter(beforeDoc -> !containsMatchingDocument(doc, beforeDoc))
+            .collect(Collectors.toList());
+
+        return removedDocs.stream()
+            .map(d -> d.getValue().getDocument().getDocumentFilename())
+            .collect(Collectors.toList());
+    }
+
+    private boolean containsMatchingDocument(List<IdValue<DocumentWithMetadata>> docs,
+                                             IdValue<DocumentWithMetadata> target) {
+        return docs.stream().anyMatch(d -> documentsMatch(d, target));
+    }
+
+    private boolean documentsMatch(IdValue<DocumentWithMetadata> doc1, IdValue<DocumentWithMetadata> doc2) {
+        if (!doc1.getId().equals(doc2.getId())) {
+            return false;
         }
+        DocumentWithMetadata val1 = doc1.getValue();
+        DocumentWithMetadata val2 = doc2.getValue();
 
-        docBefore.removeAll(doc);
+        return val1.getDocument().equals(val2.getDocument())
+            && Objects.equals(val1.getDescription(), val2.getDescription())
+            && val1.getDateUploaded().equals(val2.getDateUploaded())
+            && val1.getTag().equals(val2.getTag())
+            && normalizeBlankToNull(val1.getSuppliedBy()).equals(normalizeBlankToNull(val2.getSuppliedBy()));
+    }
 
-        List<String> docNames = new ArrayList<>();
-        docBefore.forEach(d -> docNames.add(d.getValue().getDocument().getDocumentFilename()));
-        return docNames;
+    private String normalizeBlankToNull(String value) {
+        return StringUtils.isBlank(value) ? "" : value;
     }
 
     public List<String> getAddedDocNamesForGivenField(BailCase bailCase, BailCase bailCaseBefore,
