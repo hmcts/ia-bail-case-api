@@ -24,8 +24,6 @@ public class RefDataUserService {
     public static final String SERVICE_ID = "BFA1";
     public static final String IS_ACTIVE_FLAG = "Y";
 
-    private CommonDataResponse commonDataResponse;
-
     public RefDataUserService(AuthTokenGenerator authTokenGenerator,
                               CommonDataRefApi commonDataRefApi,
                               UserDetails userDetails) {
@@ -36,6 +34,7 @@ public class RefDataUserService {
 
     public CommonDataResponse retrieveCategoryValues(String categoryId, String isChildRequired) {
         log.info("retrieveCategoryValues {}", categoryId);
+        CommonDataResponse commonDataResponse = null;
         try {
             commonDataResponse = commonDataRefApi.getAllCategoryValuesByCategoryId(
                 userDetails.getAccessToken(),

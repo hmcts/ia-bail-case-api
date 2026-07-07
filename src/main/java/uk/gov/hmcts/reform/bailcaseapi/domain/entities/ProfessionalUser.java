@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Collections;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -16,7 +17,7 @@ public class ProfessionalUser {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.roles = roles;
+        this.roles = roles == null ? null : List.copyOf(roles);
         this.idamStatus = idamStatus;
         this.idamStatusCode = idamStatusCode;
         this.idamMessage = idamMessage;
@@ -48,7 +49,7 @@ public class ProfessionalUser {
     }
 
     public List<String> getRoles() {
-        return roles;
+        return roles == null ? Collections.emptyList() : Collections.unmodifiableList(roles);
     }
 
     public String getIdamStatus() {

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -54,4 +55,27 @@ class OrganisationEntityResponseTest {
         assertEquals("NUM2", organisationEntityResponse.getPaymentAccount().get(1));
     }
 
+    @Test
+    void should_return_immutable_payment_account_list() {
+        assertThatThrownBy(() -> testOrganisationEntityResponse.getPaymentAccount().add("NUM3"))
+            .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void should_return_immutable_contact_information_list() {
+        assertThatThrownBy(() -> testOrganisationEntityResponse.getContactInformation().add(null))
+            .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void should_return_empty_list_when_payment_account_is_null() {
+        OrganisationEntityResponse response = new OrganisationEntityResponse();
+        assertThat(response.getPaymentAccount()).isNull();
+    }
+
+    @Test
+    void should_return_null_when_contact_information_is_null() {
+        OrganisationEntityResponse response = new OrganisationEntityResponse();
+        assertThat(response.getContactInformation()).isNull();
+    }
 }

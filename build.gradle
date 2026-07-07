@@ -301,6 +301,7 @@ dependencyManagement {
 
     // CVE-2020-13956 - transitive from service-auth-provider-java-client@5.3.3
     dependency group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
+    
   }
 }
 

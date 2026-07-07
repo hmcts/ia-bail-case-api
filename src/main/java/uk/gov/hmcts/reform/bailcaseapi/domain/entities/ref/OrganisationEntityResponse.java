@@ -8,6 +8,7 @@ import lombok.ToString;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.LegRepAddressUk;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ProfessionalUser;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -33,10 +34,10 @@ public class OrganisationEntityResponse {
     }
 
     public List<String> getPaymentAccount() {
-        return paymentAccount;
+        return paymentAccount == null ? null : Collections.unmodifiableList(paymentAccount);
     }
 
     public List<LegRepAddressUk> getContactInformation() {
-        return contactInformation;
+        return contactInformation == null ? null : Collections.unmodifiableList(contactInformation);
     }
 }
