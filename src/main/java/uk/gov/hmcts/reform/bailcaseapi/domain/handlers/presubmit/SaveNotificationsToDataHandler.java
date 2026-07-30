@@ -95,7 +95,7 @@ public class SaveNotificationsToDataHandler implements PreSubmitCallbackHandler<
         try {
             Notification notification = notificationClient.getNotificationById(notificationId);
             StoredNotification storedNotification =
-                getStoredNotification(notificationId, notification, callback);
+                getStoredNotification(notificationId, notification);
             allNotifications.addFirst(new IdValue<>("", storedNotification));
         } catch (NotificationClientException exception) {
             log.warn(
@@ -128,7 +128,7 @@ public class SaveNotificationsToDataHandler implements PreSubmitCallbackHandler<
         return addressBuilder.toString();
     }
 
-    private StoredNotification getStoredNotification(String notificationId, Notification notification, Callback<BailCase> callback) {
+    private StoredNotification getStoredNotification(String notificationId, Notification notification) {
         String reference = notification.getReference().orElse(notificationId);
         String notificationBody = "<div>" + notification.getBody()
             .replace("\r\n", "<br>")
