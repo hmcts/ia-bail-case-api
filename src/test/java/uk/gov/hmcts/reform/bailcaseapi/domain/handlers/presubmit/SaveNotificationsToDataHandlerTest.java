@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
-import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -52,7 +51,7 @@ class SaveNotificationsToDataHandlerTest {
     @Mock
     private CaseDetails<BailCase> caseDetails;
     @Mock
-    private BailCase asylumCase;
+    private BailCase bailCase;
     @Mock
     private StoredNotification mockedStoredNotification;
     @Mock
@@ -79,7 +78,7 @@ class SaveNotificationsToDataHandlerTest {
     @Test
     void should_access_notify_client_if_missing_email_notification_and_should_sort_notification_list() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
         List<IdValue<StoredNotification>> storedNotifications =
@@ -88,8 +87,8 @@ class SaveNotificationsToDataHandlerTest {
                 new IdValue<>("2", mockedStoredNotification2)
             );
 
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.of(storedNotifications));
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.of(storedNotifications));
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
         when(notification.getBody()).thenReturn(body);
         when(notification.getNotificationType()).thenReturn(notificationTypeEmail);
@@ -127,17 +126,17 @@ class SaveNotificationsToDataHandlerTest {
                 new IdValue<>("2", mockedStoredNotification2),
                 new IdValue<>("3", mockedStoredNotification)
             );
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), eq(sortedStoredNotifications));
+        verify(bailCase, times(1)).write(eq(NOTIFICATIONS), eq(sortedStoredNotifications));
     }
 
     @Test
     void should_access_notify_client_if_missing_sms_notification() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
         when(notification.getBody()).thenReturn(body);
         when(notification.getNotificationType()).thenReturn(notificationTypeSms);
@@ -162,17 +161,17 @@ class SaveNotificationsToDataHandlerTest {
                 .notificationReference(reference)
                 .notificationSubject("N/A")
                 .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, times(1)).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
     void should_access_notify_client_if_missing_letter_notification_full_address() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
         when(notification.getBody()).thenReturn(body);
         when(notification.getNotificationType()).thenReturn(notificationTypeLetter);
@@ -208,17 +207,17 @@ class SaveNotificationsToDataHandlerTest {
                 .notificationReference(reference)
                 .notificationSubject("N/A")
                 .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, times(1)).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
     void should_access_notify_client_if_missing_letter_notification_empty_address() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
         when(notification.getBody()).thenReturn(body);
         when(notification.getNotificationType()).thenReturn(notificationTypeLetter);
@@ -254,17 +253,17 @@ class SaveNotificationsToDataHandlerTest {
                 .notificationReference(reference)
                 .notificationSubject("N/A")
                 .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, times(1)).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
     void should_access_notify_client_if_missing_letter_notification_no_address() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
         when(notification.getBody()).thenReturn(body);
         when(notification.getNotificationType()).thenReturn(notificationTypeLetter);
@@ -288,17 +287,17 @@ class SaveNotificationsToDataHandlerTest {
                 .notificationReference(reference)
                 .notificationSubject("N/A")
                 .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, times(1)).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
     void should_access_set_reference_to_id_if_no_reference() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
         when(notification.getBody()).thenReturn(body);
         when(notification.getNotificationType()).thenReturn(notificationTypeEmail);
@@ -323,17 +322,17 @@ class SaveNotificationsToDataHandlerTest {
                 .notificationReference(notificationId)
                 .notificationSubject(subject)
                 .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, times(1)).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
     void should_access_default_subject_if_none_found() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
         when(notification.getBody()).thenReturn(body);
         when(notification.getNotificationType()).thenReturn(notificationTypeEmail);
@@ -358,18 +357,18 @@ class SaveNotificationsToDataHandlerTest {
                 .notificationReference(notificationId)
                 .notificationSubject("N/A")
                 .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, times(1)).write(eq(NOTIFICATIONS), anyList());
     }
 
 
     @Test
     void should_access_default_sent_to_if_method_not_email_or_sms() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
         when(notification.getBody()).thenReturn(body);
         when(notification.getNotificationType()).thenReturn("unknownType");
@@ -393,13 +392,13 @@ class SaveNotificationsToDataHandlerTest {
                 .notificationReference(notificationId)
                 .notificationSubject("N/A")
                 .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, times(1)).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
     void should_not_access_notify_client_if_no_notifications_sent() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         StoredNotification storedNotification =
             StoredNotification.builder()
                 .notificationId(notificationId)
@@ -413,18 +412,18 @@ class SaveNotificationsToDataHandlerTest {
                 .build();
         List<IdValue<StoredNotification>> storedNotifications =
             List.of(new IdValue<>(reference, storedNotification));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.of(storedNotifications));
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.of(storedNotifications));
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.empty());
 
         saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(notificationClient, never()).getNotificationById(anyString());
-        verify(asylumCase, never()).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, never()).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
     void should_not_access_notify_client_if_stored_notifications_match_notifications_sent() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         StoredNotification storedNotification =
             StoredNotification.builder()
                 .notificationId(notificationId)
@@ -440,26 +439,39 @@ class SaveNotificationsToDataHandlerTest {
             List.of(new IdValue<>(reference, storedNotification));
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.of(storedNotifications));
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.of(storedNotifications));
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
 
         saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
         verify(notificationClient, never()).getNotificationById(anyString());
-        verify(asylumCase, never()).write(eq(NOTIFICATIONS), anyList());
+        verify(bailCase, never()).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
     void should_not_break_function_if_notification_client_throws_exception() throws NotificationClientException {
         when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
         List<IdValue<String>> notificationsSent =
             List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+        when(bailCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
         when(notificationClient.getNotificationById(anyString()))
             .thenThrow(new NotificationClientException("some-client-error"));
         saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        verify(asylumCase, times(1)).write(NOTIFICATIONS, emptyList());
+        verify(bailCase, times(1)).write(NOTIFICATIONS, emptyList());
+    }
+
+    @Test
+    void should_not_access_notify_client_if_no_notifications_sent_with_timestamp() throws NotificationClientException {
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(bailCase);
+        List<IdValue<String>> notificationsSent =
+            List.of(new IdValue<>("notificationReference", notificationId));
+        when(bailCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
+
+        saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
+        verify(notificationClient, never()).getNotificationById(anyString());
+        verify(bailCase, never()).write(eq(NOTIFICATIONS), anyList());
     }
 
     @Test
@@ -473,130 +485,6 @@ class SaveNotificationsToDataHandlerTest {
         assertThatThrownBy(() -> saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback))
             .hasMessage("Cannot handle callback")
             .isExactlyInstanceOf(IllegalStateException.class);
-    }
-
-    @Test
-    void handling_should_not_throw_if_cannot_actually_handle_due_to_feature_flag() throws NotificationClientException {
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
-        List<IdValue<String>> notificationsSent =
-            List.of(new IdValue<>(reference, notificationId));
-        List<IdValue<StoredNotification>> storedNotifications =
-            List.of(
-                new IdValue<>("1", mockedStoredNotification),
-                new IdValue<>("2", mockedStoredNotification2)
-            );
-
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.of(storedNotifications));
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
-        when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
-        when(notification.getBody()).thenReturn(body);
-        when(notification.getNotificationType()).thenReturn(notificationTypeEmail);
-        when(notification.getEmailAddress()).thenReturn(Optional.of(email));
-        when(notification.getReference()).thenReturn(Optional.of(reference));
-        when(notification.getSubject()).thenReturn(Optional.of(subject));
-        LocalDateTime localDateTime = LocalDateTime.parse("2025-01-01T10:57");
-        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Europe/London"));
-        when(notification.getSentAt()).thenReturn(Optional.of(zonedDateTime));
-        when(notification.getStatus()).thenReturn(status);
-        when(mockedStoredNotification.getNotificationId()).thenReturn("1");
-        when(mockedStoredNotification.getNotificationDateSent()).thenReturn("2025-01-01T10:57");
-        when(mockedStoredNotification2.getNotificationId()).thenReturn("2");
-        when(mockedStoredNotification2.getNotificationDateSent()).thenReturn("2026-01-01T10:57");
-
-        assertDoesNotThrow(() -> {
-            saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        });
-    }
-
-    @Test
-    void should_not_access_notify_client_if_no_notifications_sent_with_timestamp() throws NotificationClientException {
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
-        List<IdValue<String>> notificationsSent =
-            List.of(new IdValue<>("notificationReference", notificationId));
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
-
-        saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        verify(notificationClient, never()).getNotificationById(anyString());
-        verify(asylumCase, never()).write(eq(NOTIFICATIONS), anyList());
-    }
-
-    @Test
-    void should_set_encoded_pdf_bye_array_for_letter() throws NotificationClientException {
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
-        List<IdValue<String>> notificationsSent =
-            List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
-        when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
-        when(notification.getBody()).thenReturn(body);
-        when(notification.getNotificationType()).thenReturn(notificationTypeLetter);
-        when(notification.getReference()).thenReturn(Optional.of(reference));
-        String dateString = "01-01-2024 10:57";
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        LocalDateTime localDateTime = LocalDateTime.parse(dateString, dateFormatter);
-        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Europe/London"));
-        when(notification.getSentAt()).thenReturn(Optional.of(zonedDateTime));
-        when(notification.getStatus()).thenReturn(status);
-        byte[] pdfBytes = new byte[]{1, 2, 3, 4, 5};
-        when(notificationClient.getPdfForLetter(notificationId)).thenReturn(pdfBytes);
-
-        saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-
-        verify(notificationClient, times(1)).getNotificationById(anyString());
-        verify(notificationClient, times(1)).getPdfForLetter(anyString());
-        String encodedPdfFile = Base64.getEncoder().encodeToString(pdfBytes);
-
-        StoredNotification storedNotification =
-            StoredNotification.builder()
-                .notificationId(notificationId)
-                .notificationDateSent("2024-01-01T10:57")
-                .notificationSentTo("N/A")
-                .notificationBody("<div>" + body + "</div>")
-                .notificationDocumentEncoded(encodedPdfFile)
-                .notificationMethod(StringUtils.capitalize(notificationTypeLetter))
-                .notificationStatus(StringUtils.capitalize(status))
-                .notificationReference(reference)
-                .notificationSubject("N/A")
-                .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
-    }
-
-    @Test
-    void should_continue_if_getPdfForLetter_throws_exception() throws NotificationClientException {
-        when(callback.getCaseDetails()).thenReturn(caseDetails);
-        when(caseDetails.getCaseData()).thenReturn(asylumCase);
-        List<IdValue<String>> notificationsSent =
-            List.of(new IdValue<>(reference, notificationId));
-        when(asylumCase.read(NOTIFICATIONS)).thenReturn(Optional.empty());
-        when(asylumCase.read(NOTIFICATIONS_SENT)).thenReturn(Optional.of(notificationsSent));
-        when(notificationClient.getNotificationById(notificationId)).thenReturn(notification);
-        when(notification.getBody()).thenReturn(body);
-        when(notification.getNotificationType()).thenReturn(notificationTypeLetter);
-        when(notification.getReference()).thenReturn(Optional.of(reference));
-        String dateString = "01-01-2024 10:57";
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        LocalDateTime localDateTime = LocalDateTime.parse(dateString, dateFormatter);
-        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Europe/London"));
-        when(notification.getSentAt()).thenReturn(Optional.of(zonedDateTime));
-        when(notification.getStatus()).thenReturn(status);
-        when(notificationClient.getPdfForLetter(notificationId)).thenThrow(new NotificationClientException("some-client-error"));
-        saveNotificationsToDataHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback);
-        verify(notificationClient, times(1)).getNotificationById(anyString());
-        StoredNotification storedNotification =
-            StoredNotification.builder()
-                .notificationId(notificationId)
-                .notificationDateSent("2024-01-01T10:57")
-                .notificationSentTo("N/A")
-                .notificationBody("<div>" + body + "</div>")
-                .notificationMethod(StringUtils.capitalize(notificationTypeLetter))
-                .notificationStatus(StringUtils.capitalize(status))
-                .notificationReference(reference)
-                .notificationSubject("N/A")
-                .build();
-        verify(asylumCase, times(1)).write(eq(NOTIFICATIONS), anyList());
     }
 
     @ParameterizedTest

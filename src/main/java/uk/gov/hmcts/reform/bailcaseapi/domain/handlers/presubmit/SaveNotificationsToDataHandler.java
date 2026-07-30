@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCal
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
-import uk.gov.hmcts.reform.bailcaseapi.domain.service.Appender;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -209,9 +209,10 @@ public class SaveNotificationsToDataHandler implements PreSubmitCallbackHandler<
     }
 
     private List<IdValue<StoredNotification>> sortAndReindexNotificationsByDate(List<IdValue<StoredNotification>> allNotifications) {
-        allNotifications.sort(Comparator.comparing(notification ->
-                                                       LocalDateTime.parse(notification.getValue().getNotificationDateSent()),
-                                                   Comparator.reverseOrder()
+        allNotifications.sort(Comparator.comparing(
+            notification ->
+                LocalDateTime.parse(notification.getValue().getNotificationDateSent()),
+            Comparator.reverseOrder()
         ));
         return allNotifications.stream()
             .map(idValue ->
