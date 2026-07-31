@@ -38,6 +38,7 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 public class SaveNotificationsToDataHandler implements PreSubmitCallbackHandler<BailCase> {
 
     private final NotificationClient notificationClient;
+    private final List<String> VALID_REFERENCES = List.of("_SOME_TEST_REFERENCE");
 
     public SaveNotificationsToDataHandler(
         NotificationClient notificationClient
@@ -98,8 +99,15 @@ public class SaveNotificationsToDataHandler implements PreSubmitCallbackHandler<
         }
     }
 
-    public String getLetterEncodedPdfFile(String method, String notificationId, Callback<BailCase> callback) {
-        if (method.equalsIgnoreCase("letter")) {
+    public boolean isReferenceValidForLetterPdf(String notificationReference) {
+        return VALID_REFERENCES.stream().anyMatch(notificationReference::contains);
+    }
+
+    public String getLetterEncodedPdfFile(String method,
+                                          String notificationId,
+                                          String notificationReference,
+                                          Callback<BailCase> callback) {
+        if (method.equalsIgnoreCase("letter") && isReferenceValidForLetterPdf(notificationReference)) {
             try {
                 byte[] pdfFile = notificationClient.getPdfForLetter(notificationId);
                 if (pdfFile != null && pdfFile.length > 0) {
@@ -167,7 +175,7 @@ public class SaveNotificationsToDataHandler implements PreSubmitCallbackHandler<
             .notificationDateSent(sentAt)
             .notificationSentTo(sentTo)
             .notificationBody(notificationBody)
-            .notificationDocumentEncoded(getLetterEncodedPdfFile(method, notificationId, callback))
+            .notificationDocumentEncoded(getLetterEncodedPdfFile(method, notificationId, reference, callback))
             .notificationMethod(StringUtils.capitalize(method))
             .notificationStatus(status)
             .notificationReference(reference)
