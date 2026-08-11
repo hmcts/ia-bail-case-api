@@ -106,4 +106,19 @@ class IdamServiceTest {
         assertEquals(systemUserScope, actualRequestEntity.get("scope"));
 
     }
+
+    @Test
+    void getAdminOfficerToken() {
+        idamService = new IdamService(systemUserName,
+                                      systemUserPass,
+                                      idamRedirectUrl,
+                                      systemUserScope,
+                                      idamClientId,
+                                      idamClientSecret,
+                                      idamApi);
+
+        String actualAdminOfficerToken = idamService.getAdminOfficerToken();
+
+        assertEquals("not set", actualAdminOfficerToken);
+    }
 }

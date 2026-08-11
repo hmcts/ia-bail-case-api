@@ -42,7 +42,7 @@ public class AuthorizationHeadersProvider {
     public Headers getAdminOfficerAuthorization() {
         String serviceToken = tokens.computeIfAbsent("ServiceAuth", user -> serviceAuthTokenGenerator.generate());
         String accessToken = idamAuthProvider.getAdminOfficerToken();
-
+        System.out.println(accessToken);
         return new Headers(
             new Header("ServiceAuthorization", serviceToken),
             new Header("Authorization", accessToken)
