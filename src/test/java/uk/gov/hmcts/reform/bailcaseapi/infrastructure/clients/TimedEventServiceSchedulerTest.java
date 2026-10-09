@@ -79,8 +79,6 @@ class TimedEventServiceSchedulerTest {
 
     @Test
     void should_invoke_delete_api_successfully() {
-        // Given
-        doNothing().when(timedEventServiceApi).deleteTimedEvent(authToken, s2sToken, "1234567");
 
         // When
         boolean result = timedEventServiceScheduler.deleteSchedule("1234567");
