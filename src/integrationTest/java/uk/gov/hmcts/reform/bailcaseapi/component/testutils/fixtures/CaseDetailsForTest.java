@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.component.testutils.fixtures;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -18,6 +19,7 @@ public class CaseDetailsForTest {
     @JsonProperty("created_date")
     private LocalDateTime createdDate;
 
+    @JsonCreator
     CaseDetailsForTest(long id, String jurisdiction, State state, BailCase caseData, LocalDateTime createdDate) {
         this.id = id;
         this.jurisdiction = jurisdiction;
