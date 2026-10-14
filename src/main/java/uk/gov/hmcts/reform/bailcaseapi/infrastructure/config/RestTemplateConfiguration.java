@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.bailcaseapi.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @SuppressWarnings("removal")
 @Configuration
 public class RestTemplateConfiguration {
@@ -23,8 +25,25 @@ public class RestTemplateConfiguration {
     ) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters()
-            .removeIf(converter -> converter instanceof org.springframework.http.converter.json.MappingJackson2HttpMessageConverter);
-        restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter(objectMapper));
+            .forEach(c -> log.info("BEFORE converter: {}", c.getClass().getName()));
+
+        // Remove every default JSON converter (Jackson 2 or Jackson 3)
+        restTemplate.getMessageConverters().removeIf(converter ->
+                                                         converter.getClass().getName().startsWith("org.springframework.http.converter.json.")
+                                                             && converter.getClass().getSimpleName().contains("Jackson")
+        );
+
+        // Put ours first so it is always the one used
+        restTemplate.getMessageConverters().add(0, mappingJackson2HttpMessageConverter(objectMapper));
+
+        log.info("AFTER");
+        log.info("modules: {}, inclusion: {}",
+                 objectMapper.getRegisteredModuleIds(),
+                 objectMapper.getSerializationConfig().getDefaultPropertyInclusion());
+
+        restTemplate.getMessageConverters()
+            .forEach(c -> log.info("AFTER converter: {}", c.getClass().getName()));
+
 
         return restTemplate;
     }
