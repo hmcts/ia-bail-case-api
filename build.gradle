@@ -115,6 +115,15 @@ configurations {
   contractTestRuntime.extendsFrom testRuntime
 }
 
+configurations.configureEach {
+  exclude group: 'org.springframework.boot', module: 'spring-boot-jackson'
+  exclude group: 'org.springframework.boot', module: 'spring-boot-starter-jackson'
+  exclude group: 'tools.jackson.core'
+  exclude group: 'tools.jackson.datatype'
+  exclude group: 'tools.jackson.module'
+  exclude group: 'tools.jackson.dataformat'
+}
+
 checkstyle {
   toolVersion = '13.4.2'
   configFile = new File(rootDir, 'config/checkstyle/checkstyle.xml')
@@ -297,16 +306,23 @@ dependencyManagement {
 dependencies {
 
   implementation 'org.springframework.boot:spring-boot-jackson2'
+  implementation 'org.springframework.boot:spring-boot-starter-jackson2'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
-  implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+  implementation ('org.springframework.boot:spring-boot-starter-webmvc')  {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-jackson'
+  }
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
   implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
-  implementation "org.springframework.boot:spring-boot-starter-restclient:4.0.8"
+  implementation ("org.springframework.boot:spring-boot-starter-restclient:4.0.8")  {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-jackson'
+  }
   implementation 'org.springframework.boot:spring-boot-starter-data-redis'
   implementation 'org.springframework.boot:spring-boot-starter-cache'
-  implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+  implementation ('org.springframework.cloud:spring-cloud-starter-openfeign') {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-jackson'
+  }
   implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '8.0.0'
