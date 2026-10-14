@@ -306,7 +306,6 @@ dependencyManagement {
 dependencies {
 
   implementation 'org.springframework.boot:spring-boot-jackson2'
-  implementation 'org.springframework.boot:spring-boot-starter-jackson2'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation ('org.springframework.boot:spring-boot-starter-webmvc')  {
     exclude group: 'org.springframework.boot', module: 'spring-boot-jackson'
