@@ -115,15 +115,6 @@ configurations {
   contractTestRuntime.extendsFrom testRuntime
 }
 
-configurations.configureEach {
-  exclude group: 'org.springframework.boot', module: 'spring-boot-jackson'
-  exclude group: 'org.springframework.boot', module: 'spring-boot-starter-jackson'
-  exclude group: 'tools.jackson.core'
-  exclude group: 'tools.jackson.datatype'
-  exclude group: 'tools.jackson.module'
-  exclude group: 'tools.jackson.dataformat'
-}
-
 checkstyle {
   toolVersion = '13.4.2'
   configFile = new File(rootDir, 'config/checkstyle/checkstyle.xml')
@@ -319,9 +310,7 @@ dependencies {
   }
   implementation 'org.springframework.boot:spring-boot-starter-data-redis'
   implementation 'org.springframework.boot:spring-boot-starter-cache'
-  implementation ('org.springframework.cloud:spring-cloud-starter-openfeign') {
-    exclude group: 'org.springframework.boot', module: 'spring-boot-jackson'
-  }
+  implementation ('org.springframework.cloud:spring-cloud-starter-openfeign')
   implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '8.0.0'
@@ -338,6 +327,8 @@ dependencies {
   implementation group: 'commons-io', name: 'commons-io', version: '2.21.0'
   implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: '7.13.4'
 
+  implementation 'tools.jackson.core:jackson-databind'
+//  implementation 'com.fasterxml.jackson.core:jackson-databind'
   implementation 'com.fasterxml.jackson.core:jackson-annotations'
 
   testImplementation group: 'com.github.hmcts', name: 'document-management-client', version: '7.0.1'
