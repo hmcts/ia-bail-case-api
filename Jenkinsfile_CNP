@@ -13,7 +13,24 @@ def type = "java"
 def product = "ia"
 def component = "bail-case-api"
 
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
 def secrets = [
+  's2s-${env}': [
+    secret('microservicekey-ccd-data', 'DATA_STORE_S2S_KEY'),
+    secret('microservicekey-ccd-definition', 'DEFINITION_STORE_S2S_KEY'),
+    secret('microservicekey-ccd-gw', 'API_GATEWAY_S2S_KEY'),
+    secret('microservicekey-ccd-admin', 'ADMIN_S2S_KEY')
+  ],
+  'ccd-${env}': [
+    secret('ccd-api-gateway-oauth2-client-secret', 'CCD_API_GATEWAY_IDAM_CLIENT_SECRET'),
+    secret('ccd-admin-web-oauth2-client-secret', 'ADMIN_WEB_IDAM_SECRET'),
+    secret('postcode-info-address-lookup-token', 'ADDRESS_LOOKUP_TOKEN'),
+    secret('idam-data-store-client-secret', 'IDAM_OAUTH2_DATA_STORE_CLIENT_SECRET'),
+    secret('idam-data-store-system-user-username', 'IDAM_DATA_STORE_SYSTEM_USER_USERNAME'),
+    secret('idam-data-store-system-user-password', 'IDAM_DATA_STORE_SYSTEM_USER_PASSWORD'),
+    secret('session-keys', 'SESSION_KEYS')
+  ],
   'ia-${env}': [
     secret('idam-client-id', 'IA_IDAM_CLIENT_ID'),
     secret('idam-secret', 'IA_IDAM_SECRET'),
@@ -65,6 +82,8 @@ def secrets = [
     secret('test-homeoffice-bail-password', 'TEST_HOMEOFFICE_BAIL_PASSWORD'),
 
     secret('ia-bail-gov-notify-key', 'IA_BAIL_GOV_NOTIFY_KEY'),
+
+    secret('generic-values-preview-password', 'GENERIC_VALUES_PREVIEW_YAML_PASS'),
   ]
 ]
 
@@ -98,6 +117,27 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   disableLegacyDeployment()
   loadVaultSecrets(secrets)
+  enableHighLevelDataSetup()
+
+  // Validate the Bail CCD definition JSON before anything is built or deployed.
+  before('build') {
+    dir("${WORKSPACE}/ccd-definitions") {
+      yarnBuilder.yarn('test')
+    }
+  }
+
+  // Build the spreadsheet the High Level Data Setup stage is about to import.
+  // DEPLOYMENT_ENVIRONMENT is set by the environment agent the stage runs on and is
+  // the only thing that distinguishes the AAT and prod passes on master;
+  // CCD_DEF_NAME is the fallback for builds that do not get an environment agent.
+  before('highleveldatasetup') {
+    def ccdEnvironment = env.DEPLOYMENT_ENVIRONMENT ?: env.CCD_DEF_NAME
+    dir("${WORKSPACE}/ccd-definitions") {
+      yarnBuilder.yarn('setup')
+      yarnBuilder.yarn("generate-${ccdEnvironment}")
+    }
+    steps.archiveArtifacts artifacts: "build/ccd-config/ccd-bail-config-${ccdEnvironment}.xlsx"
+  }
 
   afterAlways('functionalTest:preview') {
     publishHTML([
@@ -114,14 +154,33 @@ withPipeline(type, product, component) {
   afterSuccess('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/**/*'
+
+    // The prod data setup pass comes after this stage.
+    env.CCD_DEF_NAME = "prod"
   }
 
   enableSlackNotifications('#ia-tech')
 
   onMaster() {
+    env.CCD_DEF_NAME = "aat"
     enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
   }
   onPR() {
+    env.CCD_DEF_NAME = "preview"
+    // read by `yarn generate-preview`
+    env.PR_NUMBER = "${CHANGE_ID}"
+    env.DEFINITION_STORE_URL_BASE = "https://ccd-definition-store-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.XUI_URL = "https://xui-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    env.CCD_ADMIN_URL = "https://admin-web-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
+  }
+  onDemo {
+    env.CCD_DEF_NAME = "demo"
+  }
+  onIthc {
+    env.CCD_DEF_NAME = "ithc"
+  }
+  onPerftest {
+    env.CCD_DEF_NAME = "perftest"
   }
 }
