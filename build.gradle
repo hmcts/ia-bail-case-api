@@ -392,8 +392,8 @@ dependencies {
   }
   ccdDataSetupImplementation group: 'com.google.guava', name: 'guava', version: '32.1.3-jre'
   ccdDataSetupImplementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: '7.13.4'
-  ccdDataSetupImplementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.19'
-  ccdDataSetupRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.19'
+  ccdDataSetupImplementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.18'
+  ccdDataSetupRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.18'
 
   //pact contract testing
   contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: '4.6.20'
