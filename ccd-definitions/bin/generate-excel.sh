@@ -16,4 +16,6 @@ mkdir -p "$(dirname "${output_file}")"
 echo "Generating Excel file: ${output_file}"
 
 cd "${definitions_dir}/ccd-definition-processor"
-yarn json2xlsx -D "${json_dir}" -o "${output_file}"
+# Under `yarn generate-*`, NODE_OPTIONS loads this project's Plug'n'Play resolver, which rejects
+# the processor's own dependencies; the processor installs to node_modules, so plain node is enough.
+env -u NODE_OPTIONS node bin/json2xlsx.js -D "${json_dir}" -o "${output_file}"
