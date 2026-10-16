@@ -49,4 +49,8 @@
     <cve>CVE-2026-47886</cve>
     <cve>CVE-2026-47885</cve>
   </suppress>
+  <suppress>
+    <notes>Spring Security DPoP proof replay. Only DPoPProofJwtDecoderFactory is affected, which this service does not use; the 6.5.12 fix is not published to Maven Central. Suppressed in ia-case-api and ccd-data-store-api for the same reason.</notes>
+    <cve>CVE-2026-41707</cve>
+  </suppress>
 </suppressions>

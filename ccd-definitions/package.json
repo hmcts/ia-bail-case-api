@@ -1,0 +1,28 @@
+{
+  "name": "ia-bail-ccd-definitions",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "setup": "bin/setup.sh",
+    "copy-json": "bin/copy-json.sh",
+    "generate-excel": "bin/generate-excel.sh",
+    "generate": "bin/generate-ccd-definition.sh",
+    "generate-dev": "bin/generate-ccd-definition.sh -e dev",
+    "generate-preview": "bin/generate-ccd-definition.sh -e preview -p $PR_NUMBER",
+    "generate-mirrord": "bin/generate-ccd-definition.sh -e mirrord",
+    "generate-demo": "bin/generate-ccd-definition.sh -e demo",
+    "generate-ithc": "bin/generate-ccd-definition.sh -e ithc",
+    "generate-perftest": "bin/generate-ccd-definition.sh -e perftest",
+    "generate-aat": "bin/generate-ccd-definition.sh -e aat",
+    "generate-prod": "bin/generate-ccd-definition.sh -e prod",
+    "generate-all": "yarn generate-dev && yarn generate-demo && yarn generate-ithc && yarn generate-perftest && yarn generate-aat && yarn generate-prod",
+    "upload-local": "bin/utils/upload-ccd.sh -e dev",
+    "upload-mirrord": "bin/utils/upload-ccd.sh -e mirrord",
+    "upload-preview": "bin/utils/upload-ccd.sh -e preview -p $PR_NUMBER",
+    "lint": "echo 'Linting skipped - no ESLint configured'",
+    "validate:json": "node bin/json-validator.js",
+    "verify:definitions": "node bin/run-duplicate-checks.js && node bin/check-missing-system-user-fields.js && node bin/check-publish-mismatches.js",
+    "test": "yarn lint && yarn validate:json && yarn verify:definitions"
+  },
+  "packageManager": "yarn@3.4.1"
+}
