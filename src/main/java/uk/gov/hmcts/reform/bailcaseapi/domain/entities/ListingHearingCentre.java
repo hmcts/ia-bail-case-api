@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.HashMap;
@@ -47,6 +48,7 @@ public enum ListingHearingCentre {
     }
 
 
+    @JsonCreator
     ListingHearingCentre(String value, String label, String epimsId) {
         this.value = value;
         this.label = label;

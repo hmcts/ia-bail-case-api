@@ -49,6 +49,9 @@ spring:
     name: Immigration & Asylum bail case API
   main:
     allow-bean-definition-overriding: true
+  http:
+    converters:
+      preferred-json-mapper: jackson2
   config:
     import: "optional:configtree:/mnt/secrets/ia/"
   security:

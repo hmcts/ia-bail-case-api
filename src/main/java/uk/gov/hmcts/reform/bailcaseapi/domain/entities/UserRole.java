@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum UserRole {
@@ -17,6 +18,7 @@ public enum UserRole {
     @JsonValue
     private final String id;
 
+    @JsonCreator
     UserRole(String id) {
         this.id = id;
     }
