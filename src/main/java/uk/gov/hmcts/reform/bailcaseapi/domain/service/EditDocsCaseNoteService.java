@@ -33,7 +33,7 @@ public class EditDocsCaseNoteService {
 
     private CaseNote buildNewCaseNote(AuditDetails auditDetails) {
         return new CaseNote(
-            "A document was edited or deleted",
+            "A document was added, edited or deleted",
             getAuditDetailsFormatted(auditDetails),
             auditDetails.getUser(),
             LocalDate.now().toString()
