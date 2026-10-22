@@ -18,6 +18,7 @@ if [[ "${CCD_DEF_SOURCE:-json}" == "java" ]]; then
   # The SDK splits the larger sheets into a directory of files; json2xlsx walks nested
   # directories, so copy the whole tree rather than only the top-level files.
   cp -R "${generated_dir}/." "${json_dir}/"
+  node "${definitions_dir}/bin/drop-empty-crud.js" "${json_dir}"
 else
   cp "${definitions_dir}/json/"*.json "${json_dir}/"
 fi
