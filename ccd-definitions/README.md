@@ -30,6 +30,25 @@ PR_NUMBER=1234 yarn generate-preview
 
 Output lands in `../build/ccd-config/ccd-bail-config-<env>.xlsx`.
 
+### Building from the Java config instead
+
+The same case type is also expressed as [ccd-config-generator](https://github.com/hmcts/dtsse-ccd-config-generator)
+Java under `src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd`. Passing `--source java`
+(or setting `CCD_DEF_SOURCE=java`) runs `./gradlew generateCCDConfig` and builds the
+spreadsheet from its output instead of `json/`:
+
+```bash
+CCD_DEF_SOURCE=java PR_NUMBER=1234 yarn generate-preview
+```
+
+Either way the per-environment `env/<env>/UserProfile.json` is added on top, because the
+SDK does not generate it.
+
+`Jenkinsfile_CNP` sets `CCD_DEF_SOURCE=java` for preview builds, so a PR's preview
+environment imports the definition built from the Java config. Every other environment
+— dev, demo, ithc, perftest, aat, prod — is built from `json/`, which stays the source of
+truth, and `yarn test` always validates `json/`.
+
 Callback URLs in `json/CaseEvent.json` are written as `${CCD_DEF_BAIL_URL}` and
 `${CCD_DEF_AAC_URL}`; `bin/generate-ccd-definition.sh` resolves them per environment from
 `default.env`. The `CCD_DEF` prefix is required — `ccd-definition-processor` only
