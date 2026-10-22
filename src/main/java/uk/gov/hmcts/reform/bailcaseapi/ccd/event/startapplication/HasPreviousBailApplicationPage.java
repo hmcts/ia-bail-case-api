@@ -22,7 +22,7 @@ public final class HasPreviousBailApplicationPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("hasPreviousBailApplication", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=hasPreviousBailApplication");
+        fields.page("hasPreviousBailApplication", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=hasPreviousBailApplication");
         fields.pageLabel("Previous applications");
         fields.mandatory(CaseData::getHasPreviousBailApplication);
         fields.mandatory(CaseData::getPreviousBailApplicationNumber)

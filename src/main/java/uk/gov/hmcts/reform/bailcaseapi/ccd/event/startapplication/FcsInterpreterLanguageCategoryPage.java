@@ -23,7 +23,7 @@ public final class FcsInterpreterLanguageCategoryPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("fcsInterpreterLanguageCategory", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=fcsInterpreterCategory");
+        fields.page("fcsInterpreterLanguageCategory", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=fcsInterpreterCategory");
         fields.pageLabel("Hearing requirements");
         fields.showCondition("fcsInterpreterYesNo=\"Yes\"");
         fields.complex(CaseData::getFcs)

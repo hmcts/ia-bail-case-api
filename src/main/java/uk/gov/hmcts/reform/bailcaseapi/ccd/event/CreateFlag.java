@@ -34,8 +34,8 @@ public class CreateFlag implements CCDConfig<CaseData, State, UserRole> {
             .displayOrder(19)
             .showSummary()
             .endButtonLabel("Create Flag")
-            .aboutToStartCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToStart", 5, 5, 5, 5)
-            .submittedCallback("${CCD_DEF_IA_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
+            .aboutToStartCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToStart", 5, 5, 5, 5)
+            .submittedCallback("${CCD_DEF_BAIL_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
             .explicitGrants()
             .grant(Permission.CRU, UserRole.IA_BAIL_CASEFLAGS_PROFILE)
             .fields();

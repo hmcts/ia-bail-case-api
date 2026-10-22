@@ -23,7 +23,7 @@ public final class EditBailDocumentsPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("editBailDocuments", "${CCD_DEF_IA_URL}/bail/ccdMidEvent");
+        fields.page("editBailDocuments", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent");
         fields.pageLabel("Edit or remove documents");
         fields.complex(CaseData::getApplicant)
                     .optional(Applicant::getDocumentsWithMetadata)

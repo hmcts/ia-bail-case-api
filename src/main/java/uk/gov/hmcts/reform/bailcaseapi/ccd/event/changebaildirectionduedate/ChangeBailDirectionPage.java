@@ -23,7 +23,7 @@ public final class ChangeBailDirectionPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("changeBailDirection", "${CCD_DEF_IA_URL}/bail/ccdMidEvent");
+        fields.page("changeBailDirection", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent");
         fields.pageLabel("Select direction");
         fields.readonly(CaseData::getChangeBailDirectionLabel);
         fields.complex(CaseData::getBail)

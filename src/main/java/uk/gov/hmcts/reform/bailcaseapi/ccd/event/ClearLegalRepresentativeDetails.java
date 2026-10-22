@@ -33,7 +33,7 @@ public class ClearLegalRepresentativeDetails implements CCDConfig<CaseData, Stat
             .description("Clear representative details")
             .displayOrder(20)
             .showSummary()
-            .aboutToStartCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToStart", 5, 5, 5, 5)
+            .aboutToStartCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToStart", 5, 5, 5, 5)
             .explicitGrants()
             .grant(Permission.CRUD, UserRole.CASEWORKER_IA_SYSTEM);
     }

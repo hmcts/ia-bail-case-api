@@ -22,7 +22,7 @@ public final class ProbationOffenderManagerContactDetailsPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("probationOffenderManagerContactDetails", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=probationOffenderManagerContactDetails");
+        fields.page("probationOffenderManagerContactDetails", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=probationOffenderManagerContactDetails");
         fields.pageLabel("What are the probation offender manager’s contact details?");
         fields.showCondition("hasProbationOffenderManager=\"Yes\"");
         fields.readonlyNoSummary(CaseData::getProbationOffenderManagerContactDetailsLabel)

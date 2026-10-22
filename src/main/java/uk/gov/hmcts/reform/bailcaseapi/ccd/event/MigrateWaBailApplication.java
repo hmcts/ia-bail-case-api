@@ -34,7 +34,7 @@ public class MigrateWaBailApplication implements CCDConfig<CaseData, State, User
             .displayOrder(28)
             .showSummary()
             .endButtonLabel("Migrate")
-            .aboutToSubmitCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToSubmit")
+            .aboutToSubmitCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToSubmit")
             .explicitGrants()
             .grant(Permission.CRUD, UserRole.CASEWORKER_IA_ADMOFFICER, UserRole.CASEWORKER_IA_SYSTEM);
     }

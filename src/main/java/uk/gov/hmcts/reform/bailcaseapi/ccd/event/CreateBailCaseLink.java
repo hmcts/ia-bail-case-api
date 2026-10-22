@@ -34,9 +34,9 @@ public class CreateBailCaseLink implements CCDConfig<CaseData, State, UserRole> 
             .displayOrder(18)
             .showSummary()
             .endButtonLabel("Create Case Link")
-            .aboutToStartCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToStart", 5, 5, 5, 5)
-            .aboutToSubmitCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
-            .submittedCallback("${CCD_DEF_IA_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
+            .aboutToStartCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToStart", 5, 5, 5, 5)
+            .aboutToSubmitCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
+            .submittedCallback("${CCD_DEF_BAIL_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
             .explicitGrants()
             .grant(Permission.CRUD, UserRole.IA_BAIL_CASELINKS_PROFILE)
             .fields();

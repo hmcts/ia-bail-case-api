@@ -34,8 +34,8 @@ public class UpdateInterpreterDetails implements CCDConfig<CaseData, State, User
             .displayOrder(22)
             .showSummary()
             .endButtonLabel("Update")
-            .aboutToSubmitCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
-            .submittedCallback("${CCD_DEF_IA_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
+            .aboutToSubmitCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
+            .submittedCallback("${CCD_DEF_BAIL_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
             .explicitGrants()
             .grant(Permission.CRUD, UserRole.CASEWORKER_IA_ADMOFFICER)
             .fields();

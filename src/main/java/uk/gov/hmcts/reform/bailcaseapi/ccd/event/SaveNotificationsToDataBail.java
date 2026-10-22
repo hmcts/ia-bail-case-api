@@ -33,7 +33,7 @@ public class SaveNotificationsToDataBail implements CCDConfig<CaseData, State, U
             .displayOrder(29)
             .showSummary(false)
             .endButtonLabel("Submit")
-            .aboutToSubmitCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToSubmit", 1, 1, 1, 1)
+            .aboutToSubmitCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToSubmit", 1, 1, 1, 1)
             .explicitGrants()
             .grant(Permission.CRUD, UserRole.CASEWORKER_IA_ADMOFFICER, UserRole.CASEWORKER_IA_SYSTEM);
     }

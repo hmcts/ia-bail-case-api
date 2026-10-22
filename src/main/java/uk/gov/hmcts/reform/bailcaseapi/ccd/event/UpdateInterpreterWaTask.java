@@ -34,7 +34,7 @@ public class UpdateInterpreterWaTask implements CCDConfig<CaseData, State, UserR
             .showSummary()
             .endButtonLabel("Update")
             .publishToCamunda()
-            .aboutToSubmitCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
+            .aboutToSubmitCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
             .explicitGrants()
             .grant(Permission.CRU, UserRole.CASEWORKER_IA_SYSTEM)
             .fields();

@@ -35,9 +35,9 @@ public class UploadSignedDecisionNoticeConditionalGrant implements CCDConfig<Cas
             .showSummary()
             .endButtonLabel("Upload")
             .publishToCamunda()
-            .aboutToStartCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToStart")
-            .aboutToSubmitCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
-            .submittedCallback("${CCD_DEF_IA_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
+            .aboutToStartCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToStart")
+            .aboutToSubmitCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
+            .submittedCallback("${CCD_DEF_BAIL_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
             .explicitGrants()
             .grant(Permission.CRUD, UserRole.CASEWORKER_IA_ADMOFFICER, UserRole.CASEWORKER_IA_IACJUDGE)
             .fields();

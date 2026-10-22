@@ -22,7 +22,7 @@ public final class Supporter2DOBPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("supporter2DOB", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=supporter2DOB");
+        fields.page("supporter2DOB", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=supporter2DOB");
         fields.pageLabel("What is the financial condition supporter’s date of birth?");
         fields.showCondition("hasFinancialCondSupporter=\"Yes\" AND hasFinancialCondSupporter2=\"Yes\"");
         fields.mandatory(CaseData::getSupporter2DOB)

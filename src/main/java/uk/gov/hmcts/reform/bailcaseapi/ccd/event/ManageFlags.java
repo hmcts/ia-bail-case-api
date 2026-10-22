@@ -34,7 +34,7 @@ public class ManageFlags implements CCDConfig<CaseData, State, UserRole> {
             .displayOrder(20)
             .showSummary()
             .endButtonLabel("Manage Flags")
-            .submittedCallback("${CCD_DEF_IA_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
+            .submittedCallback("${CCD_DEF_BAIL_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
             .explicitGrants()
             .grant(Permission.CRU, UserRole.IA_BAIL_CASEFLAGS_PROFILE)
             .fields();

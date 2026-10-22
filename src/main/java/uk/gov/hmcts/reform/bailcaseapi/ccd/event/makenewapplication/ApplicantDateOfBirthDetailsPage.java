@@ -23,7 +23,7 @@ public final class ApplicantDateOfBirthDetailsPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("applicantDateOfBirthDetails", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=applicantDateOfBirth");
+        fields.page("applicantDateOfBirthDetails", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=applicantDateOfBirth");
         fields.pageLabel("What is the applicant’s date of birth?");
         fields.complex(CaseData::getApplicant)
                     .mandatory(Applicant::getDateOfBirth)

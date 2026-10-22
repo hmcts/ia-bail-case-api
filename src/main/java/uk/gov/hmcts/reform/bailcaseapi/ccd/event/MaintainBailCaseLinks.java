@@ -33,9 +33,9 @@ public class MaintainBailCaseLinks implements CCDConfig<CaseData, State, UserRol
             .displayOrder(19)
             .showSummary()
             .endButtonLabel("Maintain Case Links")
-            .aboutToStartCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToStart", 5, 5, 5, 5)
-            .aboutToSubmitCallback("${CCD_DEF_IA_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
-            .submittedCallback("${CCD_DEF_IA_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
+            .aboutToStartCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToStart", 5, 5, 5, 5)
+            .aboutToSubmitCallback("${CCD_DEF_BAIL_URL}/bail/ccdAboutToSubmit", 5, 5, 5, 5)
+            .submittedCallback("${CCD_DEF_BAIL_URL}/bail/ccdSubmitted", 5, 5, 5, 5)
             .explicitGrants()
             .grant(Permission.CRUD, UserRole.IA_BAIL_CASELINKS_PROFILE)
             .fields();

@@ -22,7 +22,7 @@ public final class RedirectToPreviousApplicationOrNocPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("redirectToPreviousApplicationOrNoc", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=redirectToPreviousApplicationOrNoc");
+        fields.page("redirectToPreviousApplicationOrNoc", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=redirectToPreviousApplicationOrNoc");
         fields.pageLabel("Previous Applications");
         fields.showCondition("previousApplicationDoneViaCcd=\"Yes\"");
         fields.readonlyNoSummary(CaseData::getRedirectToPreviousApplicationOrNoc);

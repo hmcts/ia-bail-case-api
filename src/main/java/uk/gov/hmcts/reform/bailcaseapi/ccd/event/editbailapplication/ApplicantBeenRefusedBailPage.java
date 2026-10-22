@@ -24,7 +24,7 @@ public final class ApplicantBeenRefusedBailPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("applicantBeenRefusedBail", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=bailHearingDate");
+        fields.page("applicantBeenRefusedBail", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=bailHearingDate");
         fields.pageLabel("Previous application refused");
         fields.showCondition("hasPreviousBailApplication=\"Yes\"");
         fields.complex(CaseData::getApplicant)

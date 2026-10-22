@@ -22,7 +22,7 @@ public final class ShowPreviousApplicationsPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("showPreviousApplications", "${CCD_DEF_IA_URL}/bail/ccdMidEvent");
+        fields.page("showPreviousApplications", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent");
         fields.mandatoryNoSummary(CaseData::getPreviousApplicationList);
     }
 }

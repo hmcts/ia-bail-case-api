@@ -23,7 +23,7 @@ public final class ApplicantArrivalInUKPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("applicantArrivalInUK", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=applicantArrivalInUKDate");
+        fields.page("applicantArrivalInUK", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=applicantArrivalInUKDate");
         fields.pageLabel("What date did the applicant arrive in the UK?");
         fields.complex(CaseData::getApplicant)
                     .readonlyNoSummary(Applicant::getArrivalInUKDateTitle)

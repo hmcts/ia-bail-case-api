@@ -23,7 +23,7 @@ public final class Supporter2ContactDetailsPage {
      */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("supporter2ContactDetails", "${CCD_DEF_IA_URL}/bail/ccdMidEvent?pageId=supporter2ContactDetails");
+        fields.page("supporter2ContactDetails", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=supporter2ContactDetails");
         fields.pageLabel("What are the financial condition supporter’s contact details?");
         fields.showCondition("hasFinancialCondSupporter=\"Yes\" AND hasFinancialCondSupporter2=\"Yes\"");
         fields.complex(CaseData::getSupporter2)
