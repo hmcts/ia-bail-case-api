@@ -155,6 +155,13 @@ checkstyle {
   maxWarnings(0)
 }
 
+// The generated CCD config takes its member names and label text from the definition's field IDs
+// and labels, so names like progress_applicationStarted and lines past 300 characters cannot be
+// styled away without changing the definition itself.
+tasks.withType(Checkstyle).configureEach {
+  exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/**'
+}
+
 pmd {
   toolVersion = '7.25.0'
   ignoreFailures = true
