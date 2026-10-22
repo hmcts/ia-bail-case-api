@@ -722,6 +722,8 @@ public class CaseData {
 
     @CCD(
             label = "Internal collection managed by API to track notifications sent using GovNotify for this case",
+            typeOverride = FieldType.Collection,
+            typeParameterOverride = "Text",
             access = {SystemCrudAccess.class}
     )
     private List<ListValue<String>> notificationsSent;
@@ -1511,6 +1513,8 @@ public class CaseData {
 
     @CCD(
             label = "List of hearing IDs associated with case",
+            typeOverride = FieldType.Collection,
+            typeParameterOverride = "Text",
             access = {HomeofficebailHomeofficepouLegalrepSolicitorRAccess.class, AdmofficerCruAccess.class, IacjudgeRAccess.class, SystemCrudAccess.class}
     )
     private List<ListValue<String>> hearingIdList;
