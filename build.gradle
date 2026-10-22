@@ -285,6 +285,11 @@ sonarqube {
     property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/config/**," +
       "src/main/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/SystemDateProvider.java," +
       "src/main/java/uk/gov/hmcts/reform/bailcaseapi/Application.java"
+
+    // The CCD config under ccd/ is generated from ccd-definitions/json by the ccd-config-generator
+    // plugin. Its repetition and its lack of tests are properties of the generator, not of this repo.
+    property "sonar.coverage.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd/**"
+    property "sonar.cpd.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd/**"
   }
 }
 
