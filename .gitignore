@@ -24,3 +24,9 @@ bin/main/application.yaml
 .mirrord
 /pacts/
 /reports/pmd/*
+
+### CCD definitions (node tooling) ###
+node_modules/
+ccd-definitions/.yarn/install-state.gz
+ccd-definitions/.pnp.*
+ccd-definitions/.yarn_dependencies_installed

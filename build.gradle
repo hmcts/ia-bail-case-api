@@ -110,6 +110,15 @@ sourceSets {
     }
     resources.srcDir file('src/contractTest/resources')
   }
+
+  // Deliberately isolated from the test source sets: befta-fw pulls in its own
+  // cucumber, rest-assured and spring versions, which would otherwise end up on
+  // every test classpath.
+  ccdDataSetup {
+    java {
+      srcDir file('src/ccdDataSetup/java')
+    }
+  }
 }
 
 processSmokeTestResources {
@@ -201,6 +210,25 @@ tasks.register('fortifyScan', JavaExec) {
   jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
 }
 
+// The hmcts java plugin only wires the standard source sets into check.
+check.dependsOn checkstyleCcdDataSetup
+
+// Invoked by the CNP pipeline's High Level Data Setup stage as
+// `./gradlew highLevelDataSetup --args=<environment>`, which requires a JavaExec task.
+tasks.register('highLevelDataSetup', JavaExec) {
+  description = 'Imports the Bail CCD definition into an environment\'s definition store.'
+  group = 'ccd tasks'
+  dependsOn ccdDataSetupClasses
+  mainClass = "uk.gov.hmcts.reform.bailcaseapi.ccd.HighLevelDataSetupApp"
+  classpath = sourceSets.ccdDataSetup.runtimeClasspath
+  // getAllDefinitionFilesToLoadAt returns a path relative to the repo root
+  workingDir = projectDir
+  jvmArgs = [
+    '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
+    '--add-opens=java.base/java.util=ALL-UNNAMED'
+  ]
+}
+
 project.ext {
   pacticipant = 'bail_caseApi'
   pacticipantVersion = getCheckedOutGitCommitHash()
@@ -286,7 +314,7 @@ dependencyManagement {
     // CVE-2026-33870
     // CVE-2026-33871
     // CVE-2025-67735 - from spring-boot-starter-data-redis@3.5.14
-    mavenBom "io.netty:netty-bom:4.2.16.Final"
+    mavenBom "io.netty:netty-bom:4.2.19.Final"
   }
 
   dependencies {
@@ -376,6 +404,21 @@ dependencies {
     exclude group: 'commons-io', module: 'commons-io'
     exclude group: 'org.apache.commons', module: 'commons-lang3'
   }
+
+  // CCD definition import, run by the pipeline's High Level Data Setup stage.
+  // The exclusions drop transitives carrying known CVEs; guava and launchdarkly
+  // are put back at the versions the rest of the build already uses.
+  ccdDataSetupImplementation(group: 'com.github.hmcts', name: 'befta-fw', version: '9.2.11') {
+    exclude group: 'org.apache.commons', module: 'commons-compress'
+    exclude group: 'org.apache.poi', module: 'poi'
+    exclude group: 'org.apache.poi', module: 'poi-ooxml'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'com.launchdarkly', module: 'launchdarkly-java-server-sdk'
+  }
+  ccdDataSetupImplementation group: 'com.google.guava', name: 'guava', version: '32.1.3-jre'
+  ccdDataSetupImplementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: '7.13.4'
+  ccdDataSetupImplementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.18'
+  ccdDataSetupRuntimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.18'
 
   //pact contract testing
   contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: '4.6.20'
