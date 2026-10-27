@@ -23,16 +23,10 @@
   "expectation": {
     "status": 200,
     "errors": [],
-    "state": "APPLICATION_STARTED_BY_LR",
     "caseData": {
       "template": "minimal-application-started.json",
       "replacements": {
         "applicationSubmittedBy": "Legal Representative",
-        "currentCaseStateVisibleToJudge": "applicationStartedByLR",
-        "currentCaseStateVisibleToAllUsers": "applicationStartedByLR",
-        "currentCaseStateVisibleToHomeOffice": "applicationStartedByLR",
-        "currentCaseStateVisibleToAdminOfficer": "applicationStartedByLR",
-        "currentCaseStateVisibleToLegalRepresentative": "applicationStartedByLR",
         "isAdmin": "No",
         "isLegalRep": "Yes",
         "sentByChecklist": "",
