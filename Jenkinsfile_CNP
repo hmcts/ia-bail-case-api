@@ -126,6 +126,12 @@ withPipeline(type, product, component) {
     }
   }
 
+  // Build the spreadsheet from the generated ccd-config-generator Java under
+  // src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd rather than the hand-written
+  // ccd-definitions/json. Applies to every environment, so what prod imports is the Java config.
+  // Read by generate-ccd-definition.sh and copy-json.sh.
+  env.CCD_DEF_SOURCE = "java"
+
   // Build the spreadsheet the High Level Data Setup stage is about to import.
   // DEPLOYMENT_ENVIRONMENT is set by the environment agent the stage runs on and is
   // the only thing that distinguishes the AAT and prod passes on master;
@@ -169,9 +175,6 @@ withPipeline(type, product, component) {
     env.CCD_DEF_NAME = "preview"
     // read by `yarn generate-preview`
     env.PR_NUMBER = "${CHANGE_ID}"
-    // Build the spreadsheet from the generated ccd-config-generator Java rather than the
-    // hand-written JSON. Preview only; every other environment stays on the JSON.
-    env.CCD_DEF_SOURCE = "java"
     env.DEFINITION_STORE_URL_BASE = "https://ccd-definition-store-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.XUI_URL = "https://xui-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.CCD_ADMIN_URL = "https://admin-web-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
