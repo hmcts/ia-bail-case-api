@@ -1,17 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-
-const fileName = path.join(__dirname, '../json/AuthorisationCaseField.json');
+const { readSheet } = require('./lib/definition');
 
 try {
-  handleContent(fs.readFileSync(fileName, 'utf8'));
+  handleContent(readSheet('AuthorisationCaseField'));
 } catch (err) {
   console.error(err);
   process.exit(1);
 }
 
-function handleContent(content) {
-  const caseEventToFieldJson = JSON.parse(content);
+function handleContent(caseEventToFieldJson) {
 
   const keyCountMap = new Map();
   const duplicates = new Set();

@@ -1,17 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-
-const fileName = path.join(__dirname, '../json/CaseEventToFields.json');
+const { readSheet } = require('./lib/definition');
 
 try {
-  checkContent(fs.readFileSync(fileName, 'utf8'));
+  checkContent(readSheet('CaseEventToFields'));
 } catch (err) {
   console.error(err);
   process.exit(1);
 }
 
-function checkContent(content) {
-  const caseEventToFieldJson = JSON.parse(content);
+function checkContent(caseEventToFieldJson) {
 
   const keyCountMap = new Map();
   const duplicates = new Set();
