@@ -1,57 +1,95 @@
 package uk.gov.hmcts.reform.bailcaseapi.component;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.bailcaseapi.component.testutils.fixtures.CallbackForTest.CallbackForTestBuilder.callback;
-import static uk.gov.hmcts.reform.bailcaseapi.component.testutils.fixtures.CaseDetailsForTest.CaseDetailsForTestBuilder.someCaseDetailsWith;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ADD_CASE_NOTE_DESCRIPTION;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ADD_CASE_NOTE_SUBJECT;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_FAMILY_NAME;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_GIVEN_NAMES;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.CASE_NOTES;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event.ADD_CASE_NOTE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State.APPLICATION_SUBMITTED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.security.test.context.support.WithMockUser;
-
+import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.SpringBootIntegrationTest;
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.WithUserDetailsStub;
-import uk.gov.hmcts.reform.bailcaseapi.component.testutils.fixtures.BailCaseForTest;
-import uk.gov.hmcts.reform.bailcaseapi.component.testutils.fixtures.PreSubmitCallbackResponseForTest;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.CaseNote;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.IdValue;
 
+/**
+ * {@code addCaseNote} is served by the SDK's own callback endpoint rather than
+ * {@code /bail/ccdAboutToSubmit}, so this drives {@code /callbacks/about-to-submit} the way CCD
+ * does: the event id in the request body and the case data as CCD stores it. Passing shows the SDK
+ * runtime is component-scanned, the event resolves for case type Bail, and the generated CaseData
+ * deserialises in and out.
+ */
 @EnableAutoConfiguration(exclude = {CacheAutoConfiguration.class})
 class AddCaseNoteTest extends SpringBootIntegrationTest implements WithUserDetailsStub {
 
+    private static final String SERVICE_JWT_TOKEN = "Bearer service-token";
+    private static final String USER_JWT_TOKEN = "Bearer user-token";
+
     @Test
     @WithMockUser(authorities = {"caseworker-ia", "caseworker-ia-admofficer"})
-    void adds_a_case_note() {
+    void adds_a_case_note() throws Exception {
 
         addAdminOfficerUserDetailsStub(server);
 
-        PreSubmitCallbackResponseForTest response = iaBailCaseApiClient.aboutToSubmit(callback()
-            .event(ADD_CASE_NOTE)
-            .caseDetails(someCaseDetailsWith()
-                .state(APPLICATION_SUBMITTED)
-                .caseData(BailCaseForTest.anBailCase()
-                    .with(ADD_CASE_NOTE_SUBJECT, "some-subject")
-                    .with(ADD_CASE_NOTE_DESCRIPTION, "some-description")
-                    .with(APPLICANT_GIVEN_NAMES, "some-given-name")
-                    .with(APPLICANT_FAMILY_NAME, "some-family-name"))));
+        JsonNode data = aboutToSubmit(Map.of(
+            "addCaseNoteSubject", "some-subject",
+            "addCaseNoteDescription", "some-description",
+            "applicantGivenNames", "some-given-name",
+            "applicantFamilyName", "some-family-name"
+        ));
 
-        Optional<List<IdValue<CaseNote>>> caseNotes = response.getBailCase().read(CASE_NOTES);
+        JsonNode caseNotes = data.get("caseNotes");
+        assertThat(caseNotes).hasSize(1);
 
-        CaseNote caseNote = caseNotes.get().getFirst().getValue();
+        JsonNode caseNote = caseNotes.get(0).get("value");
+        assertThat(caseNotes.get(0).get("id").asText()).isEqualTo("1");
+        assertThat(caseNote.get("user").asText()).isEqualTo("Admin Officer");
+        assertThat(caseNote.get("caseNoteSubject").asText()).isEqualTo("some-subject");
+        assertThat(caseNote.get("caseNoteDescription").asText()).isEqualTo("some-description");
+    }
 
-        assertThat(caseNotes.get().size()).isEqualTo(1);
-        assertThat(caseNote.getUser()).isEqualTo("Admin Officer");
-        assertThat(caseNote.getCaseNoteSubject()).isEqualTo("some-subject");
-        assertThat(caseNote.getCaseNoteDescription()).isEqualTo("some-description");
+    @Test
+    @WithMockUser(authorities = {"caseworker-ia", "caseworker-ia-admofficer"})
+    void clears_the_entry_fields_so_the_next_note_starts_empty() throws Exception {
+
+        addAdminOfficerUserDetailsStub(server);
+
+        JsonNode data = aboutToSubmit(Map.of(
+            "addCaseNoteSubject", "some-subject",
+            "addCaseNoteDescription", "some-description"
+        ));
+
+        assertThat(data.hasNonNull("addCaseNoteSubject")).isFalse();
+        assertThat(data.hasNonNull("addCaseNoteDescription")).isFalse();
+    }
+
+    private JsonNode aboutToSubmit(Map<String, Object> caseData) throws Exception {
+
+        Map<String, Object> request = Map.of(
+            "event_id", "addCaseNote",
+            "case_details", Map.of(
+                "id", 1234,
+                "jurisdiction", "IA",
+                "case_type_id", "Bail",
+                "state", "applicationSubmitted",
+                "case_data", caseData
+            )
+        );
+
+        MvcResult result = mockMvc
+            .perform(post("/callbacks/about-to-submit")
+                .header("Authorization", USER_JWT_TOKEN)
+                .header("ServiceAuthorization", SERVICE_JWT_TOKEN)
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(APPLICATION_JSON_VALUE))
+            .andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(200);
+
+        return objectMapper
+            .readTree(result.getResponse().getContentAsString())
+            .get("data");
     }
 }
