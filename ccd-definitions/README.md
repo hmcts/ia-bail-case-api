@@ -30,6 +30,30 @@ PR_NUMBER=1234 yarn generate-preview
 
 Output lands in `../build/ccd-config/ccd-bail-config-<env>.xlsx`.
 
+### Which source the spreadsheet is built from
+
+The same case type is also expressed as [ccd-config-generator](https://github.com/hmcts/dtsse-ccd-config-generator)
+Java under `src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd`. Passing `--source java`
+(or setting `CCD_DEF_SOURCE=java`) runs `./gradlew generateCCDConfig` and builds the
+spreadsheet from its output instead of `json/`:
+
+```bash
+CCD_DEF_SOURCE=java PR_NUMBER=1234 yarn generate-preview
+```
+
+Either way the per-environment `env/<env>/UserProfile.json` is added on top, because the
+SDK does not generate it.
+
+`Jenkinsfile_CNP` sets `CCD_DEF_SOURCE=java` for the pipeline as a whole, so every
+environment — preview, dev, demo, ithc, perftest, aat and prod — imports the definition
+built from the Java config. The Java is the source of truth.
+
+`json/` is kept as the definition the Java was generated from and as the baseline the two
+are compared against, and `yarn test` still validates it, but **editing `json/` no longer
+changes what any environment imports** — change the Java. The scripts still default to
+`json` when `CCD_DEF_SOURCE` is unset, so a local `yarn generate-aat` builds from `json/`
+unless you pass `--source java`.
+
 Callback URLs in `json/CaseEvent.json` are written as `${CCD_DEF_BAIL_URL}` and
 `${CCD_DEF_AAC_URL}`; `bin/generate-ccd-definition.sh` resolves them per environment from
 `default.env`. The `CCD_DEF` prefix is required — `ccd-definition-processor` only

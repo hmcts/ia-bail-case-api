@@ -4,6 +4,8 @@
 # Usage: ./bin/generate-ccd-definition.sh [options]
 # Options:
 #   -e, --env ENV           Environment (dev, preview, demo, ithc, perftest, aat, prod, mirrord)
+#   -s, --source SOURCE     Definition source: json (hand-written) or java (ccd-config-generator);
+#                           defaults to $CCD_DEF_SOURCE, or json
 #   -p, --pr PR_NUMBER      PR number for preview environment (required when `-e preview` is specified)
 #   -u, --user USERNAME     Username for mirrord environment (defaults to current user)
 #   -d, --dry-run           Show what would be done without actually generating files
@@ -12,6 +14,7 @@
 set -eu
 
 ENV="dev"
+SOURCE="${CCD_DEF_SOURCE:-json}"
 PR_NUMBER=""
 USERNAME=""
 DRY_RUN=false
@@ -21,6 +24,11 @@ while [[ $# -gt 0 ]]; do
   case $key in
     -e|--env)
       ENV="$2"
+      shift
+      shift
+      ;;
+    -s|--source)
+      SOURCE="$2"
       shift
       shift
       ;;
@@ -42,6 +50,9 @@ while [[ $# -gt 0 ]]; do
       echo "Usage: $0 [options]"
       echo "Options:"
       echo "  -e, --env ENV           Environment (dev, preview, demo, ithc, perftest, aat, prod, mirrord)"
+      echo "  -s, --source SOURCE     Definition source: json (the hand-written json/ directory, the"
+      echo "                          default) or java (generated from the ccd-config-generator config"
+      echo "                          by './gradlew generateCCDConfig'). Defaults to \$CCD_DEF_SOURCE"
       echo "  -p, --pr PR_NUMBER      PR number for preview environment (required when '-e preview' is specified)"
       echo "  -u, --user USERNAME     Username for mirrord environment (defaults to current user)"
       echo "  -d, --dry-run           Show what would be done without actually generating files"
@@ -61,6 +72,11 @@ repo_dir=$(cd "${definitions_dir}/.." && pwd)
 if [[ "${ENV}" == "preview" && -z "${PR_NUMBER}" ]]; then
   echo "Error: PR number (-p, --pr) is required for preview environment"
   echo "Usage example: $0 -e preview -p 1234"
+  exit 1
+fi
+
+if [[ "${SOURCE}" != "json" && "${SOURCE}" != "java" ]]; then
+  echo "Error: unknown definition source '${SOURCE}' (expected 'json' or 'java')"
   exit 1
 fi
 
@@ -103,6 +119,11 @@ if [[ "${ENV}" == "dev" ]]; then
 fi
 
 echo "Generating Bail CCD definition for environment: ${ENV}"
+if [[ "${SOURCE}" == "java" ]]; then
+  echo "Definition source: java (ccd-config-generator config, via ./gradlew generateCCDConfig)"
+else
+  echo "Definition source: json (the hand-written json/ directory)"
+fi
 echo "Service URL for ia-bail-case-api: ${CCD_DEF_BAIL_URL}"
 echo "AAC URL: ${CCD_DEF_AAC_URL}"
 
@@ -115,7 +136,12 @@ fi
 # environment it is given, so the PR number must not appear in it.
 OUTPUT_FILE="${repo_dir}/build/ccd-config/ccd-bail-config-${ENV}.xlsx"
 
-CCD_ENV="${USER_PROFILE_ENV}" "${definitions_dir}/bin/copy-json.sh"
+if [[ "${SOURCE}" == "java" ]]; then
+  # Writes the per-sheet JSON copy-json.sh picks up to build/definitions/Bail.
+  "${repo_dir}/gradlew" -p "${repo_dir}" generateCCDConfig
+fi
+
+CCD_ENV="${USER_PROFILE_ENV}" CCD_DEF_SOURCE="${SOURCE}" "${definitions_dir}/bin/copy-json.sh"
 
 CCD_DEF_VERSION="${CCD_DEF_VERSION}" \
 CCD_DEF_BAIL_URL="${CCD_DEF_BAIL_URL}" \

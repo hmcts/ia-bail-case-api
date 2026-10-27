@@ -126,6 +126,12 @@ withPipeline(type, product, component) {
     }
   }
 
+  // Build the spreadsheet from the generated ccd-config-generator Java under
+  // src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd rather than the hand-written
+  // ccd-definitions/json. Applies to every environment, so what prod imports is the Java config.
+  // Read by generate-ccd-definition.sh and copy-json.sh.
+  env.CCD_DEF_SOURCE = "java"
+
   // Build the spreadsheet the High Level Data Setup stage is about to import.
   // DEPLOYMENT_ENVIRONMENT is set by the environment agent the stage runs on and is
   // the only thing that distinguishes the AAT and prod passes on master;

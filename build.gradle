@@ -15,11 +15,29 @@ plugins {
   id 'uk.gov.hmcts.java' version '0.12.70'
   id 'org.gradle.test-retry' version '1.6.5'
   id 'net.serenity-bdd.serenity-gradle-plugin' version '5.3.9'
+  id 'hmcts.ccd.sdk' version '7.16.0'
 }
 
 apply plugin: 'java'
 apply plugin: 'project-report'
 apply plugin: 'idea'
+
+ccd {
+  // rootPackage names the GENERATED package, not …bailcaseapi: generateCCDConfig looks for a single
+  // @SpringBootConfiguration beneath it, and the generated tree carries its own minimal one
+  // (ConverterGeneratedApplication). Pointing it at the service's base package would find
+  // Application instead and boot the whole service, which definition generation has no need of.
+  configDir = file('build/definitions')
+  rootPackage = 'uk.gov.hmcts.reform.bailcaseapi.ccd'
+  caseType = 'Bail'
+}
+
+// Definition generation reads annotations and builders; it serves no traffic. The service is a
+// servlet application, so without this the generator's context tries to start a web server and dies
+// on the missing ServletWebServerFactory (the generator's own classpath carries no servlet container).
+generateCCDConfig {
+  systemProperty 'spring.main.web-application-type', 'none'
+}
 
 mainClassName = 'uk.gov.hmcts.reform.bailcaseapi.Application'
 
@@ -38,6 +56,13 @@ tasks.withType(JavaCompile).configureEach {
     '-Xlint:unchecked',
     "-Werror"
   ]
+}
+
+compileJava {
+  // The generated event classes are long fluent builder chains, which javac attributes recursively;
+  // at the default thread stack they overflow (StackOverflowError) before reporting any error.
+  options.fork = true
+  options.forkOptions.jvmArgs = ['-Xss128m']
 }
 
 
@@ -128,6 +153,13 @@ checkstyle {
   toolVersion = '13.4.2'
   configFile = new File(rootDir, 'config/checkstyle/checkstyle.xml')
   maxWarnings(0)
+}
+
+// The generated CCD config takes its member names and label text from the definition's field IDs
+// and labels, so names like progress_applicationStarted and lines past 300 characters cannot be
+// styled away without changing the definition itself.
+tasks.withType(Checkstyle).configureEach {
+  exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/**'
 }
 
 pmd {
@@ -253,6 +285,11 @@ sonarqube {
     property "sonar.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/config/**," +
       "src/main/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/SystemDateProvider.java," +
       "src/main/java/uk/gov/hmcts/reform/bailcaseapi/Application.java"
+
+    // The CCD config under ccd/ is generated from ccd-definitions/json by the ccd-config-generator
+    // plugin. Its repetition and its lack of tests are properties of the generator, not of this repo.
+    property "sonar.coverage.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd/**"
+    property "sonar.cpd.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd/**"
   }
 }
 
