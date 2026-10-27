@@ -1,7 +1,7 @@
 {
   "description": "Add case note by Admin Officer confirmation (post-submit REST call)",
   "request": {
-    "uri": "/bail/ccdSubmitted",
+    "uri": "/callbacks/submitted?eventId=addCaseNote",
     "credentials": "AdminOfficer",
     "input": {
       "id": 1111,

@@ -28,7 +28,6 @@ ccd {
   // (ConverterGeneratedApplication). Pointing it at the service's base package would find
   // Application instead and boot the whole service, which definition generation has no need of.
   configDir = file('build/definitions')
-  rootPackage = 'uk.gov.hmcts.reform.bailcaseapi.ccd'
   caseType = 'Bail'
 }
 
@@ -36,7 +35,7 @@ ccd {
 // servlet application, so without this the generator's context tries to start a web server and dies
 // on the missing ServletWebServerFactory (the generator's own classpath carries no servlet container).
 generateCCDConfig {
-  systemProperty 'spring.main.web-application-type', 'none'
+  systemProperty 'server.port', '0'
 }
 
 mainClassName = 'uk.gov.hmcts.reform.bailcaseapi.Application'

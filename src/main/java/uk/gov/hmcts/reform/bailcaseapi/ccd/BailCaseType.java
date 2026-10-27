@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.ccd;
 
+import static java.lang.System.getenv;
+
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.ccd.sdk.api.CCDConfig;
 import uk.gov.hmcts.ccd.sdk.api.ConfigBuilder;
@@ -21,6 +23,7 @@ public class BailCaseType implements CCDConfig<CaseData, State, UserRole> {
      */
     @Override
     public void configure(ConfigBuilder<CaseData, State, UserRole> builder) {
+        builder.setCallbackHost(getenv().getOrDefault("CCD_DEF_BAIL_URL", "http://localhost:8686"));
         builder.caseType("Bail", "Bail${CCD_DEF_VERSION}", "Bail Case");
         builder.jurisdiction("IA", "Immigration & Asylum", "Immigration & Asylum");
         builder.jurisdictionShuttered();

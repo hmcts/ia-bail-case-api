@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.bailcaseapi.ccd.callback;
+package uk.gov.hmcts.reform.bailcaseapi.ccd.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,7 +29,7 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.CcdEventAuthorizo
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class AddCaseNoteCallbacksTest {
+class AddCaseNoteTest {
 
     private static final LocalDate NOW = LocalDate.of(2026, 10, 27);
 
@@ -37,14 +37,14 @@ class AddCaseNoteCallbacksTest {
     @Mock private DateProvider dateProvider;
     @Mock private UserDetails userDetails;
 
-    private AddCaseNoteCallbacks callbacks;
+    private AddCaseNote event;
 
     @BeforeEach
     void setUp() {
         when(dateProvider.now()).thenReturn(NOW);
         when(userDetails.getForename()).thenReturn("Jane");
         when(userDetails.getSurname()).thenReturn("Doe");
-        callbacks = new AddCaseNoteCallbacks(ccdEventAuthorizor, dateProvider, userDetails);
+        event = new AddCaseNote(ccdEventAuthorizor, dateProvider, userDetails);
     }
 
     @Test
@@ -53,7 +53,7 @@ class AddCaseNoteCallbacksTest {
         CaseData caseData = caseDataWith("Subject", "Description");
         caseData.setCaseNotes(List.of(new ListValue<>("1", existing)));
 
-        AboutToStartOrSubmitResponse<CaseData, State> response = callbacks.aboutToSubmit(details(caseData), null);
+        AboutToStartOrSubmitResponse<CaseData, State> response = event.aboutToSubmit(details(caseData), null);
 
         List<ListValue<CaseNote>> caseNotes = response.getData().getCaseNotes();
         assertThat(caseNotes).hasSize(2);
@@ -69,7 +69,7 @@ class AddCaseNoteCallbacksTest {
     @Test
     void adds_the_first_note_when_there_are_none() {
         AboutToStartOrSubmitResponse<CaseData, State> response =
-            callbacks.aboutToSubmit(details(caseDataWith("Subject", "Description")), null);
+            event.aboutToSubmit(details(caseDataWith("Subject", "Description")), null);
 
         assertThat(response.getData().getCaseNotes()).hasSize(1);
         assertThat(response.getData().getCaseNotes().get(0).getId()).isEqualTo("1");
@@ -81,7 +81,7 @@ class AddCaseNoteCallbacksTest {
         CaseData caseData = caseDataWith("Subject", "Description");
         caseData.setAddCaseNoteDocument(document);
 
-        AboutToStartOrSubmitResponse<CaseData, State> response = callbacks.aboutToSubmit(details(caseData), null);
+        AboutToStartOrSubmitResponse<CaseData, State> response = event.aboutToSubmit(details(caseData), null);
 
         assertThat(response.getData().getCaseNotes().get(0).getValue().getCaseNoteDocument())
             .isEqualTo(document);
@@ -92,7 +92,7 @@ class AddCaseNoteCallbacksTest {
         CaseData caseData = caseDataWith("Subject", "Description");
         caseData.setAddCaseNoteDocument(Document.builder().filename("note.pdf").build());
 
-        CaseData amended = callbacks.aboutToSubmit(details(caseData), null).getData();
+        CaseData amended = event.aboutToSubmit(details(caseData), null).getData();
 
         assertThat(amended.getAddCaseNoteSubject()).isNull();
         assertThat(amended.getAddCaseNoteDescription()).isNull();
@@ -101,14 +101,14 @@ class AddCaseNoteCallbacksTest {
 
     @Test
     void throws_when_the_subject_is_missing() {
-        assertThatThrownBy(() -> callbacks.aboutToSubmit(details(caseDataWith(null, "Description")), null))
+        assertThatThrownBy(() -> event.aboutToSubmit(details(caseDataWith(null, "Description")), null))
             .isExactlyInstanceOf(IllegalStateException.class)
             .hasMessage("addCaseNoteSubject is not present");
     }
 
     @Test
     void throws_when_the_description_is_missing() {
-        assertThatThrownBy(() -> callbacks.aboutToSubmit(details(caseDataWith("Subject", null)), null))
+        assertThatThrownBy(() -> event.aboutToSubmit(details(caseDataWith("Subject", null)), null))
             .isExactlyInstanceOf(IllegalStateException.class)
             .hasMessage("addCaseNoteDescription is not present");
     }
@@ -118,13 +118,13 @@ class AddCaseNoteCallbacksTest {
         doThrow(new AccessDeniedException("Event 'addCaseNote' not allowed"))
             .when(ccdEventAuthorizor).throwIfNotAuthorized(Event.ADD_CASE_NOTE);
 
-        assertThatThrownBy(() -> callbacks.aboutToSubmit(details(caseDataWith("Subject", "Description")), null))
+        assertThatThrownBy(() -> event.aboutToSubmit(details(caseDataWith("Subject", "Description")), null))
             .isExactlyInstanceOf(AccessDeniedException.class);
     }
 
     @Test
     void confirmation_links_to_the_case_notes_tab() {
-        var response = callbacks.submitted(details(caseDataWith("Subject", "Description")), null);
+        var response = event.submitted(details(caseDataWith("Subject", "Description")), null);
 
         assertThat(response.getConfirmationHeader()).isEqualTo("# You have added a case note");
         assertThat(response.getConfirmationBody()).contains("/case/IA/Bail/1234#Case%20notes");

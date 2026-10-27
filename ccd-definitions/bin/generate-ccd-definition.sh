@@ -138,7 +138,7 @@ OUTPUT_FILE="${repo_dir}/build/ccd-config/ccd-bail-config-${ENV}.xlsx"
 
 if [[ "${SOURCE}" == "java" ]]; then
   # Writes the per-sheet JSON copy-json.sh picks up to build/definitions/Bail.
-  "${repo_dir}/gradlew" -p "${repo_dir}" generateCCDConfig
+  CCD_DEF_BAIL_URL="${CCD_DEF_BAIL_URL}" "${repo_dir}/gradlew" -p "${repo_dir}" generateCCDConfig
 fi
 
 CCD_ENV="${USER_PROFILE_ENV}" CCD_DEF_SOURCE="${SOURCE}" "${definitions_dir}/bin/copy-json.sh"
