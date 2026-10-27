@@ -14,13 +14,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.SpringBootIntegrationTest;
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.WithUserDetailsStub;
 
-/**
- * {@code addCaseNote} is served by the SDK's own callback endpoint rather than
- * {@code /bail/ccdAboutToSubmit}, so this drives {@code /callbacks/about-to-submit} the way CCD
- * does: the event id in the request body and the case data as CCD stores it. Passing shows the SDK
- * runtime is component-scanned, the event resolves for case type Bail, and the generated CaseData
- * deserialises in and out.
- */
 @EnableAutoConfiguration(exclude = {CacheAutoConfiguration.class})
 class AddCaseNoteTest extends SpringBootIntegrationTest implements WithUserDetailsStub {
 

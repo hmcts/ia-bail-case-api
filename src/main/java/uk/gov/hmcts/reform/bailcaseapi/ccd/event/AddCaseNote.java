@@ -20,10 +20,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.CcdEventAuthorizor;
 import uk.gov.hmcts.reform.ccd.client.model.SubmittedCallbackResponse;
 
-/**
- * Event {@code addCaseNote} for case type {@code Bail}: adds a note to the case and clears the
- * fields it was entered in.
- */
 @Component
 @RequiredArgsConstructor
 public class AddCaseNote implements CCDConfig<CaseData, State, UserRole> {
@@ -61,7 +57,6 @@ public class AddCaseNote implements CCDConfig<CaseData, State, UserRole> {
         CaseDetails<CaseData, State> details,
         CaseDetails<CaseData, State> detailsBefore
     ) {
-        // PreSubmitCallbackDispatcher did this for every event it routed; the SDK has no such hook.
         ccdEventAuthorizor.throwIfNotAuthorized(Event.ADD_CASE_NOTE);
 
         CaseData caseData = details.getData();
@@ -100,7 +95,6 @@ public class AddCaseNote implements CCDConfig<CaseData, State, UserRole> {
             .build();
     }
 
-    /** Newest note first, ids renumbered from the new size down, as {@code Appender} did. */
     private static List<ListValue<CaseNote>> prepend(
         CaseNote newCaseNote,
         List<ListValue<CaseNote>> existingCaseNotes
