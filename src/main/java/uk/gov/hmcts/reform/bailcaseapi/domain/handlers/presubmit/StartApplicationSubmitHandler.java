@@ -3,9 +3,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.handlers.presubmit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
@@ -20,20 +18,11 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.FCS_INTERPRETER_YESNO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.INTERPRETER_YESNO;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_HOME_OFFICE;
-import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.IS_LEGAL_REP;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils.FCS_N_INTERPRETER_LANGUAGE_CATEGORY_FIELD;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils.FCS_N_INTERPRETER_SIGN_LANGUAGE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.utils.InterpreterLanguagesUtils.FCS_N_INTERPRETER_SPOKEN_LANGUAGE;
 
-/**
- * Handles the about-to-submit callback of the {@code startApplication} event: sanitises the interpreter
- * language fields and chooses the end state of the event. A CCD definition generated from this
- * repository's Java config can only name one post state per event, so the choice between
- * {@code applicationStartedByLR}, {@code applicationStartedByHO} and {@code applicationStarted} is made
- * here; the state returned by an about-to-submit callback replaces the definition's post state.
- */
 @Slf4j
 @Component
 public class StartApplicationSubmitHandler implements PreSubmitCallbackStateHandler<BailCase> {
@@ -95,22 +84,6 @@ public class StartApplicationSubmitHandler implements PreSubmitCallbackStateHand
                 );
             }
         }
-
-        State state;
-        if (isYes(bailCase, IS_LEGAL_REP)) {
-            state = State.APPLICATION_STARTED_BY_LR;
-        } else if (isYes(bailCase, IS_HOME_OFFICE)) {
-            state = State.APPLICATION_STARTED_BY_HO;
-        } else {
-            state = State.APPLICATION_STARTED;
-        }
-
-        return new PreSubmitCallbackResponse<>(bailCase, state);
-    }
-
-    private boolean isYes(BailCase bailCase, BailCaseFieldDefinition field) {
-        return bailCase.read(field, YesOrNo.class)
-            .map(YES::equals)
-            .orElse(false);
+        return new PreSubmitCallbackResponse<>(bailCase);
     }
 }
