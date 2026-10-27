@@ -24,10 +24,6 @@ public class AddCaseNote implements CCDConfig<CaseData, State, UserRole> {
      */
     public static final String ADD_CASE_NOTE = "addCaseNote";
 
-    // An ObjectProvider rather than the bean itself: generateCCDConfig builds this config in a
-    // context holding only CCDConfig beans (see ConverterGeneratedApplication), so asking for
-    // AddCaseNoteCallbacks directly fails to start. Generation only needs to know a callback
-    // exists in order to publish its URL; the bean is resolved when CCD actually calls it.
     private final ObjectProvider<AddCaseNoteCallbacks> callbacks;
 
     public AddCaseNote(ObjectProvider<AddCaseNoteCallbacks> callbacks) {

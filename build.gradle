@@ -155,10 +155,7 @@ checkstyle {
   maxWarnings(0)
 }
 
-// The generated CCD config takes its member names and label text from the definition's field IDs
-// and labels, so names like progress_applicationStarted and lines past 300 characters cannot be
-// styled away without changing the definition itself. Only the generated packages are skipped —
-// hand-written code alongside it, such as ccd/callback, is still checked.
+// Generated member names and label text come from the definition's field IDs and labels.
 tasks.withType(Checkstyle).configureEach {
   exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/*.java'
   exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/access/**'

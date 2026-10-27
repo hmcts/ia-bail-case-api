@@ -50,9 +50,7 @@ public class AddCaseNoteCallbacks {
         CaseDetails<CaseData, State> details,
         CaseDetails<CaseData, State> detailsBefore
     ) {
-        // The dispatcher applied this to every event it routed; the SDK has no equivalent hook, so
-        // the event's own callback has to ask. CCD's AuthorisationCaseEvent grants gate the event
-        // too, but this check is what the service itself enforces.
+        // PreSubmitCallbackDispatcher did this for every event it routed; the SDK has no such hook.
         ccdEventAuthorizor.throwIfNotAuthorized(Event.ADD_CASE_NOTE);
 
         CaseData caseData = details.getData();

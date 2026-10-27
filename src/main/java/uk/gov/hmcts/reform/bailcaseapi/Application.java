@@ -6,10 +6,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-// uk.gov.hmcts.ccd.sdk carries the SDK's own CallbackController and the executor behind it, which
-// serve the /callbacks/* endpoints an event's method-reference callbacks are published as. The SDK
-// ships no Spring auto-configuration, so without this they are never registered and CCD's calls
-// 404. This is what nfdiv-case-api does too.
 @ComponentScan(basePackages = {"uk.gov.hmcts.ccd.sdk", "uk.gov.hmcts.reform.bailcaseapi"})
 @EnableFeignClients(basePackages =
     {
