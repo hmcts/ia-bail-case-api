@@ -59,4 +59,9 @@ public class IdamService {
     public UserInfo getUserInfo(String accessToken) {
         return idamApi.userInfo(accessToken);
     }
+
+    @Cacheable(value = "adminOfficerTokenCache", key = "'adminOfficerTokenCache'")
+    public String getAdminOfficerToken() {
+        return "not set";
+    }
 }
