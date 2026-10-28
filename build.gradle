@@ -260,7 +260,8 @@ pitest {
   targetClasses = ['uk.gov.hmcts.reform.bailcaseapi.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.bailcaseapi.infrastructure.config.*',
-    'uk.gov.hmcts.reform.bailcaseapi.Application'
+    'uk.gov.hmcts.reform.bailcaseapi.Application',
+    'uk.gov.hmcts.reform.bailcaseapi.ccd-definitions.*',
   ]
   threads = 10
   outputFormats = ['XML', 'HTML']
