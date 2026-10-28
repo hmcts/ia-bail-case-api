@@ -21,8 +21,11 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.access.AdmofficerIacjudgeRAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.AdmofficerSystemCrudAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.CaaSystemCrudAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.HomeofficebailHomeofficepouLegalrepSolicitorRAccess;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.access.HomeofficebailRAccess;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.access.HomeofficepouRAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.IacjudgeCrudAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.IacjudgeRAccess;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.access.LegalrepSolicitorRAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.SystemCrudAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.DocumentWithMetadata;
@@ -46,37 +49,37 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.InterpreterLanguageCatego
 public class Applicant {
     @CCD(
             label = "Has the applicant been refused immigration bail at a hearing within the last 28 days?",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private YesOrNo beenRefusedBail;
 
     @CCD(
             label = "Given names",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, CaaSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, CaaSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private String givenNames;
 
     @CCD(
             label = "Family name",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, CaaSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, CaaSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private String familyName;
 
     @CCD(
             label = "Date of birth",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, CaaSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, CaaSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private LocalDate dateOfBirth;
 
     @CCD(
             label = "Gender",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private ApplicationGenderList gender;
 
     @CCD(
             label = "Enter details",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private String genderEnterDetails;
 
@@ -88,7 +91,7 @@ public class Applicant {
 
     @CCD(
             label = "Nationalities",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private List<ListValue<NationalityList>> nationalities;
 
@@ -96,13 +99,13 @@ public class Applicant {
             label = " \n"
                             + "\n"
                             + "Detention facility",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private ApplicantDetainedLocList detainedLoc;
 
     @CCD(
             label = "Prison NOMS number",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private String prisonDetails;
 
@@ -115,7 +118,7 @@ public class Applicant {
 
     @CCD(
             label = "Date of arrival in the UK",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private LocalDate arrivalInUKDate;
 
@@ -128,36 +131,36 @@ public class Applicant {
 
     @CCD(
             label = "Mobile phone",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private YesOrNo hasMobile;
 
     @CCD(
             label = "Mobile phone number\n",
             typeOverride = FieldType.PhoneUK,
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private String mobileNumber1;
 
     @CCD(
             label = "Address if bail granted",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private YesOrNo hasAddress;
 
-    @CCD(label = "Address", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class})
+    @CCD(label = "Address", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class})
     private AddressUK address;
 
     @CCD(
             label = "Disability",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private YesOrNo disability1;
 
     @CCD(
             label = "Explain any special arrangements needed for the hearing",
             typeOverride = FieldType.TextArea,
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private String disabilityDetails;
 
@@ -167,12 +170,12 @@ public class Applicant {
     )
     private String fullName;
 
-    @CCD(label = "Applicant documents", access = {AdmofficerSystemCrudAccess.class, IacjudgeCrudAccess.class})
+    @CCD(label = "Applicant documents", access = {AdmofficerSystemCrudAccess.class, IacjudgeCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class})
     private List<ListValue<DocumentWithMetadata>> documentsWithMetadata;
 
     @CCD(
             label = "What kind of interpreter will the applicant need?",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private Set<InterpreterLanguageCategory> interpreterLanguageCategory;
 
@@ -192,7 +195,7 @@ public class Applicant {
             label = "${applicantInterpreterSpokenLanguageBooking}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSpokenLanguageBookingStatus;
 
@@ -206,7 +209,7 @@ public class Applicant {
             label = "${applicantInterpreterSignLanguageBooking}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSignLanguageBookingStatus;
 }
