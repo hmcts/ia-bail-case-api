@@ -13,8 +13,7 @@ import uk.gov.hmcts.ccd.sdk.type.AddressUK;
 import uk.gov.hmcts.ccd.sdk.type.FieldType;
 import uk.gov.hmcts.ccd.sdk.type.ListValue;
 import uk.gov.hmcts.ccd.sdk.type.YesOrNo;
-import uk.gov.hmcts.reform.bailcaseapi.ccd.access.AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCrudAccess;
-import uk.gov.hmcts.reform.bailcaseapi.ccd.access.AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.access.SystemCrudAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.NationalityList;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.SupporterContactDetails;
 
@@ -31,13 +30,13 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.SupporterContactDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Supporter {
-    @CCD(label = "Given names", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Given names", access = {SystemCrudAccess.class})
     private String givenNames;
 
-    @CCD(label = "Family name", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Family name", access = {SystemCrudAccess.class})
     private String familyNames;
 
-    @CCD(label = "Address", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Address", access = {SystemCrudAccess.class})
     private AddressUK addressDetails;
 
     @CCD(
@@ -45,37 +44,36 @@ public class Supporter {
                             + " \n"
                             + " Contact details",
             typeOverride = FieldType.Label
-    ,
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCrudAccess.class})
+    )
     private String contactDetailsLabel;
 
-    @CCD(label = " ", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = " ", access = {SystemCrudAccess.class})
     private Set<SupporterContactDetails> contactDetails;
 
-    @CCD(label = "Telephone number", typeOverride = FieldType.PhoneUK, access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Telephone number", typeOverride = FieldType.PhoneUK, access = {SystemCrudAccess.class})
     private String telephoneNumber1;
 
-    @CCD(label = "Mobile number", typeOverride = FieldType.PhoneUK, access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Mobile number", typeOverride = FieldType.PhoneUK, access = {SystemCrudAccess.class})
     private String mobileNumber1;
 
-    @CCD(label = "Email address", typeOverride = FieldType.Email, access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Email address", typeOverride = FieldType.Email, access = {SystemCrudAccess.class})
     private String emailAddress1;
 
-    @CCD(label = "Relationship to the applicant", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Relationship to the applicant", access = {SystemCrudAccess.class})
     private String relation;
 
-    @CCD(label = "Occupation", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Occupation", access = {SystemCrudAccess.class})
     private String occupation;
 
-    @CCD(label = "Immigration status", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Immigration status", access = {SystemCrudAccess.class})
     private String immigration;
 
-    @CCD(label = "Nationality ", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Nationality ", access = {SystemCrudAccess.class})
     private List<ListValue<NationalityList>> nationality;
 
-    @CCD(label = "Passport", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Passport", access = {SystemCrudAccess.class})
     private YesOrNo hasPassport;
 
-    @CCD(label = "Passport number", access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudIacjudgeRAccess.class})
+    @CCD(label = "Passport number", access = {SystemCrudAccess.class})
     private String passport;
 }
