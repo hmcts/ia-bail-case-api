@@ -336,7 +336,7 @@ public class BailTabs implements CCDConfig<CaseData, State, UserRole> {
             .field("addCaseNoteLink", "currentCaseStateVisibleToAllUsers!=\"applicationStarted\"")
             .field("caseNotes");
         builder.tab("caseHistoryTab", "Case history")
-            .field("caseHistoryTabTitle");
+            .field("caseHistory");
         builder.tab("previousApplicationsTab", "Previous applications")
             .showCondition("priorApplications1!=\"\"")
             .field("priorApplications1", "priorApplications1=\"DO_NOT_SHOW_ON_UI\"")

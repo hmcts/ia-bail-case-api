@@ -604,8 +604,11 @@ public class CaseData {
     @CCD(label = " ", typeOverride = FieldType.Label, access = {AdmofficerRAccess.class, IacjudgeRAccess.class})
     private String caseNotesTabTitle;
 
+    // Named for the field the generator injects its own CaseHistoryViewer under, so the two merge
+    // into one: ccd-data-store-api fills the first CaseHistoryViewer in the case type and stops, so
+    // a second one is left empty whichever way round they fall.
     @CCD(label = " ", typeOverride = FieldType.CaseHistoryViewer, access = {SystemCrudAccess.class, AdmofficerRAccess.class, IacjudgeRAccess.class})
-    private String caseHistoryTabTitle;
+    private String caseHistory;
 
     @CCD(
             label = "![The applicant in this case is legally represented](https://raw.githubusercontent.com/hmcts/ia-bail-frontend/master/app/assets/images/journey_type_legally_represented.png)",
