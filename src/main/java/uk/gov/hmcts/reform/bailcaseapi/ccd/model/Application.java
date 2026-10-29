@@ -24,39 +24,39 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.access.SystemCrudAccess;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Application {
-    @CCD(label = "## Submission", typeOverride = FieldType.Label)
+    @CCD(label = "## Submission", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String submissionTitle;
 
     @CCD(label = "Application submitted by", access = {IacjudgeRAccess.class, SystemCrudAccess.class})
     private String submittedBy;
 
-    @CCD(label = "![]()\r\n" + "## Personal information", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Personal information", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String personalTitle;
 
-    @CCD(label = "![]()\r\n" + "## Applicant information", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Applicant information", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String applicantInfoTitle;
 
-    @CCD(label = "![]()\r\n" + "## Previous application", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Previous application", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String prevApplicationTitle;
 
-    @CCD(label = "![]()\r\n" + "## Financial condition commitment", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Financial condition commitment", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String financialCondTitle;
 
-    @CCD(label = "![]()\r\n" + "## Financial condition supporter 1", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Financial condition supporter 1", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String financialCondSupporter1Title;
 
-    @CCD(label = "![]()\r\n" + "## Financial condition supporter 2", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Financial condition supporter 2", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String financialCondSupporter2Title;
 
-    @CCD(label = "![]()\r\n" + "## Financial condition supporter 3", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Financial condition supporter 3", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String financialCondSupporter3Title;
 
-    @CCD(label = "![]()\r\n" + "## Financial condition supporter 4", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Financial condition supporter 4", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String financialCondSupporter4Title;
 
-    @CCD(label = "![]()\r\n" + "## Grounds for bail", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Grounds for bail", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String bailGroundsTitle;
 
-    @CCD(label = "![]()\r\n" + "## Hearing requirements", typeOverride = FieldType.Label)
+    @CCD(label = "![]()\r\n" + "## Hearing requirements", typeOverride = FieldType.Label, access = {IacjudgeRAccess.class})
     private String hearingRequirementsTitle;
 }

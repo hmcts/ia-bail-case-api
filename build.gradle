@@ -15,7 +15,7 @@ plugins {
   id 'uk.gov.hmcts.java' version '0.12.70'
   id 'org.gradle.test-retry' version '1.6.5'
   id 'net.serenity-bdd.serenity-gradle-plugin' version '5.3.9'
-  id 'hmcts.ccd.sdk' version '7.16.0'
+  id 'hmcts.ccd.sdk' version '7.20.0'
 }
 
 apply plugin: 'java'
@@ -260,7 +260,8 @@ pitest {
   targetClasses = ['uk.gov.hmcts.reform.bailcaseapi.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.bailcaseapi.infrastructure.config.*',
-    'uk.gov.hmcts.reform.bailcaseapi.Application'
+    'uk.gov.hmcts.reform.bailcaseapi.Application',
+    'uk.gov.hmcts.reform.bailcaseapi.ccd-definitions.*',
   ]
   threads = 10
   outputFormats = ['XML', 'HTML']
