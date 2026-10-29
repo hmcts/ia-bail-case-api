@@ -26,5 +26,7 @@ public class BailCaseType implements CCDConfig<CaseData, State, UserRole> {
         builder.jurisdictionShuttered();
         builder.noCaseHistoryTab();
         builder.explicitStateGrants();
+        builder.tabsRespectDeclaredFieldAccess();
+        builder.omitHistoryForRoles(UserRole.values());
     }
 }

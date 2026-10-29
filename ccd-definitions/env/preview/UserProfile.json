@@ -1,11 +1,79 @@
 [
-  {"LiveFrom": "25/02/2022", "UserIDAMId": "ia-law-firm-a@fake.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"},
-  {"LiveFrom": "25/02/2022", "UserIDAMId": "ia-law-firm-b@fake.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"},
-  {"LiveFrom": "25/02/2022", "UserIDAMId": "ia-law-firm-org-sc@fake.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"},
-  {"LiveFrom": "25/02/2022", "UserIDAMId": "ia-law-firm-a-sc@fake.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"},
-  {"LiveFrom": "25/02/2022", "UserIDAMId": "ia-law-firm-b-sc@fake.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"},
-  {"LiveFrom": "25/02/2022", "UserIDAMId": "ia-law-firm-org2-sc@fake2.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"},
-  {"LiveFrom": "25/02/2022", "UserIDAMId": "ia-law-firm-c-sc@fake2.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"},
-  {"LiveFrom": "25/02/2022", "UserIDAMId": "ia-law-firm-d-sc@fake2.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"},
-  {"LiveFrom": "25/02/202", "UserIDAMId": "ia-adminofficer@fake.hmcts.net", "WorkBasketDefaultJurisdiction": "IA", "WorkBasketDefaultCaseType": "Bail", "WorkBasketDefaultState": "applicationStarted"}
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "ia-law-firm-a@fake.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "ia-law-firm-b@fake.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "ia-law-firm-org-sc@fake.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "ia-law-firm-a-sc@fake.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "ia-law-firm-b-sc@fake.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "ia-law-firm-org2-sc@fake2.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "ia-law-firm-c-sc@fake2.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "ia-law-firm-d-sc@fake2.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/202",
+    "UserIDAMId": "ia-adminofficer@fake.hmcts.net",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "CRD_func_test_demo_adm_bail_user090@justice.gov.uk",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  },
+  {
+    "LiveFrom": "25/02/2022",
+    "UserIDAMId": "CRD_func_test_aat_adm66@justice.gov.uk",
+    "WorkBasketDefaultJurisdiction": "IA",
+    "WorkBasketDefaultCaseType": "Bail",
+    "WorkBasketDefaultState": "applicationStarted"
+  }
 ]

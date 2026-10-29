@@ -15,7 +15,10 @@ import uk.gov.hmcts.ccd.sdk.type.YesOrNo;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.AdmofficerSystemCrudAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.BailCaseflagsProfileCrudAccess;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.access.HomeofficebailRAccess;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.access.HomeofficepouRAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.IacjudgeRAccess;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.access.LegalrepSolicitorRAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.SystemCrudAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.BookingStatus;
@@ -36,7 +39,7 @@ public class Fcs {
 
     @CCD(
             label = "Will any of the financial condition supporters require a spoken or sign language interpreter at the hearing?",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private YesOrNo interpreterYesNo;
 
@@ -57,7 +60,7 @@ public class Fcs {
             label = "${fcsInterpreterSpokenLanguageBooking1}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSpokenLanguageBookingStatus1;
 
@@ -71,7 +74,7 @@ public class Fcs {
             label = "${fcsInterpreterSpokenLanguageBooking2}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSpokenLanguageBookingStatus2;
 
@@ -85,7 +88,7 @@ public class Fcs {
             label = "${fcsInterpreterSpokenLanguageBooking3}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSpokenLanguageBookingStatus3;
 
@@ -99,7 +102,7 @@ public class Fcs {
             label = "${fcsInterpreterSpokenLanguageBooking4}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSpokenLanguageBookingStatus4;
 
@@ -113,7 +116,7 @@ public class Fcs {
             label = "${fcsInterpreterSignLanguageBooking1}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSignLanguageBookingStatus1;
 
@@ -127,7 +130,7 @@ public class Fcs {
             label = "${fcsInterpreterSignLanguageBooking2}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSignLanguageBookingStatus2;
 
@@ -141,7 +144,7 @@ public class Fcs {
             label = "${fcsInterpreterSignLanguageBooking3}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSignLanguageBookingStatus3;
 
@@ -155,7 +158,7 @@ public class Fcs {
             label = "${fcsInterpreterSignLanguageBooking4}",
             typeOverride = FieldType.FixedList,
             typeParameterOverride = "bookingStatus",
-            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class}
+            access = {SpecificAccessAdminCtscJudgeLegalOpsProfileRAccess.class, AdmofficerSystemCrudAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
     private BookingStatus interpreterSignLanguageBookingStatus4;
 }

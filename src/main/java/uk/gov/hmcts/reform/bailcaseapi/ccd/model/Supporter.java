@@ -13,6 +13,7 @@ import uk.gov.hmcts.ccd.sdk.type.AddressUK;
 import uk.gov.hmcts.ccd.sdk.type.FieldType;
 import uk.gov.hmcts.ccd.sdk.type.ListValue;
 import uk.gov.hmcts.ccd.sdk.type.YesOrNo;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.access.IacjudgeRAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.access.SystemCrudAccess;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.NationalityList;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.SupporterContactDetails;
@@ -30,13 +31,13 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.SupporterContactDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Supporter {
-    @CCD(label = "Given names", access = {SystemCrudAccess.class})
+    @CCD(label = "Given names", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String givenNames;
 
-    @CCD(label = "Family name", access = {SystemCrudAccess.class})
+    @CCD(label = "Family name", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String familyNames;
 
-    @CCD(label = "Address", access = {SystemCrudAccess.class})
+    @CCD(label = "Address", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private AddressUK addressDetails;
 
     @CCD(
@@ -47,33 +48,33 @@ public class Supporter {
     )
     private String contactDetailsLabel;
 
-    @CCD(label = " ", access = {SystemCrudAccess.class})
+    @CCD(label = " ", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private Set<SupporterContactDetails> contactDetails;
 
-    @CCD(label = "Telephone number", typeOverride = FieldType.PhoneUK, access = {SystemCrudAccess.class})
+    @CCD(label = "Telephone number", typeOverride = FieldType.PhoneUK, access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String telephoneNumber1;
 
-    @CCD(label = "Mobile number", typeOverride = FieldType.PhoneUK, access = {SystemCrudAccess.class})
+    @CCD(label = "Mobile number", typeOverride = FieldType.PhoneUK, access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String mobileNumber1;
 
-    @CCD(label = "Email address", typeOverride = FieldType.Email, access = {SystemCrudAccess.class})
+    @CCD(label = "Email address", typeOverride = FieldType.Email, access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String emailAddress1;
 
-    @CCD(label = "Relationship to the applicant", access = {SystemCrudAccess.class})
+    @CCD(label = "Relationship to the applicant", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String relation;
 
-    @CCD(label = "Occupation", access = {SystemCrudAccess.class})
+    @CCD(label = "Occupation", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String occupation;
 
-    @CCD(label = "Immigration status", access = {SystemCrudAccess.class})
+    @CCD(label = "Immigration status", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String immigration;
 
-    @CCD(label = "Nationality ", access = {SystemCrudAccess.class})
+    @CCD(label = "Nationality ", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private List<ListValue<NationalityList>> nationality;
 
-    @CCD(label = "Passport", access = {SystemCrudAccess.class})
+    @CCD(label = "Passport", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private YesOrNo hasPassport;
 
-    @CCD(label = "Passport number", access = {SystemCrudAccess.class})
+    @CCD(label = "Passport number", access = {SystemCrudAccess.class, IacjudgeRAccess.class})
     private String passport;
 }
