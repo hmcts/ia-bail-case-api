@@ -28,7 +28,6 @@ ccd {
   // (ConverterGeneratedApplication). Pointing it at the service's base package would find
   // Application instead and boot the whole service, which definition generation has no need of.
   configDir = file('build/definitions')
-  rootPackage = 'uk.gov.hmcts.reform.bailcaseapi.ccd'
   caseType = 'Bail'
 }
 
@@ -36,7 +35,7 @@ ccd {
 // servlet application, so without this the generator's context tries to start a web server and dies
 // on the missing ServletWebServerFactory (the generator's own classpath carries no servlet container).
 generateCCDConfig {
-  systemProperty 'spring.main.web-application-type', 'none'
+  systemProperty 'server.port', '0'
 }
 
 mainClassName = 'uk.gov.hmcts.reform.bailcaseapi.Application'
@@ -155,11 +154,12 @@ checkstyle {
   maxWarnings(0)
 }
 
-// The generated CCD config takes its member names and label text from the definition's field IDs
-// and labels, so names like progress_applicationStarted and lines past 300 characters cannot be
-// styled away without changing the definition itself.
+// Generated member names and label text come from the definition's field IDs and labels.
 tasks.withType(Checkstyle).configureEach {
-  exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/**'
+  exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/*.java'
+  exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/access/**'
+  exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/event/**'
+  exclude 'uk/gov/hmcts/reform/bailcaseapi/ccd/model/**'
 }
 
 pmd {
