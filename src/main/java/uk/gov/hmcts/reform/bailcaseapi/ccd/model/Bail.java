@@ -41,13 +41,13 @@ public class Bail {
 
     @CCD(
             label = "What was the date of the hearing?",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private LocalDate hearingDate;
 
     @CCD(
             label = "Online case reference number",
-            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class}
+            access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, SystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private String referenceNumber;
 
