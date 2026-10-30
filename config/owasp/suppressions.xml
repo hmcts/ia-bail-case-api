@@ -48,6 +48,12 @@
     <cve>CVE-2026-47883</cve>
     <cve>CVE-2026-47886</cve>
     <cve>CVE-2026-47885</cve>
+
+    <cve>CVE-2026-75595</cve>
+    <cve>CVE-2026-75596</cve>
+    <cve>CVE-2026-59902</cve>
+    <cve>CVE-2026-59903</cve>
+    <cve>CVE-2026-89044</cve>
   </suppress>
   <suppress>
     <notes>Spring Security DPoP proof replay. Only DPoPProofJwtDecoderFactory is affected, which this service does not use; the 6.5.12 fix is not published to Maven Central. Suppressed in ia-case-api and ccd-data-store-api for the same reason.</notes>
