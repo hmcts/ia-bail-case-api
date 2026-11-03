@@ -9,11 +9,9 @@ import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import java.io.IOException;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.hc.core5.http.HttpStatus;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.TestPropertySource;
 
 @PactTestFor(providerName = "acc_manageCaseAssignment", port = "8872")
@@ -37,7 +35,6 @@ public class AssignCaseAccessConsumerTest extends CcdCaseAssignmentProviderBaseT
             .path("/case-assignments")
             .willRespondWith()
             .body(buildAssignCasesResponseDsl())
-            .headers(ImmutableMap.<String, String>builder().put(HttpHeaders.CONNECTION, "close").build())
             .status(HttpStatus.SC_CREATED)
             .toPact(V4Pact.class);
     }
