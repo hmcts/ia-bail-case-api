@@ -22,15 +22,16 @@
   "expectation": {
     "status": 200,
     "errors": [],
+    "state": "BAIL_SUMMARY_UPLOADED",
     "caseData": {
       "template": "minimal-application-started.json",
       "replacements": {
         "uploadBailSummaryActionAvailable": "Yes",
-        "currentCaseStateVisibleToJudge": "applicationSubmitted",
-        "currentCaseStateVisibleToAllUsers": "applicationSubmitted",
-        "currentCaseStateVisibleToHomeOffice": "applicationSubmitted",
-        "currentCaseStateVisibleToAdminOfficer": "applicationSubmitted",
-        "currentCaseStateVisibleToLegalRepresentative": "applicationSubmitted",
+        "currentCaseStateVisibleToJudge": "bailSummaryUploaded",
+        "currentCaseStateVisibleToAllUsers": "bailSummaryUploaded",
+        "currentCaseStateVisibleToHomeOffice": "bailSummaryUploaded",
+        "currentCaseStateVisibleToAdminOfficer": "bailSummaryUploaded",
+        "currentCaseStateVisibleToLegalRepresentative": "bailSummaryUploaded",
         "currentHearingId": "12345",
         "hearingIdList": [
           {

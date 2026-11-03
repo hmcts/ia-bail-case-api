@@ -9,12 +9,14 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
+import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.State;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -79,6 +81,62 @@ class StartApplicationSubmitHandlerTest {
 
         startApplicationSubmitHandler.handle(PreSubmitCallbackStage.ABOUT_TO_SUBMIT, callback, callbackResponse);
         verify(bailCase, times(1)).write(IS_BAILS_LOCATION_REFERENCE_DATA_ENABLED, YesOrNo.YES);
+    }
+
+    @Test
+    void should_set_application_started_by_lr_when_legal_rep() {
+        when(bailCase.read(IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+
+        PreSubmitCallbackResponse<BailCase> response = startApplicationSubmitHandler
+            .handle(ABOUT_TO_SUBMIT, callback, callbackResponse);
+
+        assertThat(response.getState()).isEqualTo(State.APPLICATION_STARTED_BY_LR);
+        assertThat(response.getData()).isEqualTo(bailCase);
+        assertThat(response.getErrors()).isEmpty();
+    }
+
+    @Test
+    void should_set_application_started_by_lr_when_both_legal_rep_and_home_office() {
+        when(bailCase.read(IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+        when(bailCase.read(IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+
+        PreSubmitCallbackResponse<BailCase> response = startApplicationSubmitHandler
+            .handle(ABOUT_TO_SUBMIT, callback, callbackResponse);
+
+        assertThat(response.getState()).isEqualTo(State.APPLICATION_STARTED_BY_LR);
+    }
+
+    @Test
+    void should_set_application_started_by_ho_when_home_office() {
+        when(bailCase.read(IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
+
+        PreSubmitCallbackResponse<BailCase> response = startApplicationSubmitHandler
+            .handle(ABOUT_TO_SUBMIT, callback, callbackResponse);
+
+        assertThat(response.getState()).isEqualTo(State.APPLICATION_STARTED_BY_HO);
+    }
+
+    @Test
+    void should_set_application_started_when_neither_legal_rep_nor_home_office() {
+        when(bailCase.read(IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+        when(bailCase.read(IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
+
+        PreSubmitCallbackResponse<BailCase> response = startApplicationSubmitHandler
+            .handle(ABOUT_TO_SUBMIT, callback, callbackResponse);
+
+        assertThat(response.getState()).isEqualTo(State.APPLICATION_STARTED);
+    }
+
+    @Test
+    void should_set_application_started_when_the_user_role_flags_are_absent() {
+        when(bailCase.read(IS_LEGAL_REP, YesOrNo.class)).thenReturn(Optional.empty());
+        when(bailCase.read(IS_HOME_OFFICE, YesOrNo.class)).thenReturn(Optional.empty());
+
+        PreSubmitCallbackResponse<BailCase> response = startApplicationSubmitHandler
+            .handle(ABOUT_TO_SUBMIT, callback, callbackResponse);
+
+        assertThat(response.getState()).isEqualTo(State.APPLICATION_STARTED);
     }
 
     @Test
