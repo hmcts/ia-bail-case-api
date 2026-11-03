@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.bailcaseapi.ccd.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -14,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.security.access.AccessDeniedException;
 import uk.gov.hmcts.ccd.sdk.api.CaseDetails;
 import uk.gov.hmcts.ccd.sdk.api.callback.AboutToStartOrSubmitResponse;
 import uk.gov.hmcts.ccd.sdk.type.Document;
@@ -24,8 +22,6 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.State;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.CaseNote;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
-import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.CcdEventAuthorizor;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -33,7 +29,6 @@ class AddCaseNoteTest {
 
     private static final LocalDate NOW = LocalDate.of(2026, 10, 27);
 
-    @Mock private CcdEventAuthorizor ccdEventAuthorizor;
     @Mock private DateProvider dateProvider;
     @Mock private UserDetails userDetails;
 
@@ -44,7 +39,7 @@ class AddCaseNoteTest {
         when(dateProvider.now()).thenReturn(NOW);
         when(userDetails.getForename()).thenReturn("Jane");
         when(userDetails.getSurname()).thenReturn("Doe");
-        event = new AddCaseNote(ccdEventAuthorizor, dateProvider, userDetails);
+        event = new AddCaseNote(dateProvider, userDetails);
     }
 
     @Test
@@ -111,15 +106,6 @@ class AddCaseNoteTest {
         assertThatThrownBy(() -> event.aboutToSubmit(details(caseDataWith("Subject", null)), null))
             .isExactlyInstanceOf(IllegalStateException.class)
             .hasMessage("addCaseNoteDescription is not present");
-    }
-
-    @Test
-    void refuses_a_caller_without_the_event_role() {
-        doThrow(new AccessDeniedException("Event 'addCaseNote' not allowed"))
-            .when(ccdEventAuthorizor).throwIfNotAuthorized(Event.ADD_CASE_NOTE);
-
-        assertThatThrownBy(() -> event.aboutToSubmit(details(caseDataWith("Subject", "Description")), null))
-            .isExactlyInstanceOf(AccessDeniedException.class);
     }
 
     @Test

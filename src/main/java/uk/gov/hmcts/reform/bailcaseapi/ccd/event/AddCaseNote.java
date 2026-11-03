@@ -16,8 +16,6 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.UserRole;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.CaseNote;
 import uk.gov.hmcts.reform.bailcaseapi.domain.DateProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
-import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.Event;
-import uk.gov.hmcts.reform.bailcaseapi.infrastructure.security.CcdEventAuthorizor;
 import uk.gov.hmcts.reform.ccd.client.model.SubmittedCallbackResponse;
 
 @Component
@@ -26,7 +24,6 @@ public class AddCaseNote implements CCDConfig<CaseData, State, UserRole> {
 
     public static final String ADD_CASE_NOTE = "addCaseNote";
 
-    private final CcdEventAuthorizor ccdEventAuthorizor;
     private final DateProvider dateProvider;
     private final UserDetails userDetails;
 
@@ -57,8 +54,6 @@ public class AddCaseNote implements CCDConfig<CaseData, State, UserRole> {
         CaseDetails<CaseData, State> details,
         CaseDetails<CaseData, State> detailsBefore
     ) {
-        ccdEventAuthorizor.throwIfNotAuthorized(Event.ADD_CASE_NOTE);
-
         CaseData caseData = details.getData();
 
         CaseNote newCaseNote = CaseNote.builder()
