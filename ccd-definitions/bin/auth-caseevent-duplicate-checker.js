@@ -1,24 +1,20 @@
 /*
- Checks duplicate rows in ccd-definitions/json/AuthorisationCaseEvent.json
+ Checks duplicate rows in the generated AuthorisationCaseEvent sheet
  Duplicate key = CaseEventID + UserRole
  - Prints each duplicate with count and array indices where it occurs
  - Exits with code 1 if duplicates found
 */
 
-const fs = require('fs');
-const path = require('path');
-
-const targetFile = path.join(__dirname, '../json/AuthorisationCaseEvent.json');
+const { readSheet } = require('./lib/definition');
 
 try {
-  handleContent(fs.readFileSync(targetFile, 'utf8'));
+  handleContent(readSheet('AuthorisationCaseEvent'));
 } catch (err) {
   console.error(err);
   process.exit(1);
 }
 
-function handleContent(content) {
-  const entries = JSON.parse(content);
+function handleContent(entries) {
 
   if (!Array.isArray(entries)) {
     console.error(`Unexpected JSON structure in ${targetFile}. Expected an array.`);

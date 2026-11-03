@@ -1,12 +1,10 @@
 # Bail CCD definition
 
-The `Bail` case type definition (jurisdiction `IA`), authored as JSON and converted to the
-spreadsheet the CCD definition store imports. It moved here from
-[`hmcts/ia-ccd-definitions`](https://github.com/hmcts/ia-ccd-definitions), which keeps the
-`Asylum` definition.
+Builds the spreadsheet the CCD definition store imports for the `Bail` case type
+(jurisdiction `IA`) from the [ccd-config-generator](https://github.com/hmcts/dtsse-ccd-config-generator)
+Java in `src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd`.
 
 ```
-json/                       the definition, one file per definition-store sheet
 env/<env>/UserProfile.json  per-environment work-basket defaults
 bin/                        generation and validation scripts
 ccd-definition-processor/   git submodule: the JSON -> xlsx converter
@@ -30,31 +28,15 @@ PR_NUMBER=1234 yarn generate-preview
 
 Output lands in `../build/ccd-config/ccd-bail-config-<env>.xlsx`.
 
-### Which source the spreadsheet is built from
+Each run calls `./gradlew generateCCDConfig` first, which needs IDAM reachable — the
+pipeline points it at AAT, and locally that means the rse-idam-simulator or AAT. The
+per-environment `env/<env>/UserProfile.json` is added on top, because the SDK does not
+generate work-basket defaults.
 
-The same case type is also expressed as [ccd-config-generator](https://github.com/hmcts/dtsse-ccd-config-generator)
-Java under `src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd`. Passing `--source java`
-(or setting `CCD_DEF_SOURCE=java`) runs `./gradlew generateCCDConfig` and builds the
-spreadsheet from its output instead of `json/`:
+To change the definition, change the Java. Every environment — preview, dev, demo, ithc,
+perftest, aat and prod — imports what it generates.
 
-```bash
-CCD_DEF_SOURCE=java PR_NUMBER=1234 yarn generate-preview
-```
-
-Either way the per-environment `env/<env>/UserProfile.json` is added on top, because the
-SDK does not generate it.
-
-`Jenkinsfile_CNP` sets `CCD_DEF_SOURCE=java` for the pipeline as a whole, so every
-environment — preview, dev, demo, ithc, perftest, aat and prod — imports the definition
-built from the Java config. The Java is the source of truth.
-
-`json/` is kept as the definition the Java was generated from and as the baseline the two
-are compared against, and `yarn test` still validates it, but **editing `json/` no longer
-changes what any environment imports** — change the Java. The scripts still default to
-`json` when `CCD_DEF_SOURCE` is unset, so a local `yarn generate-aat` builds from `json/`
-unless you pass `--source java`.
-
-Callback URLs in `json/CaseEvent.json` are written as `${CCD_DEF_BAIL_URL}` and
+Callback URLs the Java does not own are written as `${CCD_DEF_BAIL_URL}` and
 `${CCD_DEF_AAC_URL}`; `bin/generate-ccd-definition.sh` resolves them per environment from
 `default.env`. The `CCD_DEF` prefix is required — `ccd-definition-processor` only
 substitutes environment variables whose names start with it.
@@ -62,10 +44,12 @@ substitutes environment variables whose names start with it.
 ## Validating
 
 ```bash
-yarn test     # JSON syntax, duplicate rows, Publish flag mismatches
+yarn test     # duplicate rows, missing system-user grants, Publish flag mismatches
 ```
 
-`Jenkinsfile_CNP` runs this before the build, so a broken definition fails the PR early.
+These read the generated definition in `../build/ccd-definitions-json`, so run a
+`yarn generate-<env>` first. `bin/generate-ccd-definition.sh` runs them itself once it has
+built the spreadsheet.
 
 ## Importing
 

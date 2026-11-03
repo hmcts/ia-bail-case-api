@@ -1,24 +1,19 @@
-const fs = require('fs');
-const path = require('path');
+const { readSheet } = require('./lib/definition');
 
-const caseFieldPath = path.join(__dirname, '../json/CaseField.json');
-const authorisationCaseFieldPath = path.join(__dirname, '../json/AuthorisationCaseField.json');
+// Field types that hold no case data, so a system-user grant on them means nothing.
+const NON_DATA_FIELD_TYPES = ['Label', 'CaseHistoryViewer'];
 
 try {
-    const caseField = fs.readFileSync(caseFieldPath, 'utf8');
-    const authCaseField = fs.readFileSync(authorisationCaseFieldPath, 'utf8');
-    handleContent(caseField, authCaseField);
+    handleContent(readSheet('CaseField'), readSheet('AuthorisationCaseField'));
 } catch (error) {
     console.error('Error reading files:', error);
     process.exit(1);
 }
 
-function handleContent(content, contentAuth) {
-    const caseFields = JSON.parse(content)
-    const Authorisations = JSON.parse(contentAuth)
+function handleContent(caseFields, Authorisations) {
 
     const caseFieldIds = caseFields
-      .filter(entry => entry.FieldType !== 'Label')
+      .filter(entry => !NON_DATA_FIELD_TYPES.includes(entry.FieldType))
       .map(entry => entry.ID)
       .filter(id => !id.includes('progress_') ); // Ignore IDs with 'progress_'
 
