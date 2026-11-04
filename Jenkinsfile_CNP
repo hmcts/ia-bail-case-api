@@ -66,6 +66,8 @@ def secrets = [
     secret('test-homeoffice-generic-password', 'TEST_HOMEOFFICE_GENERIC_PASSWORD'),
     secret('test-judge-x-username', 'TEST_JUDGE_X_USERNAME'),
     secret('test-judge-x-password', 'TEST_JUDGE_X_PASSWORD'),
+    secret('test-judge-bails-username', 'TEST_JUDGE_BAILS_USERNAME'),
+    secret('test-judge-bails-password', 'TEST_JUDGE_BAILS_PASSWORD'),
     secret('test-citizen-username', 'TEST_CITIZEN_USERNAME'),
     secret('test-citizen-password', 'TEST_CITIZEN_PASSWORD'),
 
@@ -144,6 +146,19 @@ withPipeline(type, product, component) {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
   }
 
+  afterAlways('E2eTest:preview') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "playwright-e2e/playwright-report",
+      reportFiles          : 'index.html',
+      reportName           : 'E2E Test Report'
+    ])
+    junit allowEmptyResults: true, testResults: 'playwright-e2e/playwright-junit.xml'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'playwright-e2e/test-results/**/*'
+  }
+
   afterSuccess('functionalTest:aat') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'build/reports/**/*'
@@ -164,6 +179,8 @@ withPipeline(type, product, component) {
     env.PR_NUMBER = "${CHANGE_ID}"
     env.DEFINITION_STORE_URL_BASE = "https://ccd-definition-store-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.XUI_URL = "https://xui-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    // Drives Bail through XUI on the preview once the functional tests have passed.
+    enableE2eTest()
     env.CCD_ADMIN_URL = "https://admin-web-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
   }

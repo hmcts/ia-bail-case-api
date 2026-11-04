@@ -202,6 +202,22 @@ tasks.register('smoke', Test) {
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
 
+tasks.register('e2eYarnInstall', Exec) {
+  description = 'Installs the Playwright e2e suite\'s dependencies.'
+  workingDir = file("${projectDir}/playwright-e2e")
+  commandLine 'yarn', 'install', '--frozen-lockfile'
+}
+
+// Run by the CNP pipeline's E2E stage after the functional tests, against XUI_URL.
+tasks.register('e2eTest', Exec) {
+  description = 'Runs the Playwright suite that drives Bail through XUI.'
+  group = 'Verification'
+  dependsOn 'e2eYarnInstall'
+  workingDir = file("${projectDir}/playwright-e2e")
+  environment 'CI', 'true'
+  commandLine 'yarn', 'test:ci'
+}
+
 tasks.register('contract', Test) {
   group = 'Verification'
   description = "Runs the consumer Pact tests"
