@@ -1,9 +1,0 @@
-[
-  {
-    "LiveFrom": "01/01/2018",
-    "CaseTypeID": "Bail",
-    "SearchPartyName": "applicantFullName",
-    "SearchPartyAddressLine1": "applicantAddress.AddressLine1",
-    "SearchPartyDOB": "applicantDateOfBirth"
-  }
-]

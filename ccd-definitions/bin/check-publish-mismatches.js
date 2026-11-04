@@ -1,17 +1,13 @@
 /*
- * Comprehensive check for mismatches between CaseEventToFields.json and CaseEvent.json
+ * Comprehensive check for mismatches between the CaseEventToFields and CaseEvent sheets
  * where fields have Publish: "Y" but the corresponding events have Publish: "N"
  */
 
-const fs = require('fs');
-const path = require('path');
-
-const caseEventToFieldsFile = path.join(__dirname, '../json/CaseEventToFields.json');
-const caseEventFile = path.join(__dirname, '../json/CaseEvent.json');
+const { readSheet } = require('./lib/definition');
 
 try {
-  const caseEventToFields = JSON.parse(fs.readFileSync(caseEventToFieldsFile, 'utf8'));
-  const caseEvents = JSON.parse(fs.readFileSync(caseEventFile, 'utf8'));
+  const caseEventToFields = readSheet('CaseEventToFields');
+  const caseEvents = readSheet('CaseEvent');
   console.log('Checking for mismatches in Bail definitions...\n');
   handleMismatches(caseEventToFields, caseEvents);
 } catch (error) {
@@ -20,7 +16,7 @@ try {
 }
 
 function handleMismatches(caseEventToFields, caseEvents) {
-  // Create a map of CaseEventID to Publish value from CaseEvent.json
+  // Create a map of CaseEventID to Publish value from the CaseEvent sheet
   const eventPublishMap = new Map();
   caseEvents.forEach(event => {
     if (event.ID) {

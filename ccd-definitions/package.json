@@ -20,9 +20,8 @@
     "upload-mirrord": "bin/utils/upload-ccd.sh -e mirrord",
     "upload-preview": "bin/utils/upload-ccd.sh -e preview -p $PR_NUMBER",
     "lint": "echo 'Linting skipped - no ESLint configured'",
-    "validate:json": "node bin/json-validator.js",
     "verify:definitions": "node bin/run-duplicate-checks.js && node bin/check-missing-system-user-fields.js && node bin/check-publish-mismatches.js",
-    "test": "yarn lint && yarn validate:json && yarn verify:definitions"
+    "test": "yarn lint && yarn verify:definitions"
   },
   "packageManager": "yarn@3.4.1"
 }
