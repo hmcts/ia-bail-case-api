@@ -11,9 +11,21 @@ const sessionsDir = path.join(
   ".sessions"
 );
 
+export const USER_ROLES = [
+  "adminOfficer",
+  "legalRep",
+  "homeOffice",
+  "judge",
+] as const;
+export type UserRole = (typeof USER_ROLES)[number];
+
 export interface SessionUser {
+  /** How the role is named in test titles and failure messages. */
+  label: string;
   sessionFile: string;
   cookieName: string;
+  /** Prefix of the <PREFIX>_USERNAME / <PREFIX>_PASSWORD variables in .env. */
+  credentialsEnvPrefix: string;
 }
 
 export interface UserCredentials {
@@ -22,9 +34,7 @@ export interface UserCredentials {
 }
 
 export interface Config {
-  users: {
-    adminOfficer: SessionUser;
-  };
+  users: Record<UserRole, SessionUser>;
   urls: {
     xuiBaseUrl: string;
     createCaseUrl: string;
@@ -56,12 +66,23 @@ export function requireEnvVar(name: string): string {
 
 const xuiBaseUrl = requireEnvVar("XUI_URL").replace(/\/+$/, "");
 
+const sessionUser = (
+  label: string,
+  fileName: string,
+  credentialsEnvPrefix: string
+): SessionUser => ({
+  label,
+  sessionFile: path.join(sessionsDir, `${fileName}.json`),
+  cookieName: "xui-webapp",
+  credentialsEnvPrefix,
+});
+
 export const config: Config = {
   users: {
-    adminOfficer: {
-      sessionFile: path.join(sessionsDir, "admin-officer.json"),
-      cookieName: "xui-webapp",
-    },
+    adminOfficer: sessionUser("admin officer", "admin-officer", "TEST_ADMINOFFICER"),
+    legalRep: sessionUser("legal representative", "legal-rep", "TEST_LAW_FIRM_A"),
+    homeOffice: sessionUser("Home Office", "home-office", "TEST_HOMEOFFICE_BAIL"),
+    judge: sessionUser("judge", "judge", "TEST_JUDGE_BAILS"),
   },
   urls: {
     xuiBaseUrl,
@@ -80,33 +101,13 @@ export const config: Config = {
 };
 
 /**
- * Credentials for the IA admin officer. Read on demand, because global.setup.ts is the only
- * place that signs in: the specs run from the session it stores.
+ * Credentials for a role. Read on demand, because global.setup.ts is the only place that signs
+ * in: the specs run from the sessions it stores.
  */
-export function adminOfficerCredentials(): UserCredentials {
+export function credentialsFor(role: UserRole): UserCredentials {
+  const prefix = config.users[role].credentialsEnvPrefix;
   return {
-    username: requireEnvVar("TEST_ADMINOFFICER_USERNAME"),
-    password: requireEnvVar("TEST_ADMINOFFICER_PASSWORD"),
+    username: requireEnvVar(`${prefix}_USERNAME`),
+    password: requireEnvVar(`${prefix}_PASSWORD`),
   };
-}
-
-/**
- * The case view tests read an existing Bail case rather than creating one through the 95-page
- * "Start the application" event, so the reference has to be supplied. Fail loudly when it is
- * not: a skipped case view test looks the same as a passing one in a Jenkins summary.
- */
-export function requireBailCaseReference(): string {
-  const reference = process.env.BAIL_CASE_REFERENCE?.trim().replace(/\s|-/g, "");
-  if (!reference) {
-    throw new Error(
-      "BAIL_CASE_REFERENCE is not set. Set it to the 16-digit reference of a Bail case that " +
-        "exists in the environment under test (see playwright-e2e/README.md)."
-    );
-  }
-  if (!/^\d{16}$/.test(reference)) {
-    throw new Error(
-      `BAIL_CASE_REFERENCE must be a 16-digit case reference, got "${reference}".`
-    );
-  }
-  return reference;
 }

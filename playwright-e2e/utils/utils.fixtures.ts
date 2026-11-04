@@ -1,4 +1,4 @@
-import { AxeUtils, SessionUtils } from "@hmcts/playwright-common";
+import { AxeUtils } from "@hmcts/playwright-common";
 import {
   Fixtures,
   PlaywrightTestArgs,
@@ -11,7 +11,6 @@ export interface UtilsFixtures {
   config: Config;
   axeUtils: AxeUtils;
   cookieUtils: CookieUtils;
-  SessionUtils: typeof SessionUtils;
 }
 
 export const utilsFixtures: Fixtures<
@@ -24,9 +23,6 @@ export const utilsFixtures: Fixtures<
   },
   cookieUtils: async ({}, use) => {
     await use(new CookieUtils());
-  },
-  SessionUtils: async ({}, use) => {
-    await use(SessionUtils);
   },
   /**
    * Accessibility audits. generateReport has to run after the test body, otherwise the

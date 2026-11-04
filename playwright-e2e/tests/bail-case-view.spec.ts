@@ -1,45 +1,68 @@
 import { expect, test } from "../fixtures";
-import { config } from "../utils";
-
-test.use({ storageState: config.users.adminOfficer.sessionFile });
+import {
+  CaseFixtures,
+  ROLE_VIEWS,
+  SeededBailCase,
+  UserRole,
+  config,
+  contentTabsFor,
+  expectSeededDataShown,
+} from "../utils";
 
 /**
- * Reads an existing Bail case named by BAIL_CASE_REFERENCE; see playwright-e2e/README.md for why
- * these tests do not create their own case. The case is only read, never edited, so the two
- * tests here are independent of each other and of anything else in the suite.
+ * What each role is shown on a submitted case, read from a case of the test's own.
+ *
+ * - The case-type tabs. The case history and case notes tabs are only granted to the admin
+ *   officer and the judge; XUI's own tabs (Tasks, Roles and access, Hearings) are left out.
+ * - The Overview tab renders exactly one progress panel, and it is the role's own. The 41
+ *   progress_* label fields on that tab (BailTabs.java) have show conditions that are not
+ *   mutually exclusive, so field-level read access is what selects the panel for the role; when
+ *   every role could read every field, every panel rendered at once. Hence a count, and the ID.
+ * - The seeded applicant, addresses, supporter, interpreter languages, hearing centre and (on a
+ *   legal representative's case) the legal rep's details are shown where the definition puts
+ *   them.
+ * - For the roles granted it, the case history tab lists the case's events, latest first (each
+ *   role sees only the events it has access to: the judge is not shown startApplication).
+ *   ccd-data-store-api hydrates only the first CaseHistoryViewer field in a case type, so a
+ *   second one rendered an empty tab.
  */
 test.describe("Bail case view", () => {
-  /**
-   * The overview tab's 41 progress_* label fields have show conditions that are not mutually
-   * exclusive, so field-level read access is what picks the panel for the signed-in role. When
-   * every role could read every field, the tab rendered every panel at once, which is why this
-   * counts panels instead of checking that one is present.
-   */
-  test("renders exactly one progress panel on the overview tab of a bail case", async ({
-    bailCaseDetailsPage,
-  }) => {
-    await bailCaseDetailsPage.openTab(bailCaseDetailsPage.tabs.overview);
-    await expect(bailCaseDetailsPage.overviewHeading).toBeVisible();
+  for (const role of ["adminOfficer", "judge", "homeOffice"] as const) {
+    test(
+      `shows the ${config.users[role].label} their tabs, their one progress panel and the case's data`,
+      async ({ bailCase, openCaseAs, ccdApiAs }) => {
+        await expectRoleView(role, bailCase, { openCaseAs, ccdApiAs });
+      }
+    );
+  }
 
-    await expect(bailCaseDetailsPage.progressPanels).toHaveCount(1);
-  });
-
-  /**
-   * ccd-data-store-api hydrates the first CaseHistoryViewer field in a case type and returns, so
-   * a second one is left with no value and the case history tab renders an empty field. Only the
-   * admin officer, the judge and the system user are granted read on caseHistory, so this is not
-   * asserted for a legal representative.
-   */
-  test("lists the case's events on the case history tab for an admin officer", async ({
-    bailCaseDetailsPage,
-  }) => {
-    await bailCaseDetailsPage.openTab(bailCaseDetailsPage.tabs.caseHistory);
-
-    // The event log table rendered at all, then: it has a row below the Event/Date/Author
-    // header, and that row names an event. An unhydrated CaseHistoryViewer fails the first of
-    // these, and a hydrated but empty one the second.
-    await expect(bailCaseDetailsPage.historyTable).toBeVisible();
-    await expect(bailCaseDetailsPage.firstEventRow).toBeVisible();
-    await expect(bailCaseDetailsPage.firstEventName).not.toBeEmpty();
-  });
+  test(
+    "shows the legal representative their tabs, their one progress panel and their own case's data",
+    async ({ legalRepBailCase, openCaseAs, ccdApiAs }) => {
+      await expectRoleView("legalRep", legalRepBailCase, { openCaseAs, ccdApiAs });
+    }
+  );
 });
+
+async function expectRoleView(
+  role: UserRole,
+  seeded: SeededBailCase,
+  { openCaseAs, ccdApiAs }: Pick<CaseFixtures, "openCaseAs" | "ccdApiAs">
+): Promise<void> {
+  const viewer = config.users[role].label;
+  const view = ROLE_VIEWS[role];
+  const casePage = await openCaseAs(role, seeded.caseId);
+
+  expect(await casePage.visibleBailTabs(), `case tabs shown to the ${viewer}`).toEqual(
+    view.tabs
+  );
+  await casePage.expectOneProgressPanel(view.submittedProgressField);
+
+  const snapshot = await casePage.snapshotTabs(contentTabsFor(role));
+  expectSeededDataShown(snapshot, seeded, viewer);
+
+  if (view.tabs.includes("Case history")) {
+    const creator = await (await ccdApiAs(seeded.createdBy)).signedInUserName();
+    await casePage.expectLatestEvent("Submit the application", creator);
+  }
+}
