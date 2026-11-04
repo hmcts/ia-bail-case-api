@@ -1,0 +1,6 @@
+.env
+.sessions/
+node_modules/
+playwright-report/
+playwright-junit.xml
+test-results/
