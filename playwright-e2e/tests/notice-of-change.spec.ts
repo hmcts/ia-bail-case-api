@@ -21,18 +21,19 @@ test.describe("Notice of change", () => {
       const seeded = await seedCase("legalRepBails", NO_PENDING_REQUEST);
       const answers = nocAnswers(seeded);
       const noc = new NoticeOfChangePage(await (await roleContext("otherOrgLegalRep")).newPage());
-      await noc.goto();
 
       const wrongAnswers = [
         { ...answers, givenNames: `${answers.givenNames}x` },
         { ...answers, familyName: `${answers.familyName}x` },
         { ...answers, dateOfBirth: "1970-01-01" },
       ];
+      // Each attempt starts a fresh journey: XUI's Back link is in-page state that can re-render
+      // the client details page after briefly showing the case reference.
       for (const wrong of wrongAnswers) {
+        await noc.goto();
         await noc.enterCaseReference(seeded.caseId);
         await noc.answerQuestions(wrong);
         await expect(noc.detailsMismatchError).toBeVisible();
-        await noc.backToCaseReference();
       }
     }
   );

@@ -30,7 +30,6 @@ export class NoticeOfChangePage extends Base {
   readonly detailsMismatchError = this.page
     .getByText("Enter the client details exactly as they're written on the case, including any mistakes")
     .first();
-  readonly backLink = this.page.getByRole("link", { name: "Back", exact: true });
   readonly checkAndSubmitHeading = this.page.getByRole("heading", { name: "Check and submit" });
   readonly affirmationCheckbox = this.page.locator("#affirmation");
   readonly notifyEveryPartyCheckbox = this.page.locator("#notifyEveryParty");
@@ -38,9 +37,11 @@ export class NoticeOfChangePage extends Base {
   readonly successHeading = this.page.getByRole("heading", { name: /Notice of change successful/ });
   readonly viewCaseLink = this.page.getByRole("link", { name: "View this case" });
 
+  /** Opens a fresh journey: a full load of /noc, at its first page. */
   public async goto(): Promise<void> {
     await this.page.goto(`${config.urls.xuiBaseUrl}/noc`);
     await expect(this.heading).toBeVisible();
+    await expect(this.caseReferenceInput).toBeVisible();
   }
 
   public async enterCaseReference(caseId: string): Promise<void> {
@@ -58,12 +59,6 @@ export class NoticeOfChangePage extends Base {
     await this.monthInput.fill(month);
     await this.yearInput.fill(year);
     await this.continueBtn.click();
-  }
-
-  /** Goes back from the client details page to the case reference page. */
-  public async backToCaseReference(): Promise<void> {
-    await this.backLink.click();
-    await expect(this.caseReferenceInput).toBeVisible();
   }
 
   public async confirmAndSubmit(): Promise<void> {
