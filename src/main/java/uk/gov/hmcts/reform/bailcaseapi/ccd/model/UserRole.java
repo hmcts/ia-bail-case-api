@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.ccd.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.hmcts.ccd.sdk.api.CCD;
@@ -56,6 +57,7 @@ public enum UserRole implements HasRole {
     @CCD(label = "Legal Representative", hint = "Legal Representative")
     LEGALREPRESENTATIVE("[LEGALREPRESENTATIVE]", "");
 
+    @JsonValue
     private final String role;
 
     private final String caseTypePermissions;

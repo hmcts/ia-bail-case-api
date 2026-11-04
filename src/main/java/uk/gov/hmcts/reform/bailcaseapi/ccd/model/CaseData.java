@@ -12,6 +12,7 @@ import uk.gov.hmcts.ccd.sdk.api.CCD;
 import uk.gov.hmcts.ccd.sdk.type.CaseLink;
 import uk.gov.hmcts.ccd.sdk.type.ChangeOrganisationRequest;
 import uk.gov.hmcts.ccd.sdk.type.Document;
+import uk.gov.hmcts.ccd.sdk.type.DynamicListCaseRole;
 import uk.gov.hmcts.ccd.sdk.type.FieldType;
 import uk.gov.hmcts.ccd.sdk.type.Flags;
 import uk.gov.hmcts.ccd.sdk.type.ListValue;
@@ -1255,13 +1256,13 @@ public class CaseData {
             label = "Organisation policy",
             access = {AdmofficerSystemCrudAccess.class, ApproverCrudAccess.class, IacjudgeRAccess.class, LegalrepSolicitorCrudAccess.class, CaaCrudHomeofficebailHomeofficepouRAccess.class}
     )
-    private OrganisationPolicy localAuthorityPolicy;
+    private OrganisationPolicy<UserRole> localAuthorityPolicy;
 
     @CCD(
             label = "Change Organisation Request",
             access = {AdmofficerSystemCrudAccess.class, ApproverCrudAccess.class, CaaCrudAccess.class, LegalrepSolicitorCrudAccess.class}
     )
-    private ChangeOrganisationRequest changeOrganisationRequestField;
+    private ChangeOrganisationRequest<DynamicListCaseRole> changeOrganisationRequestField;
 
     @CCD(
             label = "#### Once you've submitted this request\r\n"
