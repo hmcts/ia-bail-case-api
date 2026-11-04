@@ -196,6 +196,21 @@ export class CcdApi {
   }
 
   /**
+   * The ID of the signed-in professional user's MyHMCTS organisation, from XUI's /api/organisation
+   * (rd-professional-api). Only users with a PUI role may read it.
+   */
+  public async organisationId(): Promise<string> {
+    const response = await this.client.get<{ organisationIdentifier?: string }>("/api/organisation", {
+      headers: { accept: "application/json" },
+    });
+    const id = response.data?.organisationIdentifier;
+    if (!id) {
+      throw new Error("XUI's /api/organisation returned no organisationIdentifier for the user.");
+    }
+    return id;
+  }
+
+  /**
    * How many Bail cases with this reference the signed-in user finds through CCD's Elasticsearch
    * search: what the case list shows them. A case reaches the index a moment after it is written,
    * so callers poll.

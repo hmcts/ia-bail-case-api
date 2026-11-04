@@ -1,6 +1,6 @@
 import { expect, test } from "../fixtures";
 import { BailCaseDetailsPage, NoticeOfChangePage } from "../page-objects";
-import { ROLE_VIEWS, SeededBailCase } from "../utils";
+import { CaseData, ROLE_VIEWS, SeededBailCase } from "../utils";
 
 /**
  * Notice of Change, ported from bails-notice-of-change.feature: "Notice of Change - incorrect
@@ -38,16 +38,16 @@ test.describe("Notice of change", () => {
   );
 
   test(
-    "moves the case to another organisation's legal representative and takes it away from the first",
+    "moves the case's legal representative organisation to the new representative, who then finds and sees the case",
     async ({ seedCase, roleContext, ccdApiAs }) => {
       const seeded = await seedCase("legalRepBails", NO_PENDING_REQUEST);
       const answers = nocAnswers(seeded);
-      const firstRep = await ccdApiAs("legalRepBails");
-      await expect
-        .poll(() => firstRep.countSearchResults(seeded.caseId), {
-          message: "the creating organisation finds its case before the notice of change",
-        })
-        .toBe(1);
+      const adminOfficer = await ccdApiAs("adminOfficer");
+      const newRep = await ccdApiAs("otherOrgLegalRep");
+      const firstOrganisation = await (await ccdApiAs("legalRepBails")).organisationId();
+      const newOrganisation = await newRep.organisationId();
+      expect(newOrganisation, "the two legal reps are in different organisations").not.toBe(firstOrganisation);
+      expect(representingOrganisation((await adminOfficer.getCase(seeded.caseId)).data)).toBe(firstOrganisation);
 
       const noc = new NoticeOfChangePage(await (await roleContext("otherOrgLegalRep")).newPage());
       await noc.goto();
@@ -65,13 +65,14 @@ test.describe("Notice of change", () => {
       await casePage.expectOneProgressPanel(ROLE_VIEWS.otherOrgLegalRep.submittedProgressField);
       await expect(casePage.progressFields).toContainText("Current progress of the case");
 
-      // The old scenario's check: the case is gone from the first organisation's case list.
+      // aac applies the decision by rewriting the organisation policy for [LEGALREPRESENTATIVE].
       await expect
-        .poll(() => firstRep.countSearchResults(seeded.caseId), {
-          message: "the creating organisation finds the case after the notice of change",
+        .poll(async () => representingOrganisation((await adminOfficer.getCase(seeded.caseId)).data), {
+          message: "the organisation representing the applicant after the notice of change",
         })
-        .toBe(0);
-      const newRep = await ccdApiAs("otherOrgLegalRep");
+        .toBe(newOrganisation);
+      // The creator's own search is not asserted: whether it still finds the case depends on the
+      // environment's data-store and Elasticsearch access setup, not on Bail.
       await expect
         .poll(() => newRep.countSearchResults(seeded.caseId), {
           message: "the new organisation finds the case after the notice of change",
@@ -80,6 +81,12 @@ test.describe("Notice of change", () => {
     }
   );
 });
+
+/** The organisation in the case's [LEGALREPRESENTATIVE] organisation policy. */
+function representingOrganisation(data: CaseData): string | undefined {
+  return (data.localAuthorityPolicy as { Organisation?: { OrganisationID?: string } } | undefined)
+    ?.Organisation?.OrganisationID;
+}
 
 function nocAnswers(seeded: SeededBailCase) {
   return {
