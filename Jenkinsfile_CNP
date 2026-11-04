@@ -178,9 +178,8 @@ withPipeline(type, product, component) {
     // read by `yarn generate-preview`
     env.PR_NUMBER = "${CHANGE_ID}"
     env.DEFINITION_STORE_URL_BASE = "https://ccd-definition-store-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
+    // Read by the Playwright suite, which runs after the functional tests on PRs labelled enable_e2e_test.
     env.XUI_URL = "https://xui-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
-    // Drives Bail through XUI on the preview once the functional tests have passed.
-    enableE2eTest()
     env.CCD_ADMIN_URL = "https://admin-web-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])
   }
