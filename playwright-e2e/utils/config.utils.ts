@@ -5,7 +5,8 @@ import { fileURLToPath } from "node:url";
 
 dotenv.config({ quiet: true });
 
-const sessionsDir = path.join(
+/** Stored sign-ins and the upload throttle's per-session state. Gitignored. */
+export const sessionsDir = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
   ".sessions"
@@ -16,6 +17,8 @@ export const USER_ROLES = [
   "legalRep",
   "homeOffice",
   "judge",
+  "legalRepBails",
+  "otherOrgLegalRep",
 ] as const;
 export type UserRole = (typeof USER_ROLES)[number];
 
@@ -47,6 +50,12 @@ export interface Config {
     startApplicationEventId: string;
     startApplicationEventLabel: string;
   };
+  /**
+   * Whether the environment can take a hearing request: HMC and ia-hearings-api, which AAT has and
+   * a PR's preview namespace does not (its CCD is its own, so HMC on AAT cannot see its cases).
+   * HEARINGS_AVAILABLE overrides the default, which is "not a preview URL".
+   */
+  hearingsAvailable: boolean;
   caseDetailsUrl: (caseReference: string) => string;
 }
 
@@ -83,6 +92,19 @@ export const config: Config = {
     legalRep: sessionUser("legal representative", "legal-rep", "TEST_LAW_FIRM_A"),
     homeOffice: sessionUser("Home Office", "home-office", "TEST_HOMEOFFICE_BAIL"),
     judge: sessionUser("judge", "judge", "TEST_JUDGE_BAILS"),
+    // The old suite's "Legal Org User Rep A Bails": a solicitor and case-access administrator in
+    // a MyHMCTS organisation, who creates the cases another organisation takes over by NoC.
+    legalRepBails: sessionUser(
+      "legal representative of the creating organisation",
+      "legal-rep-bails",
+      "TEST_LAW_FIRM_NOC_A_BAILS"
+    ),
+    // The old suite's "Legal Org User Rep C": a solicitor in a different organisation.
+    otherOrgLegalRep: sessionUser(
+      "legal representative of another organisation",
+      "other-org-legal-rep",
+      "TEST_LAW_FIRM_ORG_DELETED"
+    ),
   },
   urls: {
     xuiBaseUrl,
@@ -96,6 +118,9 @@ export const config: Config = {
     startApplicationEventId: "startApplication",
     startApplicationEventLabel: "Start the application",
   },
+  hearingsAvailable: process.env.HEARINGS_AVAILABLE
+    ? process.env.HEARINGS_AVAILABLE.trim() === "true"
+    : !/\.preview\.platform\.hmcts\.net$/.test(new URL(xuiBaseUrl).hostname),
   caseDetailsUrl: (caseReference: string) =>
     `${xuiBaseUrl}/cases/case-details/${caseReference}`,
 };

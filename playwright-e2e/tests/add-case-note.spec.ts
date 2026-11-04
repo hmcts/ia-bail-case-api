@@ -22,6 +22,10 @@ import type { CaseFixtures } from "../utils";
  * tab, as every role that can see the case, before the event; adds the note as the admin
  * officer; and then checks that the note is there and that nothing else on any of those tabs
  * changed for any of those roles.
+ *
+ * The first test also covers bails-add-a-case-note.feature's "Add case note without document as
+ * Admin Officer": the confirmation, and the note on the case notes tab for the judge as well as
+ * the admin officer.
  */
 test.describe("Add case note", () => {
   // Each test reads every content tab as two or three roles, twice, through XUI: about two
@@ -30,6 +34,7 @@ test.describe("Add case note", () => {
 
   test(
     "adds a note through Next step and leaves every field on an admin officer's case as each role saw it",
+    { tag: "@pr" },
     async ({ bailCase, openCaseAs, ccdApiAs }) => {
       await addCaseNoteAndCheck({
         seeded: bailCase,
@@ -42,6 +47,7 @@ test.describe("Add case note", () => {
 
   test(
     "adds a note as the admin officer to a legal representative's case and keeps the legal rep's details",
+    { tag: "@pr" },
     async ({ legalRepBailCase, openCaseAs, ccdApiAs }) => {
       await addCaseNoteAndCheck({
         seeded: legalRepBailCase,
@@ -89,6 +95,7 @@ async function addCaseNoteAndCheck({
     await addCaseNote.continueToCheckYourAnswers();
     await expect(addCaseNote.page.getByText(note.subject, { exact: true })).toBeVisible();
     await addCaseNote.submit();
+    await expect(addCaseNote.confirmation("You can review this note in the case notes tab.")).toBeVisible();
     await addCaseNote.closeAndReturnToCase();
   });
 
@@ -103,6 +110,17 @@ async function addCaseNoteAndCheck({
     });
     await casePage.expectLatestEvent(AddCaseNotePage.EVENT.name, author);
   });
+
+  for (const role of viewers.filter((viewer) => ROLE_VIEWS[viewer].tabs.includes("Case notes"))) {
+    await test.step(`the note is on the case notes tab for the ${config.users[role].label}`, async () => {
+      const casePage = await openCaseAs(role, seeded.caseId);
+      expect(await casePage.snapshotTab("Case notes")).toMatchObject({
+        "caseNotes › Case notes 1 › Subject": note.subject,
+        "caseNotes › Case notes 1 › Case note": note.description,
+        "caseNotes › Case notes 1 › Date added": todayInLondon(),
+      });
+    });
+  }
 
   for (const role of viewers) {
     await test.step(`nothing else changed for the ${config.users[role].label}`, async () => {

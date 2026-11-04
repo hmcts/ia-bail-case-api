@@ -80,6 +80,9 @@ def secrets = [
     secret('test-law-firm-org-deleted-username', 'TEST_LAW_FIRM_ORG_DELETED_USERNAME'),
     secret('test-law-firm-org-deleted-password', 'TEST_LAW_FIRM_ORG_DELETED_PASSWORD'),
 
+    secret('test-law-firm-noc-a-bails-username', 'TEST_LAW_FIRM_NOC_A_BAILS_USERNAME'),
+    secret('test-law-firm-noc-a-bails-password', 'TEST_LAW_FIRM_NOC_A_BAILS_PASSWORD'),
+
     secret('test-homeoffice-bail-username', 'TEST_HOMEOFFICE_BAIL_USERNAME'),
     secret('test-homeoffice-bail-password', 'TEST_HOMEOFFICE_BAIL_PASSWORD'),
 
@@ -134,6 +137,14 @@ withPipeline(type, product, component) {
     steps.archiveArtifacts artifacts: "build/ccd-config/ccd-bail-config-${ccdEnvironment}.xlsx"
   }
 
+  // The Playwright suite's main journeys (tests tagged @pr) on every PR, once the functional
+  // tests have passed. This runs inside the functional stage, with its secrets and environment,
+  // so a failure fails that stage. The full suite runs on PRs labelled enable_e2e_test, in the
+  // library's "E2E Test - AKS preview" stage (./gradlew e2eTest).
+  afterSuccess('functionalTest:preview') {
+    sh './gradlew --rerun-tasks e2ePrTest'
+  }
+
   afterAlways('functionalTest:preview') {
     publishHTML([
       allowMissing         : true,
@@ -144,6 +155,17 @@ withPipeline(type, product, component) {
       reportName           : 'Functional Test Report'
     ])
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "playwright-e2e/e2e-pr-report",
+      reportFiles          : 'index.html',
+      reportName           : 'E2E PR Test Report'
+    ])
+    junit allowEmptyResults: true, testResults: 'playwright-e2e/e2e-pr-junit.xml'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'playwright-e2e/e2e-pr-results/**/*'
   }
 
   afterAlways('E2eTest:preview') {
@@ -178,7 +200,8 @@ withPipeline(type, product, component) {
     // read by `yarn generate-preview`
     env.PR_NUMBER = "${CHANGE_ID}"
     env.DEFINITION_STORE_URL_BASE = "https://ccd-definition-store-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
-    // Read by the Playwright suite, which runs after the functional tests on PRs labelled enable_e2e_test.
+    // Read by the Playwright suite: its main journeys (@pr) run after the functional tests on every
+    // PR, and the full suite runs on PRs labelled enable_e2e_test.
     env.XUI_URL = "https://xui-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.CCD_ADMIN_URL = "https://admin-web-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])

@@ -18,6 +18,12 @@ interface RoleView {
 
 const WORK_ALLOCATION_TABS = ["Tasks", "Roles and access"];
 
+const LEGAL_REP_VIEW: RoleView = {
+  tabs: ["Overview", "Bail application", "Documents", "Directions", "Hearing and appointment"],
+  submittedProgressField: "progress_applicationSubmittedLegalRepOrHomeOffice",
+  workAllocationTabs: [],
+};
+
 /**
  * What each role is shown on a case at applicationSubmitted, as the definition grants it
  * (BailTabs.java and the per-field access in the model). The case history and case notes tabs
@@ -67,11 +73,9 @@ export const ROLE_VIEWS: Record<UserRole, RoleView> = {
     submittedProgressField: "progress_applicationSubmittedLegalRepOrHomeOffice",
     workAllocationTabs: [],
   },
-  legalRep: {
-    tabs: ["Overview", "Bail application", "Documents", "Directions", "Hearing and appointment"],
-    submittedProgressField: "progress_applicationSubmittedLegalRepOrHomeOffice",
-    workAllocationTabs: [],
-  },
+  legalRep: LEGAL_REP_VIEW,
+  legalRepBails: LEGAL_REP_VIEW,
+  otherOrgLegalRep: LEGAL_REP_VIEW,
 };
 
 /** The tabs whose content an event that only adds something must leave exactly as it was. */

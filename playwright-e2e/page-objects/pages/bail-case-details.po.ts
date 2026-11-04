@@ -9,6 +9,8 @@ import {
   readTabSnapshot,
 } from "../../utils/tab-snapshot.utils";
 import { Base } from "../base";
+import type { CaseEventDetails } from "./case-event.po";
+import { EventWizardPage } from "./event-wizard.po";
 
 /** The case-type tabs the Bail definition declares (BailTabs.java), in display order. */
 export const BAIL_TABS = [
@@ -98,6 +100,14 @@ export class BailCaseDetailsPage extends Base {
    */
   public async goto(caseReference: string, workAllocationTabs: string[] = []): Promise<void> {
     await this.page.goto(config.caseDetailsUrl(caseReference));
+    await this.expectCaseLoaded(caseReference, workAllocationTabs);
+  }
+
+  /**
+   * Waits for the case to have opened and XUI to have settled, as goto() describes, after any
+   * navigation that loads the case page (a link from another XUI page as well as goto()).
+   */
+  public async expectCaseLoaded(caseReference: string, workAllocationTabs: string[] = []): Promise<void> {
     const { jurisdictionId, caseTypeId } = config.bail;
     await expect(this.page).toHaveURL(
       new RegExp(`/cases/case-details/${jurisdictionId}/${caseTypeId}/${caseReference}#`),
@@ -113,6 +123,9 @@ export class BailCaseDetailsPage extends Base {
     await this.spinner.wait();
     await expect(this.caseDetails.caseHeader).toBeVisible();
     await expect(this.allTabs.first()).toBeVisible();
+    // The tab table is attached before CCD has applied its fields' show conditions. Every role
+    // is shown exactly one progress field on Overview, so its appearing means the tab rendered.
+    await expect(this.progressFields.first()).toBeVisible();
   }
 
   /** Selects a tab and waits for its navigation to #<tab name> to complete. */
@@ -130,15 +143,41 @@ export class BailCaseDetailsPage extends Base {
     await expect(this.activeTabTable).toBeAttached();
   }
 
+  /** Opens one of XUI's own tabs (Hearings, Tasks, ...), which the definition does not declare. */
+  public async openXuiTab(name: string): Promise<void> {
+    const tab = this.page.getByRole("tab", { name: new RegExp(`^${escapeRegExp(name)}(,|$)`) });
+    await tab.click();
+    await expect(tab).toHaveAttribute("aria-selected", "true");
+    await this.spinner.wait();
+  }
+
   /** The case-type tabs this user is shown, leaving out XUI's own (Tasks, Hearings, ...). */
   public async visibleBailTabs(): Promise<string[]> {
     const names = (await this.allTabs.allInnerTexts()).map((name) => name.trim());
     return names.filter((name) => (BAIL_TABS as readonly string[]).includes(name));
   }
 
+  /**
+   * Opens a tab and reads it once it has finished rendering: CCD attaches the tab's table and then
+   * applies its fields' show conditions, so the read is repeated until two in a row agree.
+   */
   public async snapshotTab(name: BailTab): Promise<TabSnapshot> {
     await this.openTab(name);
-    return this.readActiveTab();
+    let previous: string | undefined;
+    let snapshot: TabSnapshot = {};
+    await expect
+      .poll(
+        async () => {
+          snapshot = await this.readActiveTab();
+          const current = JSON.stringify(snapshot);
+          const settled = current === previous;
+          previous = current;
+          return settled;
+        },
+        { message: `"${name}" tab finished rendering`, intervals: [250] }
+      )
+      .toBe(true);
+    return snapshot;
   }
 
   public async snapshotTabs(names: readonly BailTab[]): Promise<CaseViewSnapshot> {
@@ -166,6 +205,17 @@ export class BailCaseDetailsPage extends Base {
     await this.goBtn.click();
     await expect(this.page).toHaveURL(/\/trigger\/[^/]+\//, { timeout: 30_000 });
     await this.spinner.wait();
+  }
+
+  /** Starts `event` from Next step and returns its wizard. */
+  public async startWizard(event: CaseEventDetails): Promise<EventWizardPage> {
+    await this.startEvent(event.name);
+    return new EventWizardPage(this.page, event);
+  }
+
+  /** The active tab's text, for content CCD renders as a label rather than a field value. */
+  public activeTabText(text: string | RegExp): Locator {
+    return this.activeTabPanel.getByText(text);
   }
 
   /**

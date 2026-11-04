@@ -2,8 +2,22 @@ import { randomInt, randomUUID } from "node:crypto";
 import { CaseData, CcdApi } from "./ccd-api.utils";
 import { config } from "./config.utils";
 
-/** Who created the case, which decides its shape: an admin officer or a legal representative. */
-export type BailCaseCreator = "adminOfficer" | "legalRep";
+/**
+ * Who created the case, which decides its shape: an admin officer, a legal representative (in
+ * either of the legal-rep organisations the suite creates cases from) or the Home Office.
+ */
+export type BailCaseCreator = "adminOfficer" | "legalRep" | "legalRepBails" | "homeOffice";
+
+export type DetentionLocation = "immigrationRemovalCentre" | "prison";
+
+export interface SeedOptions {
+  /** Submit the application, leaving it at applicationSubmitted. Defaults to true. */
+  submit?: boolean;
+  /** Where the applicant is detained. Defaults to an immigration removal centre (Colnbrook). */
+  detention?: DetentionLocation;
+  /** Case data to create the case with on top of the seeder's own, for a shape a test needs. */
+  overrides?: CaseData;
+}
 
 export interface AddressUK {
   AddressLine1: string;
@@ -18,9 +32,17 @@ export interface AddressUK {
 export interface SeededBailCase {
   caseId: string;
   createdBy: BailCaseCreator;
-  /** The case data as CCD stored it once the application was submitted. */
+  /** The state the seeder left the case in. */
+  state: string;
+  /** The case data as CCD stored it once the seeder had finished with it. */
   data: CaseData;
-  applicant: { givenNames: string; familyName: string; address: AddressUK };
+  applicant: {
+    givenNames: string;
+    familyName: string;
+    /** yyyy-mm-dd, unique enough per case to answer the Notice of Change questions. */
+    dateOfBirth: string;
+    address: AddressUK;
+  };
   supporter: { givenNames: string; familyNames: string; address: AddressUK };
   interpreter: { applicantSpokenLanguage: string; supporterSpokenLanguage: string };
   hearingCentre: string;
@@ -43,14 +65,28 @@ interface DynamicList {
   list_items?: DynamicListItem[];
 }
 
+type CreatorKind = "admin" | "legalRep" | "homeOffice";
+
 const START_APPLICATION = "startApplication";
 const SUBMIT_APPLICATION = "submitApplication";
+const STARTED_STATE: Record<CreatorKind, string> = {
+  admin: "applicationStarted",
+  legalRep: "applicationStartedByLR",
+  homeOffice: "applicationStartedByHO",
+};
 const APPLICANT_LANGUAGE = "French";
 const SUPPORTER_LANGUAGE = "Polish";
 
+export function creatorKind(createdBy: BailCaseCreator): CreatorKind {
+  if (createdBy === "adminOfficer") return "admin";
+  if (createdBy === "homeOffice") return "homeOffice";
+  return "legalRep";
+}
+
 /**
- * Seeds a Bail case at applicationSubmitted through CCD, as the role that would create it, in a
- * few seconds rather than through startApplication's 95 wizard pages.
+ * Seeds a Bail case through CCD, as the role that would create it, in a few seconds rather than
+ * through startApplication's 95 wizard pages: at applicationSubmitted, or, with `submit: false`,
+ * at the creator's "application started" state.
  *
  * The data is based on src/functionalTest/resources/templates/minimal-application-started.json
  * without its five currentCaseStateVisibleTo* fields, which no user may create (CCD answers
@@ -74,11 +110,16 @@ const SUPPORTER_LANGUAGE = "Polish";
 export class BailCaseSeeder {
   constructor(private readonly api: CcdApi) {}
 
-  public async seed(createdBy: BailCaseCreator): Promise<SeededBailCase> {
+  public async seed(
+    createdBy: BailCaseCreator,
+    { submit = true, detention = "immigrationRemovalCentre", overrides = {} }: SeedOptions = {}
+  ): Promise<SeededBailCase> {
+    const kind = creatorKind(createdBy);
     const unique = uniqueToken();
     const applicant = {
       givenNames: `Pw${unique}`,
       familyName: `Applicant${unique}`,
+      dateOfBirth: uniqueDateOfBirth(),
       address: address(`${randomInt(1, 200)} ${unique} Road`, "London", "SW1A 1AA", "Greater London"),
     };
     const supporter = {
@@ -88,7 +129,7 @@ export class BailCaseSeeder {
     };
     const homeOfficeReference = String(randomInt(100_000_000, 999_999_999));
     const legalRep =
-      createdBy === "legalRep"
+      kind === "legalRep"
         ? {
             name: `Lr${unique}`,
             familyName: `Representative${unique}`,
@@ -102,10 +143,12 @@ export class BailCaseSeeder {
       START_APPLICATION,
       (prefilled) => ({
         ...roleFlags(prefilled),
-        ...applicationData(createdBy),
+        ...applicationData(kind),
+        ...detentionData(detention),
         applicantGivenNames: applicant.givenNames,
         applicantFamilyName: applicant.familyName,
         applicantFullName: `${applicant.givenNames} ${applicant.familyName}`,
+        applicantDateOfBirth: applicant.dateOfBirth,
         applicantHasAddress: "Yes",
         applicantAddress: applicant.address,
         homeOfficeReferenceNumber: homeOfficeReference,
@@ -151,19 +194,29 @@ export class BailCaseSeeder {
             ApprovalStatus: "1",
           },
         }),
+        ...overrides,
       })
     );
-
-    // A legal representative has to make the declaration on submission; nobody else sees it.
-    const submitted = await this.api.submitEvent(
-      created.id,
-      SUBMIT_APPLICATION,
-      createdBy === "legalRep" ? { declarationOnSubmit: ["declarationOnSubmit"] } : {}
-    );
-    if (submitted.state !== "applicationSubmitted") {
+    if (created.state !== STARTED_STATE[kind]) {
       throw new Error(
-        `Seeded case ${created.id} is in state ${submitted.state} after ${SUBMIT_APPLICATION}, expected applicationSubmitted.`
+        `Seeded case ${created.id} is in state ${created.state} after ${START_APPLICATION}, expected ${STARTED_STATE[kind]}.`
       );
+    }
+
+    let state = created.state;
+    if (submit) {
+      // A legal representative has to make the declaration on submission; nobody else sees it.
+      const submitted = await this.api.submitEvent(
+        created.id,
+        SUBMIT_APPLICATION,
+        kind === "legalRep" ? { declarationOnSubmit: ["declarationOnSubmit"] } : {}
+      );
+      if (submitted.state !== "applicationSubmitted") {
+        throw new Error(
+          `Seeded case ${created.id} is in state ${submitted.state} after ${SUBMIT_APPLICATION}, expected applicationSubmitted.`
+        );
+      }
+      state = submitted.state;
     }
 
     const stored = await this.api.getCase(created.id);
@@ -178,6 +231,7 @@ export class BailCaseSeeder {
     return {
       caseId: created.id,
       createdBy,
+      state,
       data: stored.data,
       applicant,
       supporter,
@@ -214,19 +268,15 @@ function roleFlags(prefilled: CaseData): CaseData {
 /**
  * minimal-application-started.json, less the currentCaseStateVisibleTo* fields and the bail
  * reference number (submitApplication generates it from the case ID). An admin officer records
- * who sent the application in; a legal representative cannot create hasLegalRep or
- * sentByChecklist, which only apply to applications made on someone's behalf.
+ * who sent the application in, and the admin officer and the Home Office say whether the
+ * applicant has a legal representative. A legal representative can create none of those.
  */
-function applicationData(createdBy: BailCaseCreator): CaseData {
+function applicationData(kind: CreatorKind): CaseData {
   return {
-    ircName: "Colnbrook",
-    detentionFacility: "Colnbrook",
-    applicantDetainedLoc: "immigrationRemovalCentre",
     hearingCentre: "hattonCross",
     videoHearing1: "Yes",
     applicantGender: "Male",
     applicantHasMobile: "No",
-    applicantDateOfBirth: "1990-01-01",
     applicantDisability1: "No",
     applicantNationality: "HAS_NATIONALITY",
     applicantNationalities: [{ id: randomUUID(), value: { code: "English" } }],
@@ -240,14 +290,29 @@ function applicationData(createdBy: BailCaseCreator): CaseData {
     previousApplicationDoneViaAria: "No",
     transferBailManagementObjectionYesOrNo: "No",
     groundsForBailProvideEvidenceOption: "No",
-    ...(createdBy === "adminOfficer"
+    ...(kind === "admin"
       ? {
           hasLegalRep: "No",
           sentByChecklist: "Applicant",
           applicationSubmittedBy: "Applicant",
         }
       : {}),
+    ...(kind === "homeOffice" ? { hasLegalRep: "No" } : {}),
   };
+}
+
+function detentionData(detention: DetentionLocation): CaseData {
+  return detention === "prison"
+    ? {
+        applicantDetainedLoc: "prison",
+        prisonName: "Ashwell",
+        applicantPrisonDetails: String(randomInt(100_000_000, 999_999_999)),
+      }
+    : {
+        applicantDetainedLoc: "immigrationRemovalCentre",
+        ircName: "Colnbrook",
+        detentionFacility: "Colnbrook",
+      };
 }
 
 /**
@@ -291,6 +356,12 @@ function address(line1: string, town: string, postCode: string, county: string):
     PostCode: postCode,
     Country: "United Kingdom",
   };
+}
+
+/** A date of birth in the 1980s, so the applicant is an adult and the date rarely repeats. */
+function uniqueDateOfBirth(): string {
+  const date = new Date(Date.UTC(1980, 0, 1) + randomInt(0, 3650) * 86_400_000);
+  return date.toISOString().slice(0, 10);
 }
 
 /** Eight letters, so the value is valid in name fields that reject digits. */

@@ -12,7 +12,9 @@
     "test": "playwright test --project=chromium --grep-invert=@a11y",
     "test:smoke": "playwright test --project=chromium --grep @smoke",
     "test:a11y": "playwright test --project=chromium --grep @a11y",
-    "test:ci": "playwright install chromium && playwright test --project=chromium --grep-invert=@a11y"
+    "test:ci": "playwright install chromium && playwright test --project=chromium --grep-invert=@a11y",
+    "test:ci:pr": "playwright install chromium && playwright test --project=chromium --grep=@pr --grep-invert=@a11y",
+    "test:pr": "playwright test --project=chromium --grep=@pr --grep-invert=@a11y"
   },
   "devDependencies": {
     "@hmcts/playwright-common": "^1.1.7",

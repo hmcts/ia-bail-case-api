@@ -30,6 +30,7 @@ test.describe("Bail case view", () => {
   for (const role of ["adminOfficer", "judge", "homeOffice"] as const) {
     test(
       `shows the ${config.users[role].label} their tabs, their one progress panel and the case's data`,
+      { tag: "@pr" },
       async ({ bailCase, openCaseAs, ccdApiAs }) => {
         await expectRoleView(role, bailCase, { openCaseAs, ccdApiAs });
       }
@@ -38,6 +39,7 @@ test.describe("Bail case view", () => {
 
   test(
     "shows the legal representative their tabs, their one progress panel and their own case's data",
+    { tag: "@pr" },
     async ({ legalRepBailCase, openCaseAs, ccdApiAs }) => {
       await expectRoleView("legalRep", legalRepBailCase, { openCaseAs, ccdApiAs });
     }

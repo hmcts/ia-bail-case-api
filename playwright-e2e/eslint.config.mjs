@@ -7,6 +7,8 @@ const ignored = {
     "playwright-report/**",
     "test-results/**",
     ".sessions/**",
+    "e2e-pr-report/**",
+    "e2e-pr-results/**",
   ],
 };
 

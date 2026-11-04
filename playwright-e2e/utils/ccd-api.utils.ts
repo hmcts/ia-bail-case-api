@@ -1,8 +1,17 @@
 import { ApiClient, ApiClientError } from "@hmcts/playwright-common";
-import { BrowserContext } from "@playwright/test";
+import { APIRequestContext, BrowserContext } from "@playwright/test";
 import { config } from "./config.utils";
+import { throttledUpload } from "./upload-throttle";
 
 export type CaseData = Record<string, unknown>;
+
+/** A Document field value as CCD stores it once CDAM has accepted the file. */
+export interface CcdDocument {
+  document_url: string;
+  document_binary_url: string;
+  document_filename: string;
+  document_hash?: string;
+}
 
 export interface CcdCase {
   id: string;
@@ -46,12 +55,14 @@ const ACCEPT = {
  */
 export class CcdApi {
   private readonly client: ApiClient;
+  private readonly request: APIRequestContext;
 
   constructor(private readonly context: BrowserContext) {
+    this.request = withoutCredentials(context.request);
     this.client = new ApiClient({
       name: "ccd-via-xui",
       baseUrl: config.urls.xuiBaseUrl,
-      requestFactory: async () => this.context.request,
+      requestFactory: async () => this.request,
       // Successful calls would otherwise log every case body; failures still log.
       loggerOptions: { level: "warn" },
       defaultHeaders: { "content-type": "application/json", experimental: "true" },
@@ -90,10 +101,14 @@ export class CcdApi {
     return toCase(created);
   }
 
+  /**
+   * Submits an event. `data` is either the data to submit or a function of the data the event's
+   * about-to-start callback prepared (what XUI pre-fills the wizard with).
+   */
   public async submitEvent(
     caseId: string,
     eventId: string,
-    data: CaseData = {}
+    data: CaseData | ((prefilled: CaseData) => CaseData) = {}
   ): Promise<CcdCase> {
     const trigger = await this.send<StartTriggerResponse>(
       "GET",
@@ -105,7 +120,7 @@ export class CcdApi {
       `/data/cases/${caseId}/events`,
       ACCEPT.createEvent,
       {
-        data,
+        data: typeof data === "function" ? data(triggerData(trigger)) : data,
         event: { id: eventId, summary: "", description: "" },
         event_token: trigger.token,
         ignore_warning: false,
@@ -136,6 +151,62 @@ export class CcdApi {
       throw new Error("XUI's /api/user/details returned no forename and surname for the user.");
     }
     return `${forename} ${surname}`;
+  }
+
+  /**
+   * Uploads a file to CDAM through XUI's /documentsv2, exactly as a document field in the UI does,
+   * and returns the value to put in a Document field. CDAM ties the document to the case type and
+   * hands back a hash token that ccd-data-store-api checks when the document is attached to a case,
+   * so the hash goes into the field. Uploads are throttled per XUI session; see upload-throttle.ts.
+   */
+  public async uploadDocument(file: { name: string; mimeType: string; buffer: Buffer }): Promise<CcdDocument> {
+    const headers = { accept: "application/json", ...(await this.xsrfHeader()) };
+    const response = await throttledUpload(this.context, () =>
+      this.request.post(`${config.urls.xuiBaseUrl}/documentsv2`, {
+        headers,
+        multipart: {
+          files: file,
+          classification: "PUBLIC",
+          caseTypeId: config.bail.caseTypeId,
+          jurisdictionId: config.bail.jurisdictionId,
+        },
+        timeout: 60_000,
+      })
+    );
+    if (!response.ok()) {
+      throw new Error(`Uploading ${file.name} to CDAM failed with ${response.status()}: ${preview(await response.text())}`);
+    }
+    const body = (await response.json()) as {
+      documents?: {
+        originalDocumentName: string;
+        hashToken?: string;
+        _links: { self: { href: string }; binary: { href: string } };
+      }[];
+    };
+    const document = body.documents?.[0];
+    if (!document) {
+      throw new Error(`CDAM accepted ${file.name} but returned no document: ${preview(body)}`);
+    }
+    return {
+      document_url: document._links.self.href,
+      document_binary_url: document._links.binary.href,
+      document_filename: document.originalDocumentName,
+      ...(document.hashToken && { document_hash: document.hashToken }),
+    };
+  }
+
+  /**
+   * How many Bail cases with this reference the signed-in user finds through CCD's Elasticsearch
+   * search: what the case list shows them. A case reaches the index a moment after it is written,
+   * so callers poll.
+   */
+  public async countSearchResults(caseId: string): Promise<number> {
+    const headers = { accept: "application/json", ...(await this.xsrfHeader()) };
+    const response = await this.client.post<{ total?: number }>(
+      `/data/searchCases?ctid=${config.bail.caseTypeId}`,
+      { headers, data: { query: { term: { reference: caseId } }, _source: ["reference"] } }
+    );
+    return response.data?.total ?? 0;
   }
 
   public async getCase(caseId: string): Promise<CcdCase> {
@@ -187,6 +258,40 @@ export class CcdApi {
     )?.value;
     return token ? { "X-XSRF-TOKEN": decodeURIComponent(token) } : {};
   }
+}
+
+const REQUEST_METHODS = new Set(["fetch", "get", "post", "put", "patch", "delete", "head"]);
+/** A header line in Playwright's call log, which colours each line with ANSI escapes. */
+const CREDENTIAL_HEADER =
+  /^((?:\u001b\[[0-9;]*m)?\s*-?\s*(?:cookie|x-xsrf-token|authorization|serviceauthorization):\s*)[^\u001b\n]*/gim;
+
+/**
+ * The context's request API, with credentials taken out of its errors. Playwright's request
+ * errors (DNS failures, resets, timeouts) carry a call log listing the request's headers, and
+ * these requests carry the XUI session: the cookie jar with the IDAM token, and the XSRF token.
+ * ApiClient logs a failed request's error message before rethrowing it, so the message is
+ * redacted here, before either sees it, and nothing secret reaches a CI log.
+ */
+function withoutCredentials(request: APIRequestContext): APIRequestContext {
+  const redact = (text: string) => text.replace(CREDENTIAL_HEADER, "$1[REDACTED]");
+  return new Proxy(request, {
+    get(target, property, receiver) {
+      const value = Reflect.get(target, property, receiver);
+      if (typeof value !== "function") return value;
+      if (typeof property !== "string" || !REQUEST_METHODS.has(property)) return value.bind(target);
+      return async (...args: unknown[]) => {
+        try {
+          return await value.apply(target, args);
+        } catch (error) {
+          if (error instanceof Error) {
+            error.message = redact(error.message);
+            if (error.stack) error.stack = redact(error.stack);
+          }
+          throw error;
+        }
+      };
+    },
+  });
 }
 
 function triggerData(trigger: StartTriggerResponse): CaseData {

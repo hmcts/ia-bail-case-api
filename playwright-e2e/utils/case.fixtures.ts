@@ -8,7 +8,13 @@ import {
   PlaywrightWorkerOptions,
 } from "@playwright/test";
 import { BailCaseDetailsPage } from "../page-objects/pages/bail-case-details.po";
-import { BailCaseCreator, BailCaseSeeder, SeededBailCase } from "./bail-case.seeder";
+import {
+  BailCaseCreator,
+  BailCaseSeeder,
+  SeedOptions,
+  SeededBailCase,
+} from "./bail-case.seeder";
+import { BailCaseProgression } from "./bail-case.progression";
 import { ROLE_VIEWS } from "./case-view.expectations";
 import { CcdApi } from "./ccd-api.utils";
 import { UserRole, config } from "./config.utils";
@@ -20,6 +26,13 @@ export interface CaseFixtures {
   ccdApiAs: (role: UserRole) => Promise<CcdApi>;
   /** Opens the case in the role's own page (one per role per test) and returns it. */
   openCaseAs: (role: UserRole, caseId: string) => Promise<BailCaseDetailsPage>;
+  /**
+   * Seeds a case of this test's own, as `createdBy`, submitted unless `options.submit` is false.
+   * For preconditions the fixed fixtures below do not cover.
+   */
+  seedCase: (createdBy: BailCaseCreator, options?: SeedOptions) => Promise<SeededBailCase>;
+  /** Drives a case's precondition events over CCD, each as the role that performs it. */
+  progress: (caseId: string) => BailCaseProgression;
   /** A case of this test's own, created and submitted by an admin officer. */
   bailCase: SeededBailCase;
   /** A case of this test's own, created and submitted by the legal representative. */
@@ -29,10 +42,11 @@ export interface CaseFixtures {
 const seedCase = async (
   ccdApiAs: CaseFixtures["ccdApiAs"],
   createdBy: BailCaseCreator,
-  annotate: (description: string) => void
+  annotate: (description: string) => void,
+  options?: SeedOptions
 ): Promise<SeededBailCase> => {
-  const seeded = await new BailCaseSeeder(await ccdApiAs(createdBy)).seed(createdBy);
-  annotate(`${seeded.caseId} (created by the ${config.users[createdBy].label})`);
+  const seeded = await new BailCaseSeeder(await ccdApiAs(createdBy)).seed(createdBy, options);
+  annotate(`${seeded.caseId} (created by the ${config.users[createdBy].label}, ${seeded.state})`);
   return seeded;
 };
 
@@ -79,6 +93,19 @@ export const caseFixtures: Fixtures<
       await casePage.goto(caseId, ROLE_VIEWS[role].workAllocationTabs);
       return casePage;
     });
+  },
+  seedCase: async ({ ccdApiAs }, use, testInfo) => {
+    await use((createdBy, options) =>
+      seedCase(
+        ccdApiAs,
+        createdBy,
+        (description) => testInfo.annotations.push({ type: "Bail case", description }),
+        options
+      )
+    );
+  },
+  progress: async ({ ccdApiAs }, use) => {
+    await use((caseId) => new BailCaseProgression(caseId, ccdApiAs));
   },
   bailCase: async ({ ccdApiAs }, use, testInfo) => {
     await use(

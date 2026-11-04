@@ -95,6 +95,9 @@ test.describe("Interpreter events", () => {
         await event.expectOnFirstPage();
         await event.addInterpreter(interpreter);
         await event.continueToCheckYourAnswers();
+        // bails-update-interpreter-details.feature checked these on check your answers.
+        await expect(event.page.getByText(interpreter.bookingRef, { exact: true })).toBeVisible();
+        await expect(event.page.getByText(interpreter.givenNames, { exact: true })).toBeVisible();
         await event.submit();
         await event.closeAndReturnToCase();
       });

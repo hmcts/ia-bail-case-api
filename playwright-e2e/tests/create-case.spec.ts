@@ -14,7 +14,7 @@ test.describe("Create case", () => {
    */
   test(
     "offers the Bail case type and starts the application event for an admin officer",
-    { tag: "@smoke" },
+    { tag: ["@smoke", "@pr"] },
     async ({ page, createCasePage, startApplicationPage }) => {
       await createCasePage.selectJurisdiction(config.bail.jurisdictionLabel);
       await expect(createCasePage.jurisdictionSelect).toHaveValue(

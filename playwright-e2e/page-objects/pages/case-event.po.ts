@@ -8,8 +8,11 @@ export interface CaseEventDetails {
   pageHeading: string;
   /** The label on the check-your-answers submit button (the event's endButtonLabel). */
   submitLabel: string;
-  /** The submitted callback's confirmation header, without its leading "# ". */
-  confirmationHeader: string;
+  /**
+   * The submitted callback's confirmation header, without its leading "# ". Absent for an event
+   * with no confirmation page: XUI goes straight back to the case and says it was updated.
+   */
+  confirmationHeader?: string;
 }
 
 /**
@@ -20,6 +23,8 @@ export class CaseEventPage extends Base {
   readonly heading: Locator;
   readonly submitBtn: Locator;
   readonly confirmationHeading: Locator;
+  /** XUI's banner on the case after an event with no confirmation page. */
+  readonly updatedAlert: Locator;
   readonly continueBtn = this.page.getByRole("button", { name: "Continue", exact: true });
   readonly checkYourAnswersHeading = this.page.getByRole("heading", {
     name: "Check your answers",
@@ -36,8 +41,11 @@ export class CaseEventPage extends Base {
     this.heading = this.page.getByRole("heading", { name: event.pageHeading, level: 1 });
     this.submitBtn = this.page.getByRole("button", { name: event.submitLabel, exact: true });
     this.confirmationHeading = this.page.getByRole("heading", {
-      name: event.confirmationHeader,
+      name: event.confirmationHeader ?? event.name,
     });
+    this.updatedAlert = this.page
+      .getByText(`has been updated with event: ${event.name}`)
+      .first();
   }
 
   public async expectOnFirstPage(): Promise<void> {
@@ -50,6 +58,24 @@ export class CaseEventPage extends Base {
     await this.continueBtn.click();
     await this.spinner.wait();
     await expect(this.checkYourAnswersHeading).toBeVisible();
+  }
+
+  /**
+   * The value check your answers shows for the question labelled `label`. CYA is a table of
+   * label and value rows, so the row is found by its header cell's exact text.
+   */
+  public answer(label: string): Locator {
+    return this.page
+      .getByRole("table", { name: "check your answers table" })
+      .getByRole("row")
+      .filter({ has: this.page.getByRole("rowheader", { name: label, exact: true }) })
+      .getByRole("cell")
+      .first();
+  }
+
+  /** Text in the confirmation page's body, which the submitted callback writes as markdown. */
+  public confirmation(text: string): Locator {
+    return this.page.getByText(text, { exact: false });
   }
 
   /**
@@ -66,7 +92,12 @@ export class CaseEventPage extends Base {
       `CCD refused the "${this.event.name}" submission: ${await summarise(response)}`
     ).toBe(201);
     await this.spinner.wait();
-    await expect(this.confirmationHeading).toBeVisible();
+    if (this.event.confirmationHeader) {
+      await expect(this.confirmationHeading).toBeVisible();
+    } else {
+      await expect(this.page).toHaveURL(/\/cases\/case-details\//);
+      await expect(this.updatedAlert).toBeVisible();
+    }
   }
 
   public async closeAndReturnToCase(): Promise<void> {
