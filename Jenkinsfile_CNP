@@ -137,12 +137,7 @@ withPipeline(type, product, component) {
     steps.archiveArtifacts artifacts: "build/ccd-config/ccd-bail-config-${ccdEnvironment}.xlsx"
   }
 
-  // The Playwright suite's main journeys (tests tagged @pr) on every PR, once the functional
-  // tests have passed. This runs inside the functional stage, with its secrets and environment,
-  // so a failure fails that stage. The full suite runs on PRs labelled enable_e2e_test, in the
-  // library's "E2E Test - AKS preview" stage (./gradlew e2eTest).
   afterSuccess('functionalTest:preview') {
-    // The hook runs outside the library's 40-minute functional test timeout, so it has its own.
     timeout(time: 20, unit: 'MINUTES') {
       sh './gradlew --rerun-tasks e2ePrTest'
     }
@@ -203,8 +198,6 @@ withPipeline(type, product, component) {
     // read by `yarn generate-preview`
     env.PR_NUMBER = "${CHANGE_ID}"
     env.DEFINITION_STORE_URL_BASE = "https://ccd-definition-store-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
-    // Read by the Playwright suite: its main journeys (@pr) run after the functional tests on every
-    // PR, and the full suite runs on PRs labelled enable_e2e_test.
     env.XUI_URL = "https://xui-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     env.CCD_ADMIN_URL = "https://admin-web-ia-bail-case-api-pr-${CHANGE_ID}.preview.platform.hmcts.net"
     enablePactAs([AppPipelineDsl.PactRoles.CONSUMER])

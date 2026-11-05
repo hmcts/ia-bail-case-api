@@ -208,7 +208,6 @@ tasks.register('e2eYarnInstall', Exec) {
   commandLine 'yarn', 'install', '--frozen-lockfile'
 }
 
-// Run by the CNP pipeline's E2E stage after the functional tests, against XUI_URL.
 tasks.register('e2eTest', Exec) {
   description = 'Runs the Playwright suite that drives Bail through XUI.'
   group = 'Verification'
@@ -218,8 +217,6 @@ tasks.register('e2eTest', Exec) {
   commandLine 'yarn', 'test:ci'
 }
 
-// Run on every PR from Jenkinsfile_CNP's afterSuccess('functionalTest:preview'): the tests tagged
-// @pr, the main journeys. Writes its report to e2e-pr-report/ so it can sit beside a full run's.
 tasks.register('e2ePrTest', Exec) {
   description = 'Runs the main-journey (@pr) subset of the Playwright suite against XUI_URL.'
   group = 'Verification'
