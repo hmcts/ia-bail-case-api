@@ -9,10 +9,10 @@ import { ROLE_VIEWS, config, contentTabsFor, expectSeededDataShown } from "../ut
 /**
  * Two admin-officer events that still go through Bail's own callback dispatcher
  * (/bail/ccdAboutToStart, /bail/ccdAboutToSubmit, /bail/ccdSubmitted), chosen because they work
- * on the data the SDK model has struggled with (the applicant's and supporter's interpreter
- * language reference data) and call nothing outside Bail: no notifications, no reference-data
- * writes. They guard the old dispatcher the same way the add-case-note tests guard the SDK path,
- * and will keep guarding these events when they move.
+ * on data that is hard to read back into a model (the applicant's and supporter's interpreter
+ * language reference data, a DynamicList inside a complex value) and call nothing outside Bail:
+ * no notifications, no reference-data writes. They guard the dispatcher the same way the
+ * add-case-note tests guard the SDK path, whichever path these events take.
  */
 test.describe("Interpreter events", () => {
   const viewer = config.users.adminOfficer.label;
@@ -46,7 +46,7 @@ test.describe("Interpreter events", () => {
         await event.supporterSpokenStatus.selectOption({ label: "Requested" });
         await event.continueToCheckYourAnswers();
         await event.submit();
-        await event.closeAndReturnToCase();
+        await event.closeAndReturnToCase(bailCase.caseId, ROLE_VIEWS.adminOfficer.workAllocationTabs);
       });
 
       await test.step("the hearing tab shows the statuses, and nothing else changed", async () => {
@@ -99,7 +99,7 @@ test.describe("Interpreter events", () => {
         await expect(event.page.getByText(interpreter.bookingRef, { exact: true })).toBeVisible();
         await expect(event.page.getByText(interpreter.givenNames, { exact: true })).toBeVisible();
         await event.submit();
-        await event.closeAndReturnToCase();
+        await event.closeAndReturnToCase(bailCase.caseId, ROLE_VIEWS.adminOfficer.workAllocationTabs);
       });
 
       await test.step("the hearing tab lists the interpreter, and nothing else changed", async () => {

@@ -1,14 +1,14 @@
 import { expect, test } from "../fixtures";
+import { ROLE_VIEWS } from "../utils";
 import { BAIL_EVENTS, WizardAnswers } from "../page-objects";
 
 /**
  * "Record the decision" as the admin officer, through the UI.
  *
- * The old suite only ever recorded a decision as a precondition ("I record a conditional grant
- * decision with SS consent Yes with no financial condition supporters", in the make-new-application,
- * end-application, upload-documents and edit-application features), so this is that step as a test
- * of its own: the decision is the main judicial outcome of a bail application, and its about-to-
- * submit callback generates the unsigned decision notice.
+ * A conditional grant with Secretary of State consent: minded to grant, consent given, not
+ * released at once, activities and electronic monitoring conditions, no financial condition and
+ * no transfer of bail management. The decision is the main judicial outcome of a bail
+ * application, and its about-to-submit callback generates the unsigned decision notice.
  *
  * Its preconditions, listing and the Home Office's bail summary, are driven over CCD.
  */
@@ -56,7 +56,7 @@ test.describe("Record the decision", () => {
       );
       await expect(wizard.answer("Judge name")).toHaveText("Mr Judge Judgerson");
       await wizard.submit();
-      await wizard.closeAndReturnToCase();
+      await wizard.closeAndReturnToCase(seeded.caseId, ROLE_VIEWS.adminOfficer.workAllocationTabs);
 
       const decided = await openCaseAs("adminOfficer", seeded.caseId);
       await decided.expectLatestEvent(BAIL_EVENTS.recordDecision.name, author);

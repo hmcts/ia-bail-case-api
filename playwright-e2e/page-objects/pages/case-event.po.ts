@@ -1,5 +1,6 @@
 import { Locator, Page, Response, expect } from "@playwright/test";
 import { Base } from "../base";
+import { waitForCaseViewToSettle } from "./case-view-settled";
 
 export interface CaseEventDetails {
   /** The event's name, as offered in Next step and shown above check your answers. */
@@ -100,10 +101,14 @@ export class CaseEventPage extends Base {
     }
   }
 
-  public async closeAndReturnToCase(): Promise<void> {
+  /**
+   * Leaves the confirmation page for the case and waits for XUI to settle there, as on opening
+   * the case: its follow-up navigation and any work-allocation tabs can otherwise move the
+   * selected tab under the next action.
+   */
+  public async closeAndReturnToCase(caseReference: string, workAllocationTabs: string[]): Promise<void> {
     await this.closeAndReturnBtn.click();
-    await this.spinner.wait();
-    await expect(this.page).toHaveURL(/\/cases\/case-details\//);
+    await waitForCaseViewToSettle(this.page, caseReference, workAllocationTabs);
   }
 }
 

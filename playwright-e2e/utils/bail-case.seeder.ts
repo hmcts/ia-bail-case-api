@@ -90,15 +90,14 @@ export function creatorKind(createdBy: BailCaseCreator): CreatorKind {
  *
  * The data is based on src/functionalTest/resources/templates/minimal-application-started.json
  * without its five currentCaseStateVisibleTo* fields, which no user may create (CCD answers
- * "No field found"), and enriched with the shapes the SDK model has struggled to read back:
+ * "No field found"), and enriched with the shapes that are hardest for a model to read back:
  *
  * - an applicant address and a financial condition supporter's address: AddressUK inside the
  *   @JsonUnwrapped(prefix) Applicant and Supporter groups;
  * - spoken-language interpreters for the applicant and the supporter: InterpreterSpokenLanguage
  *   complex values whose languageRefData is a DynamicList, picked from the reference-data list
  *   the event's about-to-start callback offers, as XUI would;
- * - for a legal representative's case, the legal rep's details and a ChangeOrganisationRequest
- *   in the shape RemoveRepresentationPreparer writes.
+ * - for a legal representative's case, the legal rep's details.
  *
  * Fields the case's own callbacks set are not supplied: startApplication's about-to-submit fills
  * in hearingCentreRefData and caseManagementCategory (DynamicLists), caseManagementLocation and
@@ -185,14 +184,6 @@ export class BailCaseSeeder {
           legalRepFamilyName: legalRep.familyName,
           legalRepPhone: legalRep.phone,
           legalRepReference: legalRep.reference,
-          changeOrganisationRequestField: {
-            CaseRoleId: dynamicList({
-              code: "[LEGALREPRESENTATIVE]",
-              label: "Legal Representative",
-            }),
-            RequestTimestamp: new Date().toISOString().replace("Z", ""),
-            ApprovalStatus: "1",
-          },
         }),
         ...overrides,
       })
@@ -342,10 +333,6 @@ function spokenLanguage(prefilled: CaseData, field: string, label: string): Case
   };
 }
 
-function dynamicList(item: DynamicListItem): DynamicList {
-  return { value: item, list_items: [item] };
-}
-
 function address(line1: string, town: string, postCode: string, county: string): AddressUK {
   return {
     AddressLine1: line1,
@@ -364,9 +351,12 @@ function uniqueDateOfBirth(): string {
   return date.toISOString().slice(0, 10);
 }
 
-/** Eight letters, so the value is valid in name fields that reject digits. */
-function uniqueToken(): string {
+/**
+ * Random letters, capitalised, for values unique to a test: letters only, so the value is valid in
+ * name fields that reject digits.
+ */
+export function uniqueToken(length = 8): string {
   const letters = "abcdefghijklmnopqrstuvwxyz";
-  const token = Array.from({ length: 8 }, () => letters[randomInt(letters.length)]).join("");
+  const token = Array.from({ length }, () => letters[randomInt(letters.length)]).join("");
   return token[0].toUpperCase() + token.slice(1);
 }

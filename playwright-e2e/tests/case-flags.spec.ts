@@ -2,10 +2,9 @@ import { expect, test } from "../fixtures";
 import { CaseFlagsPage } from "../page-objects";
 
 /**
- * Case flags as the admin officer, on a legal representative's submitted case, ported from
- * bails-add-a-case-flag.feature: "Create a case Flag", and "Create a case Flag and make Inactive"
- * (tagged @fix-test in the old suite). The flag is created through the UI in both, because
- * creating it is what the first scenario tests and the second's starting point.
+ * Case flags as the admin officer, on a legal representative's submitted case: creating a
+ * case-level flag, and making one inactive. The flag is created through the UI in both, because
+ * creating it is what the first test checks and the second's starting point.
  */
 test.describe("Case flags", () => {
   test(

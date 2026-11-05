@@ -142,7 +142,10 @@ withPipeline(type, product, component) {
   // so a failure fails that stage. The full suite runs on PRs labelled enable_e2e_test, in the
   // library's "E2E Test - AKS preview" stage (./gradlew e2eTest).
   afterSuccess('functionalTest:preview') {
-    sh './gradlew --rerun-tasks e2ePrTest'
+    // The hook runs outside the library's 40-minute functional test timeout, so it has its own.
+    timeout(time: 20, unit: 'MINUTES') {
+      sh './gradlew --rerun-tasks e2ePrTest'
+    }
   }
 
   afterAlways('functionalTest:preview') {

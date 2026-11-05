@@ -3,22 +3,16 @@ import { BailCaseDetailsPage, NoticeOfChangePage } from "../page-objects";
 import { CaseData, ROLE_VIEWS, SeededBailCase } from "../utils";
 
 /**
- * Notice of Change, ported from bails-notice-of-change.feature: "Notice of Change - incorrect
- * details" and "Notice of Change" (the old suite's "Legal Org User Rep C" taking over a case from
- * "Legal Org User Rep A Bails"). The two legal representatives are in different MyHMCTS
- * organisations.
- *
- * The case is seeded without the ChangeOrganisationRequest the seeder otherwise writes on a legal
- * representative's case to exercise the SDK model: aac-manage-case-assignment reads a request with
- * a case role as a notice of change already in progress and refuses a new one.
+ * Notice of Change through XUI: answers that do not match the case are refused, and a legal
+ * representative of another MyHMCTS organisation takes over a case the first organisation's legal
+ * representative created.
  */
-const NO_PENDING_REQUEST = { overrides: { changeOrganisationRequestField: undefined } };
 
 test.describe("Notice of change", () => {
   test(
     "rejects a notice of change whose first name, surname or date of birth does not match the case",
     async ({ seedCase, roleContext }) => {
-      const seeded = await seedCase("legalRepBails", NO_PENDING_REQUEST);
+      const seeded = await seedCase("legalRepBails");
       const answers = nocAnswers(seeded);
       const noc = new NoticeOfChangePage(await (await roleContext("otherOrgLegalRep")).newPage());
 
@@ -41,7 +35,7 @@ test.describe("Notice of change", () => {
   test(
     "moves the case's legal representative organisation to the new representative, who then finds and sees the case",
     async ({ seedCase, roleContext, ccdApiAs }) => {
-      const seeded = await seedCase("legalRepBails", NO_PENDING_REQUEST);
+      const seeded = await seedCase("legalRepBails");
       const answers = nocAnswers(seeded);
       const adminOfficer = await ccdApiAs("adminOfficer");
       const newRep = await ccdApiAs("otherOrgLegalRep");

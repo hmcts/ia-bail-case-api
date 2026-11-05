@@ -243,17 +243,14 @@ export class EventWizardPage extends CaseEventPage {
         .filter({ has: removeBtn })
         .last();
       const collection = answer.removeItem.replace(/_\d+$/, "");
-      const items = this.page.locator(`[id^="${collection}_"][id$="_description"]`);
-      const before = await items.count();
+      const before = await this.collectionItemCount(collection);
       await item.getByRole("button", { name: /^Remove\b/ }).first().click();
       const dialog = this.page.getByRole("dialog");
       await dialog.getByRole("button", { name: "Remove", exact: true }).click();
       await expect(dialog).toBeHidden();
-      await expect(items).toHaveCount(before - 1);
+      await expect.poll(() => this.collectionItemCount(collection)).toBe(before - 1);
     } else {
-      // Items are numbered from 0, and each item's inputs have IDs <collection>_<n>_<field>.
-      const items = this.page.locator(`[id^="${answer.addNew}_"]`);
-      const before = await items.count();
+      const before = await this.collectionItemCount(answer.addNew);
       await this.page
         .locator(`ccd-write-collection-field:has([id="${answer.addNew}"]), ccd-write-collection-field:has(#${answer.addNew})`)
         .or(this.page.locator(`#${answer.addNew}`))
@@ -261,7 +258,7 @@ export class EventWizardPage extends CaseEventPage {
         .getByRole("button", { name: "Add new" })
         .first()
         .click();
-      await expect.poll(() => items.count()).toBeGreaterThan(before);
+      await expect.poll(() => this.collectionItemCount(answer.addNew)).toBe(before + 1);
     }
   }
 
@@ -297,6 +294,21 @@ export class EventWizardPage extends CaseEventPage {
       .locator("ccd-write-complex-type-field")
       .filter({ has: this.page.locator(`[id^="${itemId}_"]`) })
       .last();
+  }
+
+  /**
+   * How many items a collection field shows. Items are numbered from 0 and each item's inputs
+   * have IDs <collection>_<n>_<field>, whatever the item's fields are, so the items are the
+   * distinct numbers among those IDs.
+   */
+  private async collectionItemCount(collection: string): Promise<number> {
+    return this.page
+      .locator(`[id^="${collection}_"]`)
+      .evaluateAll((inputs, prefix) => {
+        const pattern = new RegExp(`^${prefix}_(\\d+)_`);
+        const numbers = inputs.map((input) => pattern.exec(input.id)?.[1]).filter(Boolean);
+        return new Set(numbers).size;
+      }, collection);
   }
 
   private byId(id: string): Locator {

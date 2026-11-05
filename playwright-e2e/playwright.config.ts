@@ -24,11 +24,16 @@ const output = outputName
  *
  * Retries are off on CI as well as locally (CommonConfig turns on two when CI is set): a test
  * that only passes on a second attempt is reported as the failure it is.
+ *
+ * globalTimeout bounds a whole run. On preview the @pr tier takes about 2 minutes and the full
+ * suite about 3; 15 minutes leaves room for a slow preview without letting a stuck run hold the
+ * pipeline.
  */
 export default defineConfig({
   testDir: "./tests",
   ...CommonConfig.recommended,
   retries: 0,
+  globalTimeout: 15 * 60_000,
   outputDir: output.results,
   reporter: process.env.CI
     ? [

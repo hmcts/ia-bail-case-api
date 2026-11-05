@@ -76,8 +76,8 @@ export class BailCaseProgression {
   }
 
   /**
-   * "Record the decision" as the admin officer: the old suite's conditional grant with Secretary of
-   * State consent (minded to grant, consent given, not released at once, activities and electronic
+   * "Record the decision" as the admin officer: a conditional grant with Secretary of State
+   * consent (minded to grant, consent given, not released at once, activities and electronic
    * monitoring conditions, no financial condition, no transfer of bail management).
    */
   public async recordConditionalGrant(): Promise<CcdCase> {

@@ -1,14 +1,12 @@
 import { expect, test } from "../fixtures";
 import { BAIL_EVENTS } from "../page-objects";
-import { shownDateFromToday } from "../utils";
+import { ROLE_VIEWS, shownDateFromToday } from "../utils";
 
 /**
  * "End the application" as the admin officer, on a legal representative's submitted case.
- * Ported from bails-end-application.feature, "End Application after submitting".
  *
  * The submitted callback generates an ended-application notice, named after the applicant's
- * family name, into the tribunal documents, which is the one part of the old scenario that
- * depends on ia-case-documents-api.
+ * family name, into the tribunal documents; that part depends on ia-case-documents-api.
  */
 test.describe("End the application", () => {
   test(
@@ -31,7 +29,7 @@ test.describe("End the application", () => {
 
       await wizard.submit();
       await expect(wizard.confirmation("A notification has been sent to all parties. No further action is required.")).toBeVisible();
-      await wizard.closeAndReturnToCase();
+      await wizard.closeAndReturnToCase(seeded.caseId, ROLE_VIEWS.adminOfficer.workAllocationTabs);
 
       const ended = await openCaseAs("adminOfficer", seeded.caseId);
       await ended.openTab("Overview");

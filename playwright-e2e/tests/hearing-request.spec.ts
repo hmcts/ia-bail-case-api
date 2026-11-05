@@ -4,17 +4,14 @@ import { BailCaseCreator, config } from "../utils";
 
 /**
  * A hearing request through XUI's Hearings tab, as the admin officer, on applications made by each
- * kind of applicant. Ported from bails-snl-admin-request-a-hearing.feature,
- * bails-snl-ho-request-a-hearing.feature and bails-snl-lr-request-a-hearing.feature.
+ * kind of applicant.
  *
  * Each confirms the detention location first (the admin officer is asked to before listing) and
  * flags the case as urgent, then requests a bail hearing with every participant in person at
  * Hatton Cross.
  *
- * The old scenarios also added language-interpreter and reasonable-adjustment flags for the
- * applicant and a supporter, through the flags component's language search; case-flags.spec.ts
- * covers the flags journey, and those party flags change only the hearing requirements page, so
- * they are not repeated here.
+ * No party-level flags (language interpreter, reasonable adjustment) are added: they change only
+ * the hearing requirements page, and case-flags.spec.ts covers the flags journey.
  *
  * Needs HMC, which a PR's preview namespace does not have (config.hearingsAvailable).
  */
@@ -60,9 +57,8 @@ test.describe("Request a hearing", () => {
         );
 
         const ready = await openCaseAs("adminOfficer", seeded.caseId);
-        await ready.openXuiTab("Hearings");
         const hearing = new HearingRequestPage(ready.page);
-        await hearing.start();
+        await hearing.startFrom(ready);
         expect(await hearing.requestBailHearingInPerson("Hatton Cross Tribunal Hearing Centre")).toBe(
           participants
         );

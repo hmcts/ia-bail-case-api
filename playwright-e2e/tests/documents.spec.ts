@@ -1,16 +1,13 @@
 import { expect, test } from "../fixtures";
 import { BAIL_EVENTS } from "../page-objects";
-import { TabSnapshot, pdfFile, shownDateFromToday } from "../utils";
+import { ROLE_VIEWS, TabSnapshot, pdfFile, shownDateFromToday } from "../utils";
 
 /**
  * Documents on a legal representative's submitted case.
  *
- * - "Upload documents" as the legal representative is ported from bails-upload-documents.feature,
- *   "Upload Documents after submitting".
- * - "Edit documents" as the admin officer is ported from bails-edit-documents.feature, "Delete,
- *   edit and add a document as a Judge". Despite its name that scenario runs as the admin officer
- *   (its Background switches to one and the scenario never switches again). Its precondition, a
- *   supporting-evidence document next to the generated application PDF, is uploaded over CCD.
+ * - "Upload documents" as the legal representative.
+ * - "Edit documents" as the admin officer, on a case with a supporting-evidence document, uploaded
+ *   over CCD, next to the generated application PDF.
  */
 test.describe("Documents", () => {
   test(
@@ -35,7 +32,7 @@ test.describe("Documents", () => {
       await expect(
         wizard.confirmation("The document(s) you uploaded are available to view in the documents tab.")
       ).toBeVisible();
-      await wizard.closeAndReturnToCase();
+      await wizard.closeAndReturnToCase(seeded.caseId, ROLE_VIEWS.legalRepBails.workAllocationTabs);
 
       const after = await openCaseAs("legalRepBails", seeded.caseId);
       const documents = await after.snapshotTab("Documents");

@@ -5,11 +5,8 @@ import { BailCaseCreator, ROLE_VIEWS, config } from "../utils";
 /**
  * "Submit the application", driven through Next step on an application the role saved earlier.
  *
- * Ported from bails-submit-bail-application-admin-officer.feature (@bail-nightly-test) and from
- * the "I submit my bail application as a <role>" step every other old Bail scenario starts with.
- * The old scenario walked startApplication's wizard in the UI first; the case here is saved over
- * CCD by the same role instead (create-case.spec.ts checks the wizard opens), so the test is about
- * the submission.
+ * The application is saved over CCD by the same role (create-case.spec.ts checks that the
+ * startApplication wizard opens), so the test is about the submission.
  *
  * A legal representative is asked to make the declaration on submission; the admin officer and
  * the Home Office are not, so their wizard is only the submit page.
@@ -57,7 +54,7 @@ test.describe("Submit the application", () => {
         await wizard.completeToCheckYourAnswers(answers);
         await wizard.submit();
         await expect(wizard.confirmation("All parties will be notified that the application has been submitted.")).toBeVisible();
-        await wizard.closeAndReturnToCase();
+        await wizard.closeAndReturnToCase(saved.caseId, ROLE_VIEWS[role].workAllocationTabs);
 
         const submitted = await openCaseAs(role, saved.caseId);
         await submitted.expectOneProgressPanel(progressField);

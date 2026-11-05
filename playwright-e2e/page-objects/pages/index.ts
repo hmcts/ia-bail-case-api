@@ -3,6 +3,7 @@ export * from "./bail-case-details.po";
 export * from "./bail-events";
 export * from "./case-event.po";
 export * from "./case-flags.po";
+export * from "./case-view-settled";
 export * from "./create-case.po";
 export * from "./event-wizard.po";
 export * from "./hearing-request.po";

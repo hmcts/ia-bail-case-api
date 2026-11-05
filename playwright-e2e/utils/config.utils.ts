@@ -1,4 +1,3 @@
-import { ConfigUtils } from "@hmcts/playwright-common";
 import dotenv from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -64,7 +63,7 @@ export interface Config {
  * missing environment variable fails the run with its name instead of a timeout somewhere later.
  */
 export function requireEnvVar(name: string): string {
-  const value = ConfigUtils.getEnvVar(name).trim();
+  const value = process.env[name]?.trim();
   if (!value) {
     throw new Error(
       `Missing required environment variable: ${name}. See playwright-e2e/.env.example.`
@@ -92,14 +91,14 @@ export const config: Config = {
     legalRep: sessionUser("legal representative", "legal-rep", "TEST_LAW_FIRM_A"),
     homeOffice: sessionUser("Home Office", "home-office", "TEST_HOMEOFFICE_BAIL"),
     judge: sessionUser("judge", "judge", "TEST_JUDGE_BAILS"),
-    // The old suite's "Legal Org User Rep A Bails": a solicitor and case-access administrator in
-    // a MyHMCTS organisation, who creates the cases another organisation takes over by NoC.
+    // A solicitor and case-access administrator in a MyHMCTS organisation, who creates the cases
+    // another organisation takes over by Notice of Change.
     legalRepBails: sessionUser(
       "legal representative of the creating organisation",
       "legal-rep-bails",
       "TEST_LAW_FIRM_NOC_A_BAILS"
     ),
-    // The old suite's "Legal Org User Rep C": a solicitor in a different organisation.
+    // A solicitor in a different MyHMCTS organisation, who makes the Notice of Change.
     otherOrgLegalRep: sessionUser(
       "legal representative of another organisation",
       "other-org-legal-rep",

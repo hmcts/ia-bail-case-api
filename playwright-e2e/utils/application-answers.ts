@@ -1,11 +1,12 @@
 import { randomInt } from "node:crypto";
 import type { UploadFile, WizardAnswers } from "../page-objects/pages/event-wizard.po";
+import { uniqueToken } from "./bail-case.seeder";
 import { pdfFile } from "./document.utils";
 
 /**
- * What the old suite's "edit my application ... for an Immigration removal centre detention with
- * no financial condition supporters and with a Legal Representative" step entered, with the names
- * and references made unique to the test so a failure can never be satisfied by another case.
+ * An edited application: the applicant in an immigration removal centre, with no financial
+ * condition supporter and new legal rep details. Names and references are unique to the test so
+ * a failure can never be satisfied by another case.
  */
 export interface EditedApplication {
   givenNames: string;
@@ -20,7 +21,7 @@ export interface EditedApplication {
 }
 
 export function editedApplication(): EditedApplication {
-  const unique = randomLetters(6);
+  const unique = uniqueToken(6);
   return {
     givenNames: `Harry${unique}`,
     familyName: `Pughes${unique}`,
@@ -82,12 +83,6 @@ export function editApplicationAnswers(edit: EditedApplication): WizardAnswers {
   };
 }
 
-function randomLetters(length: number): string {
-  const letters = "abcdefghijklmnopqrstuvwxyz";
-  const token = Array.from({ length }, () => letters[randomInt(letters.length)]).join("");
-  return token[0].toUpperCase() + token.slice(1);
-}
-
 export interface NewApplication {
   groundsForBail: string;
   evidence: { file: UploadFile; description: string };
@@ -97,7 +92,7 @@ export interface NewApplication {
 }
 
 export function newApplication(caseId: string): NewApplication {
-  const unique = randomLetters(6);
+  const unique = uniqueToken(6);
   return {
     groundsForBail: `New grounds for bail ${unique}`,
     evidence: {
@@ -110,8 +105,8 @@ export function newApplication(caseId: string): NewApplication {
 }
 
 /**
- * The answers for "Make new application" that the old suite gave ("for a Prison detention with no
- * financial condition supporters and with no Legal Representative"). The event keeps the
+ * The answers for "Make new application": the applicant in prison, with no financial condition
+ * supporter and no legal representative. The event keeps the
  * applicant's name, date of birth, nationality and Home Office reference and asks again for
  * everything else. An admin officer also says who sent the application and uploads a B1 form.
  */

@@ -10,6 +10,7 @@ import {
 } from "../../utils/tab-snapshot.utils";
 import { Base } from "../base";
 import type { CaseEventDetails } from "./case-event.po";
+import { caseTab, escapeRegExp, waitForCaseViewToSettle } from "./case-view-settled";
 import { EventWizardPage } from "./event-wizard.po";
 
 /** The case-type tabs the Bail definition declares (BailTabs.java), in display order. */
@@ -82,62 +83,28 @@ export class BailCaseDetailsPage extends Base {
   readonly nextStepSelect = this.page.getByLabel("Next step");
   readonly goBtn = this.page.getByRole("button", { name: "Go", exact: true });
 
-  /**
-   * XUI appends ", Please use left and right arrow keys to navigate case tabs" to the selected
-   * tab's accessible name, so the name is matched up to that suffix.
-   */
-  public tab(name: BailTab): Locator {
-    return this.page.getByRole("tab", { name: new RegExp(`^${escapeRegExp(name)}(,|$)`) });
+  /** A tab by name: a case-type tab, or one of XUI's own (Hearings, Tasks, ...). */
+  public tab(name: BailTab | string): Locator {
+    return caseTab(this.page, name);
   }
 
-  /**
-   * Opens the case and waits for XUI to settle: its own follow-up navigation, a few seconds
-   * after the case renders, to /cases/case-details/<jurisdiction>/<case type>/<id>#<tab>; and,
-   * for roles with work allocation, the Tasks and Roles and access tabs it inserts in front of
-   * the case tabs once its work-allocation lookups return. Inserting them shifts the selected
-   * tab, and the re-selection is a navigation of its own: an event started before it lands is
-   * cancelled, and a tab opened before it can be swapped for its neighbour.
-   */
+  /** Opens the case and waits for XUI to settle (see waitForCaseViewToSettle). */
   public async goto(caseReference: string, workAllocationTabs: string[] = []): Promise<void> {
     await this.page.goto(config.caseDetailsUrl(caseReference));
     await this.expectCaseLoaded(caseReference, workAllocationTabs);
   }
 
   /**
-   * Waits for the case to have opened and XUI to have settled, as goto() describes, after any
-   * navigation that loads the case page (a link from another XUI page as well as goto()).
+   * Waits for the case to have opened and XUI to have settled, after any navigation that loads
+   * the case page (a link from another XUI page as well as goto()).
    */
   public async expectCaseLoaded(caseReference: string, workAllocationTabs: string[] = []): Promise<void> {
-    const { jurisdictionId, caseTypeId } = config.bail;
-    await expect(this.page).toHaveURL(
-      new RegExp(`/cases/case-details/${jurisdictionId}/${caseTypeId}/${caseReference}#`),
-      { timeout: 30_000 }
-    );
-    for (const name of workAllocationTabs) {
-      await expect(this.page.getByRole("tab", { name, exact: true })).toBeVisible({
-        timeout: 30_000,
-      });
-    }
-    // The re-selection after the insertion lands back on the tab the URL names.
-    await expect(this.tab("Overview")).toHaveAttribute("aria-selected", "true");
-    await this.spinner.wait();
-    await expect(this.caseDetails.caseHeader).toBeVisible();
-    await expect(this.allTabs.first()).toBeVisible();
-    // The tab table is attached before CCD has applied its fields' show conditions. Every role
-    // is shown exactly one progress field on Overview, so its appearing means the tab rendered.
-    await expect(this.progressFields.first()).toBeVisible();
+    await waitForCaseViewToSettle(this.page, caseReference, workAllocationTabs);
   }
 
-  /** Selects a tab and waits for its navigation to #<tab name> to complete. */
+  /** Opens a case-type tab and waits for its table. */
   public async openTab(name: BailTab): Promise<void> {
-    const tab = this.tab(name);
-    await expect(tab).toBeVisible();
-    await tab.click();
-    await expect(tab).toHaveAttribute("aria-selected", "true");
-    await expect(this.page).toHaveURL(
-      new RegExp(`#${escapeRegExp(encodeURIComponent(name))}$`)
-    );
-    await this.spinner.wait();
+    await this.selectTab(name);
     // Attached rather than visible: a tab whose every field is hidden from the role (Directions,
     // for most roles) renders an empty, zero-height table.
     await expect(this.activeTabTable).toBeAttached();
@@ -145,9 +112,18 @@ export class BailCaseDetailsPage extends Base {
 
   /** Opens one of XUI's own tabs (Hearings, Tasks, ...), which the definition does not declare. */
   public async openXuiTab(name: string): Promise<void> {
-    const tab = this.page.getByRole("tab", { name: new RegExp(`^${escapeRegExp(name)}(,|$)`) });
+    await this.selectTab(name);
+  }
+
+  /** Selects a tab and waits for its navigation to #<tab name> to complete. */
+  private async selectTab(name: string): Promise<void> {
+    const tab = this.tab(name);
+    await expect(tab).toBeVisible();
     await tab.click();
     await expect(tab).toHaveAttribute("aria-selected", "true");
+    await expect(this.page).toHaveURL(
+      new RegExp(`#${escapeRegExp(encodeURIComponent(name))}$`)
+    );
     await this.spinner.wait();
   }
 
@@ -269,6 +245,3 @@ export class BailCaseDetailsPage extends Base {
   }
 }
 
-function escapeRegExp(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}

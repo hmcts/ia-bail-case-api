@@ -1,16 +1,14 @@
 import type { Locator } from "@playwright/test";
 import { expect, test } from "../fixtures";
 import { BAIL_EVENTS, dateParts } from "../page-objects";
-import { isoDateFromToday, shownDateFromToday } from "../utils";
+import { ROLE_VIEWS, isoDateFromToday, shownDateFromToday } from "../utils";
 
 /**
  * Directions, as the admin officer, on a legal representative's submitted case.
  *
- * - "Send direction" is ported from bails-send-direction.feature, "Send a direction to Applicant
- *   as an Admin Officer". Despite its name that scenario directs the legal representative: the
- *   definition offers only "Legal representative" and "Home Office" (DirectionToList).
- * - "Change direction due date" is ported from bails-change-direction-due-date.feature. Its
- *   precondition, a direction due in two days, is sent over CCD.
+ * - "Send direction" to the legal representative; the definition offers only "Legal
+ *   representative" and "Home Office" (DirectionToList).
+ * - "Change direction due date", on a direction due in two days that is sent over CCD.
  */
 test.describe("Directions", () => {
   test(
@@ -35,7 +33,7 @@ test.describe("Directions", () => {
 
       await wizard.submit();
       await expect(wizard.confirmation("You can see the status of the direction in the directions tab.")).toBeVisible();
-      await wizard.closeAndReturnToCase();
+      await wizard.closeAndReturnToCase(seeded.caseId, ROLE_VIEWS.adminOfficer.workAllocationTabs);
 
       const after = await openCaseAs("adminOfficer", seeded.caseId);
       expect(await after.snapshotTab("Directions")).toMatchObject({
@@ -71,7 +69,7 @@ test.describe("Directions", () => {
 
       await wizard.submit();
       await expect(wizard.confirmation("All parties will be notified that the direction due date has changed.")).toBeVisible();
-      await wizard.closeAndReturnToCase();
+      await wizard.closeAndReturnToCase(seeded.caseId, ROLE_VIEWS.adminOfficer.workAllocationTabs);
 
       const after = await openCaseAs("adminOfficer", seeded.caseId);
       expect(await after.snapshotTab("Directions")).toMatchObject({

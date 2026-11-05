@@ -2,6 +2,7 @@ import { expect, test } from "../fixtures";
 import { BAIL_EVENTS } from "../page-objects";
 import {
   NewApplication,
+  ROLE_VIEWS,
   SeededBailCase,
   newApplication,
   newApplicationAnswers,
@@ -10,12 +11,11 @@ import {
 import type { CaseFixtures } from "../utils";
 
 /**
- * "Make new application" on a case whose application has finished, ported from
- * bails-make-new-application.feature:
+ * "Make new application" on a case whose application has finished:
  *
- * - "Make new application as Admin Officer after ended application with case note": the case note
- *   from the first application must still be there afterwards;
- * - "Make new application as Home Office after conditional grant decided".
+ * - as the admin officer after the first application ended, when the first application's case
+ *   note must still be there afterwards;
+ * - as the Home Office after a conditional grant was decided.
  *
  * The finished applications are driven over CCD as the roles that would finish them: a case note
  * and End the application by the admin officer, and listing, the bail summary, a conditional grant,
@@ -78,10 +78,10 @@ async function makeNewApplication(
   const wizard = await casePage.startWizard(BAIL_EVENTS.makeNewApplication);
   await wizard.completeToCheckYourAnswers(newApplicationAnswers(application, by));
   await wizard.submit();
-  await wizard.closeAndReturnToCase();
+  await wizard.closeAndReturnToCase(seeded.caseId, ROLE_VIEWS[by].workAllocationTabs);
 }
 
-/** What the old scenarios checked on the Bail application and Documents tabs. */
+/** Who made the new application, what it kept and what it asked again, and its new evidence. */
 async function expectNewApplicationShown(
   casePage: Awaited<ReturnType<CaseFixtures["openCaseAs"]>>,
   seeded: SeededBailCase,

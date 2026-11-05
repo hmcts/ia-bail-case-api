@@ -28,6 +28,27 @@ The suite also carries the Bail journeys of the old Protractor/Cucumber suite
 submission, editing the application, directions, documents, the decision, ending and making a new
 application, case flags, Notice of Change and hearing requests.
 
+### Where each old scenario went
+
+| Old scenario (`e2e/features/`) | Test |
+|---|---|
+| bails-submit-bail-application-admin-officer: Submit bail application as Admin Officer | `submit-application.spec.ts` (also as the legal rep and the Home Office) |
+| bails-edit-application-pre-submit: Legal Rep Edit application Before Submitting | `edit-application.spec.ts`, before submitting |
+| bails-edit-application-post-submit: Edit application after submitting | `edit-application.spec.ts`, after submitting |
+| bails-end-application: End Application after submitting | `end-application.spec.ts` |
+| bails-send-direction: Send a direction to Applicant as an Admin Officer (it directs the legal rep) | `directions.spec.ts`, sends a direction |
+| bails-change-direction-due-date: Change a direction due date as an Admin Officer | `directions.spec.ts`, changes a due date |
+| bails-add-a-case-note: Add case note without document as Admin Officer | `add-case-note.spec.ts`, admin officer's case |
+| bails-update-interpreter-details: Add Update interpreter details application | `interpreter-events.spec.ts`, interpreter's details |
+| bails-update-interpreter-details-status: Add Update interpreter status application | `interpreter-events.spec.ts`, booking statuses |
+| bails-upload-documents: Upload Documents after submitting | `documents.spec.ts`, uploads a document |
+| bails-edit-documents: Delete, edit and add a document as a Judge (it runs as the admin officer) | `documents.spec.ts`, deletes, edits and adds |
+| bails-make-new-application: as Admin Officer after ended application with case note; as Home Office after conditional grant decided | `make-new-application.spec.ts` |
+| bails-add-a-case-flag: Create a case Flag; Create a case Flag and make Inactive | `case-flags.spec.ts` |
+| bails-notice-of-change: Notice of Change - incorrect details; Notice of Change | `notice-of-change.spec.ts` |
+| bails-snl-admin/ho/lr-request-a-hearing | `hearing-request.spec.ts` (without the party-level flags) |
+| (the "record a conditional grant" precondition step) | `record-decision.spec.ts` |
+
 ## Two tiers: every PR, and the `enable_e2e_test` label
 
 | Tier | Runs | When | How |
@@ -80,17 +101,17 @@ found"), and adds, with values unique to the test:
   `DynamicList` is the reference-data list the about-to-start callback offered, with one item
   selected, as XUI submits it;
 - on a legal representative's case, the legal rep's name, phone and reference, the firm email
-  and organisation the about-to-start callback sets, the declaration on submission, and a
-  `ChangeOrganisationRequest` in the shape `RemoveRepresentationPreparer` writes.
+  and organisation the about-to-start callback sets (`localAuthorityPolicy`, an
+  `OrganisationPolicy`), and the declaration on submission. There is no
+  `ChangeOrganisationRequest`, as on a real case at submission; aac-manage-case-assignment would
+  read one with a case role as a notice of change already in progress.
 
 A legal representative cannot create `hasLegalRep`, `sentByChecklist` or
 `applicationSubmittedBy`, so those are only sent for an admin officer's case.
 
 `seedCase(createdBy, options)` seeds other shapes: as the Home Office or as `legalRepBails`, left
 unsubmitted (`submit: false`), with the applicant in prison (`detention: "prison"`), or with
-extra or removed fields (`overrides`). The Notice of Change tests remove the
-`ChangeOrganisationRequest`, because aac-manage-case-assignment reads one with a case role as a
-notice of change already in progress.
+extra or removed fields (`overrides`).
 
 ### Preconditions further along the case
 
@@ -125,7 +146,7 @@ memory (`utils/document.utils.ts`) with names unique to the test.
 | `tests/documents.spec.ts` | deletes, edits and adds | Edit documents as the admin officer: one document removed, one redescribed and one added with its supplier and date; and the case note that lists all three and the reason. |
 | `tests/make-new-application.spec.ts` | after the first ended / after a conditional grant | Make new application as the admin officer (with a B1 form) and as the Home Office: who submitted it, what the event keeps and what it asks again, the new evidence; for the admin officer, the first application's case note is still there. |
 | `tests/case-flags.spec.ts` | creates / makes inactive | Create Flag (case level, Complex Case) and Manage Flags: the active-flags banner and the flag's status in the Case level flags table. |
-| `tests/notice-of-change.spec.ts` | rejects / moves the case | XUI's Notice of Change as a legal rep of another organisation: a wrong first name, surname or date of birth is refused; the right answers move the case, which then leaves the first organisation's case list and joins the new one's. |
+| `tests/notice-of-change.spec.ts` | rejects / moves the case | XUI's Notice of Change as a legal rep of another organisation: a wrong first name, surname or date of birth is refused; the right answers move the case: its `[LEGALREPRESENTATIVE]` organisation policy names the new rep's organisation, and the new rep finds the case in search and sees it. Whether the creating rep still finds it depends on the environment's data-store and Elasticsearch access setup, so that is not asserted. |
 | `tests/hearing-request.spec.ts` | requests a bail hearing … | For applications made by each kind of applicant: Confirm detention location, an urgent-case flag, and a bail hearing request through the Hearings tab to HMC. Skipped where `config.hearingsAvailable` is false (preview has no HMC). |
 
 ### How "nothing else changed" is checked

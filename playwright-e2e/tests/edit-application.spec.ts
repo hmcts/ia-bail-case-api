@@ -2,6 +2,7 @@ import { expect, test } from "../fixtures";
 import { BAIL_EVENTS, BailCaseDetailsPage, WizardAnswers } from "../page-objects";
 import {
   EditedApplication,
+  ROLE_VIEWS,
   SeededBailCase,
   UserRole,
   editApplicationAnswers,
@@ -9,9 +10,8 @@ import {
 } from "../utils";
 
 /**
- * "Edit the application", before and after submission. Ported from
- * bails-edit-application-pre-submit.feature ("Legal Rep Edit application Before Submitting") and
- * bails-edit-application-post-submit.feature ("Edit application after submitting").
+ * "Edit the application", before submission as the legal representative and after it as the
+ * admin officer.
  *
  * Both start from a legal representative's application for an applicant in prison with a
  * financial condition supporter and interpreters, and move the applicant to Yarl's Wood with no
@@ -59,10 +59,10 @@ async function editApplication(
   const wizard = await casePage.startWizard(BAIL_EVENTS.editApplication);
   await wizard.completeToCheckYourAnswers({ ...editApplicationAnswers(edit), ...roleAnswers });
   await wizard.submit();
-  await wizard.closeAndReturnToCase();
+  await wizard.closeAndReturnToCase(seeded.caseId, ROLE_VIEWS[editor].workAllocationTabs);
 }
 
-/** The old scenarios' assertions, on the fields that show them. */
+/** Every edited value, on the fields that show it. */
 async function expectEditsShown(
   casePage: BailCaseDetailsPage,
   edit: EditedApplication,

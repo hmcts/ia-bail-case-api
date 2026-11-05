@@ -9,23 +9,19 @@ import {
   config,
   contentTabsFor,
   expectSeededDataShown,
+  shownDateFromToday,
 } from "../utils";
 import type { CaseFixtures } from "../utils";
 
 /**
  * Add case note, driven through XUI's Next step dropdown on a case of the test's own.
  *
- * hmcts/ia-bail-case-api#622 serves this event's callbacks through ccd-config-generator, which
- * reads the whole case into the CaseData model and writes the whole case back. That is where
- * every fault so far has been: data the model cannot read fails the event on every real case,
- * and data it reads back empty is silently written over. So each test snapshots every content
- * tab, as every role that can see the case, before the event; adds the note as the admin
- * officer; and then checks that the note is there and that nothing else on any of those tabs
- * changed for any of those roles.
- *
- * The first test also covers bails-add-a-case-note.feature's "Add case note without document as
- * Admin Officer": the confirmation, and the note on the case notes tab for the judge as well as
- * the admin officer.
+ * Callbacks served through ccd-config-generator read the whole case into the CaseData model and
+ * write the whole case back: data the model cannot read fails the event, and data it reads back
+ * empty is silently written over. So each test snapshots every content tab, as every role that
+ * can see the case, before the event; adds the note as the admin officer; and then checks the
+ * confirmation, that the note is on the case notes tab for each role granted it, and that nothing
+ * else on any of those tabs changed for any of those roles.
  */
 test.describe("Add case note", () => {
   // Each test reads every content tab as two or three roles, twice, through XUI: about two
@@ -96,7 +92,7 @@ async function addCaseNoteAndCheck({
     await expect(addCaseNote.page.getByText(note.subject, { exact: true })).toBeVisible();
     await addCaseNote.submit();
     await expect(addCaseNote.confirmation("You can review this note in the case notes tab.")).toBeVisible();
-    await addCaseNote.closeAndReturnToCase();
+    await addCaseNote.closeAndReturnToCase(seeded.caseId, ROLE_VIEWS.adminOfficer.workAllocationTabs);
   });
 
   await test.step("the note is on the case notes tab with its subject, text and author", async () => {
@@ -106,7 +102,7 @@ async function addCaseNoteAndCheck({
       "caseNotes › Case notes 1 › Subject": note.subject,
       "caseNotes › Case notes 1 › Case note": note.description,
       "caseNotes › Case notes 1 › User": author,
-      "caseNotes › Case notes 1 › Date added": todayInLondon(),
+      "caseNotes › Case notes 1 › Date added": shownDateFromToday(0),
     });
     await casePage.expectLatestEvent(AddCaseNotePage.EVENT.name, author);
   });
@@ -117,7 +113,7 @@ async function addCaseNoteAndCheck({
       expect(await casePage.snapshotTab("Case notes")).toMatchObject({
         "caseNotes › Case notes 1 › Subject": note.subject,
         "caseNotes › Case notes 1 › Case note": note.description,
-        "caseNotes › Case notes 1 › Date added": todayInLondon(),
+        "caseNotes › Case notes 1 › Date added": shownDateFromToday(0),
       });
     });
   }
@@ -135,18 +131,3 @@ async function addCaseNoteAndCheck({
   }
 }
 
-/**
- * Today as CCD's date field shows it ("4 Nov 2026"), on the UK calendar Bail's handlers stamp.
- * Built from parts because ICU abbreviates September as "Sept" in en-GB and CCD does not.
- */
-function todayInLondon(): string {
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "numeric",
-    year: "numeric",
-    timeZone: "Europe/London",
-  }).formatToParts(new Date());
-  const part = (type: string) => Number(parts.find((p) => p.type === type)?.value);
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  return `${part("day")} ${months[part("month") - 1]} ${part("year")}`;
-}

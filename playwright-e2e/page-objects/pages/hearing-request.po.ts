@@ -1,5 +1,6 @@
-import { Locator, expect } from "@playwright/test";
+import { Locator, Response, expect } from "@playwright/test";
 import { Base } from "../base";
+import type { BailCaseDetailsPage } from "./bail-case-details.po";
 
 /**
  * XUI's "Request a hearing" journey (/hearings/request/...), which sends the request to HMC.
@@ -15,8 +16,21 @@ export class HearingRequestPage extends Base {
   readonly partyChannels = this.page.locator("select[id^=partyChannel]");
   readonly submittedHeading = this.page.getByRole("heading", { name: "Hearing request submitted" });
 
-  /** Starts a request from the case's Hearings tab, which must be the open tab. */
-  public async start(): Promise<void> {
+  /**
+   * Opens the case's Hearings tab and starts a request from it.
+   *
+   * Opening the tab loads the case's service hearing values (POST
+   * /api/hearings/loadServiceHearingValues). The request journey's guard reads them
+   * (rpx-xui-webapp HearingsGuard.hasMatchedPermissions) and, if they have not arrived yet, sends
+   * the user back to the case instead. So the response is waited for, from before the tab opens,
+   * and Request a hearing is clicked only once it has arrived.
+   */
+  public async startFrom(casePage: BailCaseDetailsPage): Promise<void> {
+    const serviceHearingValues = this.page.waitForResponse(isServiceHearingValues, { timeout: 30_000 });
+    await casePage.openXuiTab("Hearings");
+    const response = await serviceHearingValues;
+    expect(response.status(), "XUI could not load the case's service hearing values").toBeLessThan(300);
+    await expect(this.page.getByText("Retrieving hearing data...")).toHaveCount(0);
     await this.requestHearingBtn.click();
     await this.onStep("hearing-requirements", "Hearing requirements");
     await expect(
@@ -25,9 +39,9 @@ export class HearingRequestPage extends Base {
   }
 
   /**
-   * The old suite's request: no additional facilities, a bail hearing, every participant in
-   * person, at the given venue, and the defaults for judge, length, date, priority and
-   * instructions. Returns how many participants the attendance page listed.
+   * A request with no additional facilities, a bail hearing, every participant in person, at the
+   * given venue, and the defaults for judge, length, date, priority and instructions. Returns how
+   * many participants the attendance page listed.
    */
   public async requestBailHearingInPerson(venue: string): Promise<number> {
     await this.next("hearing-facilities", "Do you require any additional facilities?");
@@ -77,4 +91,11 @@ export class HearingRequestPage extends Base {
   private headingNamed(name: string): Locator {
     return this.page.getByRole("heading", { name }).first();
   }
+}
+
+function isServiceHearingValues(response: Response): boolean {
+  return (
+    response.request().method() === "POST" &&
+    new URL(response.url()).pathname === "/api/hearings/loadServiceHearingValues"
+  );
 }
