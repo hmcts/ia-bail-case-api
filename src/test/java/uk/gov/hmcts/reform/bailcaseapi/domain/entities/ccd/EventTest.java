@@ -29,6 +29,17 @@ public class EventTest {
         assertTrue(missingEvents.isEmpty(), "The following events are missing from the eventMapping method: " + missingEvents);
     }
 
+    @Test
+    void looks_up_an_event_by_its_id() {
+        assertEquals(Event.ADD_CASE_NOTE, Event.fromId("addCaseNote"));
+    }
+
+    @Test
+    void looks_up_an_unrecognised_id_as_unknown() {
+        assertEquals(Event.UNKNOWN, Event.fromId("notABailEvent"));
+        assertEquals(Event.UNKNOWN, Event.fromId(null));
+    }
+
     static Stream<Arguments> eventMapping() {
         return Stream.of(
             Arguments.of("addCaseNote", Event.ADD_CASE_NOTE.toString()),

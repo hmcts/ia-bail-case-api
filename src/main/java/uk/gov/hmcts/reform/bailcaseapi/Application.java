@@ -3,8 +3,10 @@ package uk.gov.hmcts.reform.bailcaseapi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"uk.gov.hmcts.ccd.sdk", "uk.gov.hmcts.reform.bailcaseapi"})
 @EnableFeignClients(basePackages =
     {
         "uk.gov.hmcts.reform.auth",

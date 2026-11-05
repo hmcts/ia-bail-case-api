@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd;
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Arrays;
 
 public enum Event {
 
@@ -56,6 +57,16 @@ public enum Event {
 
     Event(String id) {
         this.id = id;
+    }
+
+    /**
+     * Looks up an event by its CCD event id, falling back to {@link #UNKNOWN} as Jackson does.
+     */
+    public static Event fromId(String id) {
+        return Arrays.stream(values())
+            .filter(event -> event.id.equals(id))
+            .findFirst()
+            .orElse(UNKNOWN);
     }
 
     @Override
