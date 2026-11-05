@@ -10,7 +10,9 @@
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
-          "ircName": "Albany",
+          "ircName": null,
+          "applicantDetainedLoc": "prison",
+          "prisonName": "Albany",
           "isBailsLocationReferenceDataEnabledFt": "Yes"
         }
       },
@@ -28,7 +30,9 @@
       "replacements": {
         "hasFinancialCondSupporter": null,
         "isBailsLocationReferenceDataEnabled": "Yes",
-        "ircName": "Albany",
+        "ircName": null,
+        "applicantDetainedLoc": "prison",
+        "prisonName": "Albany",
         "detentionFacility": "Albany",
         "hearingCentre": "hattonCross",
         "hearingCentreRefData": {

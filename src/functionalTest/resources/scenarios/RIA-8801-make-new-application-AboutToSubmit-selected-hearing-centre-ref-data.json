@@ -10,7 +10,9 @@
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
-          "ircName": "Askham Grange",
+          "ircName": null,
+          "applicantDetainedLoc": "prison",
+          "prisonName": "Askham Grange",
           "isBailsLocationReferenceDataEnabledFt": "Yes"
         }
       },
@@ -28,7 +30,9 @@
       "replacements": {
         "hasFinancialCondSupporter": null,
         "isBailsLocationReferenceDataEnabled": "Yes",
-        "ircName": "Askham Grange",
+        "ircName": null,
+        "applicantDetainedLoc": "prison",
+        "prisonName": "Askham Grange",
         "detentionFacility": "Askham Grange",
         "hearingCentre": "bradford",
         "selectedHearingCentreRefData": "Bradford Tribunal Hearing Centre"

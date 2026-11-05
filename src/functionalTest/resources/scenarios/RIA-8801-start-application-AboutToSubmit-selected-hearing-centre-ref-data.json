@@ -10,7 +10,9 @@
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
-          "ircName": "Cardiff",
+          "ircName": null,
+          "applicantDetainedLoc": "prison",
+          "prisonName": "Cardiff",
           "isBailsLocationReferenceDataEnabledFt": "Yes"
         }
       }
@@ -22,7 +24,9 @@
     "caseData": {
       "template": "minimal-application-started.json",
       "replacements": {
-        "ircName": "Cardiff",
+        "ircName": null,
+        "applicantDetainedLoc": "prison",
+        "prisonName": "Cardiff",
         "detentionFacility": "Cardiff",
         "hearingCentre": "newport",
         "isBailsLocationReferenceDataEnabled": "Yes",

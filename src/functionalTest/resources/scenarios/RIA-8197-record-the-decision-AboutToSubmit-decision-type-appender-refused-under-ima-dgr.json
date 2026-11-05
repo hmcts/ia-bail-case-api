@@ -11,7 +11,8 @@
       "caseData": {
         "template": "minimal-application-submitted-record-conditions.json",
         "replacements": {
-          "decisionGrantedOrRefused": "refusedUnderIma"
+          "isImaEnabled": "Yes",
+          "decisionGrantedOrRefusedIma": "refusedUnderIma"
         }
       }
     }

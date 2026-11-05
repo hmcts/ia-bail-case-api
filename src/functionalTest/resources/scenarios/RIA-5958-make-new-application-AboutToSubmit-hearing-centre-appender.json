@@ -10,7 +10,9 @@
       "caseData": {
         "template": "minimal-application-started.json",
         "replacements": {
-          "ircName": "Dovegate"
+          "ircName": null,
+          "applicantDetainedLoc": "prison",
+          "prisonName": "Dovegate"
         }
       },
       "caseDataBefore": {
@@ -25,7 +27,9 @@
     "caseData": {
       "template": "minimal-application-make-new-application.json",
       "replacements": {
-        "ircName": "Dovegate",
+        "ircName": null,
+        "applicantDetainedLoc": "prison",
+        "prisonName": "Dovegate",
         "detentionFacility": "Dovegate",
         "hearingCentre": "manchester"
       }

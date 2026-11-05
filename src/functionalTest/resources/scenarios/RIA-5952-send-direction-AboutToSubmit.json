@@ -1,5 +1,5 @@
 {
-  "description": "Send direction event - direction sent to Applicant",
+  "description": "Send direction event - direction sent to Home Office",
   "request": {
     "uri": "/bail/ccdAboutToSubmit",
     "credentials": "AdminOfficer",
@@ -11,7 +11,7 @@
         "template": "minimal-application-started.json",
         "replacements": {
           "sendDirectionDescription": "Direction test",
-          "sendDirectionList": "Applicant",
+          "sendDirectionList": "Home Office",
           "dateOfCompliance": "2100-01-01",
           "notificationsSent": []
         }
@@ -34,7 +34,7 @@
             "id": "1",
             "value": {
               "sendDirectionDescription": "Direction test",
-              "sendDirectionList": "Applicant",
+              "sendDirectionList": "Home Office",
               "dateOfCompliance": "2100-01-01",
               "dateSent": "{$TODAY}",
               "dateTimeDirectionCreated": "$/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.?\\d*/",

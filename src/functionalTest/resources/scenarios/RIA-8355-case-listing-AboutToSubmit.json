@@ -11,8 +11,8 @@
         "template": "minimal-application-started.json",
         "replacements": {
           "listingEvent": "initialListing",
-          "listingLocation": "newcastleCfctc",
-          "listingHearingLength": "90",
+          "listingLocation": "newcastle",
+          "listingHearingDuration": "90",
           "listingHearingDate": "{$TODAY+5}T10:00:00.000",
           "currentHearingId": "12345"
         }

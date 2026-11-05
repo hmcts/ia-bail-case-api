@@ -1,0 +1,56 @@
+{
+  "applicantAddress": {
+    "AddressLine1": "1 Example Street",
+    "AddressLine2": "Flat 2",
+    "AddressLine3": "Northside",
+    "PostTown": "London",
+    "County": "Greater London",
+    "PostCode": "SW1A 1AA",
+    "Country": "United Kingdom"
+  },
+  "legalRepCompanyAddress": {
+    "AddressLine1": "10 Example Street",
+    "AddressLine2": "Flat 2",
+    "AddressLine3": "Northside",
+    "PostTown": "Manchester",
+    "County": "Greater Manchester",
+    "PostCode": "M1 1AE",
+    "Country": "United Kingdom"
+  },
+  "supporterAddressDetails": {
+    "AddressLine1": "21 Example Street",
+    "AddressLine2": "Flat 2",
+    "AddressLine3": "Northside",
+    "PostTown": "Leeds",
+    "County": "West Yorkshire",
+    "PostCode": "LS1 4AP",
+    "Country": "United Kingdom"
+  },
+  "supporter2AddressDetails": {
+    "AddressLine1": "22 Example Street",
+    "AddressLine2": "Flat 2",
+    "AddressLine3": "Northside",
+    "PostTown": "Bristol",
+    "County": "Avon",
+    "PostCode": "BS1 5TR",
+    "Country": "United Kingdom"
+  },
+  "supporter3AddressDetails": {
+    "AddressLine1": "23 Example Street",
+    "AddressLine2": "Flat 2",
+    "AddressLine3": "Northside",
+    "PostTown": "Cardiff",
+    "County": "South Glamorgan",
+    "PostCode": "CF10 1EP",
+    "Country": "United Kingdom"
+  },
+  "supporter4AddressDetails": {
+    "AddressLine1": "24 Example Street",
+    "AddressLine2": "Flat 2",
+    "AddressLine3": "Northside",
+    "PostTown": "Glasgow",
+    "County": "Lanarkshire",
+    "PostCode": "G1 1XQ",
+    "Country": "United Kingdom"
+  }
+}
