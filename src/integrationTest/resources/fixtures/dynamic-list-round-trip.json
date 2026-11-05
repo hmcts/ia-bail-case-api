@@ -1,0 +1,140 @@
+{
+  "caseManagementCategory": {
+    "value": {
+      "code": "BLS",
+      "label": "Bail"
+    },
+    "list_items": [
+      {
+        "code": "BLS",
+        "label": "Bail"
+      }
+    ]
+  },
+  "hearingCentreRefData": {
+    "value": {
+      "code": "366559",
+      "label": "Atlantic Quay - Glasgow"
+    }
+  },
+  "refDataListingLocation": {
+    "value": {
+      "code": "366796",
+      "label": "Newcastle Civil And Family Courts And Tribunals Centre"
+    },
+    "list_items": [
+      {
+        "code": "366559",
+        "label": "Atlantic Quay - Glasgow"
+      },
+      {
+        "code": "366796",
+        "label": "Newcastle Civil And Family Courts And Tribunals Centre"
+      },
+      {
+        "code": "386417",
+        "label": "Hatton Cross Tribunal Hearing Centre"
+      }
+    ]
+  },
+  "previousApplicationList": {
+    "value": {
+      "code": "2",
+      "label": "Bail Application 2 - Ended 05-07-2022"
+    },
+    "list_items": [
+      {
+        "code": "2",
+        "label": "Bail Application 2 - Ended 05-07-2022"
+      },
+      {
+        "code": "1",
+        "label": "Bail Application 1 - Ended 01-02-2022"
+      }
+    ]
+  },
+  "bailDirectionList": {
+    "value": {
+      "code": "Direction 2",
+      "label": "Direction 2"
+    },
+    "list_items": [
+      {
+        "code": "Direction 2",
+        "label": "Direction 2"
+      },
+      {
+        "code": "Direction 1",
+        "label": "Direction 1"
+      }
+    ]
+  },
+  "caseManagementLocationRefData": {
+    "region": "1",
+    "baseLocation": {
+      "value": {
+        "code": "366559",
+        "label": "Atlantic Quay - Glasgow"
+      },
+      "list_items": [
+        {
+          "code": "366559",
+          "label": "Atlantic Quay - Glasgow"
+        },
+        {
+          "code": "386417",
+          "label": "Hatton Cross Tribunal Hearing Centre"
+        }
+      ]
+    }
+  },
+  "applicantInterpreterSpokenLanguage": {
+    "languageManualEntry": "No",
+    "languageRefData": {
+      "value": {
+        "code": "fre",
+        "label": "French"
+      },
+      "list_items": [
+        {
+          "code": "fre",
+          "label": "French"
+        },
+        {
+          "code": "ita",
+          "label": "Italian"
+        }
+      ]
+    }
+  },
+  "applicantInterpreterSignLanguage": {
+    "languageManualEntry": "No",
+    "languageRefData": {
+      "value": {
+        "code": "bfi",
+        "label": "British Sign Language (BSL)"
+      },
+      "list_items": [
+        {
+          "code": "bfi",
+          "label": "British Sign Language (BSL)"
+        },
+        {
+          "code": "ils",
+          "label": "International Sign (IS)"
+        }
+      ]
+    }
+  },
+  "fcs1InterpreterSpokenLanguage": {
+    "languageManualEntry": "Yes",
+    "languageManualEntryDescription": "Patois",
+    "languageRefData": {
+      "value": {
+        "code": "",
+        "label": ""
+      },
+      "list_items": []
+    }
+  }
+}

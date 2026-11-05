@@ -16,7 +16,7 @@
               "OrganisationName": "SOME-NAME"
             },
             "OrgPolicyReference": "someRef",
-            "OrgPolicyCaseAssignedRole": "someRole"
+            "OrgPolicyCaseAssignedRole": "[LEGALREPRESENTATIVE]"
           }
         }
       }
@@ -34,7 +34,7 @@
             "OrganisationName": "SOME-NAME"
           },
           "OrgPolicyReference": "someRef",
-          "OrgPolicyCaseAssignedRole": "someRole"
+          "OrgPolicyCaseAssignedRole": "[LEGALREPRESENTATIVE]"
         }
       }
     }
