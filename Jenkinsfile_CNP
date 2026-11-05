@@ -66,6 +66,8 @@ def secrets = [
     secret('test-homeoffice-generic-password', 'TEST_HOMEOFFICE_GENERIC_PASSWORD'),
     secret('test-judge-x-username', 'TEST_JUDGE_X_USERNAME'),
     secret('test-judge-x-password', 'TEST_JUDGE_X_PASSWORD'),
+    secret('test-judge-bails-username', 'TEST_JUDGE_BAILS_USERNAME'),
+    secret('test-judge-bails-password', 'TEST_JUDGE_BAILS_PASSWORD'),
     secret('test-citizen-username', 'TEST_CITIZEN_USERNAME'),
     secret('test-citizen-password', 'TEST_CITIZEN_PASSWORD'),
 
@@ -77,6 +79,9 @@ def secrets = [
 
     secret('test-law-firm-org-deleted-username', 'TEST_LAW_FIRM_ORG_DELETED_USERNAME'),
     secret('test-law-firm-org-deleted-password', 'TEST_LAW_FIRM_ORG_DELETED_PASSWORD'),
+
+    secret('test-law-firm-noc-a-bails-username', 'TEST_LAW_FIRM_NOC_A_BAILS_USERNAME'),
+    secret('test-law-firm-noc-a-bails-password', 'TEST_LAW_FIRM_NOC_A_BAILS_PASSWORD'),
 
     secret('test-homeoffice-bail-username', 'TEST_HOMEOFFICE_BAIL_USERNAME'),
     secret('test-homeoffice-bail-password', 'TEST_HOMEOFFICE_BAIL_PASSWORD'),
@@ -132,6 +137,12 @@ withPipeline(type, product, component) {
     steps.archiveArtifacts artifacts: "build/ccd-config/ccd-bail-config-${ccdEnvironment}.xlsx"
   }
 
+  afterSuccess('functionalTest:preview') {
+    timeout(time: 20, unit: 'MINUTES') {
+      sh './gradlew --rerun-tasks e2ePrTest'
+    }
+  }
+
   afterAlways('functionalTest:preview') {
     publishHTML([
       allowMissing         : true,
@@ -142,6 +153,30 @@ withPipeline(type, product, component) {
       reportName           : 'Functional Test Report'
     ])
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "playwright-e2e/e2e-pr-report",
+      reportFiles          : 'index.html',
+      reportName           : 'E2E PR Test Report'
+    ])
+    junit allowEmptyResults: true, testResults: 'playwright-e2e/e2e-pr-junit.xml'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'playwright-e2e/e2e-pr-results/**/*'
+  }
+
+  afterAlways('E2eTest:preview') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "playwright-e2e/playwright-report",
+      reportFiles          : 'index.html',
+      reportName           : 'E2E Test Report'
+    ])
+    junit allowEmptyResults: true, testResults: 'playwright-e2e/playwright-junit.xml'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'playwright-e2e/test-results/**/*'
   }
 
   afterSuccess('functionalTest:aat') {
