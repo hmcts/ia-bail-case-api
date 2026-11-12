@@ -1,7 +1,8 @@
 package uk.gov.hmcts.reform.bailcaseapi;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.Headers;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import tools.jackson.core.JacksonException;
 import uk.gov.hmcts.reform.bailcaseapi.util.AuthorizationHeadersProvider;
 import uk.gov.hmcts.reform.bailcaseapi.util.MapSerializer;
 
@@ -80,13 +82,13 @@ public class DataFixingTest {
 
     private Map<String, String> extractCaseData(String responseJson) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new JsonMapper();
         Map<String, Map<String, String>> responseMap = new HashMap<>();
         TypeReference<Map<String, Map<String, String>>> typeRef
             = new TypeReference<>() {};
         try {
             responseMap = objectMapper.readValue(responseJson, typeRef);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException("Couldn't read response", e);
         }
 

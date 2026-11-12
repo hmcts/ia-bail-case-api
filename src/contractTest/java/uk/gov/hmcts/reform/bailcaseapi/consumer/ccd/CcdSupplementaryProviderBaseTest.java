@@ -1,11 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.consumer.ccd;
 
-import static org.mockito.Mockito.when;
-
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.core.model.annotations.PactFolder;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import tools.jackson.databind.json.JsonMapper;
 import uk.gov.hmcts.reform.authorisation.generators.AuthTokenGenerator;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsProvider;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
@@ -24,6 +21,10 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.UserDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.CaseDetails;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.CcdSupplementaryUpdater;
+
+import java.io.IOException;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(PactConsumerTestExt.class)
@@ -73,6 +74,6 @@ public class CcdSupplementaryProviderBaseTest {
     }
 
     protected String createJsonObject(Object obj) throws IOException {
-        return new ObjectMapper().writeValueAsString(obj);
+        return new JsonMapper().writeValueAsString(obj);
     }
 }

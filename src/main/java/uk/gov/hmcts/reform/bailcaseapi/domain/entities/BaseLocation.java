@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ public enum BaseLocation {
     @JsonValue
     private final String id;
 
+    @JsonCreator
     BaseLocation(String id) {
         this.id = id;
     }

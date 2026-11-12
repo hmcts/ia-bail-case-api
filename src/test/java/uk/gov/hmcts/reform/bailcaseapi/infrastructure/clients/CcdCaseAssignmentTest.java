@@ -82,7 +82,7 @@ class CcdCaseAssignmentTest {
                  )
         ).thenReturn(responseEntity);
 
-        when(responseEntity.getStatusCodeValue()).thenReturn(HttpStatus.CREATED.value());
+        when(responseEntity.getStatusCode().value()).thenReturn(HttpStatus.CREATED.value());
 
         ccdCaseAssignment.assignAccessToCase(callback);
 
@@ -114,7 +114,7 @@ class CcdCaseAssignmentTest {
                  )
         ).thenReturn(responseEntity);
 
-        when(responseEntity.getStatusCodeValue()).thenReturn(HttpStatus.NO_CONTENT.value());
+        when(responseEntity.getStatusCode().value()).thenReturn(HttpStatus.NO_CONTENT.value());
 
         ccdCaseAssignment.revokeAccessToCase(callback, "some-org-identifier");
 
@@ -145,7 +145,7 @@ class CcdCaseAssignmentTest {
                  )
         ).thenReturn(responseEntity);
 
-        when(responseEntity.getStatusCodeValue()).thenReturn(HttpStatus.CREATED.value());
+        when(responseEntity.getStatusCode().value()).thenReturn(HttpStatus.CREATED.value());
 
         ccdCaseAssignment.applyNoc(callback);
 

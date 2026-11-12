@@ -15,8 +15,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.PRIOR_APPLICATIONS;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.UPLOAD_B1_FORM_DOCS;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +30,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.core.JacksonException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DocumentWithDescription;
@@ -64,7 +65,7 @@ class MakeNewApplicationServiceTest {
     private MakeNewApplicationService makeNewApplicationService;
 
     @Mock
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new JsonMapper();
 
     @Captor
     private ArgumentCaptor<List<IdValue<PriorApplication>>> existingPriorApplicationsCaptor;
@@ -182,9 +183,9 @@ class MakeNewApplicationServiceTest {
     }
 
     @Test
-    void should_convert_checked_exception_to_runtime_on_error() throws JsonProcessingException {
+    void should_convert_checked_exception_to_runtime_on_error() {
 
-        doThrow(Mockito.mock(JsonProcessingException.class))
+        doThrow(Mockito.mock(JacksonException.class))
             .when(mapper)
             .writeValueAsString(bailCaseBefore);
 
@@ -194,7 +195,7 @@ class MakeNewApplicationServiceTest {
     }
 
     @Test
-    void should_convert_string_to_bail_case() throws JsonProcessingException {
+    void should_convert_string_to_bail_case() {
         // given
         String caseDataJson = "{\"endApplicationOutcome\":\"Bail dismissed without a hearing\","
             + "\"applicantGivenNames\":\"John\",\"applicantFamilyName\":\"Smith\","

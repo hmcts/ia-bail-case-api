@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.ccd.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.annotation.JsonNaming;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -96,9 +96,10 @@ public class Applicant {
     private List<ListValue<NationalityList>> nationalities;
 
     @CCD(
-            label = " \n"
-                            + "\n"
-                            + "Detention facility",
+            label = """
+                            \s
+                            
+                            Detention facility""",
             access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorSystemCrudAccess.class, IacjudgeRAccess.class}
     )
     private ApplicantDetainedLocList detainedLoc;

@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.cache.autoconfigure.CacheAutoConfiguration;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import uk.gov.hmcts.reform.bailcaseapi.component.testutils.SpringBootIntegrationTest;
