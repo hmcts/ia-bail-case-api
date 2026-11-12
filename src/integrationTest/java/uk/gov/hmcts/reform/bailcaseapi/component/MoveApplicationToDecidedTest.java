@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.component;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static uk.gov.hmcts.reform.bailcaseapi.component.testutils.fixtures.CallbackForTest.CallbackForTestBuilder.callback;
 import static uk.gov.hmcts.reform.bailcaseapi.component.testutils.fixtures.CaseDetailsForTest.CaseDetailsForTestBuilder.someCaseDetailsWith;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.APPLICANT_FAMILY_NAME;
@@ -28,12 +27,19 @@ class MoveApplicationToDecidedTest extends SpringBootIntegrationTest implements 
 
         addAdminOfficerUserDetailsStub(server);
 
+        Document dummyDocument = new Document(
+            "http://example.com/doc",
+            "http://example.com/doc/binary",
+            "decision-notice.pdf",
+            "some-hash"
+        );
+
         PreSubmitCallbackResponseForTest response = iaBailCaseApiClient.aboutToStart(callback()
             .event(MOVE_APPLICATION_TO_DECIDED)
             .caseDetails(someCaseDetailsWith()
                 .state(DECISION_CONDITIONAL_BAIL)
                 .caseData(BailCaseForTest.anBailCase()
-                    .with(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, mock(Document.class))
+                    .with(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, dummyDocument)
                     .with(APPLICANT_GIVEN_NAMES, "some-given-name")
                     .with(APPLICANT_FAMILY_NAME, "some-family-name"))));
 

@@ -27,7 +27,7 @@ public class CategoryValues {
     private String key;
 
     @JsonProperty("lov_order")
-    private int lovOrder;
+    private Integer lovOrder;
 
     @JsonProperty("parent_category")
     private String parentCategory;

@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.ccd.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.annotation.JsonNaming;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -46,9 +46,10 @@ public class Supporter3 {
     private AddressUK addressDetails;
 
     @CCD(
-            label = "Select email and at least one phone option.\n"
-                            + " \n"
-                            + " Contact details",
+            label = """
+                            Select email and at least one phone option.
+                            \s
+                             Contact details""",
             typeOverride = FieldType.Label,
             access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCrudAccess.class}
     )
@@ -116,10 +117,11 @@ public class Supporter3 {
     private String confirmationTitle;
 
     @CCD(
-            label = "|Financial condition supporter details|| \n"
-                            + "| ------------- |:------------- |\n"
-                            + "|Given names|${supporter3GivenNames}| \n"
-                            + "|Family name|${supporter3FamilyNames}|",
+            label = """
+                            |Financial condition supporter details||\s
+                            | ------------- |:------------- |
+                            |Given names|${supporter3GivenNames}|\s
+                            |Family name|${supporter3FamilyNames}|""",
             typeOverride = FieldType.Label,
             access = {HomeofficebailHomeofficepouLegalrepSolicitorRAccess.class, AdmofficerCrudAccess.class, IacjudgeCruAccess.class}
     )
@@ -140,11 +142,12 @@ public class Supporter3 {
     private String confirmationTitleJudgeAgree;
 
     @CCD(
-            label = "|Financial condition supporter details|| \n"
-                            + "| ------------- | ------------- | \n"
-                            + "|Given names|${supporter3GivenNames}| \n"
-                            + "|Family name|${supporter3FamilyNames}| \n"
-                            + "|Amount undertaken to be paid (£)|${financialAmountSupporter3Undertakes1}|",
+            label = """
+                            |Financial condition supporter details||\s
+                            | ------------- | ------------- |\s
+                            |Given names|${supporter3GivenNames}|\s
+                            |Family name|${supporter3FamilyNames}|\s
+                            |Amount undertaken to be paid (£)|${financialAmountSupporter3Undertakes1}|""",
             typeOverride = FieldType.Label,
             access = {HomeofficebailHomeofficepouLegalrepSolicitorRAccess.class, AdmofficerCrudAccess.class, IacjudgeCruAccess.class}
     )

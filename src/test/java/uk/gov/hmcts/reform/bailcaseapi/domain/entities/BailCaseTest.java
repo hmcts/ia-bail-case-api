@@ -4,7 +4,8 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo.YES;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 
 public class BailCaseTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new JsonMapper();
 
     //Need more tests as we add more fields
     @Test
