@@ -15,6 +15,7 @@ public class JacksonConfiguration {
         return builder -> builder
             .enable(EnumFeature.READ_ENUMS_USING_TO_STRING)
             .enable(EnumFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
+            .enable(EnumFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
             .enable(EnumFeature.WRITE_ENUMS_USING_TO_STRING)
 
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
@@ -25,6 +26,6 @@ public class JacksonConfiguration {
 
             .changeDefaultPropertyInclusion(include ->
                                                 include.withValueInclusion(JsonInclude.Include.NON_NULL)
-            );
+                                                    .withContentInclusion(JsonInclude.Include.NON_NULL));
     }
 }
