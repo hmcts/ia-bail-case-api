@@ -28,12 +28,19 @@ class MoveApplicationToDecidedTest extends SpringBootIntegrationTest implements 
 
         addAdminOfficerUserDetailsStub(server);
 
+        Document dummyDocument = new Document(
+            "http://example.com/doc",
+            "http://example.com/doc/binary",
+            "decision-notice.pdf",
+            "some-hash"
+        );
+
         PreSubmitCallbackResponseForTest response = iaBailCaseApiClient.aboutToStart(callback()
             .event(MOVE_APPLICATION_TO_DECIDED)
             .caseDetails(someCaseDetailsWith()
                 .state(DECISION_CONDITIONAL_BAIL)
                 .caseData(BailCaseForTest.anBailCase()
-                    .with(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, mock(Document.class))
+                    .with(UPLOAD_SIGNED_DECISION_NOTICE_DOCUMENT, dummyDocument)
                     .with(APPLICANT_GIVEN_NAMES, "some-given-name")
                     .with(APPLICANT_FAMILY_NAME, "some-family-name"))));
 
