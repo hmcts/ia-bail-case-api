@@ -80,7 +80,7 @@ class CcdSupplementaryUpdaterTest {
             )
         ).thenReturn(responseEntity);
 
-        when(responseEntity.getStatusCode().value()).thenReturn(HttpStatus.CREATED.value());
+        when(responseEntity.getStatusCode()).thenReturn(HttpStatus.CREATED);
 
         ccdSupplementaryUpdater.setHmctsServiceIdSupplementary(callback);
 
