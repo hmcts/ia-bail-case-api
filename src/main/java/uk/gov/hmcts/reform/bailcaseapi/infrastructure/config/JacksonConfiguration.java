@@ -20,6 +20,7 @@ public class JacksonConfiguration {
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .disable(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)
             .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+            .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
             .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
 
             .changeDefaultPropertyInclusion(include ->
