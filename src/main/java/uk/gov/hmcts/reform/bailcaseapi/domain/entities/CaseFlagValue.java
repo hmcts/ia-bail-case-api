@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.YesOrNo;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaseFlagValue {
 
+    @JsonCreator
     private CaseFlagValue() {
         // noop -- for deserializer
     }
