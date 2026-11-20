@@ -21,6 +21,7 @@ java:
     COMMON_DATA_API: "http://rd-commondata-api-aat.service.core-compute-aat.internal"
     IA_CASE_DOCUMENTS_API_URL: "http://ia-case-documents-api-aat.service.core-compute-aat.internal/"
     IA_CASE_NOTIFICATIONS_API_URL: "http://ia-case-notifications-api-aat.service.core-compute-aat.internal/"
+    IA_HEARINGS_API_URL: "http://ia-hearings-api-aat.service.core-compute-aat.internal"
     IA_TIMED_EVENT_SERVICE_URL: "http://ia-timed-event-service-aat.service.core-compute-aat.internal/"
     IA_TIMED_EVENT_SERVICE_ENABLED: "false"
 
