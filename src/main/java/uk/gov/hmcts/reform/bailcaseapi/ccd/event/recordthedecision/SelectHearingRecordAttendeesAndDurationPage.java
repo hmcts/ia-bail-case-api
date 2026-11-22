@@ -6,18 +6,10 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.CaseData;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.State;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.UserRole;
 
-/**
- * Wizard page {@code selectHearingRecordAttendeesAndDuration} of event {@code recordTheDecision}.
- */
 public final class SelectHearingRecordAttendeesAndDurationPage {
     private SelectHearingRecordAttendeesAndDurationPage() {
     }
 
-    /**
-     * Applies this page's fields to the event.
-     *
-     * @param fields the event's field-collection builder
-     */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
         fields.page("selectHearingRecordAttendeesAndDuration", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=selectHearingRecordAttendeesAndDuration", 5, 5, 5, 5);

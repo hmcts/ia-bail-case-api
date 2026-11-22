@@ -15,6 +15,8 @@ import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefin
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ATTENDEES_AND_DURATION_HEARING_RESULT;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ATTENDEES_AND_DURATION_HEARING_STAGE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ATTENDEES_AND_DURATION_PAPER_HEARING;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ATTENDEES_AND_DURATION_PARTICIPANTS;
+import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ATTENDEES_AND_DURATION_PARTICIPANTS_SOURCE;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ATTENDEES_AND_DURATION_PAUSED_TIME_REQUIRED;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ATTENDEES_AND_DURATION_PAUSE_END;
 import static uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition.ATTENDEES_AND_DURATION_PAUSE_START;
@@ -27,9 +29,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 
-/**
- * The hearing details recorded with the decision and sent to HMC through ia-hearings-api.
- */
 public final class HearingDetailsFields {
 
     public static final String SELECT_HEARING_PAGE_ID = "selectHearingRecordAttendeesAndDuration";
@@ -53,7 +52,9 @@ public final class HearingDetailsFields {
         ATTENDEES_AND_DURATION_FINISH_TIME,
         ATTENDEES_AND_DURATION_PAUSED_TIME_REQUIRED,
         ATTENDEES_AND_DURATION_PAUSE_START,
-        ATTENDEES_AND_DURATION_PAUSE_END
+        ATTENDEES_AND_DURATION_PAUSE_END,
+        ATTENDEES_AND_DURATION_PARTICIPANTS,
+        ATTENDEES_AND_DURATION_PARTICIPANTS_SOURCE
     );
 
     private HearingDetailsFields() {

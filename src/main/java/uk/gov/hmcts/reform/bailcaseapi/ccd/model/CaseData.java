@@ -70,6 +70,7 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.DocumentWithDescription
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.DocumentWithMetadata;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.HearingDecision;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.HearingRecordingDocument;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.HearingParticipant;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.InterpreterDetails;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.InterpreterSignLanguage;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.InterpreterSpokenLanguage;
@@ -1808,6 +1809,20 @@ public class CaseData {
             access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
     )
     private String attendeesAndDurationPauseEnd;
+
+    @CCD(
+            label = "Participants",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private List<ListValue<HearingParticipant>> attendeesAndDurationParticipants;
+
+    @CCD(
+            label = " ",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationParticipantsSource;
 
     @CCD(
             label = " ",
