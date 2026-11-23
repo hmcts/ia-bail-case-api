@@ -23,10 +23,6 @@ import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.dto.hearingd
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.model.dto.hearingdetails.CommonDataResponse;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.service.RefDataUserService;
 
-/**
- * Once a hearing is chosen, ia-hearings-api fills in its details from HMC and the reason lists used on the
- * hearing stage page are loaded from reference data.
- */
 @Component
 @RequiredArgsConstructor
 public class RecordDecisionHearingDetailsMidEventHandler implements PreSubmitCallbackHandler<BailCase> {
