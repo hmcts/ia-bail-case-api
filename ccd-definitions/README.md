@@ -22,7 +22,9 @@ yarn setup
 ## Generating the spreadsheet
 
 ```bash
-yarn generate-aat        # or -dev, -demo, -ithc, -perftest, -prod
+yarn generate-aat
+
+export IA_BAIL_CASE_URL=http://ia-case-api-pr-1234-bail-case-api
 PR_NUMBER=1234 yarn generate-preview
 ```
 

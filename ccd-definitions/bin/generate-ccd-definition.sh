@@ -84,7 +84,7 @@ if [[ "${ENV}" == "mirrord" && -z "${USERNAME}" ]]; then
 fi
 
 if [[ "${ENV}" == "preview" ]]; then
-  CCD_DEF_BAIL_URL="http://ia-bail-case-api-pr-${PR_NUMBER}-java"
+  CCD_DEF_BAIL_URL="${IA_BAIL_CASE_URL:-http://ia-bail-case-api-pr-${PR_NUMBER}-java}"
   CCD_DEF_AAC_URL="${preview_aacUrl}"
 elif [[ "${ENV}" == "mirrord" ]]; then
   CCD_DEF_BAIL_URL="http://ia-bail-case-api-${USERNAME}-java"
