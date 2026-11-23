@@ -16,10 +16,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.handlers.PreSubmitCallbackHandler;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDetailsFields;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.IaHearingsApiService;
 
-/**
- * Sends the hearing details recorded with the decision, along with the rest of the case (including the judge
- * name), to ia-hearings-api, which records them in HMC.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -60,7 +56,6 @@ public class RecordDecisionHearingDetailsHandler implements PreSubmitCallbackHan
 
         BailCase updatedBailCase = iaHearingsApiService.aboutToSubmit(callback);
 
-        // once HMC has them the details are not kept, so a later decision on this case cannot send them again
         HearingDetailsFields.clear(updatedBailCase);
 
         return new PreSubmitCallbackResponse<>(updatedBailCase);

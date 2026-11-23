@@ -6,9 +6,6 @@ import lombok.Getter;
 import uk.gov.hmcts.ccd.sdk.api.ComplexType;
 import uk.gov.hmcts.ccd.sdk.api.HasLabel;
 
-/**
- * Fixed list {@code hearingStageOptions}.
- */
 @ComplexType(name = "hearingStageOptions", generate = true)
 @Getter
 @AllArgsConstructor

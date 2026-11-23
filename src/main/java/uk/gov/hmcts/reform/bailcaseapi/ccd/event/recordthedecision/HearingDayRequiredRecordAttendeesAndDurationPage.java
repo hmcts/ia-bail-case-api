@@ -6,18 +6,10 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.CaseData;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.State;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.UserRole;
 
-/**
- * Wizard page {@code hearingDayRequiredRecordAttendeesAndDuration} of event {@code recordTheDecision}.
- */
 public final class HearingDayRequiredRecordAttendeesAndDurationPage {
     private HearingDayRequiredRecordAttendeesAndDurationPage() {
     }
 
-    /**
-     * Applies this page's fields to the event.
-     *
-     * @param fields the event's field-collection builder
-     */
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
         fields.page("hearingDayRequiredRecordAttendeesAndDuration");

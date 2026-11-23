@@ -27,9 +27,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.DynamicList;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.Value;
 
-/**
- * The hearing details recorded with the decision and sent to HMC through ia-hearings-api.
- */
 public final class HearingDetailsFields {
 
     public static final String SELECT_HEARING_PAGE_ID = "selectHearingRecordAttendeesAndDuration";

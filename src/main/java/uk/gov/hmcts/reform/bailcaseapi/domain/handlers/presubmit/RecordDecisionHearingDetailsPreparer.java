@@ -19,10 +19,6 @@ import uk.gov.hmcts.reform.bailcaseapi.domain.service.HearingDetailsFields;
 import uk.gov.hmcts.reform.bailcaseapi.domain.service.IaHearingsApiService;
 import uk.gov.hmcts.reform.bailcaseapi.infrastructure.clients.BailCaseServiceResponseException;
 
-/**
- * Asks ia-hearings-api for the hearings HMC is awaiting details for. The hearing details pages of the event
- * are only shown when there is one, so the decision can still be recorded for a case with no such hearing.
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
