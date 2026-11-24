@@ -12,7 +12,7 @@ public final class TimesRecordAttendeesAndDurationPage {
 
     public static void apply(
             FieldCollection.FieldCollectionBuilder<CaseData, State, Event.EventBuilder<CaseData, UserRole, State>> fields) {
-        fields.page("timesRecordAttendeesAndDuration");
+        fields.page("timesRecordAttendeesAndDuration", "${CCD_DEF_BAIL_URL}/bail/ccdMidEvent?pageId=timesRecordAttendeesAndDuration", 5, 5, 5, 5);
         fields.showCondition("attendeesAndDurationHearingsAvailable=\"Yes\" AND attendeesAndDurationHearingDayRequired=\"Yes\"");
         fields.mandatory(CaseData::getAttendeesAndDurationStartTime)
                     .publish(false);

@@ -1037,6 +1037,12 @@ public enum BailCaseFieldDefinition {
 
     ATTENDEES_AND_DURATION_PAUSE_END(
         "attendeesAndDurationPauseEnd", new TypeReference<String>(){}),
+
+    ATTENDEES_AND_DURATION_PARTICIPANTS(
+        "attendeesAndDurationParticipants", new TypeReference<List<Object>>(){}),
+
+    ATTENDEES_AND_DURATION_PARTICIPANTS_SOURCE(
+        "attendeesAndDurationParticipantsSource", new TypeReference<String>(){}),
     ;
 
     private final String value;

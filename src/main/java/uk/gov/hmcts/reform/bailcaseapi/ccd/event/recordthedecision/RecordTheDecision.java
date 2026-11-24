@@ -72,5 +72,6 @@ public class RecordTheDecision implements CCDConfig<CaseData, State, UserRole> {
         DateOfHearingRecordAttendeesAndDurationPage.apply(fields);
         HearingDayRequiredRecordAttendeesAndDurationPage.apply(fields);
         TimesRecordAttendeesAndDurationPage.apply(fields);
+        ParticipantsRecordAttendeesAndDurationPage.apply(fields);
     }
 }
