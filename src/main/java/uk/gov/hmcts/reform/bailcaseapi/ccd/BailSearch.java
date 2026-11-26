@@ -49,5 +49,9 @@ public class BailSearch implements CCDConfig<CaseData, State, UserRole> {
             .searchPartyAddressLine1("applicantAddress.AddressLine1")
             .searchPartyDOB("applicantDateOfBirth")
                     .build()));
+        builder.searchParty().fields(List.of(SearchPartyField.builder()
+             .searchPartyName("legalRepCompany")
+             .searchPartyAddressLine1("legalRepCompanyAddress.AddressLine1")
+                     .build()));
     }
 }
