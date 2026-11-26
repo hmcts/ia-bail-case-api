@@ -75,6 +75,20 @@ If the API is running (either inside a Docker container or via `gradle bootRun`)
 ./gradlew smoke
 ```
 
+### Running the browser tests:
+
+The *Bail case view tests* check what XUI renders for a Bail case — what Create case offers, the
+Overview tab's progress panel and the Case history tab. They run against a deployed environment
+rather than a local API:
+
+```
+cd playwright-e2e
+yarn install && yarn setup
+yarn test
+```
+
+See [playwright-e2e/README.md](playwright-e2e/README.md) for the environment variables they need.
+
 ### Running contract or pact tests:
 
 You can run contract or pact tests as follows:

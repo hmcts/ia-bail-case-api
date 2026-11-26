@@ -1,0 +1,9 @@
+.env
+.sessions/
+node_modules/
+playwright-report/
+playwright-junit.xml
+test-results/
+e2e-pr-report/
+e2e-pr-junit.xml
+e2e-pr-results/
