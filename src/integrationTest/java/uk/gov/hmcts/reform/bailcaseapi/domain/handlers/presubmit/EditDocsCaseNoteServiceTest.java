@@ -103,7 +103,7 @@ class EditDocsCaseNoteServiceTest extends SpringBootIntegrationTest {
     }
 
     private void assertCaseNote(CaseNote caseNote) {
-        assertEquals("A document was edited or deleted", caseNote.getCaseNoteSubject());
+        assertEquals("A document was added, edited or deleted", caseNote.getCaseNoteSubject());
         assertCaseNoteDescription(caseNote);
         assertEquals("some forename some surname", caseNote.getUser());
         assertNull(caseNote.getCaseNoteDocument());
