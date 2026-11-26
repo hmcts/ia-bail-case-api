@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-// ccd-config-generator 7.16.0 writes an AuthorisationCaseType row for every role in the generated
+// ccd-config-generator 7.16.0 writes an AuthorisationCaseType row for every role in the
 // UserRole enum and takes CRUD from the role's case-type permissions, which is blank for a role
 // that holds no case-type grant. CRUD is a required column on the authorisation sheets, so CCD
 // does not ignore such a row - it rejects the whole definition with "Couldn't find the column CRUD
-// in the sheet AuthorisationCaseType". A role with no case-type grant is simply absent from
-// ccd-definitions/json, so the rows are dropped here. Delete this once the SDK stops emitting
+// in the sheet AuthorisationCaseType". A role with no case-type grant needs no row on that
+// sheet, so the rows are dropped here. Delete this once the SDK stops emitting
 // them (hmcts/dtsse-ccd-config-generator 0d0a92ea).
 
 const fs = require('fs');

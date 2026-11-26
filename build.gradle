@@ -23,8 +23,8 @@ apply plugin: 'project-report'
 apply plugin: 'idea'
 
 ccd {
-  // rootPackage names the GENERATED package, not …bailcaseapi: generateCCDConfig looks for a single
-  // @SpringBootConfiguration beneath it, and the generated tree carries its own minimal one
+  // rootPackage names the CCD config package, not …bailcaseapi: generateCCDConfig looks for a single
+  // @SpringBootConfiguration beneath it, and the CCD config package carries its own minimal one
   // (ConverterGeneratedApplication). Pointing it at the service's base package would find
   // Application instead and boot the whole service, which definition generation has no need of.
   configDir = file('build/definitions')
@@ -59,7 +59,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 compileJava {
-  // The generated event classes are long fluent builder chains, which javac attributes recursively;
+  // The CCD event classes are long fluent builder chains, which javac attributes recursively;
   // at the default thread stack they overflow (StackOverflowError) before reporting any error.
   options.fork = true
   options.forkOptions.jvmArgs = ['-Xss128m']
@@ -155,7 +155,7 @@ checkstyle {
   maxWarnings(0)
 }
 
-// The generated CCD config takes its member names and label text from the definition's field IDs
+// The CCD config takes its member names and label text from the definition's field IDs
 // and labels, so names like progress_applicationStarted and lines past 300 characters cannot be
 // styled away without changing the definition itself.
 tasks.withType(Checkstyle).configureEach {
@@ -287,8 +287,8 @@ sonarqube {
       "src/main/java/uk/gov/hmcts/reform/bailcaseapi/infrastructure/SystemDateProvider.java," +
       "src/main/java/uk/gov/hmcts/reform/bailcaseapi/Application.java"
 
-    // The CCD config under ccd/ is generated from ccd-definitions/json by the ccd-config-generator
-    // plugin. Its repetition and its lack of tests are properties of the generator, not of this repo.
+    // The CCD config under ccd/ is declarative case-type configuration for the ccd-config-generator
+    // plugin. Its repetition mirrors the shape of the CCD definition, and it holds no logic to test.
     property "sonar.coverage.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd/**"
     property "sonar.cpd.exclusions", "src/main/java/uk/gov/hmcts/reform/bailcaseapi/ccd/**"
   }
