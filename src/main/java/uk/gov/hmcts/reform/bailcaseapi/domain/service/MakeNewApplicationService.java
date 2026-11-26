@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
 import uk.gov.hmcts.reform.bailcaseapi.domain.UserDetailsHelper;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCase;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.BailCaseFieldDefinition;
@@ -94,7 +94,7 @@ public class MakeNewApplicationService {
         String previousCaseDataJson;
         try {
             previousCaseDataJson = mapper.writeValueAsString(bailCaseBefore);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException("Could not serialize data", e);
         }
 
@@ -112,7 +112,7 @@ public class MakeNewApplicationService {
         BailCase bailCase;
         try {
             bailCase = mapper.readValue(caseDataJson, BailCase.class);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException("Could not convert data", e);
         }
 

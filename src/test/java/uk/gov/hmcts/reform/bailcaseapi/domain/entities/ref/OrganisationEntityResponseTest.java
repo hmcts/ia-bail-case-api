@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities.ref;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,7 @@ class OrganisationEntityResponseTest {
                             }\
                             """;
 
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new JsonMapper();
         testOrganisationEntityResponse = mapper.readValue(jsonResult, OrganisationEntityResponse.class);
     }
 

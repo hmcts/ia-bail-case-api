@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.bailcaseapi.ccd.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.annotation.JsonNaming;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -41,9 +41,10 @@ public class Supporter {
     private AddressUK addressDetails;
 
     @CCD(
-            label = "Select email and at least one phone option.\n"
-                            + " \n"
-                            + " Contact details",
+            label = """
+                            Select email and at least one phone option.
+                            \s
+                             Contact details""",
             typeOverride = FieldType.Label
     )
     private String contactDetailsLabel;

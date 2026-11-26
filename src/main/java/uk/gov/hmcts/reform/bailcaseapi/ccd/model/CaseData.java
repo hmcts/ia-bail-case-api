@@ -210,9 +210,10 @@ public class CaseData {
     private String probationOffenderManagerFamilyName;
 
     @CCD(
-            label = "Select email and at least one phone option.\n"
-                            + " \n"
-                            + " Contact details",
+            label = """
+                            Select email and at least one phone option.
+                            \s
+                             Contact details""",
             typeOverride = FieldType.Label,
             access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCrudAccess.class}
     )
@@ -262,31 +263,33 @@ public class CaseData {
     private String noAccessToPreviousApplications;
 
     @CCD(
-            label = "This applicant has made at least one previous bail application.\n"
-                            + "\n"
-                            + " You will need to choose one of the following options to continue:\n"
-                            + "\n"
-                            + "* If you did not make a previous application on the applicant’s behalf you will need to acquire the case record to continue. You can do so by using Notice of Change [here](/noc).\n"
-                            + "\n"
-                            + "* If you did, you need to find the applicant in the [case list](/case/case-list) and make a new application.",
+            label = """
+                            This applicant has made at least one previous bail application.
+                            
+                             You will need to choose one of the following options to continue:
+                            
+                            * If you did not make a previous application on the applicant’s behalf you will need to acquire the case record to continue. You can do so by using Notice of Change [here](/noc).
+                            
+                            * If you did, you need to find the applicant in the [case list](/case/case-list) and make a new application.""",
             typeOverride = FieldType.Label,
             access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, IacjudgeRAccess.class}
     )
     private String redirectToPreviousApplicationOrNoc;
 
     @CCD(
-            label = "You will be asked to provide the following information about this application.\n"
-                            + "\n"
-                            + "* Applicant’s personal details\n"
-                            + "* Application details\n"
-                            + "* Financial condition details (if any)\n"
-                            + "* Grounds for the application\n"
-                            + "*Hearing requirements (if any)\n"
-                            + "* Representative details (if any)\n"
-                            + "\n"
-                            + "Once you start, you will not be able to save your answers until you have completed the application.\n"
-                            + "\n"
-                            + "Please ensure you have all the information you need to hand and allow enough time to complete the application in one sitting.",
+            label = """
+                            You will be asked to provide the following information about this application.
+                            
+                            * Applicant’s personal details
+                            * Application details
+                            * Financial condition details (if any)
+                            * Grounds for the application
+                            *Hearing requirements (if any)
+                            * Representative details (if any)
+                            
+                            Once you start, you will not be able to save your answers until you have completed the application.
+                            
+                            Please ensure you have all the information you need to hand and allow enough time to complete the application in one sitting.""",
             typeOverride = FieldType.Label,
             access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class}
     )
@@ -459,21 +462,22 @@ public class CaseData {
     private Integer financialAmountSupporter4Undertakes1;
 
     @CCD(
-            label = "On the next screen you will be asked to set out all the reasons why the applicant should be released. Give as much detail as possible and please note the information below.\n"
-                            + "\n"
-                            + "# Previous applications\n"
-                            + "\n"
-                            + "If the applicant has had a previous application for bail refused, include full details of any additional grounds or change in circumstances since then on the next screen.\n"
-                            + "\n"
-                            + "If that refusal was within the last 28 days, this application will be dismissed without an oral hearing unless the applicant has demonstrated with evidence and information submitted with the application that there has been a material change of circumstances since the last bail decision.\n"
-                            + "\n"
-                            + "# Electronic monitoring\n"
-                            + "\n"
-                            + "If the applicant is currently detained and is subject to deportation proceedings, the Home Office may be required to electronically monitor the applicant as part of the bail conditions.\n"
-                            + "\n"
-                            + "The Home Office will use a GPS tag fitted to the applicant’s ankle to do this. Decisions about whether it is appropriate to do this will be made by the Home Office not the First-tier Tribunal.\n"
-                            + "\n"
-                            + "If there are reasons why the applicant feels he or she should not be required to wear a tag, state these reasons on the next screen to allow the Home Office to consider the matter before the bail hearing.",
+            label = """
+                            On the next screen you will be asked to set out all the reasons why the applicant should be released. Give as much detail as possible and please note the information below.
+                            
+                            # Previous applications
+                            
+                            If the applicant has had a previous application for bail refused, include full details of any additional grounds or change in circumstances since then on the next screen.
+                            
+                            If that refusal was within the last 28 days, this application will be dismissed without an oral hearing unless the applicant has demonstrated with evidence and information submitted with the application that there has been a material change of circumstances since the last bail decision.
+                            
+                            # Electronic monitoring
+                            
+                            If the applicant is currently detained and is subject to deportation proceedings, the Home Office may be required to electronically monitor the applicant as part of the bail conditions.
+                            
+                            The Home Office will use a GPS tag fitted to the applicant’s ankle to do this. Decisions about whether it is appropriate to do this will be made by the Home Office not the First-tier Tribunal.
+                            
+                            If there are reasons why the applicant feels he or she should not be required to wear a tag, state these reasons on the next screen to allow the Home Office to consider the matter before the bail hearing.""",
             typeOverride = FieldType.Label,
             access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class}
     )
@@ -486,11 +490,12 @@ public class CaseData {
     private YesOrNo groundsForBailProvideEvidenceOption;
 
     @CCD(
-            label = "#### Files should be:\n"
-                            + "\n"
-                            + "* a maximum of 100MB in size (larger files must be split)\n"
-                            + "* labelled clearly, e.g. BailEvidence.pdf\n"
-                            + "* in Word or PDF format",
+            label = """
+                            #### Files should be:
+                            
+                            * a maximum of 100MB in size (larger files must be split)
+                            * labelled clearly, e.g. BailEvidence.pdf
+                            * in Word or PDF format""",
             typeOverride = FieldType.Label,
             access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class}
     )
@@ -587,12 +592,13 @@ public class CaseData {
     private YesOrNo hasLegalRep;
 
     @CCD(
-            label = "Upload a copy of the B1 form the applicant or legal representative sent to the Tribunal.\n"
-                            + "\n"
-                            + " #### Files should be:\n"
-                            + "\n"
-                            + "* a maximum of 100MB in size (larger files must be split)\n"
-                            + "*   labelled clearly, e.g. applicant-name-B1-form.pdf",
+            label = """
+                            Upload a copy of the B1 form the applicant or legal representative sent to the Tribunal.
+                            
+                             #### Files should be:
+                            
+                            * a maximum of 100MB in size (larger files must be split)
+                            *   labelled clearly, e.g. applicant-name-B1-form.pdf""",
             typeOverride = FieldType.Label,
             access = {AdmofficerCruAccess.class}
     )
@@ -632,8 +638,9 @@ public class CaseData {
     private String legal_rep_and_refusal_flag;
 
     @CCD(
-            label = "![]()\n"
-                            + "## Case details",
+            label = """
+                            ![]()
+                            ## Case details""",
             typeOverride = FieldType.Label,
             access = {AdmofficerHomeofficebailHomeofficepouLegalrepSolicitorCruAccess.class, IacjudgeRAccess.class}
     )
@@ -734,11 +741,12 @@ public class CaseData {
     private List<ListValue<String>> notificationsSent;
 
     @CCD(
-            label = "#### Files should be:\n"
-                            + "\n"
-                            + "* a maximum of 100MB in size (larger files must be split)\n"
-                            + "* labelled clearly, e.g. BailSummary.pdf\n"
-                            + "* in Word or PDF format",
+            label = """
+                            #### Files should be:
+                            
+                            * a maximum of 100MB in size (larger files must be split)
+                            * labelled clearly, e.g. BailSummary.pdf
+                            * in Word or PDF format""",
             typeOverride = FieldType.Label,
             access = {AdmofficerIacjudgeRAccess.class, HomeofficebailHomeofficepouCruAccess.class, LegalrepSolicitorRAccess.class}
     )
@@ -838,11 +846,12 @@ public class CaseData {
     private YesOrNo recordFinancialConditionYesOrNo;
 
     @CCD(
-            label = "|Applicant details|| \n"
-                            + "| ------------- | ------------- |\n"
-                            + "|Given names|${applicantGivenNames}| \n"
-                            + "|Family name|${applicantFamilyName}| \n"
-                            + "|Financial condition amount (£)|${financialCondAmount1}|",
+            label = """
+                            |Applicant details||\s
+                            | ------------- | ------------- |
+                            |Given names|${applicantGivenNames}|\s
+                            |Family name|${applicantFamilyName}|\s
+                            |Financial condition amount (£)|${financialCondAmount1}|""",
             typeOverride = FieldType.Label,
             access = {AdmofficerIacjudgeCruAccess.class}
     )
@@ -855,9 +864,10 @@ public class CaseData {
     private FinancialConditionCorrectEdit recordFinancialConditionCorrectYesOrEdit;
 
     @CCD(
-            label = "Confirm the financial condition amount is correct. \n"
-                            + "\n"
-                            + "## Financial condition amount",
+            label = """
+                            Confirm the financial condition amount is correct.\s
+                            
+                            ## Financial condition amount""",
             typeOverride = FieldType.Label,
             access = {AdmofficerIacjudgeCruAccess.class}
     )
@@ -877,10 +887,11 @@ public class CaseData {
     private String supporter1ConfirmationTitle;
 
     @CCD(
-            label = "|Financial condition supporter details|| \n"
-                            + "| ------------- | ------------- |\n"
-                            + "|Given names|${supporterGivenNames}| \n"
-                            + "|Family name|${supporterFamilyNames}|",
+            label = """
+                            |Financial condition supporter details||\s
+                            | ------------- | ------------- |
+                            |Given names|${supporterGivenNames}|\s
+                            |Family name|${supporterFamilyNames}|""",
             typeOverride = FieldType.Label,
             access = {HomeofficebailHomeofficepouLegalrepSolicitorRAccess.class, AdmofficerCrudAccess.class, IacjudgeCruAccess.class}
     )
@@ -901,11 +912,12 @@ public class CaseData {
     private String supporter1ConfirmationTitleJudgeAgree;
 
     @CCD(
-            label = "|Financial condition supporter details|| \n"
-                            + "| ------------- | ------------- | \n"
-                            + "|Given names|${supporterGivenNames}| \n"
-                            + "|Family name|${supporterFamilyNames}| \n"
-                            + "|Amount undertaken to be paid (£)|${financialAmountSupporterUndertakes1}|",
+            label = """
+                            |Financial condition supporter details||\s
+                            | ------------- | ------------- |\s
+                            |Given names|${supporterGivenNames}|\s
+                            |Family name|${supporterFamilyNames}|\s
+                            |Amount undertaken to be paid (£)|${financialAmountSupporterUndertakes1}|""",
             typeOverride = FieldType.Label,
             access = {HomeofficebailHomeofficepouLegalrepSolicitorRAccess.class, AdmofficerCrudAccess.class, IacjudgeCruAccess.class}
     )
@@ -990,12 +1002,13 @@ public class CaseData {
     private String secretaryOfStateRefusalReasons;
 
     @CCD(
-            label = "Upload a decision notice for this application that has been signed by the appropriate parties. \n"
-                            + "\n"
-                            + " #### Files should be:\n"
-                            + "\n"
-                            + "* a maximum of 100MB in size (larger files must be split)\n"
-                            + "* labelled clearly, e.g. applicant-name-decision-notice.pdf",
+            label = """
+                            Upload a decision notice for this application that has been signed by the appropriate parties.\s
+                            
+                             #### Files should be:
+                            
+                            * a maximum of 100MB in size (larger files must be split)
+                            * labelled clearly, e.g. applicant-name-decision-notice.pdf""",
             typeOverride = FieldType.Label,
             access = {HomeofficebailHomeofficepouLegalrepSolicitorRAccess.class, AdmofficerIacjudgeRAccess.class}
     )
@@ -1119,8 +1132,9 @@ public class CaseData {
     private RecordDecisionTypeList recordDecisionType;
 
     @CCD(
-            label = "![]()\n"
-                            + "## Decision details",
+            label = """
+                            ![]()
+                            ## Decision details""",
             typeOverride = FieldType.Label,
             access = {AdmofficerCruAccess.class, LegalrepSolicitorRAccess.class, HomeofficebailRAccess.class, HomeofficepouRAccess.class, IacjudgeRAccess.class}
     )
@@ -1138,8 +1152,9 @@ public class CaseData {
     private RecordDecisionTypeList recordUnsignedDecisionType;
 
     @CCD(
-            label = "![]()\n"
-                            + "## Decision details",
+            label = """
+                            ![]()
+                            ## Decision details""",
             typeOverride = FieldType.Label,
             access = {AdmofficerIacjudgeCruAccess.class}
     )
@@ -1204,10 +1219,11 @@ public class CaseData {
     private UploadDocumentsSuppliedByList uploadDocumentsSuppliedBy;
 
     @CCD(
-            label = "#### Files should be:\n"
-                            + "\n"
-                            + "* a maximum of 100MB in size (larger files must be split)\n"
-                            + "* labelled clearly, e.g. applicant-name-additional-evidence.pdf",
+            label = """
+                            #### Files should be:
+                            
+                            * a maximum of 100MB in size (larger files must be split)
+                            * labelled clearly, e.g. applicant-name-additional-evidence.pdf""",
             typeOverride = FieldType.Label,
             access = {HomeofficebailHomeofficepouLegalrepSolicitorRAccess.class, AdmofficerIacjudgeRAccess.class}
     )
