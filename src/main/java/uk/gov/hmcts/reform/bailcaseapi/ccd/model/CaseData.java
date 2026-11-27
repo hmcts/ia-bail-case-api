@@ -70,6 +70,7 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.DocumentWithDescription
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.DocumentWithMetadata;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.HearingDecision;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.HearingRecordingDocument;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.HearingParticipant;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.InterpreterDetails;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.InterpreterSignLanguage;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.complex.InterpreterSpokenLanguage;
@@ -91,6 +92,8 @@ import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.FinancialConditionCorrect
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.HasPendingAppealHearingList;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.HearingCentreList;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.HearingLocationList;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.HearingResultOptions;
+import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.HearingStageOptions;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.InterpreterLanguageCategory;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.IrcNameList;
 import uk.gov.hmcts.reform.bailcaseapi.ccd.model.enums.ListingEventList;
@@ -1677,6 +1680,165 @@ public class CaseData {
             access = {AdmofficerRuAccess.class, BailsCrudAccess.class, HomeofficebailRuAccess.class, SystemCrudAccess.class, HomeofficepouLegalrepSolicitorRuAccess.class}
     )
     private String staffLocationId;
+
+    @CCD(
+            label = " ",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private YesOrNo attendeesAndDurationHearingsAvailable;
+
+    @CCD(
+            label = "Which hearing are you recording attendees and duration for?",
+            searchable = false,
+            typeOverride = FieldType.DynamicList,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationHearing;
+
+    @CCD(
+            label = "Case reference",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationCaseReference;
+
+    @CCD(
+            label = "Hearing ID",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationHearingId;
+
+    @CCD(
+            label = "Hearing date",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationHearingDate;
+
+    @CCD(
+            label = "Hearing date",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationHearingDateDisplay;
+
+    @CCD(
+            label = "Paper hearing",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationPaperHearing;
+
+    @CCD(
+            label = "Hearing methods",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationHearingMethods;
+
+    @CCD(
+            label = "Hearing stage",
+            searchable = false,
+            typeOverride = FieldType.FixedList,
+            typeParameterOverride = "hearingStageOptions",
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private HearingStageOptions attendeesAndDurationHearingStage;
+
+    @CCD(
+            label = "Hearing result",
+            searchable = false,
+            typeOverride = FieldType.FixedRadioList,
+            typeParameterOverride = "hearingResultOptions",
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private HearingResultOptions attendeesAndDurationHearingResult;
+
+    @CCD(
+            label = "Hearing cancellation reason",
+            searchable = false,
+            typeOverride = FieldType.DynamicList,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationHearingCancellationReason;
+
+    @CCD(
+            label = "Hearing part heard reason",
+            searchable = false,
+            typeOverride = FieldType.DynamicList,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationHearingPartHeardReason;
+
+    @CCD(
+            label = "Hearing date",
+            searchable = false,
+            typeOverride = FieldType.DynamicList,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationDateOfHearing;
+
+    @CCD(
+            label = "Was this hearing day required?",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private YesOrNo attendeesAndDurationHearingDayRequired;
+
+    @CCD(
+            label = "Start time",
+            searchable = false,
+            regex = "^([01]?[0-9]|2[0-3])(:[0-5][0-9])?$",
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationStartTime;
+
+    @CCD(
+            label = "Finish time",
+            searchable = false,
+            regex = "^([01]?[0-9]|2[0-3])(:[0-5][0-9])?$",
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationFinishTime;
+
+    @CCD(
+            label = "Do you need paused time?",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private YesOrNo attendeesAndDurationPausedTimeRequired;
+
+    @CCD(
+            label = "Start pause",
+            searchable = false,
+            regex = "^([01]?[0-9]|2[0-3])(:[0-5][0-9])?$",
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationPauseStart;
+
+    @CCD(
+            label = "End pause",
+            searchable = false,
+            regex = "^([01]?[0-9]|2[0-3])(:[0-5][0-9])?$",
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationPauseEnd;
+
+    @CCD(
+            label = "Participants",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private List<ListValue<HearingParticipant>> attendeesAndDurationParticipants;
+
+    @CCD(
+            label = " ",
+            searchable = false,
+            access = {AdmofficerIacjudgeCruAccess.class, SystemCrudAccess.class}
+    )
+    private String attendeesAndDurationParticipantsSource;
 
     @CCD(
             label = " ",

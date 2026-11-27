@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
     "OPEN_ID_IDAM_URL=http://127.0.0.1:8990/userAuth",
     "IA_CASE_DOCUMENTS_API_URL=http://localhost:8990/ia-case-documents-api",
     "IA_CASE_NOTIFICATIONS_API_URL=http://localhost:8990/ia-case-notifications-api",
+    "IA_HEARINGS_API_URL=http://localhost:8990/ia-hearings-api",
     "PROF_REF_DATA_URL=http://localhost:8990",
     "CCD_URL=http://127.0.0.1:8990/ccd-data-store",
     "AAC_URL=http://127.0.0.1:8990",

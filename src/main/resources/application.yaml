@@ -206,6 +206,12 @@ notificationsApi:
   aboutToSubmitPath: "/bail/ccdAboutToSubmit"
   ccdSubmittedPath: "/bail/ccdSubmitted"
 
+hearingsApi:
+  endpoint: ${IA_HEARINGS_API_URL:http://127.0.0.1:8100}
+  aboutToStartPath: "/bail/ccdAboutToStart"
+  midEventPath: "/bail/ccdMidEvent"
+  aboutToSubmitPath: "/bail/ccdAboutToSubmit"
+
 
 feign:
   hystrix:

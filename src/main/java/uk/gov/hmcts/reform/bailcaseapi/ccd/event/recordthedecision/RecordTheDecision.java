@@ -66,5 +66,12 @@ public class RecordTheDecision implements CCDConfig<CaseData, State, UserRole> {
         FinancialConditionSupporter4JudgeAgreePage.apply(fields);
         FinancialConditionSupporter4ConfirmationPage.apply(fields);
         BailTransferPage.apply(fields);
+        SelectHearingRecordAttendeesAndDurationPage.apply(fields);
+        HearingDataRecordAttendeesAndDurationPage.apply(fields);
+        HearingStageRecordAttendeesAndDurationPage.apply(fields);
+        DateOfHearingRecordAttendeesAndDurationPage.apply(fields);
+        HearingDayRequiredRecordAttendeesAndDurationPage.apply(fields);
+        TimesRecordAttendeesAndDurationPage.apply(fields);
+        ParticipantsRecordAttendeesAndDurationPage.apply(fields);
     }
 }
