@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
@@ -30,7 +31,10 @@ public class StrategicCaseFlag {
         this.details = Collections.emptyList();
     }
 
-    public StrategicCaseFlag(String partyFullName, String roleOnCase, List<CaseFlagDetail> details) {
+    @JsonCreator
+    public StrategicCaseFlag(@JsonProperty("partyName") String partyFullName,
+                             @JsonProperty("roleOnCase") String roleOnCase,
+                             @JsonProperty("details") List<CaseFlagDetail> details) {
         this.partyName = partyFullName;
         this.roleOnCase = roleOnCase;
         this.details = details;

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.bailcaseapi.domain.entities;
 
 import static java.util.Objects.requireNonNull;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import uk.gov.hmcts.reform.bailcaseapi.domain.entities.ccd.field.Document;
@@ -17,6 +18,7 @@ public class DocumentWithMetadata implements HasDocument {
     private DocumentTag tag;
     private String suppliedBy;
 
+    @JsonCreator
     private DocumentWithMetadata() {
         // noop -- for deserializer
     }
